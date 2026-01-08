@@ -1,0 +1,37 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "title": "Summer Barbecue",
+      "date": "2026-01-15",
+      "time": "12:00 PM - 4:00 PM",
+      "location": "Rooftop Terrace",
+      "description": "Join us for our annual summer barbecue on the rooftop terrace.",
+      "rsvp": false,
+      "featured": true,
+      "image": "/images/events/barbecue.svg"
+    },
+    {
+      "id": "2",
+      "title": "Yoga in the Garden",
+      "date": "2026-01-22",
+      "time": "8:00 AM - 9:00 AM",
+      "location": "Community Garden",
+      "description": "Morning yoga session led by resident instructor.",
+      "rsvp": true,
+      "featured": false,
+      "image": "/images/events/yoga.svg"
+    },
+    {
+      "id": "3",
+      "title": "Monthly Residents Meeting",
+      "date": "2026-02-01",
+      "time": "7:00 PM - 8:30 PM",
+      "location": "Common Room",
+      "description": "Common room meeting to discuss community matters.",
+      "rsvp": false,
+      "featured": false,
+      "image": "/images/events/meeting.svg"
+    }
+  ]
+}

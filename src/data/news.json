@@ -1,0 +1,34 @@
+{
+  "articles": [
+    {
+      "id": "1",
+      "title": "Welcome to Coronation Gardens Residents Society",
+      "excerpt": "Welcome to our community! We're excited to launch our new website to better serve our residents and keep everyone informed about community updates.",
+      "content": "Welcome to the Coronation Gardens Residents Society website! We're thrilled to launch this new digital platform to enhance communication within our community.\n\nThis website will serve as your central hub for:\n- Community news and updates\n- Event information\n- Committee contact details\n- Community guidelines\n- Important announcements\n\nWe encourage all residents to bookmark this site and check back regularly for updates. If you have any questions or suggestions, please don't hesitate to contact our committee.",
+      "date": "2024-01-15",
+      "category": "general",
+      "image": "/images/news/welcome.svg",
+      "featured": true
+    },
+    {
+      "id": "2",
+      "title": "Community Guidelines Reminder",
+      "excerpt": "A friendly reminder about our community guidelines to ensure everyone enjoys living in our beautiful development.",
+      "content": "As we continue to grow as a community, it's important to remember our shared values and guidelines that make Coronation Gardens a wonderful place to live.\n\nKey reminders:\n- Respect for neighbors and common areas\n- Proper waste management practices\n- Parking regulations\n- Noise considerations\n- Property maintenance standards\n\nThank you for helping maintain our exceptional living environment!",
+      "date": "2024-01-10",
+      "category": "guidelines",
+      "image": "/images/news/guidelines.svg",
+      "featured": false
+    },
+    {
+      "id": "3",
+      "title": "Upcoming Community Meeting",
+      "excerpt": "Join us for our monthly community meeting to discuss important updates and share your feedback.",
+      "content": "We're pleased to announce our upcoming community meeting scheduled for next month. This is a great opportunity to:\n- Learn about recent developments\n- Voice your concerns or suggestions\n- Meet your neighbors\n- Stay informed about community matters\n\nDetails:\n- Date: [To be announced]\n- Time: 7:00 PM\n- Location: Community Center\n\nAll residents are encouraged to attend. We look forward to seeing you there!",
+      "date": "2024-01-05",
+      "category": "events",
+      "image": "/images/news/meeting.svg",
+      "featured": false
+    }
+  ]
+}

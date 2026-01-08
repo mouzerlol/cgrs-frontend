@@ -1,0 +1,29 @@
+{
+  "chairperson": {
+    "name": "Louise Putt",
+    "role": "Chairperson",
+    "email": "cgrscommittee@gmail.com",
+    "bio": "Louise has been serving as Chairperson of the Coronation Gardens Residents Society, bringing extensive experience in community leadership and a deep commitment to fostering a harmonious living environment for all residents.",
+    "image": "/images/committee/louise-putt.jpg"
+  },
+  "members": [
+    {
+      "name": "Committee Member 1",
+      "role": "Treasurer",
+      "bio": "Responsible for managing the society's finances and ensuring transparent financial reporting to all residents.",
+      "image": "/images/committee/member1.jpg"
+    },
+    {
+      "name": "Committee Member 2",
+      "role": "Secretary",
+      "bio": "Handles correspondence, meeting minutes, and maintains official records of the society.",
+      "image": "/images/committee/member2.jpg"
+    },
+    {
+      "name": "Committee Member 3",
+      "role": "Maintenance Coordinator",
+      "bio": "Oversees maintenance requests and coordinates with service providers to ensure the development remains in excellent condition.",
+      "image": "/images/committee/member3.jpg"
+    }
+  ]
+}

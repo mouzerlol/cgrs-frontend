@@ -1,0 +1,27 @@
+{
+  "siteName": "Coronation Gardens Residents Society",
+  "domain": "cgrs.co.nz",
+  "description": "Official website for the Coronation Gardens Residents Society in Mangere Bridge, Auckland",
+  "mission": "Dedicated to maintaining an exceptional living environment through collective responsibility, cultural respect, and unwavering commitment to our shared community values.",
+  "values": [
+    "Mutual Respect",
+    "Personal Accountability", 
+    "Safety and Security",
+    "Cultural Inclusivity",
+    "Environmental Stewardship",
+    "Transparent Communication",
+    "Collaborative Problem Solving",
+    "Pride of Place",
+    "Supportive Neighborliness",
+    "Continuous Improvement"
+  ],
+  "contact": {
+    "email": "cgrscommittee@gmail.com",
+    "chairperson": "Louise Putt"
+  },
+  "socialMedia": {
+    "facebook": "",
+    "twitter": "",
+    "instagram": ""
+  }
+}

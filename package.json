@@ -1,0 +1,40 @@
+{
+  "name": "cgrs-frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "build:static": "next build && next export",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "cgrs"
+  ],
+  "author": "CGRS Development Team",
+  "license": "ISC",
+  "description": "Coronation Gardens Residents Society Website",
+  "dependencies": {
+    "@types/node": "^24.6.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.4.21",
+    "clsx": "^2.1.1",
+    "eslint": "^9.37.0",
+    "eslint-config-next": "^15.5.4",
+    "framer-motion": "^12.24.0",
+    "lucide-react": "^0.562.0",
+    "next": "^15.5.4",
+    "postcss": "^8.5.6",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3"
+  }
+}
