@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Layout from '@/components/layout/Layout';
+import { Providers } from '@/lib/providers';
 
 export const metadata: Metadata = {
   title: 'CGRS - Coronation Gardens Residents Society',
@@ -38,11 +39,14 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body>
-        <Layout>
-          {children}
-        </Layout>
+        <Providers>
+          <Layout>
+            {children}
+          </Layout>
+        </Providers>
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-.PHONY: help install dev build build_static start lint clean
+.PHONY: help install dev build build_static start lint test clean
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
@@ -20,6 +20,9 @@ start: ## Start production server
 
 lint: ## Run linter
 	npm run lint
+
+test: ## Run tests
+	npx vitest run
 
 clean: ## Clean build artifacts
 	rm -rf .next/

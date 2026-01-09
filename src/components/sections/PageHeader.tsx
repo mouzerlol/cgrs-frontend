@@ -54,7 +54,7 @@ export default function PageHeader({ title, description, eyebrow, dark = true, b
             </div>
             {/* Card body - solid sage-light */}
             {description && (
-              <div className="bg-[rgb(232,237,230)] rounded-b-2xl p-6 md:p-8 -mt-2">
+              <div className="bg-sage-light rounded-b-2xl p-6 md:p-8 -mt-2">
                 <p className="text-base leading-relaxed opacity-80 text-forest/90">
                   {description}
                 </p>

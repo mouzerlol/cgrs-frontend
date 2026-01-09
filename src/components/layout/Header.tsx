@@ -1,19 +1,16 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Fragment } from 'react';
 import Link from 'next/link';
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { NAVIGATION_ITEMS } from '@/lib/constants';
 
 /**
  * Navigation header with glassmorphism backdrop.
- * Fixed position, mobile hamburger menu with slide-in drawer.
+ * Fixed position, mobile hamburger menu with Headless UI Dialog.
  */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
-  }, []);
 
   const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
@@ -45,7 +42,7 @@ export default function Header() {
         className="md:hidden z-[1001] bg-transparent border-none cursor-pointer p-2"
         aria-label="Toggle navigation"
         aria-expanded={isMenuOpen}
-        onClick={toggleMenu}
+        onClick={() => setIsMenuOpen(true)}
       >
         <span
           className={`block w-6 h-0.5 bg-bone relative transition-transform duration-300 ${
@@ -64,44 +61,83 @@ export default function Header() {
         />
       </button>
 
-      {/* Navigation Links */}
-      <nav
-        className={`
-          fixed md:relative inset-0 md:inset-auto left-[30%] md:left-auto
-          bg-forest/[0.98] md:bg-transparent backdrop-blur-xl md:backdrop-blur-none
-          flex flex-col md:flex-row items-start md:items-center
-          pt-[min(20vh,6rem)] md:pt-0 px-8 md:px-0
-          gap-8 md:gap-10
-          transition-transform duration-300 ease-out
-          z-[1000]
-          ${isMenuOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
-        `}
-        data-visible={isMenuOpen}
-      >
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex items-center gap-10">
         {NAVIGATION_ITEMS.map((item) => (
           <Link
             key={item.name}
             href={item.href}
-            className="nav-link text-bone text-[1.25rem] md:text-[0.875rem]"
+            className="nav-link text-bone text-[0.875rem]"
             onClick={(e) => {
               if (item.href.startsWith('#')) {
                 handleSmoothScroll(e, item.href);
-              } else {
-                closeMenu();
               }
             }}
           >
             {item.name}
           </Link>
         ))}
-        <Link
-          href="/login"
-          className="nav-button mt-4 md:mt-0 w-full md:w-auto text-center"
-          onClick={closeMenu}
-        >
+        <Link href="/login" className="nav-button">
           Resident Login
         </Link>
       </nav>
+
+      {/* Mobile Menu Dialog */}
+      <Transition show={isMenuOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-[1000]" onClose={closeMenu}>
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+          </TransitionChild>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full justify-end">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="ease-in duration-200"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <DialogPanel className="w-[70%] max-w-xs bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 min-h-full">
+                  {NAVIGATION_ITEMS.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="nav-link text-bone text-[1.25rem] py-3"
+                      onClick={(e) => {
+                        if (item.href.startsWith('#')) {
+                          handleSmoothScroll(e, item.href);
+                        } else {
+                          closeMenu();
+                        }
+                      }}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/login"
+                    className="nav-button mt-6 w-full text-center"
+                    onClick={closeMenu}
+                  >
+                    Resident Login
+                  </Link>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </header>
   );
 }

@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import Image from 'next/image';
+import BoundaryMap from './BoundaryMap';
+import SocialMediaTray from './SocialMediaTray';
 
 const QUICK_LINKS = [
   { name: 'About Us', href: '/about' },
@@ -18,25 +21,25 @@ const SUPPORT_LINKS = [
 ];
 
 /**
- * Footer component with forest background and grain texture.
- * Four-column grid with brand, quick links, support, and map.
+ * Footer component with forest background and signal texture.
+ * Four-column grid with brand, quick links, support, and social media.
  */
 export default function Footer() {
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer texture-signal" id="contact">
       <div className="container">
         <div className="footer-grid">
-          {/* Brand Column */}
+          {/* Brand Column with Map */}
           <div className="footer-brand flex flex-col">
             <h3>
               <span className="block whitespace-nowrap">CORONATION</span>
               <span className="block whitespace-nowrap tracking-wider">GARDENS</span>
             </h3>
-            <p className="opacity-70 max-w-[280px] leading-relaxed text-sm mb-4">
-              Māngere Bridge<br />
-              Auckland 2022<br />
-              New Zealand
-            </p>
+            <div className="footer-map-container">
+              <Link href="/map" className="footer-map-link" aria-label="View interactive map">
+                <BoundaryMap className="footer-map-interactive" />
+              </Link>
+            </div>
           </div>
 
           {/* Quick Links Column */}
@@ -67,28 +70,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Map Column */}
+          {/* Social Media Column */}
           <div className="footer-column pt-4">
-            <h4>Map</h4>
-            <div className="mt-1">
-              <div className="relative w-full h-[120px] rounded-lg overflow-hidden mb-3">
-                <Image
-                  src="/images/location-map.png"
-                  alt="Location map of Coronation Gardens development"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                />
-              </div>
-              <a
-                href="https://www.google.com/maps/search/M%C4%81ngere+Bridge+Auckland"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs uppercase tracking-wider text-terracotta hover:underline"
-              >
-
-              </a>
-            </div>
+            <SocialMediaTray />
           </div>
         </div>
 
@@ -98,7 +82,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Coronation Gardens. All rights reserved.
           </p>
           <p className="text-[0.8125rem] opacity-50">
-            Designed with intention.
+            Designed with intention. Map data &copy; <a href="https://stadiamaps.com/" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">Stadia Maps</a>, <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">OpenStreetMap</a>
           </p>
         </div>
       </div>

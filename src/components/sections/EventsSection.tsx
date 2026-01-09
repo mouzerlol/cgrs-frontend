@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { Event } from '@/types';
 import Icon from '@/components/ui/Icon';
+import CalendarCard, { formatCalendarDate } from '@/components/ui/CalendarCard';
 
 interface EventsSectionProps {
   events: Event[];
@@ -25,16 +26,8 @@ export default function EventsSection({
 }: EventsSectionProps) {
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return {
-      day: date.getDate().toString().padStart(2, '0'),
-      month: date.toLocaleDateString('en-NZ', { month: 'short' }),
-    };
-  };
-
   return (
-    <section className="section bg-forest-light texture-dots" id="events">
+    <section className="section bg-forest-light texture-signal" id="events">
       <div className="container">
         <div
           ref={headerRef}
@@ -46,7 +39,7 @@ export default function EventsSection({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {events.map((event) => {
-            const { day, month } = formatDate(event.date);
+            const { day, month } = formatCalendarDate(event.date);
             return (
               <CalendarCard key={event.id} event={event} day={day} month={month} />
             );
@@ -66,57 +59,5 @@ export default function EventsSection({
         )}
       </div>
     </section>
-  );
-}
-
-/**
- * Calendar card with enhanced date badge styling.
- * Features terracotta date badge with hover lift effect.
- */
-function CalendarCard({
-  event,
-  day,
-  month,
-}: {
-  event: Event;
-  day: string;
-  month: string;
-}) {
-  const [ref, isVisible] = useIntersectionObserver<HTMLElement>({ threshold: 0.1 });
-
-  // Use a placeholder image if none provided
-  const imageUrl = event.image || '/images/events/barbecue.svg';
-
-  return (
-    <article
-      ref={ref}
-      className={`
-        calendar-card
-        fade-up ${isVisible ? 'visible' : ''}
-      `}
-    >
-      {/* Event image */}
-      <div className="calendar-image-wrapper">
-        <Image
-          src={imageUrl}
-          alt={event.title}
-          fill
-          className="calendar-image"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
-        {/* Terracotta date badge - overlaying image */}
-        <div className="calendar-date-badge">
-          <span className="calendar-day">{day}</span>
-          <span className="calendar-month">{month}</span>
-        </div>
-      </div>
-
-      {/* Card content */}
-      <div className="calendar-content">
-        <h3 className="calendar-title">{event.title}</h3>
-        <p className="calendar-description">{event.description}</p>
-        <span className="calendar-time">{event.time}</span>
-      </div>
-    </article>
   );
 }

@@ -3,12 +3,16 @@ import { cn } from '@/lib/utils';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
-  variant?: 'default' | 'sage' | 'accent';
+  variant?: 'default' | 'sage' | 'accent' | 'news' | 'event' | 'committee' | 'cta';
+  image?: string;
+  imageAlt?: string;
+  date?: { day: string; month: string };
+  category?: string;
 }
 
 /**
  * Card component with sage-light design system.
- * Variants: default (white), sage (sage-light bg), accent (terracotta bg)
+ * Variants: default (white), sage (sage-light bg), accent (terracotta bg), news, event, committee, cta
  */
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, hover = false, variant = 'default', ...props }, ref) => {
@@ -18,10 +22,14 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       'border border-sage/20',
     ].join(' ');
 
-    const variants = {
+    const variants: Record<string, string> = {
       default: 'bg-white',
       sage: 'bg-sage-light',
       accent: 'bg-terracotta text-bone border-terracotta',
+      news: 'bg-white',
+      event: 'bg-white',
+      committee: 'bg-white',
+      cta: 'bg-sage-light',
     };
 
     const hoverClasses = hover
@@ -33,7 +41,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           baseClasses,
-          variants[variant],
+          variants[variant] || variants.default,
           hoverClasses,
           className
         )}
