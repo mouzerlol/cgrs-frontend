@@ -27,46 +27,98 @@ export const MAP_ZOOM = 16;
 
 // Points of Interest - passive markers (just shown on map)
 export const POINTS_OF_INTEREST = [
+  // Additional POIs
   {
-    id: 'park-entry',
-    name: 'Park Entry',
-    coordinates: [174.7908, -36.9492] as [number, number],
+    id: 'mangere-mountain-walkway',
+    name: 'Mangere Mountain Walkway',
+    coordinates: [-36.9477, 174.7893] as [number, number],
+    type: 'walkway',
+    description: 'Scenic walkway with volcanic views'
+  },
+  {
+    id: 'bus-stop',
+    name: 'Bus Stop',
+    coordinates: [-36.9484, 174.7897] as [number, number],
+    type: 'transport',
+    description: 'Public transport stop'
+  },
+  {
+    id: 'fresh-choice',
+    name: 'Fresh Choice Mangere Bridge',
+    coordinates: [-36.9426, 174.7869] as [number, number],
+    type: 'retail',
+    description: 'Grocery store'
+  },
+  {
+    id: 'mangere-bridge-access',
+    name: 'Ngā Hau Māngere Bridge',
+    coordinates: [-36.9327, 174.7864] as [number, number],
+    type: 'walkway',
+    description: 'Pedestrian and cycling bridge connecting Onehunga and Māngere Bridge'
+  },
+  {
+    id: 'ambury-farm',
+    name: 'Ambury Farm',
+    coordinates: [-36.9448, 174.7623] as [number, number],
     type: 'park',
-    description: 'Main park entrance'
+    description: 'Working farm with animal encounters'
   },
   {
-    id: 'community-garden',
-    name: 'Community Garden',
-    coordinates: [174.7915, -36.9498] as [number, number],
-    type: 'garden',
-    description: 'Shared garden space'
-  },
-  {
-    id: 'parking-area',
-    name: 'Visitor Parking',
-    coordinates: [174.7902, -36.9495] as [number, number],
-    type: 'parking',
-    description: 'Short-term visitor parking'
-  },
-  {
-    id: 'recycling-station',
-    name: 'Recycling Station',
-    coordinates: [174.7912, -36.9491] as [number, number],
+    id: 'mangere-bridge-library',
+    name: 'Mangere Bridge Library',
+    coordinates: [-36.9420, 174.7864] as [number, number],
     type: 'facility',
-    description: 'Community recycling facilities'
+    description: 'Public library'
   },
   {
-    id: 'mail-area',
-    name: 'Mail Collection',
-    coordinates: [174.7918, -36.9494] as [number, number],
+    id: 'rose-garden-reserve',
+    name: 'Rose Garden Reserve',
+    coordinates: [-36.9398, 174.7805] as [number, number],
+    type: 'park',
+    description: 'Beautifully maintained rose gardens'
+  },
+  {
+    id: 'boating-club-lookout',
+    name: 'Boating Club & Lookout',
+    coordinates: [-36.9383, 174.7774] as [number, number],
     type: 'facility',
-    description: 'Central mail collection point'
+    description: 'Waterfront lookout point'
+  },
+  {
+    id: 'kiwi-esplanade-reserve',
+    name: 'Kiwi Esplanade Reserve',
+    coordinates: [-36.9401, 174.7724] as [number, number],
+    type: 'park',
+    description: 'Coastal reserve with bird watching'
+  },
+  {
+    id: 'naomi-bill-kirk-park',
+    name: 'Naomi and Bill Kirk Park',
+    coordinates: [-36.9424, 174.7873] as [number, number],
+    type: 'park',
+    description: 'Local community park'
+  },
+  {
+    id: 'burger-green',
+    name: 'Burger & Green',
+    coordinates: [-36.9414, 174.7868] as [number, number],
+    type: 'restaurant',
+    description: 'Fresh homemade burgers on Coronation Road'
+  },
+  {
+    id: 'bridge-park-bowling-club',
+    name: 'Bridge Park Bowling Club',
+    coordinates: [-36.9456, 174.7840] as [number, number],
+    type: 'facility',
+    description: 'Community bowling club under Māngere Mountain'
   },
 ] as const;
 
 export const POI_TYPES = {
   park: { color: '#4CAF50', label: 'Park' },
-  garden: { color: '#8BC34A', label: 'Garden' },
-  parking: { color: '#607D8B', label: 'Parking' },
   facility: { color: '#2196F3', label: 'Facility' },
+  walkway: { color: '#FF9800', label: 'Walkway' },
+  transport: { color: '#9C27B0', label: 'Transport' },
+  retail: { color: '#E91E63', label: 'Retail' },
+  restaurant: { color: '#FF5722', label: 'Restaurant' },
 } as const;

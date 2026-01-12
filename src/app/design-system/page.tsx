@@ -16,6 +16,10 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UtilityDock, { UtilityDockItem } from '@/components/sections/UtilityDock';
 import MapPreview, { MAP_VARIATIONS } from '@/components/ui/MapPreview';
+import BaseMap from '@/components/map/BaseMap';
+import MapMarker from '@/components/map/MapMarker';
+import BoundaryMap from '@/components/layout/BoundaryMap';
+import FooterMap from '@/components/layout/FooterMap';
 import { cn } from '@/lib/utils';
 
 const colors = [
@@ -87,6 +91,7 @@ export default function DesignSystemPage() {
     { id: 'icons', label: 'Icons' },
     { id: 'forms', label: 'Form Elements' },
     { id: 'components', label: 'Components' },
+    { id: 'map-components', label: 'Map Components' },
   ];
 
   return (
@@ -429,7 +434,7 @@ export default function DesignSystemPage() {
                         placeholder="Error input..."
                         className="w-full px-4 py-3 bg-white border border-terracotta rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50"
                       />
-                      <p className="mt-1 text-sm text-terracotta">This field is required</p>
+                      <p suppressHydrationWarning className="mt-1 text-sm text-terracotta">This field is required</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">Disabled</label>
@@ -512,7 +517,8 @@ export default function DesignSystemPage() {
                     { id: 'cards', label: 'Card Sub-components' },
                     { id: 'layout', label: 'Layout' },
                     { id: 'sections', label: 'Sections' },
-                    { id: 'maps', label: 'Map Variations' },
+                    { id: 'maps', label: 'Map Customization' },
+                    { id: 'map-components', label: 'Map Components' },
                   ].map((tab) => (
                     <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
                       cn(
@@ -683,8 +689,76 @@ export default function DesignSystemPage() {
                     </Card>
                   </Tab.Panel>
                   
-                  {/* Map Variations Panel */}
+                  {/* Map Customization Panel */}
                   <Tab.Panel>
+                    <Card className="p-6 mb-6">
+                      <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Customizing Leaflet Maps</h3>
+                      <p className="text-sm mb-4">
+                        Leaflet maps can be customized through CSS targeting specific elements. Below are the key elements and properties you can modify.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-sm font-medium mb-3">Customizable Elements</h4>
+                          <div className="space-y-3 text-sm">
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-container</code>
+                              <p className="opacity-60 text-xs mt-1">Main map container wrapper</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-tile-pane</code>
+                              <p className="opacity-60 text-xs mt-1">Layer containing all map tiles - apply filters here</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-tile</code>
+                              <p className="opacity-60 text-xs mt-1">Individual tiles - control opacity, transitions</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-marker-icon</code>
+                              <p className="opacity-60 text-xs mt-1">Custom markers - size, shadow, animation</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-popup</code>
+                              <p className="opacity-60 text-xs mt-1">Popup windows - styling, border radius, shadows</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-control-zoom</code>
+                              <p className="opacity-60 text-xs mt-1">Zoom control buttons</p>
+                            </div>
+                            <div className="bg-sage-light p-3 rounded">
+                              <code className="text-xs text-terracotta">.leaflet-control-attribution</code>
+                              <p className="opacity-60 text-xs mt-1">Attribution text in corner</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-sm font-medium mb-3">CSS Properties</h4>
+                          <div className="bg-sage-light p-3 rounded mb-3">
+                            <p className="text-xs font-medium mb-2">Filter Examples for Stadia Toner:</p>
+                            <code className="text-xs text-forest block whitespace-pre-wrap">{`.leaflet-tile-pane {
+  filter: sepia(0.25) saturate(0.9) contrast(0.95);
+}`}</code>
+                          </div>
+                          <div className="bg-sage-light p-3 rounded">
+                            <p className="text-xs font-medium mb-2">Warm Tone (Cream Background):</p>
+                            <code className="text-xs text-forest block whitespace-pre-wrap">{`/* Filter on tiles */
+filter: sepia(0.25) saturate(0.9) contrast(0.95);
+
+/* Background color on container */
+background-color: #F4F1EA; /* Bone color */`}</code>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card className="p-6 mb-6">
+                      <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Stadia Toner Variants</h3>
+                      <p className="text-sm mb-4">
+                        The following examples use Stadia Toner as a base, demonstrating different customization approaches.
+                      </p>
+                    </Card>
+                    
                     <Card className="p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {Object.entries(MAP_VARIATIONS).map(([key, variation]) => (
@@ -702,6 +776,110 @@ export default function DesignSystemPage() {
                             <p className="text-xs mt-2 font-medium">{variation.name}</p>
                           </div>
                         ))}
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Map Components Panel */}
+                  <Tab.Panel>
+                    <Card className="p-6 mb-6">
+                      <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Reusable Map Components</h3>
+                      <p className="text-sm mb-4">
+                        These components provide modular, reusable building blocks for Leaflet maps.
+                        All map components wrap BaseMap for consistent initialization and behavior.
+                      </p>
+                    </Card>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                      {/* BaseMap */}
+                      <Card className="p-6">
+                        <h4 className="text-sm font-medium mb-3">BaseMap</h4>
+                        <p className="text-xs opacity-60 mb-4">
+                          Foundation component for all maps. Handles initialization, tile loading, and map configuration.
+                        </p>
+                        <div className="bg-sage-light p-3 rounded mb-3">
+                          <code className="text-xs text-terracotta block whitespace-pre-wrap">{`<BaseMap
+  center={[-36.9497, 174.7912]}
+  zoom={16}
+  tileUrl="https://tiles.stadiamaps.com/..."
+  zoomControl={true}
+  onMapReady={(map) => console.log(map)}
+>
+  {/* Child components like MapMarker */}
+</BaseMap>`}</code>
+                        </div>
+                        <div className="h-[200px] rounded-lg overflow-hidden border border-sage/30">
+                          <BaseMap
+                            center={[-36.9497, 174.7912]}
+                            zoom={15}
+                            tileUrl="https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png"
+                            tileOptions={{ maxZoom: 18 }}
+                          />
+                        </div>
+                      </Card>
+
+                      {/* MapMarker */}
+                      <Card className="p-6">
+                        <h4 className="text-sm font-medium mb-3">MapMarker</h4>
+                        <p className="text-xs opacity-60 mb-4">
+                          SVG-based markers with customizable color, size, and popup content.
+                        </p>
+                        <div className="bg-sage-light p-3 rounded mb-3">
+                          <code className="text-xs text-terracotta block whitespace-pre-wrap">{`<MapMarker
+  map={mapInstance}
+  position={[-36.9497, 174.7912]}
+  color="#D95D39"
+  size={32}
+  popup="Location info"
+  onCreate={(marker) => markers.set(id, marker)}
+/>`}</code>
+                        </div>
+                        <div className="h-[200px] rounded-lg overflow-hidden border border-sage/30">
+                          <BaseMap
+                            center={[-36.9497, 174.7912]}
+                            zoom={15}
+                            tileUrl="https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png"
+                            tileOptions={{ maxZoom: 18 }}
+                          >
+                            <MapMarker
+                              map={null}
+                              position={[-36.9497, 174.7912]}
+                              color="#D95D39"
+                              size={32}
+                            />
+                          </BaseMap>
+                        </div>
+                      </Card>
+                    </div>
+
+                    <Card className="p-6 mb-6">
+                      <h4 className="text-sm font-medium mb-3">Component Hierarchy</h4>
+                      <div className="bg-sage-light p-4 rounded">
+                        <div className="text-sm space-y-2 font-mono">
+                          <p><span className="text-terracotta">BaseMap</span> - Root map container</p>
+                          <p className="pl-4">└─ <span className="text-terracotta">MapMarker</span> - POI markers (multiple)</p>
+                          <p className="pl-4">└─ <span className="text-terracotta">GeoJSON</span> - Boundary polygons</p>
+                          <p className="pl-4">└─ <span className="text-terracotta">TileLayer</span> - Additional overlays</p>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card className="p-6">
+                      <h4 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Component Examples</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* BoundaryMap */}
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">BoundaryMap (160px height)</p>
+                          <BoundaryMap className="border border-sage/30" height="160px" />
+                          <p className="text-xs mt-2 font-medium">Boundary Map</p>
+                        </div>
+
+                        {/* FooterMap */}
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">FooterMap (160px height, Toner theme)</p>
+                          <FooterMap className="border border-sage/30" />
+                          <p className="text-xs mt-2 font-medium">Footer Map (Stadia Toner)</p>
+                        </div>
                       </div>
                     </Card>
                   </Tab.Panel>

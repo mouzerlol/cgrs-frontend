@@ -8,10 +8,15 @@ export const SITE_CONFIG = {
 } as const;
 
 export const NAVIGATION_ITEMS = [
-  { name: 'About', href: '#about' },
-  { name: 'Events', href: '#events' },
-  { name: 'News', href: '#news' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'About', href: '/about' },
+  { name: 'Events', href: '/events' },
+  { name: 'News', href: '/news' },
+  { name: 'Contact', href: '/contact' },
+] as const;
+
+export const MORE_NAVIGATION_ITEMS = [
+  { name: 'Notice Board', href: '/notice-board', icon: 'lightbulb' },
+  { name: 'Map', href: '/map', icon: 'lightbulb' },
 ] as const;
 
 export const UTILITY_DOCK_ITEMS = [

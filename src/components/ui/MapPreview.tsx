@@ -26,6 +26,7 @@ export default function MapPreview({
 }: MapPreviewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const mapInstanceRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -46,6 +47,11 @@ export default function MapPreview({
     link.onload = async () => {
       const L = (await import('leaflet')).default;
 
+      // Check if map is already initialized
+      if (mapInstanceRef.current) {
+        return;
+      }
+
       const map = L.map(mapContainerRef.current!, {
         zoomControl: false,
         scrollWheelZoom: false,
@@ -56,6 +62,8 @@ export default function MapPreview({
         attributionControl: false,
         preferCanvas: true,
       }).setView([-36.9497, 174.7912], 16);
+
+      mapInstanceRef.current = map;
     
 
       // Base tile layer
@@ -97,9 +105,23 @@ export default function MapPreview({
     };
 
     return () => {
+      // Clean up map instance
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+      
       if (link.parentNode) {
         link.parentNode.removeChild(link);
       }
+      
+      // Clean up custom CSS if added
+      const styles = document.head.querySelectorAll('style');
+      styles.forEach(style => {
+        if (style.textContent && style.textContent.includes('.leaflet-tile-pane')) {
+          style.remove();
+        }
+      });
     };
   }, [tileUrl, overlayUrl, customCss]);
 

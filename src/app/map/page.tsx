@@ -1,11 +1,11 @@
 'use client';
 
 import PageHeader from '@/components/sections/PageHeader';
-import InteractiveMap from '@/components/map/InteractiveMap';
+import MapSection from '@/components/sections/MapSection';
 
 /**
  * Dedicated Map page for exploring Coronation Gardens
- * Features an interactive Leaflet map with full controls, boundary highlighting, and POIs
+ * Features an interactive Leaflet map with POIs
  */
 export default function MapPage() {
   return (
@@ -16,7 +16,7 @@ export default function MapPage() {
         eyebrow="Community Map"
         backgroundImage="/images/mangere-mountain.jpg"
       />
-      <InteractiveMap />
+      <MapSection />
     </div>
   );
 }

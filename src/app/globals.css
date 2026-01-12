@@ -776,6 +776,14 @@
       grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: var(--space-xl);
     }
+
+    .footer-brand {
+      grid-column: span 1;
+    }
+  }
+
+  .footer-brand {
+    width: 100%;
   }
 
   .footer-brand h3 {
@@ -793,6 +801,7 @@
     display: flex;
     align-items: flex-start;
     min-height: 160px;
+    width: 100%;
   }
 
   .footer-column h4 {
@@ -942,47 +951,162 @@
   }
 }
 
+/* ==========================================================================
+   Map Section Styles
+   ========================================================================== */
 
-/* Map attribution */
-.map-attribution {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  font-size: 6px;
-  color: rgba(0,0,0,0.4);
-  z-index: 1001;
+/* ==========================================================================
+   Map Immersive Mode - hides header for full-screen map experience
+   ========================================================================== */
+
+html.map-immersive-mode .nav {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
 }
 
-.map-attribution a {
-  color: rgba(0,0,0,0.4);
-  text-decoration: none;
+html.map-immersive-mode .map-section-wrapper {
+  /* Expand to fill the space vacated by the hidden header */
+  margin-top: 0;
 }
 
-.map-attribution a:hover {
-  color: var(--terracotta);
-}
-
-/* Map Page Styles */
-.map-section {
-  position: relative;
-  width: 100%;
-  padding: var(--space-lg) var(--space-sm);
+.map-section-wrapper {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-md);
+  padding: var(--space-md);
   background: var(--bone);
 }
 
-.map-container {
+.map-sidebar {
+  background: var(--forest-light);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  height: fit-content;
+  max-height: calc(100vh - 180px);
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-header {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  position: sticky;
+  top: 0;
+  background: inherit;
+}
+
+.sidebar-header h3 {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: white;
+  margin: 0 0 2px 0;
+}
+
+.sidebar-header p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  margin: 0;
+}
+
+.poi-group {
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.poi-group:last-child {
+  border-bottom: none;
+}
+
+.poi-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--space-xs) var(--space-md);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.poi-group-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.poi-count {
+  opacity: 0.5;
+  margin-left: auto;
+}
+
+.poi-list {
+  list-style: none;
+  margin: 0;
+  padding: 2px var(--space-sm);
+}
+
+.poi-button {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  text-align: left;
+  padding: 4px var(--space-sm);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.poi-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.poi-button.selected {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.poi-name {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: white;
+  display: block;
+  line-height: 1.35;
+}
+
+.poi-button:hover .poi-name,
+.poi-button.selected .poi-name {
+  color: white;
+}
+
+.poi-button.loading {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.poi-button:disabled {
+  pointer-events: none;
+}
+
+.map-container {
+  position: relative;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(26, 34, 24, 0.12);
+  background: transparent;
+  /* Height is set dynamically via JavaScript to fill available viewport */
+  min-height: 400px;
 }
 
 .interactive-map {
   width: 100%;
-  height: 60vh;
-  min-height: 400px;
+  height: 100%;
+  /* Height inherits from container which is set dynamically */
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -991,14 +1115,231 @@
   opacity: 1;
 }
 
-/* Footer Map */
+/* Map legend */
+.map-legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--space-sm);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 180px;
+}
+
+.map-legend h4 {
+  font-family: var(--font-body);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--forest);
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--sage);
+}
+
+.legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--forest);
+}
+
+/* POI popup styling */
+.custom-popup .leaflet-popup-content-wrapper {
+  background: var(--bone);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 12px 16px;
+  font-family: var(--font-body);
+}
+
+.poi-popup strong {
+  color: var(--forest);
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.poi-popup p {
+  color: var(--forest);
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+/* Ensure tiles render properly */
+.leaflet-tile {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.leaflet-tile-loaded {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-section-wrapper {
+    grid-template-columns: 1fr;
+    padding: var(--space-sm);
+  }
+
+  .map-sidebar {
+    position: relative;
+    top: 0;
+    max-height: 300px;
+  }
+
+  .map-container {
+    /* On mobile, allow JavaScript to control height */
+    min-height: 300px;
+  }
+
+  .interactive-map {
+    height: 100%;
+  }
+}
+
+/* Remove old map section styles */
+.map-section,
+.poi-sidebar {
+  display: none;
+}
+
+/* POI tooltip styling */
+.poi-tooltip {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--forest) !important;
+  color: var(--bone) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+}
+
+.poi-tooltip::before {
+  border-top-color: var(--forest) !important;
+}
+
+/* Custom zoom control positioning */
+.leaflet-top.leaflet-right {
+  top: 20px;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  color: var(--forest) !important;
+  background: var(--bone) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--sage-light) !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--sage-light) !important;
+}
+
+/* Scale control styling */
+.leaflet-control-scale {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+}
+
+.leaflet-control-scale-line {
+  border-color: var(--forest) !important;
+  font-family: var(--font-body) !important;
+  font-size: 10px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .interactive-map {
+    /* Height controlled by JavaScript for dynamic viewport sizing */
+    height: 100%;
+  }
+  
+  .map-legend {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    max-width: 100%;
+    margin-top: var(--space-sm);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .map-legend h4 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    padding-right: var(--space-sm);
+    border-bottom: none;
+    border-right: 1px solid var(--sage);
+  }
+  
+  .legend-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+/* Footer map link */
 .footer-map-link {
   display: block;
   width: 100%;
-  height: 160px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 8px;
-  overflow: hidden;
 }
 
 .footer-map-link:hover {
@@ -1006,7 +1347,70 @@
   box-shadow: 0 4px 16px rgba(217, 93, 57, 0.25);
 }
 
-.footer-map-interactive {
-  width: 100%;
-  height: 100%;
+/* Ensure Leaflet tile layers display correctly */
+.leaflet-map-pane {
+  z-index: 1;
+}
+
+.leaflet-tile-pane {
+  z-index: 2;
+}
+
+.leaflet-overlay-pane {
+  z-index: 4;
+}
+
+.leaflet-marker-pane {
+  z-index: 5;
+}
+
+.leaflet-popup-pane {
+  z-index: 6;
+}
+
+/* Ensure tiles are visible */
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Fix tile layer visibility */
+.leaflet-tile {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Map container z-index fix */
+.map-container {
+  z-index: 1;
+}
+
+.interactive-map {
+  z-index: 1;
+  position: relative !important;
+}
+
+/* Ensure map tiles render properly */
+.leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.leaflet-map-pane {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Debug: Make sure tile images are visible */
+img.leaflet-tile {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Debug: Ensure tile pane is visible */
+.leaflet-tile-pane {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }

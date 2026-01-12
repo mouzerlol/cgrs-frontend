@@ -69,6 +69,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         className={classes}
         ref={ref}
+        suppressHydrationWarning
         {...props}
       />
     );

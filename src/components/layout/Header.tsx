@@ -1,31 +1,18 @@
 'use client';
 
-import { useState, useCallback, Fragment } from 'react';
+import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
-import { NAVIGATION_ITEMS } from '@/lib/constants';
+import Icon from '@/components/ui/Icon';
+import Navigation from './Navigation';
+import { NAVIGATION_ITEMS, MORE_NAVIGATION_ITEMS } from '@/lib/constants';
 
-/**
- * Navigation header with glassmorphism backdrop.
- * Fixed position, mobile hamburger menu with Headless UI Dialog.
- */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const closeMenu = useCallback(() => {
+  const closeMenu = () => {
     setIsMenuOpen(false);
-  }, []);
-
-  const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith('#')) {
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        closeMenu();
-      }
-    }
-  }, [closeMenu]);
+  };
 
   return (
     <header className="nav">
@@ -36,6 +23,9 @@ export default function Header() {
           <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
         </span>
       </Link>
+
+      {/* Desktop Navigation */}
+      <Navigation />
 
       {/* Mobile Nav Toggle */}
       <button
@@ -60,27 +50,6 @@ export default function Header() {
           }`}
         />
       </button>
-
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center gap-10">
-        {NAVIGATION_ITEMS.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="nav-link text-bone text-[0.875rem]"
-            onClick={(e) => {
-              if (item.href.startsWith('#')) {
-                handleSmoothScroll(e, item.href);
-              }
-            }}
-          >
-            {item.name}
-          </Link>
-        ))}
-        <Link href="/login" className="nav-button">
-          Resident Login
-        </Link>
-      </nav>
 
       {/* Mobile Menu Dialog */}
       <Transition show={isMenuOpen} as={Fragment}>
@@ -108,30 +77,57 @@ export default function Header() {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <DialogPanel className="w-[70%] max-w-xs bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 min-h-full">
-                  {NAVIGATION_ITEMS.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="nav-link text-bone text-[1.25rem] py-3"
-                      onClick={(e) => {
-                        if (item.href.startsWith('#')) {
-                          handleSmoothScroll(e, item.href);
-                        } else {
-                          closeMenu();
-                        }
-                      }}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                  <Link
-                    href="/login"
-                    className="nav-button mt-6 w-full text-center"
+                <DialogPanel className="w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 min-h-full">
+                  
+                  {/* Mobile: Logo */}
+                  <Link href="/" onClick={closeMenu} className="mb-6">
+                    <span className="flex flex-col text-bone">
+                      <span className="block whitespace-nowrap font-display text-2xl">CORONATION</span>
+                      <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
+                    </span>
+                  </Link>
+
+                  {/* Mobile: Navigation Items */}
+                  <nav className="space-y-2">
+                    {NAVIGATION_ITEMS.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={closeMenu}
+                        className="px-4 py-3 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </nav>
+
+                  {/* Mobile: More Section */}
+                  <div className="mt-4 mb-4">
+                    <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-3">
+                      More
+                    </h3>
+                    <nav className="space-y-2">
+                      {MORE_NAVIGATION_ITEMS.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={closeMenu}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                        >
+                          <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
+                          <span>{item.name}</span>
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+
+                  {/* Mobile: Login Button */}
+                  <button
                     onClick={closeMenu}
+                    className="mt-auto w-full nav-button"
                   >
                     Resident Login
-                  </Link>
+                  </button>
                 </DialogPanel>
               </TransitionChild>
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import BoundaryMap from './BoundaryMap';
+import FooterMap from './FooterMap';
 import SocialMediaTray from './SocialMediaTray';
 
 const QUICK_LINKS = [
@@ -36,8 +36,8 @@ export default function Footer() {
               <span className="block whitespace-nowrap tracking-wider">GARDENS</span>
             </h3>
             <div className="footer-map-container">
-              <Link href="/map" className="footer-map-link" aria-label="View interactive map">
-                <BoundaryMap className="footer-map-interactive" />
+              <Link href="/map" aria-label="View interactive map" className="footer-map-link">
+                <FooterMap className="footer-map-interactive w-full" />
               </Link>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Coronation Gardens. All rights reserved.
           </p>
           <p className="text-[0.8125rem] opacity-50">
-            Designed with intention. Map data &copy; <a href="https://stadiamaps.com/" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">Stadia Maps</a>, <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">OpenStreetMap</a>
+            Designed with intention. Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">CARTO</a>
           </p>
         </div>
       </div>
