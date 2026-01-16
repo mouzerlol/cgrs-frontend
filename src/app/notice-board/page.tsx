@@ -92,7 +92,7 @@ export default function NoticeBoardPage() {
     <div className="min-h-screen">
       <PageHeader
         title="Community Notice Board"
-        description="Stay informed about community updates, maintenance schedules, committee announcements, and important notices."
+        description="Community updates, maintenance schedules, and committee announcements."
         eyebrow="Notice Board"
         backgroundImage="/images/mangere-mountain.jpg"
       />

@@ -46,10 +46,10 @@ export default function NewsGrid({
         {showViewAll && (
           <div className="text-center mt-10">
             <Link
-              href="/news"
+              href="/blog"
               className="inline-flex items-center gap-2 text-sm font-medium text-forest uppercase tracking-wider hover:text-terracotta transition-colors"
             >
-              View All News
+              View All Blog Posts
               <Icon name="arrow-right" size="sm" />
             </Link>
           </div>

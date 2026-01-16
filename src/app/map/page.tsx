@@ -12,7 +12,7 @@ export default function MapPage() {
     <div className="min-h-screen">
       <PageHeader
         title="Explore Coronation Gardens"
-        description="View our community boundaries, nearby amenities, and points of interest in the heart of Māngere Bridge."
+        description="Community boundaries, amenities, and points of interest in Māngere Bridge."
         eyebrow="Community Map"
         backgroundImage="/images/mangere-mountain.jpg"
       />

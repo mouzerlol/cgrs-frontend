@@ -6,7 +6,7 @@ import SocialMediaTray from './SocialMediaTray';
 
 const QUICK_LINKS = [
   { name: 'About Us', href: '/about' },
-  { name: 'News & Updates', href: '/news' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Contact the Committee', href: '/contact' },
   { name: 'Community Guidelines', href: '/guidelines' },
   { name: 'Parking', href: '/guidelines#parking' },

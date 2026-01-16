@@ -1,0 +1,198 @@
+{
+  "items": [
+    {
+      "id": "cal-001",
+      "type": "notice",
+      "title": "Water Maintenance Scheduled",
+      "description": "Water will be shut off from 9am-12pm for routine maintenance of the east wing plumbing system. Please ensure you have stored enough water for essential needs during this period.",
+      "date": "2026-01-15",
+      "time": "9:00 AM - 12:00 PM",
+      "category": "maintenance",
+      "author": {
+        "name": "Facilities Team",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-002",
+      "type": "event",
+      "title": "Summer Barbecue",
+      "description": "Join us for our annual summer barbecue on the rooftop terrace. BYO drinks, food provided. Great opportunity to meet your neighbours and enjoy the Auckland summer weather.",
+      "date": "2026-01-15",
+      "time": "12:00 PM - 4:00 PM",
+      "category": "social",
+      "image": "/images/events/barbecue.svg",
+      "author": {
+        "name": "Events Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-003",
+      "type": "news",
+      "title": "New Pool Hours for Summer",
+      "description": "The community pool will now be open from 6am to 10pm daily throughout the summer months. Please remember to shower before entering and supervise children at all times.",
+      "date": "2026-01-12",
+      "category": "general",
+      "author": {
+        "name": "Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-004",
+      "type": "notice",
+      "title": "Fire Alarm Testing",
+      "description": "Building fire alarm system will be tested between 10am and 11am. Please do not be alarmed by the sound. No evacuation required.",
+      "date": "2026-01-18",
+      "time": "10:00 AM - 11:00 AM",
+      "category": "announcement",
+      "author": {
+        "name": "Building Management",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-005",
+      "type": "event",
+      "title": "Yoga in the Garden",
+      "description": "Morning yoga session led by resident instructor Sarah. All levels welcome. Bring your own mat or use one of ours. A great way to start your weekend!",
+      "date": "2026-01-22",
+      "time": "8:00 AM - 9:00 AM",
+      "category": "social",
+      "image": "/images/events/yoga.svg",
+      "author": {
+        "name": "Sarah Chen",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-006",
+      "type": "event",
+      "title": "Monthly Residents Meeting",
+      "description": "Monthly committee meeting to discuss community matters including upcoming maintenance, budget review, and resident feedback. All residents welcome to attend.",
+      "date": "2026-02-01",
+      "time": "7:00 PM - 8:30 PM",
+      "category": "meeting",
+      "image": "/images/events/meeting.svg",
+      "author": {
+        "name": "Committee Chair",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-007",
+      "type": "notice",
+      "title": "Elevator Upgrade Notice",
+      "description": "The west tower elevator will be out of service for modernization work. Please use the east tower elevator or stairs. We apologize for any inconvenience.",
+      "date": "2026-01-20",
+      "time": "8:00 AM - 5:00 PM",
+      "category": "maintenance",
+      "author": {
+        "name": "Facilities Team",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-008",
+      "type": "news",
+      "title": "Garden Committee Volunteers Needed",
+      "description": "We're looking for volunteers to help maintain our beautiful community gardens. No experience necessary - just enthusiasm! Contact the committee to sign up.",
+      "date": "2026-01-22",
+      "category": "general",
+      "author": {
+        "name": "Garden Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-009",
+      "type": "event",
+      "title": "Movie Night: Classic Film",
+      "description": "Join us in the common room for a screening of a classic film. Popcorn and refreshments provided. Family friendly event.",
+      "date": "2026-01-25",
+      "time": "7:00 PM - 9:30 PM",
+      "category": "social",
+      "author": {
+        "name": "Events Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-010",
+      "type": "notice",
+      "title": "Parking Bay Restriping",
+      "description": "The visitor parking area will be restriped this weekend. Please avoid parking in visitor spaces during this time.",
+      "date": "2026-01-25",
+      "time": "7:00 AM - 3:00 PM",
+      "category": "maintenance",
+      "author": {
+        "name": "Facilities Team",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-011",
+      "type": "event",
+      "title": "Kids Craft Workshop",
+      "description": "Free craft workshop for children aged 5-12. All materials provided. Parents must supervise children under 8.",
+      "date": "2026-01-26",
+      "time": "2:00 PM - 4:00 PM",
+      "category": "social",
+      "author": {
+        "name": "Family Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-012",
+      "type": "news",
+      "title": "Updated Body Corporate Rules",
+      "description": "The updated body corporate rules are now available on the resident portal. Key changes include new quiet hours and pet policies. Please review at your convenience.",
+      "date": "2026-01-28",
+      "category": "general",
+      "author": {
+        "name": "Committee",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-013",
+      "type": "notice",
+      "title": "Gym Equipment Maintenance",
+      "description": "Several gym machines will be serviced. The gym will remain open but some equipment may be temporarily unavailable.",
+      "date": "2026-01-30",
+      "time": "9:00 AM - 1:00 PM",
+      "category": "maintenance",
+      "author": {
+        "name": "Facilities Team",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-014",
+      "type": "event",
+      "title": "Book Club Meeting",
+      "description": "Monthly book club gathering to discuss this month's read: 'The Luminaries' by Eleanor Catton. New members always welcome!",
+      "date": "2026-02-05",
+      "time": "7:00 PM - 9:00 PM",
+      "category": "social",
+      "author": {
+        "name": "Book Club",
+        "avatar": "/images/avatars/default.svg"
+      }
+    },
+    {
+      "id": "cal-015",
+      "type": "notice",
+      "title": "Auckland Anniversary Day",
+      "description": "Building office will be closed for Auckland Anniversary Day. Emergency maintenance line remains available 24/7.",
+      "date": "2026-01-27",
+      "category": "announcement",
+      "author": {
+        "name": "Building Management",
+        "avatar": "/images/avatars/default.svg"
+      }
+    }
+  ]
+}

@@ -23,7 +23,7 @@ export default function AboutPage() {
     <div className="min-h-screen">
       <PageHeader
         title="About Coronation Gardens"
-        description="Learn about our community, mission, and the dedicated committee that serves our residents."
+        description="Our community, mission, and the committee that serves our residents."
         eyebrow="About Us"
         backgroundImage="/images/mangere-mountain.jpg"
       />

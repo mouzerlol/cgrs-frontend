@@ -1,9 +1,11 @@
 'use client';
 
 import { useRef, useCallback, useState, useEffect } from 'react';
-import { POINTS_OF_INTEREST, POI_TYPES, BOUNDARY_COORDINATES } from '@/data/map-data';
+import { POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
+import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
+import { setupBoundaryMap } from '@/lib/maps';
 
 // Define map configuration outside component to prevent re-renders
 // CRITICAL: These must be stable references to avoid BaseMap useEffect re-running
@@ -33,47 +35,32 @@ export default function MapSection({ className }: MapSectionProps) {
 
   // Ref for scrolling the map section into full view
   const sectionRef = useRef<HTMLDivElement>(null);
-  // Track if user has interacted - we scroll on first interaction
-  const hasScrolledRef = useRef(false);
+
+  // Use the immersive scroll hook for consistent behavior
+  const { enterImmersive: scrollToFullView } = useImmersiveScroll(sectionRef, {
+    scrollUpThreshold: 50,
+  });
 
   // Dynamic height based on viewport
   const [mapHeight, setMapHeight] = useState<number>(600);
 
   /**
    * Calculate available height for the map section.
-   * Fills the viewport minus a small padding at the bottom.
+   * Fills the viewport minus nav height, legend space, and padding.
    */
   const calculateMapHeight = useCallback(() => {
     if (typeof window === 'undefined') return 600;
 
-    // Account for the sidebar header on mobile
+    // Fixed nav height (64px) + small buffer at bottom for legend
+    const navHeight = 64;
+    const legendBuffer = 60; // Space for legend at bottom
+    const padding = 20; // Extra padding
+    const maxHeight = window.innerHeight - navHeight - legendBuffer - padding;
+
+    // Minimum height for usability
     const minHeight = 400;
-    const maxHeight = window.innerHeight - 40; // 40px padding at bottom
 
     return Math.max(minHeight, maxHeight);
-  }, []);
-
-  /**
-   * Enter immersive map mode - scrolls to top and hides the header.
-   * Uses a CSS class on the document to hide the fixed header.
-   */
-  const scrollToFullView = useCallback(() => {
-    if (hasScrolledRef.current || !sectionRef.current) return;
-
-    hasScrolledRef.current = true;
-
-    // Add immersive mode class to hide the fixed header
-    document.documentElement.classList.add('map-immersive-mode');
-
-    // Get the section's position relative to the document
-    const rect = sectionRef.current.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const targetY = rect.top + scrollTop;
-
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth',
-    });
   }, []);
 
   // Handle window resize to recalculate map height
@@ -102,10 +89,10 @@ export default function MapSection({ className }: MapSectionProps) {
 
   // Handle map initialization
   const handleMapReady = useCallback(async (map: L.Map) => {
+    console.log('MapSection: handleMapReady started');
     const L = (await import('leaflet')).default;
 
     // Add scroll trigger on any map interaction
-    // These events fire when user interacts with the map directly
     const scrollTriggerEvents = ['movestart', 'zoomstart', 'dragstart'];
     scrollTriggerEvents.forEach((eventName) => {
       map.once(eventName, scrollToFullView);
@@ -136,34 +123,38 @@ export default function MapSection({ className }: MapSectionProps) {
 
       const marker = L.marker(poi.coordinates, { icon: customIcon }).addTo(map);
 
-      marker.bindPopup(`
-        <div class="poi-popup">
-          <strong>${poi.name}</strong>
-          <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${poi.description}</p>
+      // Build popup HTML with type indicator
+      const typeIndicator = `<div class="poi-popup-type" style="background-color: ${poiType.color};"></div>`;
+
+      const popupHtml = `
+        <div class="poi-popup-container">
+          ${typeIndicator}
+          <div class="poi-popup-content">
+            <strong>${poi.name}</strong>
+            <p>${poi.description}</p>
+          </div>
         </div>
-      `, {
+      `;
+
+      marker.bindPopup(popupHtml, {
         className: 'custom-popup',
+        closeButton: true,
+        closeOnClick: true,
+      });
+
+      // Pan map to center on marker when clicked
+      marker.on('click', () => {
+        map.flyTo(poi.coordinates, 17, {
+          duration: 0.8,
+          easeLinearity: 0.25,
+        });
       });
 
       markerRefs.current.set(poi.id, marker);
     });
 
-    // Add boundary polygon
-    L.geoJSON({
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [BOUNDARY_COORDINATES],
-      },
-    } as GeoJSON.GeoJsonObject, {
-      style: {
-        color: '#D95D39',
-        weight: 3,
-        fillColor: '#D95D39',
-        fillOpacity: 0.1,
-        dashArray: '8, 4',
-      },
-    }).addTo(map);
+    // Add boundary polygon and fit to boundary
+    setupBoundaryMap(L, map);
 
     // Add scale control
     L.control.scale({
@@ -221,6 +212,20 @@ export default function MapSection({ className }: MapSectionProps) {
     pois: POINTS_OF_INTEREST.filter(poi => poi.type === type),
   })).filter(group => group.pois.length > 0);
 
+  const handleHomeClick = useCallback((map: L.Map) => {
+    import('leaflet').then((L) => {
+      import('@/lib/maps').then(({ getBoundaryFeature }) => {
+        const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
+        // Fly to center at the map's maximum zoom level
+        const maxZoom = map.getMaxZoom() || 18;
+        map.flyTo(bounds.getCenter(), maxZoom, {
+          duration: 1.5,
+          easeLinearity: 0.25
+        });
+      });
+    });
+  }, []);
+
   return (
     <div
       ref={sectionRef}
@@ -275,6 +280,8 @@ export default function MapSection({ className }: MapSectionProps) {
           tileUrl={OSM_TILE_URL}
           tileOptions={OSM_TILE_OPTIONS}
           zoomControl={true}
+          showHomeControl={true}
+          homeControlPosition="topleft"
           scrollWheelZoom={true}
           dragging={true}
           doubleClickZoom={true}
@@ -285,6 +292,7 @@ export default function MapSection({ className }: MapSectionProps) {
           maxZoom={18}
           minZoom={12}
           onMapReady={handleMapReady}
+          onHomeClick={handleHomeClick}
           className="interactive-map"
           style={{ height: '100%' }}
         />

@@ -1,0 +1,47 @@
+{
+  "categories": [
+    {
+      "slug": "announcements",
+      "name": "Announcements",
+      "description": "Official updates from the committee and important community notices",
+      "icon": "lucide:megaphone",
+      "color": "terracotta"
+    },
+    {
+      "slug": "parking",
+      "name": "Parking",
+      "description": "Parking spaces, visitor permits, and vehicle-related discussions",
+      "icon": "lucide:car",
+      "color": "forest"
+    },
+    {
+      "slug": "waste-management",
+      "name": "Waste Management",
+      "description": "Rubbish collection, recycling, and waste disposal information",
+      "icon": "lucide:recycle",
+      "color": "sage"
+    },
+    {
+      "slug": "questions-help",
+      "name": "Questions & Help",
+      "description": "Ask questions and get help from your neighbors",
+      "icon": "lucide:help-circle",
+      "color": "terracotta"
+    },
+    {
+      "slug": "neighborhood-watch",
+      "name": "Neighborhood Watch",
+      "description": "Safety updates, security concerns, and community vigilance",
+      "icon": "lucide:eye",
+      "color": "forest"
+    },
+    {
+      "slug": "general",
+      "name": "General Discussion",
+      "description": "Everything else - chat, ideas, and community conversations",
+      "icon": "lucide:message-circle",
+      "color": "sage",
+      "isDefault": true
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-import { NewsArticle, Event } from '@/types';
-import { getLatestArticles, getUpcomingEvents } from '@/lib/utils';
+import { NewsArticle } from '@/types';
+import { getLatestArticles } from '@/lib/utils';
 import Hero from '@/components/sections/Hero';
 import UtilityDock from '@/components/sections/UtilityDock';
 import About from '@/components/sections/About';
@@ -9,7 +9,8 @@ import QuickAccessGrid from '@/components/sections/QuickAccessGrid';
 
 // Import data
 import newsData from '@/data/news.json';
-import eventsData from '@/data/events.json';
+import calendarData from '@/data/calendar-items.json';
+import type { CalendarItem } from '@/types';
 
 // Make page dynamic to ensure events are filtered at request time
 export const dynamic = 'force-dynamic';
@@ -22,7 +23,11 @@ const ABOUT_DESCRIPTION = `Coronation Gardens is a resident community in the hea
  */
 export default function HomePage() {
   const latestNews = getLatestArticles(newsData.articles as NewsArticle[], 3);
-  const upcomingEvents = getUpcomingEvents(eventsData.events as Event[], 3);
+  
+  // Filter calendar items to only show events, sorted by date
+  const calendarItems = (calendarData.items as CalendarItem[])
+    .filter(item => item.type === 'event')
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
     <div className="min-h-screen">
@@ -42,14 +47,14 @@ export default function HomePage() {
         description={ABOUT_DESCRIPTION}
       />
 
-      {/* Events Section (Dark) */}
-      <EventsSection events={upcomingEvents} />
+      {/* Essential Services - Quick Access Grid */}
+      <QuickAccessGrid />
+
+      {/* Events Section (Dark) - now using calendar items */}
+      <EventsSection items={calendarItems} />
 
       {/* News Grid Section */}
       <NewsGrid articles={latestNews} />
-
-      {/* Quick Access Grid */}
-      <QuickAccessGrid />
     </div>
   );
 }

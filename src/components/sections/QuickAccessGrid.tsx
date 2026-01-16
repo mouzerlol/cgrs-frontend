@@ -6,16 +6,61 @@ import Icon from '@/components/ui/Icon';
 
 const CARDS = [
   {
-    title: 'Report Issues',
+    title: 'Report an Issue',
     description: 'Report maintenance & community issues',
     href: '/contact?subject=issue',
     type: 'large' as const,
-    backgroundImage: 'https://placehold.co/800x800/2d6a4f/white?text=Report+Issues',
+    backgroundImage: 'https://placehold.co/800x800/2d6a4f/white?text=Report+Issue',
   },
-  { title: 'Community Projects', description: 'Contribute ideas & initiatives', href: '/projects', type: 'simple' as const, icon: 'lightbulb' },
-  { title: 'Resident Portal', description: 'Manage your account & details', href: '/login', type: 'simple' as const, icon: 'user' },
-  { title: 'Community Guidelines', description: 'Rules, forms & policies', href: '/guidelines', type: 'simple' as const, icon: 'document' },
-  { title: 'Contact Committee', description: 'Get in touch with our team', href: '/contact', type: 'accent' as const, icon: 'mail' },
+  {
+    title: 'Message Board',
+    description: 'Community notices & announcements',
+    href: '/notice-board',
+    type: 'simple' as const,
+    icon: 'message'
+  },
+  {
+    title: 'Committee Blog',
+    description: 'Updates from your committee',
+    href: '/blog',
+    type: 'simple' as const,
+    icon: 'edit'
+  },
+  {
+    title: 'CGRS Calendar',
+    description: 'Community events & activities',
+    href: '/calendar',
+    type: 'simple' as const,
+    icon: 'calendar'
+  },
+  {
+    title: 'Coronation Gardens Map',
+    description: 'Explore our community boundaries',
+    href: '/map',
+    type: 'simple' as const,
+    icon: 'map'
+  },
+  {
+    title: 'Community Guidelines',
+    description: 'Rules, forms & policies',
+    href: '/guidelines',
+    type: 'simple' as const,
+    icon: 'document'
+  },
+  {
+    title: 'Community Projects',
+    description: 'Contribute ideas & initiatives',
+    href: '/projects',
+    type: 'simple' as const,
+    icon: 'lightbulb'
+  },
+  {
+    title: 'Connect',
+    description: 'Join our Facebook & Messenger',
+    href: '/contact?subject=connect',
+    type: 'accent' as const,
+    icon: 'share'
+  },
 ];
 
 /**

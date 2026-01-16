@@ -8,15 +8,15 @@ export const SITE_CONFIG = {
 } as const;
 
 export const NAVIGATION_ITEMS = [
-  { name: 'About', href: '/about' },
-  { name: 'Events', href: '/events' },
-  { name: 'News', href: '/news' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Discussion', href: '/discussion' },
+  { name: 'Report Issue', href: '/contact?subject=report' },
+  { name: 'Calendar', href: '/calendar' },
+  { name: 'Blog', href: '/blog' },
 ] as const;
 
 export const MORE_NAVIGATION_ITEMS = [
-  { name: 'Notice Board', href: '/notice-board', icon: 'lightbulb' },
-  { name: 'Map', href: '/map', icon: 'lightbulb' },
+  { name: 'About', href: '/about', icon: 'users' },
+  { name: 'Map', href: '/map', icon: 'map' },
 ] as const;
 
 export const UTILITY_DOCK_ITEMS = [
@@ -34,13 +34,13 @@ export const UTILITY_DOCK_ITEMS = [
   },
   {
     name: 'Community Events',
-    href: '/events',
+    href: '/calendar',
     icon: '/icons/community-events-icon.png',
     label: 'Community\nEvents',
   },
   {
     name: 'Community News',
-    href: '/news',
+    href: '/blog',
     icon: '/icons/community-news-icon.png',
     label: 'Community\nNews',
   },

@@ -1,0 +1,107 @@
+{
+  "titles": [
+    {
+      "id": "seedling",
+      "name": "Seedling",
+      "description": "Just planted in the community",
+      "icon": "🌱",
+      "minUpvotes": 0,
+      "minReplies": 0,
+      "minThreads": 0
+    },
+    {
+      "id": "budding-gardener",
+      "name": "Budding Gardener",
+      "description": "Starting to grow roots in the community",
+      "icon": "🌿",
+      "minUpvotes": 5,
+      "minReplies": 3,
+      "minThreads": 1
+    },
+    {
+      "id": "garden-enthusiast",
+      "name": "Garden Enthusiast",
+      "description": "Actively cultivating community connections",
+      "icon": "🌻",
+      "minUpvotes": 20,
+      "minReplies": 10,
+      "minThreads": 3
+    },
+    {
+      "id": "master-cultivator",
+      "name": "Master Cultivator",
+      "description": "A pillar of the community garden",
+      "icon": "🌳",
+      "minUpvotes": 50,
+      "minReplies": 25,
+      "minThreads": 10
+    },
+    {
+      "id": "garden-guardian",
+      "name": "Garden Guardian",
+      "description": "Legendary community contributor and mentor",
+      "icon": "🏆",
+      "minUpvotes": 100,
+      "minReplies": 50,
+      "minThreads": 25
+    }
+  ],
+  "badges": [
+    {
+      "id": "early-bird",
+      "name": "Early Bird",
+      "description": "Among the first to join the community forum",
+      "icon": "🐦",
+      "rarity": "rare"
+    },
+    {
+      "id": "helpful-neighbor",
+      "name": "Helpful Neighbor",
+      "description": "Answered 10+ questions from community members",
+      "icon": "🤝",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "founding-member",
+      "name": "Founding Member",
+      "description": "Original member of the discussion forum",
+      "icon": "⭐",
+      "rarity": "rare"
+    },
+    {
+      "id": "committee",
+      "name": "Committee Member",
+      "description": "Official CGRS committee representative",
+      "icon": "🏛️",
+      "rarity": "rare"
+    },
+    {
+      "id": "conversation-starter",
+      "name": "Conversation Starter",
+      "description": "Created 5 threads that sparked great discussions",
+      "icon": "💬",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "green-thumb",
+      "name": "Green Thumb",
+      "description": "Active contributor to garden-related discussions",
+      "icon": "🌱",
+      "rarity": "common"
+    },
+    {
+      "id": "night-owl",
+      "name": "Night Owl",
+      "description": "Active community member during late hours",
+      "icon": "🦉",
+      "rarity": "common"
+    },
+    {
+      "id": "poll-master",
+      "name": "Poll Master",
+      "description": "Created 3 popular polls that engaged the community",
+      "icon": "📊",
+      "rarity": "uncommon"
+    }
+  ]
+}

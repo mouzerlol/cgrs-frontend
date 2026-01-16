@@ -1,0 +1,489 @@
+{
+  "threads": [
+    {
+      "id": "thread-001",
+      "title": "Welcome to the CGRS Community Discussion Board!",
+      "body": "We're excited to launch our new community forum! This is your space to connect with fellow residents, share ideas, ask questions, and stay informed about what's happening in Coronation Gardens.\n\nFeel free to explore the different categories and start conversations. Remember to be respectful and helpful to your neighbors. Together, we can build an even stronger community!",
+      "category": "announcements",
+      "author": {
+        "id": "user-001",
+        "displayName": "CGRSCommittee",
+        "avatar": "/images/avatars/committee.svg",
+        "title": "Garden Guardian",
+        "badges": ["founding-member", "committee"],
+        "stats": {
+          "upvotesReceived": 156,
+          "repliesCount": 42,
+          "threadsCreated": 15
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-10",
+      "upvotes": 47,
+      "upvotedBy": ["user-002", "user-003", "user-004", "user-005"],
+      "replyCount": 8,
+      "isPinned": true,
+      "pinnedAt": "2026-01-10",
+      "pinnedBy": "user-001",
+      "bookmarkedBy": ["user-002", "user-003"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-002",
+      "title": "Visitor Parking Rules - Quick Reference",
+      "body": "Hi everyone! I've noticed some confusion about visitor parking lately, so here's a quick summary:\n\n• Visitors must display a visitor permit\n• Maximum 48-hour stay without prior approval\n• No overnight parking in fire lanes\n• Contact the committee for extended visitor stays\n\nHope this helps clarify things!",
+      "category": "parking",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-11",
+      "upvotes": 23,
+      "upvotedBy": ["user-001", "user-003", "user-004"],
+      "replyCount": 5,
+      "isPinned": true,
+      "pinnedAt": "2026-01-11",
+      "pinnedBy": "user-001",
+      "bookmarkedBy": ["user-004", "user-005", "user-006"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-003",
+      "title": "When is recycling collection this week?",
+      "body": "Hi neighbors! I'm a bit confused about the schedule this week due to the public holiday. Does anyone know if recycling is still being collected on Thursday or has it been moved?",
+      "category": "waste-management",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-13",
+      "upvotes": 8,
+      "upvotedBy": ["user-004", "user-005"],
+      "replyCount": 3,
+      "isPinned": false,
+      "bookmarkedBy": [],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-004",
+      "title": "Best local cafes near Mangere Bridge?",
+      "body": "We just moved in last month and are still exploring the area. What are your favorite cafes nearby? Looking for good coffee and a nice atmosphere for working remotely sometimes.\n\nThanks in advance for any recommendations!",
+      "category": "questions-help",
+      "author": {
+        "id": "user-004",
+        "displayName": "NewNeighbor2026",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 3,
+          "repliesCount": 2,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-12"
+      },
+      "createdAt": "2026-01-13",
+      "upvotes": 15,
+      "upvotedBy": ["user-002", "user-003", "user-005"],
+      "replyCount": 7,
+      "isPinned": false,
+      "bookmarkedBy": ["user-003"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-005",
+      "title": "Suspicious activity near Block C - Please be aware",
+      "body": "Just wanted to give everyone a heads up. Last night around 11pm, I noticed someone trying car door handles in the Block C parking area. They left when they saw me watching from my balcony.\n\nPlease make sure to lock your vehicles and report any suspicious behavior to the police non-emergency line.",
+      "category": "neighborhood-watch",
+      "author": {
+        "id": "user-005",
+        "displayName": "WatchfulResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Master Cultivator",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 67,
+          "repliesCount": 45,
+          "threadsCreated": 12
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-12",
+      "upvotes": 31,
+      "upvotedBy": ["user-001", "user-002", "user-003", "user-004"],
+      "replyCount": 4,
+      "isPinned": false,
+      "bookmarkedBy": ["user-001", "user-002", "user-006"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-006",
+      "title": "Community BBQ Planning - Vote for the date!",
+      "body": "Hey everyone! The committee is planning our first community BBQ of the year. We want to make sure as many people as possible can attend, so please vote for your preferred date below.\n\nWe're thinking of setting up in the common area near the playground. Food and drinks will be provided!",
+      "category": "general",
+      "author": {
+        "id": "user-001",
+        "displayName": "CGRSCommittee",
+        "avatar": "/images/avatars/committee.svg",
+        "title": "Garden Guardian",
+        "badges": ["founding-member", "committee"],
+        "stats": {
+          "upvotesReceived": 156,
+          "repliesCount": 42,
+          "threadsCreated": 15
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-14",
+      "upvotes": 42,
+      "upvotedBy": ["user-002", "user-003", "user-004", "user-005", "user-006"],
+      "replyCount": 12,
+      "isPinned": false,
+      "poll": {
+        "question": "Which date works best for the community BBQ?",
+        "options": [
+          {
+            "id": "opt-1",
+            "text": "Saturday, February 1st",
+            "votes": 18,
+            "voters": ["user-002", "user-003", "user-004"]
+          },
+          {
+            "id": "opt-2",
+            "text": "Sunday, February 2nd",
+            "votes": 12,
+            "voters": ["user-005", "user-006"]
+          },
+          {
+            "id": "opt-3",
+            "text": "Saturday, February 8th",
+            "votes": 8,
+            "voters": []
+          },
+          {
+            "id": "opt-4",
+            "text": "Sunday, February 9th",
+            "votes": 4,
+            "voters": []
+          }
+        ],
+        "allowMultiple": false,
+        "isClosed": false,
+        "creatorId": "user-001"
+      },
+      "bookmarkedBy": ["user-002", "user-003", "user-004", "user-005"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-007",
+      "title": "Tips for maintaining balcony plants in summer",
+      "body": "With the hot weather coming up, I thought I'd share some tips for keeping your balcony plants happy:\n\n1. Water early morning or late evening to reduce evaporation\n2. Use mulch to retain moisture\n3. Group plants together to create a humid microclimate\n4. Consider self-watering pots for when you're away\n\nWhat tips do you have?",
+      "category": "general",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-14",
+      "images": [
+        {
+          "id": "img-001",
+          "url": "/images/discussions/balcony-plants.jpg",
+          "thumbnail": "/images/discussions/balcony-plants-thumb.jpg",
+          "alt": "Beautiful balcony garden with various plants"
+        }
+      ],
+      "upvotes": 19,
+      "upvotedBy": ["user-001", "user-002", "user-004", "user-005"],
+      "replyCount": 6,
+      "isPinned": false,
+      "bookmarkedBy": ["user-002", "user-004"],
+      "reportedBy": []
+    }
+  ],
+  "replies": [
+    {
+      "id": "reply-001",
+      "threadId": "thread-001",
+      "body": "This is fantastic! Thanks for setting this up. Looking forward to connecting more with everyone here.",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-10T10:30:00",
+      "upvotes": 12,
+      "upvotedBy": ["user-001", "user-003"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-002",
+      "threadId": "thread-001",
+      "parentReplyId": "reply-001",
+      "body": "Agreed! This will make it so much easier to stay in touch with what's happening.",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-10T11:15:00",
+      "upvotes": 5,
+      "upvotedBy": ["user-002"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-003",
+      "threadId": "thread-003",
+      "body": "I called the council and they confirmed recycling is moved to Friday this week due to the public holiday. Hope that helps!",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-13T09:00:00",
+      "upvotes": 8,
+      "upvotedBy": ["user-003", "user-004"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-004",
+      "threadId": "thread-003",
+      "parentReplyId": "reply-003",
+      "body": "Thank you so much! That's really helpful. I'll put my bins out Friday morning then.",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-13T09:30:00",
+      "upvotes": 2,
+      "upvotedBy": [],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-005",
+      "threadId": "thread-004",
+      "body": "Welcome to the neighborhood! You should definitely check out 'The Bridge Cafe' on Coronation Road - great coffee and they have wifi. Also 'Ambler' at Onehunga is worth the short drive.",
+      "author": {
+        "id": "user-005",
+        "displayName": "WatchfulResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Master Cultivator",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 67,
+          "repliesCount": 45,
+          "threadsCreated": 12
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-13T14:00:00",
+      "upvotes": 11,
+      "upvotedBy": ["user-004", "user-002", "user-003"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-006",
+      "threadId": "thread-004",
+      "body": "I second The Bridge Cafe! Their flat whites are excellent. If you like brunch, try 'Little & Friday' in Newmarket - bit further but worth it on weekends.",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-13T15:30:00",
+      "upvotes": 7,
+      "upvotedBy": ["user-004", "user-005"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-007",
+      "threadId": "thread-004",
+      "parentReplyId": "reply-005",
+      "body": "Thanks so much! I'll check out The Bridge Cafe this weekend. Really appreciate the warm welcome!",
+      "author": {
+        "id": "user-004",
+        "displayName": "NewNeighbor2026",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 3,
+          "repliesCount": 2,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-12"
+      },
+      "createdAt": "2026-01-13T16:00:00",
+      "upvotes": 4,
+      "upvotedBy": ["user-005"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-008",
+      "threadId": "thread-005",
+      "body": "Thanks for the heads up! I've noticed this happening a few times lately. Everyone please remember to lock your cars and don't leave valuables visible.",
+      "author": {
+        "id": "user-001",
+        "displayName": "CGRSCommittee",
+        "avatar": "/images/avatars/committee.svg",
+        "title": "Garden Guardian",
+        "badges": ["founding-member", "committee"],
+        "stats": {
+          "upvotesReceived": 156,
+          "repliesCount": 42,
+          "threadsCreated": 15
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-12T08:00:00",
+      "upvotes": 15,
+      "upvotedBy": ["user-002", "user-003", "user-004", "user-005"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-009",
+      "threadId": "thread-006",
+      "body": "So excited for this! I voted for Feb 1st - hope it works out. Should we bring anything?",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-14T10:00:00",
+      "upvotes": 8,
+      "upvotedBy": ["user-001", "user-002"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-010",
+      "threadId": "thread-006",
+      "parentReplyId": "reply-009",
+      "body": "We'll provide the main food and drinks, but feel free to bring a plate to share if you'd like! The more the merrier.",
+      "author": {
+        "id": "user-001",
+        "displayName": "CGRSCommittee",
+        "avatar": "/images/avatars/committee.svg",
+        "title": "Garden Guardian",
+        "badges": ["founding-member", "committee"],
+        "stats": {
+          "upvotesReceived": 156,
+          "repliesCount": 42,
+          "threadsCreated": 15
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-14T10:30:00",
+      "upvotes": 6,
+      "upvotedBy": ["user-003"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-011",
+      "threadId": "thread-007",
+      "body": "Great tips! I'd also add that terracotta pots dry out faster than plastic ones, so keep that in mind when choosing containers. Also, a drip tray with pebbles and water underneath can help with humidity.",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-14T11:00:00",
+      "upvotes": 9,
+      "upvotedBy": ["user-003", "user-004", "user-005"],
+      "reportedBy": [],
+      "depth": 0
+    }
+  ]
+}

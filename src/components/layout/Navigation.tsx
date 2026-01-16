@@ -36,7 +36,7 @@ export default function Navigation() {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="nav-link text-bone text-[0.875rem] flex items-center gap-2"
+          className="nav-link text-bone text-[0.875rem] flex items-center gap-2 font-bold"
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
         >

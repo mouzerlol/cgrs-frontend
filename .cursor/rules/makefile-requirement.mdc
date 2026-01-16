@@ -1,0 +1,84 @@
+---
+alwaysApply: true
+description: "Require Makefiles for all projects with standard commands"
+---
+
+# Makefile Requirement for Projects
+
+All projects must include a `Makefile` in the root directory with standard commands for common development tasks. This ensures consistent development workflows across all projects.
+
+## Required Makefile Commands
+
+Every project Makefile should include at least these commands:
+
+### Core Commands
+- `make help` - Show available commands and their descriptions
+- `make install` - Install project dependencies
+- `make test` - Run all tests
+- `make lint` - Run code linting
+- `make format` - Format code according to project standards
+- `make check` - Run comprehensive quality checks (lint + test)
+
+### Additional Recommended Commands
+- `make clean` - Clean up generated files and caches
+- `make build` - Build the project/package
+- `make run` - Run the main application
+- `make dev` - Quick development cycle (format + lint + test)
+
+## Makefile Template
+
+```makefile
+.PHONY: help install test lint format check clean
+
+help: ## Show this help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
+
+install: ## Install dependencies
+	# Add your installation command here
+
+test: ## Run tests
+	# Add your test command here
+
+lint: ## Run linting
+	# Add your linting command here
+
+format: ## Format code
+	# Add your formatting command here
+
+check: format lint test ## Run all quality checks
+
+clean: ## Clean up generated files
+	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ .coverage htmlcov/
+```
+
+## Usage
+
+After creating a Makefile, developers can use:
+
+```bash
+make help          # See all available commands
+make install       # Set up the project
+make check         # Run quality checks before committing
+make clean         # Clean up before packaging
+```
+
+## Python Projects
+
+For Python projects using UV package manager, use this pattern:
+
+```makefile
+install:
+	uv sync
+
+test:
+	uv run pytest
+
+lint:
+	uv run flake8 .
+
+format:
+	uv run black .
+	uv run isort .
+```
+
+This ensures consistent development workflows and makes projects more accessible to new contributors.

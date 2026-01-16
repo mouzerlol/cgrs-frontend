@@ -1,10 +1,10 @@
 'use client';
 
 import { useRef } from 'react';
-import { BOUNDARY_COORDINATES, MAP_CENTER, MAP_ZOOM } from '@/data/map-data';
+import { MAP_CENTER, MAP_ZOOM } from '@/data/map-data';
 import BaseMap from '@/components/map/BaseMap';
 import MapMarker from '@/components/map/MapMarker';
-import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
+import { getOSMTileUrl, getOSMTileOptions, addBoundaryLayer, BOUNDARY_STYLE_COMPACT } from '@/lib/maps';
 
 interface BoundaryMapProps {
   className?: string;
@@ -25,21 +25,7 @@ export default function BoundaryMap({ className = '', height = '160px' }: Bounda
     // Add boundary polygon
     (async () => {
       const L = (await import('leaflet')).default;
-
-      L.geoJSON({
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [BOUNDARY_COORDINATES],
-        },
-      } as GeoJSON.GeoJsonObject, {
-        style: {
-          color: '#D95D39',
-          weight: 2,
-          fillColor: '#D95D39',
-          fillOpacity: 0.12,
-        },
-      }).addTo(map);
+      addBoundaryLayer(L, map, BOUNDARY_STYLE_COMPACT);
     })();
   };
 

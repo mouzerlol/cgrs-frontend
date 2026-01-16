@@ -22,6 +22,11 @@ module.exports = {
           DEFAULT: '#A8B5A0',
           light: '#E8EDE6',
         },
+        // Warm amber for secondary UI elements (timestamps, reply counts, stats)
+        amber: {
+          DEFAULT: '#D4A05A',
+          dark: '#B8863D',
+        },
       },
       fontFamily: {
         display: ['Fraunces', 'serif'],

@@ -103,6 +103,7 @@ export default function FooterMap({ className }: FooterMapProps) {
         tileUrl={tileUrl}
         tileOptions={tileOptions}
         zoomControl={false}
+        showHomeControl={false}
         scrollWheelZoom={false}
         dragging={false}
         doubleClickZoom={false}

@@ -29,28 +29,28 @@ export default function UtilityDock({ items, useIconComponent = false }: Utility
 
   const defaultItems: UtilityDockItem[] = [
     {
-      name: 'Notice Board',
-      href: '/notice-board',
-      icon: '/icons/notice-board-icon.png',
-      label: 'Notice<br>Board',
-    },
-    {
       name: 'Maintenance Request',
       href: '/contact?subject=maintenance',
       icon: '/icons/maintenance-request-icon.png',
       label: 'Maintenance<br>Request',
     },
     {
+      name: 'Notice Board',
+      href: '/discussion',
+      icon: '/icons/notice-board-icon.png',
+      label: 'Message<br>Board',
+    },
+    {
       name: 'Community Events',
-      href: '/events',
+      href: '/calendar',
       icon: '/icons/community-events-icon.png',
-      label: 'Community<br>Events',
+      label: 'Community<br>Calendar',
     },
     {
       name: 'Community News',
-      href: '/news',
+      href: '/blog',
       icon: '/icons/community-news-icon.png',
-      label: 'Community<br>News',
+      label: 'Blog',
     },
   ];
 

@@ -43,7 +43,7 @@ function UpcomingEventsList() {
           Check back soon for upcoming community events and meetings.
         </p>
         <Button variant="primary" asChild>
-          <Link href="/news">View Latest News</Link>
+          <Link href="/blog">View Latest Blog</Link>
         </Button>
       </Card>
     );

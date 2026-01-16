@@ -2,16 +2,18 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { Event } from '@/types';
+import { CalendarItem } from '@/types';
 import Icon from '@/components/ui/Icon';
 import CalendarCard, { formatCalendarDate } from '@/components/ui/CalendarCard';
 
 interface EventsSectionProps {
-  events: Event[];
+  items?: CalendarItem[];
   title?: string;
   eyebrow?: string;
   showViewAll?: boolean;
+  maxItems?: number;
 }
 
 /**
@@ -19,12 +21,23 @@ interface EventsSectionProps {
  * Features enhanced calendar cards with date badges in terracotta.
  */
 export default function EventsSection({
-  events,
+  items,
   title = 'Community<br>Events',
   eyebrow = "What's On",
   showViewAll = true,
+  maxItems = 3,
 }: EventsSectionProps) {
+  const router = useRouter();
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+
+  const handleItemClick = (item: CalendarItem) => {
+    const params = new URLSearchParams();
+    params.set('item', item.id);
+    params.set('month', item.date.substring(0, 7)); // YYYY-MM
+    router.push(`/calendar?${params.toString()}`);
+  };
+
+  const displayItems = items?.slice(0, maxItems) || [];
 
   return (
     <section className="section bg-forest-light texture-signal" id="events">
@@ -38,10 +51,12 @@ export default function EventsSection({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          {events.map((event) => {
-            const { day, month } = formatCalendarDate(event.date);
+          {displayItems.map((item) => {
+            const { day, month } = formatCalendarDate(item.date);
             return (
-              <CalendarCard key={event.id} event={event} day={day} month={month} />
+              <div key={item.id} onClick={() => handleItemClick(item)}>
+                <CalendarCard event={item} day={day} month={month} />
+              </div>
             );
           })}
         </div>
@@ -49,7 +64,7 @@ export default function EventsSection({
         {showViewAll && (
           <div className="text-center mt-10">
             <Link
-              href="/events"
+              href="/calendar"
               className="inline-flex items-center gap-2 text-sm font-medium text-bone uppercase tracking-wider hover:text-terracotta transition-colors"
             >
               View All Events

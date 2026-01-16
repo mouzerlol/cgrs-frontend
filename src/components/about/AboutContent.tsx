@@ -179,7 +179,7 @@ function CTASection() {
               <Link href="/contact">Contact Committee</Link>
             </Button>
             <Button variant="nav" size="lg" asChild>
-              <Link href="/news">Read Latest News</Link>
+              <Link href="/blog">Read Latest Blog</Link>
             </Button>
           </div>
         </div>

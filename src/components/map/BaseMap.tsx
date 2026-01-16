@@ -12,6 +12,8 @@ interface BaseMapProps {
     attribution?: string;
   };
   zoomControl?: boolean;
+  showHomeControl?: boolean;
+  homeControlPosition?: 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
   scrollWheelZoom?: boolean;
   dragging?: boolean;
   doubleClickZoom?: boolean;
@@ -25,6 +27,7 @@ interface BaseMapProps {
   className?: string;
   style?: React.CSSProperties;
   onMapReady?: (map: L.Map) => void;
+  onHomeClick?: (map: L.Map) => void;
 }
 
 /**
@@ -37,6 +40,8 @@ export default function BaseMap({
   tileUrl,
   tileOptions = {},
   zoomControl = true,
+  showHomeControl = true,
+  homeControlPosition = 'topright',
   scrollWheelZoom = true,
   dragging = true,
   doubleClickZoom = true,
@@ -50,6 +55,7 @@ export default function BaseMap({
   className,
   style,
   onMapReady,
+  onHomeClick,
 }: BaseMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -64,8 +70,11 @@ export default function BaseMap({
       initializedRef.current = true;
 
       try {
-        const L = (await import('leaflet')).default;
+        const Leaflet = await import('leaflet');
+        const L = Leaflet.default;
 
+        if (!containerRef.current) return;
+        
         const map = L.map(containerRef.current, {
           zoomControl,
           scrollWheelZoom,
@@ -85,6 +94,48 @@ export default function BaseMap({
             crossOrigin: tileOptions.crossOrigin as boolean | 'anonymous' | 'use-credentials' | undefined,
             attribution: tileOptions.attribution,
           }).addTo(map);
+        }
+
+        // Add home button control
+        if (showHomeControl) {
+          // Robust approach: append directly to the zoom control container
+          // This ensures it appears directly under the zoom buttons (+) and (-)
+          const zoomControlContainer = containerRef.current?.querySelector('.leaflet-control-zoom');
+          if (zoomControlContainer) {
+            const homeButton = L.DomUtil.create('a', 'leaflet-control-home-button leaflet-bar-part leaflet-bar-part-bottom', zoomControlContainer as HTMLElement);
+            homeButton.href = '#';
+            homeButton.title = 'Return to community boundary';
+            homeButton.role = 'button';
+            homeButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin: auto;">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            `;
+
+            // Fix the previous button (zoom-out) to not have bottom corners rounded if it's not the last anymore
+            const zoomOutButton = zoomControlContainer.querySelector('.leaflet-control-zoom-out');
+            if (zoomOutButton) {
+              (zoomOutButton as HTMLElement).style.borderBottom = '1px solid var(--sage-light)';
+              (zoomOutButton as HTMLElement).classList.remove('leaflet-bar-part-bottom');
+            }
+
+            L.DomEvent.disableClickPropagation(homeButton);
+            L.DomEvent.on(homeButton, 'click', (e: Event) => {
+              L.DomEvent.preventDefault(e);
+              L.DomEvent.stopPropagation(e);
+              if (onHomeClick) {
+                onHomeClick(map);
+              } else {
+                // Default fallback: fly to center at max zoom
+                const zoom = map.getMaxZoom() || maxZoom || 18;
+                map.flyTo(center, zoom, {
+                  duration: 1.5,
+                  easeLinearity: 0.25
+                });
+              }
+            });
+          }
         }
 
         mapRef.current = map;
@@ -126,6 +177,7 @@ export default function BaseMap({
     maxZoom,
     minZoom,
     onMapReady,
+    onHomeClick,
   ]);
 
   return (

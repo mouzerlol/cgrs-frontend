@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import PageHeader from '@/components/sections/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';

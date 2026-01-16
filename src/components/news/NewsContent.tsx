@@ -12,7 +12,7 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useNews } from '@/hooks/useNews';
 
 const CATEGORIES = [
-  { key: 'all', label: 'All News' },
+  { key: 'all', label: 'All Posts' },
   { key: 'general', label: 'General' },
   { key: 'guidelines', label: 'Guidelines' },
   { key: 'events', label: 'Events' },

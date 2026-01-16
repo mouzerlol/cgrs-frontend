@@ -10,8 +10,11 @@ interface MapMarkerProps {
   iconAnchor?: [number, number];
   popupAnchor?: [number, number];
   popup?: string;
+  popupDescription?: string;
+  popupType?: { label: string; color: string };
   zIndexOffset?: number;
   onClick?: () => void;
+  onMarkerClick?: (position: [number, number]) => void;
   onCreate?: (marker: L.Marker) => void;
 }
 
@@ -27,8 +30,11 @@ export default function MapMarker({
   iconAnchor,
   popupAnchor,
   popup,
+  popupDescription,
+  popupType,
   zIndexOffset,
   onClick,
+  onMarkerClick,
   onCreate,
 }: MapMarkerProps) {
   const markerRef = useRef<L.Marker | null>(null);
@@ -64,13 +70,36 @@ export default function MapMarker({
       markerRef.current = L.marker(position, { icon, zIndexOffset });
 
       if (popup) {
-        markerRef.current.bindPopup(popup, {
+        // Build popup HTML with type indicator
+        const typeIndicator = popupType
+          ? `<div class="poi-popup-type" style="background-color: ${popupType.color};"></div>`
+          : '';
+
+        const popupHtml = `
+          <div class="poi-popup-container">
+            ${typeIndicator}
+            <div class="poi-popup-content">
+              <strong>${popup}</strong>
+            </div>
+          </div>
+        `;
+
+        markerRef.current.bindPopup(popupHtml, {
           className: 'custom-popup',
+          closeButton: true,
+          closeOnClick: true,
         });
       }
 
       if (onClick) {
         markerRef.current.on('click', onClick);
+      }
+
+      // Pan map to center on marker when clicked
+      if (onMarkerClick) {
+        markerRef.current.on('click', () => {
+          onMarkerClick(position);
+        });
       }
 
       markerRef.current.addTo(map);
@@ -86,7 +115,7 @@ export default function MapMarker({
         markerRef.current = null;
       }
     };
-  }, [map, position, color, size, iconAnchor, popupAnchor, popup, zIndexOffset, onClick, onCreate]);
+  }, [map, position, color, size, iconAnchor, popupAnchor, popup, popupDescription, popupType, zIndexOffset, onClick, onMarkerClick, onCreate]);
 
   return null;
 }

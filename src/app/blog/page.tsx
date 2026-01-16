@@ -8,17 +8,17 @@ import NewsContent from '@/components/news/NewsContent';
 import newsData from '@/data/news.json';
 
 /**
- * News page with React Query and Suspense loading states.
+ * Blog page with React Query and Suspense loading states.
  */
-export default function NewsPage() {
+export default function BlogPage() {
   const articles = newsData.articles as NewsArticle[];
 
   return (
     <div className="min-h-screen">
       <PageHeader
-        title="Community News & Updates"
-        description="Stay informed about the latest news, events, and important announcements from our community."
-        eyebrow="News"
+        title="CGRS Committee Blog"
+        description="Latest updates and announcements from the committee and website team."
+        eyebrow="Blog"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

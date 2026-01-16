@@ -42,7 +42,7 @@ export default function ContactPage() {
     <div className="min-h-screen">
       <PageHeader
         title="Contact Us"
-        description="Get in touch with our committee. We're here to help and answer your questions."
+        description="Get in touch with our committee. We're here to help."
         eyebrow="Get in Touch"
         backgroundImage="/images/mangere-mountain.jpg"
       />
@@ -169,7 +169,7 @@ export default function ContactPage() {
                 <Link href="/guidelines">Community Guidelines</Link>
               </Button>
               <Button variant="nav" size="lg" asChild>
-                <Link href="/news">Latest News</Link>
+                <Link href="/blog">Latest Blog</Link>
               </Button>
             </div>
           </div>

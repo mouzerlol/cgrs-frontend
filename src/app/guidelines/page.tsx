@@ -60,7 +60,7 @@ export default function GuidelinesPage() {
     <div className="min-h-screen">
       <PageHeader
         title="Community Guidelines"
-        description="Our shared values and expectations that help maintain our exceptional living environment."
+        description="Shared values and expectations that maintain our living environment."
         eyebrow="Guidelines"
         backgroundImage="/images/mangere-mountain.jpg"
       />
@@ -225,7 +225,7 @@ export default function GuidelinesPage() {
                 <Link href="/contact">Contact Committee</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/news">Read Latest News</Link>
+                <Link href="/blog">Read Latest Blog</Link>
               </Button>
             </div>
           </Card>
