@@ -2,7 +2,6 @@
 node_modules/
 .pnp
 .pnp.js
-
 # Production builds
 out/
 .next/
@@ -109,3 +108,4 @@ Thumbs.db
 .vercel
 
 .playwright-mcp/* 
+docs/*

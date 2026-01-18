@@ -31,12 +31,6 @@ export default function MapPreview({
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Dynamically load Leaflet CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    document.head.appendChild(link);
-
     // Add custom CSS for building hiding
     if (customCss) {
       const style = document.createElement('style');
@@ -44,7 +38,7 @@ export default function MapPreview({
       document.head.appendChild(style);
     }
 
-    link.onload = async () => {
+    const initMap = async () => {
       const L = (await import('leaflet')).default;
 
       // Check if map is already initialized
@@ -104,17 +98,16 @@ export default function MapPreview({
       setMapLoaded(true);
     };
 
+    // Initialize the map
+    initMap();
+
     return () => {
       // Clean up map instance
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
-      
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
-      }
-      
+
       // Clean up custom CSS if added
       const styles = document.head.querySelectorAll('style');
       styles.forEach(style => {

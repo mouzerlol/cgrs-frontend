@@ -19,6 +19,8 @@ interface CategoryAccordionProps {
   categories: DiscussionCategory[];
   /** Statistics per category */
   stats?: Record<DiscussionCategorySlug, CategoryStats>;
+  /** Whether categories should be expanded by default */
+  defaultExpanded?: boolean;
   /** Additional class names */
   className?: string;
 }
@@ -31,10 +33,14 @@ interface CategoryAccordionProps {
 export default function CategoryAccordion({
   categories,
   stats,
+  defaultExpanded = false,
   className,
 }: CategoryAccordionProps) {
   // Track which categories are expanded (multiple can be open at once)
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  // If defaultExpanded is true, all categories start expanded
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    () => defaultExpanded ? new Set(categories.map(c => c.slug)) : new Set()
+  );
 
   const handleToggle = (slug: string) => {
     setExpandedCategories((prev) => {

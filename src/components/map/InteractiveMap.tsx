@@ -49,22 +49,21 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
     return Array.from(groups.values());
   }, []);
 
-  const handleMapReady = useCallback((map: L.Map) => {
+  const handleMapReady = useCallback(async (map: L.Map) => {
     mapRef.current = map;
     setMapInitialized(true);
 
+    // Single import, reuse for both operations (avoids duplicate dynamic imports)
+    const L = await import('leaflet');
+
     // Add boundary polygon and fit to boundary
-    import('leaflet').then((L) => {
-      setupBoundaryMap(L, map);
-    });
+    setupBoundaryMap(L, map);
 
     // Add scale control
-    import('leaflet').then((L) => {
-      L.control.scale({
-        imperial: false,
-        position: 'bottomleft',
-      }).addTo(map);
-    });
+    L.default.control.scale({
+      imperial: false,
+      position: 'bottomleft',
+    }).addTo(map);
   }, []);
 
   const handleMarkerCreate = useCallback((id: string) => (marker: L.Marker) => {
@@ -95,17 +94,19 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
     }, 1500);
   }, []);
 
-  const handleHomeClick = useCallback((map: L.Map) => {
-    import('leaflet').then((L) => {
-      import('@/lib/maps').then(({ getBoundaryFeature }) => {
-        const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
-        // Fly to center at the map's maximum zoom level
-        const maxZoom = map.getMaxZoom() || 18;
-        map.flyTo(bounds.getCenter(), maxZoom, {
-          duration: 1.5,
-          easeLinearity: 0.25
-        });
-      });
+  const handleHomeClick = useCallback(async (map: L.Map) => {
+    // Parallel imports with Promise.all (avoids sequential waterfall)
+    const [L, { getBoundaryFeature }] = await Promise.all([
+      import('leaflet'),
+      import('@/lib/maps')
+    ]);
+
+    const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
+    // Fly to center at the map's maximum zoom level
+    const maxZoom = map.getMaxZoom() || 18;
+    map.flyTo(bounds.getCenter(), maxZoom, {
+      duration: 1.5,
+      easeLinearity: 0.25
     });
   }, []);
 

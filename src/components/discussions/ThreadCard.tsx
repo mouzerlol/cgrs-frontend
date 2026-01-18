@@ -58,9 +58,8 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
       return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
     };
 
-    // Stop event propagation for interactive elements
-    const handleUpvoteClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
+    // UpvoteButton handles stopPropagation internally
+    const handleUpvoteClick = () => {
       onUpvote?.();
     };
 

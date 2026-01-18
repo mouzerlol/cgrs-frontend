@@ -54,7 +54,11 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
       <button
         ref={ref}
         type="button"
-        onClick={onUpvote}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onUpvote?.();
+        }}
         disabled={disabled}
         className={cn(
           'flex items-center justify-center rounded-lg border transition-all duration-200',

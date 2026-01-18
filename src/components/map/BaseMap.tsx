@@ -1,5 +1,6 @@
 'use client';
 
+import 'leaflet/dist/leaflet.css';
 import { useRef, useEffect, useState, ReactNode } from 'react';
 
 interface BaseMapProps {

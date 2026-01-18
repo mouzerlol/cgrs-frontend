@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { BOUNDARY_COORDINATES } from '@/data/map-data';
 import BaseMap from '@/components/map/BaseMap';
 import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
@@ -17,18 +17,6 @@ interface FooterMapProps {
 export default function FooterMap({ className }: FooterMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const existingLink = document.querySelector('link[href*="leaflet"]');
-    if (!existingLink) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-    }
-  }, []);
 
   const handleMapReady = useCallback(async (map: L.Map) => {
     mapRef.current = map;

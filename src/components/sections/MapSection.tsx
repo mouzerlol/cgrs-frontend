@@ -212,17 +212,19 @@ export default function MapSection({ className }: MapSectionProps) {
     pois: POINTS_OF_INTEREST.filter(poi => poi.type === type),
   })).filter(group => group.pois.length > 0);
 
-  const handleHomeClick = useCallback((map: L.Map) => {
-    import('leaflet').then((L) => {
-      import('@/lib/maps').then(({ getBoundaryFeature }) => {
-        const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
-        // Fly to center at the map's maximum zoom level
-        const maxZoom = map.getMaxZoom() || 18;
-        map.flyTo(bounds.getCenter(), maxZoom, {
-          duration: 1.5,
-          easeLinearity: 0.25
-        });
-      });
+  const handleHomeClick = useCallback(async (map: L.Map) => {
+    // Parallel imports with Promise.all (avoids sequential waterfall)
+    const [L, { getBoundaryFeature }] = await Promise.all([
+      import('leaflet'),
+      import('@/lib/maps')
+    ]);
+
+    const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
+    // Fly to center at the map's maximum zoom level
+    const maxZoom = map.getMaxZoom() || 18;
+    map.flyTo(bounds.getCenter(), maxZoom, {
+      duration: 1.5,
+      easeLinearity: 0.25
     });
   }, []);
 
