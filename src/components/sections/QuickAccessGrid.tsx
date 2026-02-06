@@ -8,7 +8,7 @@ const CARDS = [
   {
     title: 'Report an Issue',
     description: 'Report maintenance & community issues',
-    href: '/contact?subject=issue',
+    href: '/management-request',
     type: 'large' as const,
     backgroundImage: 'https://placehold.co/800x800/2d6a4f/white?text=Report+Issue',
   },

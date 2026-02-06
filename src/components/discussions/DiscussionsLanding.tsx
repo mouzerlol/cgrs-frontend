@@ -4,11 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import { useCategories, useCategoryStats } from '@/hooks/useDiscussions';
-import CategoryAccordion from './CategoryAccordion';
+import { useCategories, useCategoryStats, useThreadsWithLatestReply } from '@/hooks/useDiscussions';
+import CategoryButtonBar from './CategoryButtonBar';
 import SearchBar from './SearchBar';
 import SortDropdown from './SortDropdown';
 import ViewToggle from './ViewToggle';
+import ThreadList from './ThreadList';
 import type { ThreadSortOption } from '@/types';
 
 interface DiscussionsLandingProps {
@@ -18,25 +19,58 @@ interface DiscussionsLandingProps {
 
 /**
  * Main landing page content for /discussion.
- * Unified layout with compact category accordion and thread list.
- * Optimized for content density - threads visible above the fold.
+ * Features a 3x2 category button bar for navigation and a thread list showing all discussions.
+ * Categories link to their respective subpages for filtered views.
  */
 export default function DiscussionsLanding({ className }: DiscussionsLandingProps) {
   // State for filters
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ThreadSortOption>('newest');
-  const [viewMode, setViewMode] = useState<'card' | 'compact'>('card');
+  const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
   // Fetch data
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { data: categoryStats } = useCategoryStats();
+
+  // Fetch all threads with latest reply info
+  const { data: threadsData, isLoading: threadsLoading } = useThreadsWithLatestReply({
+    sort,
+    search: search || undefined,
+  });
+
+  // Mock user interactions (will be replaced with real state management)
+  const [upvotedThreads] = useState<Set<string>>(new Set());
+  const [bookmarkedThreads] = useState<Set<string>>(new Set());
+
+  const handleUpvote = (threadId: string) => {
+    // Future: API call to toggle upvote
+    console.log('Upvote thread:', threadId);
+  };
+
+  const handleBookmark = (threadId: string) => {
+    // Future: API call to toggle bookmark
+    console.log('Bookmark thread:', threadId);
+  };
+
+  const handleReport = (threadId: string) => {
+    // Future: Open report modal
+    console.log('Report thread:', threadId);
+  };
+
+  const handleShare = (threadId: string) => {
+    // Copy thread URL to clipboard
+    const url = `${window.location.origin}/discussion/thread/${threadId}`;
+    navigator.clipboard.writeText(url);
+    // Future: Show toast notification
+    console.log('Shared thread:', threadId);
+  };
 
   return (
     <div className={cn('bg-bone', className)}>
       {/* Unified Content Section */}
       <section className="py-4 md:py-6">
         <div className="container space-y-4">
-          {/* Controls Row - Search, Sort, View, New Button - Above Accordion */}
+          {/* Controls Row - Search, Sort, View, New Button */}
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="flex-1">
@@ -71,30 +105,50 @@ export default function DiscussionsLanding({ className }: DiscussionsLandingProp
             </div>
           </div>
 
-          {/* Category Accordion - Compact navigation */}
+          {/* Category Button Bar - Links to subpages */}
           {!categoriesLoading && categories && (
-            <CategoryAccordion
+            <CategoryButtonBar
               categories={categories}
               stats={categoryStats}
-              defaultExpanded={false}
             />
           )}
 
-          {/* Inline Stats Bar */}
-          <div className="pt-6 mt-4 border-t border-sage/30">
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-amber">
-              <div className="flex items-center gap-2">
-                <Icon icon="lucide:folder" className="w-4 h-4" />
-                <span>
-                  <strong className="text-forest">{categories?.length || 0}</strong> categories
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Icon icon="lucide:users" className="w-4 h-4" />
-                <span className="text-forest/60">Community-driven</span>
-              </div>
-            </div>
+          {/* Thread List - Shows all discussions */}
+          <div className="pt-2">
+            <ThreadList
+              threads={threadsData?.threads ?? []}
+              viewMode={viewMode}
+              isLoading={threadsLoading}
+              skeletonCount={6}
+              upvotedThreads={upvotedThreads}
+              bookmarkedThreads={bookmarkedThreads}
+              onUpvote={handleUpvote}
+              onBookmark={handleBookmark}
+              onReport={handleReport}
+              onShare={handleShare}
+              showCategory={true}
+              emptyMessage="No discussions yet. Be the first to start one!"
+            />
           </div>
+
+          {/* Load More (pagination placeholder) */}
+          {threadsData && threadsData.threads.length > 0 && threadsData.threads.length < threadsData.total && (
+            <div className="pt-4 flex justify-center">
+              <button
+                className={cn(
+                  'inline-flex items-center gap-2 px-6 py-3',
+                  'bg-sage-light text-forest rounded-xl',
+                  'font-medium text-sm',
+                  'transition-all duration-200',
+                  'hover:bg-sage',
+                  'focus:outline-none focus:ring-2 focus:ring-sage/50'
+                )}
+              >
+                Load more discussions
+                <Icon icon="lucide:chevron-down" className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </div>

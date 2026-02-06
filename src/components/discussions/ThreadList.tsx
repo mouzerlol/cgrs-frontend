@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import ThreadCard from './ThreadCard';
 import ThreadCardCompact from './ThreadCardCompact';
 import ThreadCardSkeleton from './skeletons/ThreadCardSkeleton';
-import type { Thread } from '@/types';
+import type { Thread, ThreadWithLatestReply, LatestReply } from '@/types';
 
 // Animation variants for staggered entrance
 const listVariants = {
@@ -32,8 +32,8 @@ const itemVariants = {
 };
 
 interface ThreadListProps extends HTMLAttributes<HTMLDivElement> {
-  /** List of threads */
-  threads: Thread[];
+  /** List of threads (can include latestReply for compact view) */
+  threads: Thread[] | ThreadWithLatestReply[];
   /** View mode: card (default) or compact */
   viewMode?: 'card' | 'compact';
   /** Whether the current user has upvoted each thread */
@@ -44,6 +44,10 @@ interface ThreadListProps extends HTMLAttributes<HTMLDivElement> {
   onUpvote?: (threadId: string) => void;
   /** Callback when a thread is bookmarked */
   onBookmark?: (threadId: string) => void;
+  /** Callback when a thread is reported */
+  onReport?: (threadId: string) => void;
+  /** Callback when a thread is shared */
+  onShare?: (threadId: string) => void;
   /** Show category badge on each card */
   showCategory?: boolean;
   /** Loading state */
@@ -56,7 +60,8 @@ interface ThreadListProps extends HTMLAttributes<HTMLDivElement> {
 
 /**
  * List of thread cards with view mode toggle support.
- * Supports both card view and compact row view.
+ * Supports both card view (2-column grid) and compact row view.
+ * Uses key to force re-animation when list content changes.
  */
 const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
   ({
@@ -66,6 +71,8 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
     bookmarkedThreads = new Set(),
     onUpvote,
     onBookmark,
+    onReport,
+    onShare,
     showCategory = true,
     isLoading = false,
     skeletonCount = 5,
@@ -73,12 +80,20 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
     className,
     ...props
   }, ref) => {
+    // Generate unique key based on thread IDs to force re-animation when list changes
+    const threadIdsKey = threads.map(t => t.id).join(',');
+    const motionKey = `motion-${viewMode}-${threadIdsKey}`;
     // Loading state
     if (isLoading) {
       return (
         <div
           ref={ref}
-          className={cn('space-y-4', className)}
+          className={cn(
+            viewMode === 'card'
+              ? 'grid grid-cols-1 md:grid-cols-2 gap-4'
+              : 'space-y-2',
+            className
+          )}
           {...props}
         >
           {[...Array(skeletonCount)].map((_, i) => (
@@ -119,12 +134,16 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
       );
     }
 
-    // Card view
+    // Card view - 2 column grid on desktop
     if (viewMode === 'card') {
       return (
         <div ref={ref} {...props}>
           <motion.div
-            className={cn('space-y-4', className)}
+            key={motionKey}
+            className={cn(
+              'grid grid-cols-1 md:grid-cols-2 gap-4',
+              className
+            )}
             variants={listVariants}
             initial="hidden"
             animate="visible"
@@ -146,24 +165,35 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
       );
     }
 
-    // Compact view
+    // Compact view - single column
     return (
       <div ref={ref} {...props}>
         <motion.div
+          key={motionKey}
           className={cn('space-y-2', className)}
           variants={listVariants}
           initial="hidden"
           animate="visible"
         >
-          {threads.map((thread) => (
-            <motion.div key={thread.id} variants={itemVariants}>
-              <ThreadCardCompact
-                thread={thread}
-                hasUpvoted={upvotedThreads.has(thread.id)}
-                showCategory={showCategory}
-              />
-            </motion.div>
-          ))}
+          {threads.map((thread) => {
+            // Check if thread has latestReply (ThreadWithLatestReply type)
+            const threadWithReply = thread as ThreadWithLatestReply;
+            return (
+              <motion.div key={thread.id} variants={itemVariants}>
+                <ThreadCardCompact
+                  thread={thread}
+                  latestReply={threadWithReply.latestReply}
+                  hasUpvoted={upvotedThreads.has(thread.id)}
+                  isBookmarked={bookmarkedThreads.has(thread.id)}
+                  showCategory={showCategory}
+                  onUpvote={onUpvote ? () => onUpvote(thread.id) : undefined}
+                  onBookmark={onBookmark ? () => onBookmark(thread.id) : undefined}
+                  onReport={onReport ? () => onReport(thread.id) : undefined}
+                  onShare={onShare ? () => onShare(thread.id) : undefined}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     );

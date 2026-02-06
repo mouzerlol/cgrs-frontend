@@ -8,6 +8,8 @@ import type {
   UserTitle,
   UserBadge,
   ForumUserStats,
+  LatestReply,
+  ThreadWithLatestReply,
 } from '@/types';
 
 // =============================================================================
@@ -204,6 +206,50 @@ export async function getThreadsByUser(userId: string): Promise<Thread[]> {
     );
 }
 
+export interface GetThreadsWithLatestReplyResult {
+  threads: ThreadWithLatestReply[];
+  total: number;
+}
+
+/**
+ * Get threads with computed latest reply for each thread.
+ * Useful for thread list views that show recent activity.
+ */
+export async function getThreadsWithLatestReply(
+  options?: GetThreadsOptions
+): Promise<GetThreadsWithLatestReplyResult> {
+  const { threads: baseThreads, total } = await getThreads(options);
+  const { replies } = await importDiscussionsData();
+
+  // Build a map of latest reply per thread
+  const latestReplyByThread = new Map<string, LatestReply>();
+
+  for (const reply of replies) {
+    const existing = latestReplyByThread.get(reply.threadId);
+    const replyDate = new Date(reply.createdAt);
+
+    if (!existing || replyDate > new Date(existing.createdAt)) {
+      latestReplyByThread.set(reply.threadId, {
+        author: {
+          id: reply.author.id,
+          displayName: reply.author.displayName,
+          avatar: reply.author.avatar,
+        },
+        createdAt: reply.createdAt,
+        replyId: reply.id,
+      });
+    }
+  }
+
+  // Attach latest reply to each thread
+  const threadsWithReply: ThreadWithLatestReply[] = baseThreads.map((thread) => ({
+    ...thread,
+    latestReply: latestReplyByThread.get(thread.id),
+  }));
+
+  return { threads: threadsWithReply, total };
+}
+
 // =============================================================================
 // Replies API
 // =============================================================================
@@ -344,12 +390,14 @@ export async function getCategoryStats(): Promise<
 
   // Initialize stats for each category
   const categories: DiscussionCategorySlug[] = [
+    'introductions',
     'announcements',
     'parking',
     'waste-management',
     'questions-help',
     'neighborhood-watch',
     'general',
+    'events',
   ];
 
   for (const category of categories) {

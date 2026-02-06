@@ -42,11 +42,6 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
       }
     }, [value]);
 
-    // Focus on mount
-    useEffect(() => {
-      textareaRef.current?.focus();
-    }, []);
-
     const handleSubmit = () => {
       if (value.trim() && !isSubmitting) {
         onSubmit(value.trim());

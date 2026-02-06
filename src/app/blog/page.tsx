@@ -2,14 +2,10 @@
 
 import { NewsArticle } from '@/types';
 import PageHeader from '@/components/sections/PageHeader';
-import NewsContent from '@/components/news/NewsContent';
+import BlogListing from '@/components/blog/BlogListing';
 
-// Import data
 import newsData from '@/data/news.json';
 
-/**
- * Blog page with React Query and Suspense loading states.
- */
 export default function BlogPage() {
   const articles = newsData.articles as NewsArticle[];
 
@@ -22,7 +18,7 @@ export default function BlogPage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      <NewsContent articles={articles} />
+      <BlogListing articles={articles} />
     </div>
   );
 }

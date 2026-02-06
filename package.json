@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:static": "next build && next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --reporter=list",
+    "test:e2e:install": "playwright install --with-deps chromium"
   },
   "keywords": [
     "nextjs",
@@ -29,7 +32,7 @@
     "framer-motion": "^12.24.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.562.0",
-    "next": "^15.5.4",
+    "next": "^15.5.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.4.0",

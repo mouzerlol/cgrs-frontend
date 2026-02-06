@@ -14,7 +14,7 @@ const QUICK_LINKS = [
 ];
 
 const SUPPORT_LINKS = [
-  { name: 'Report an Issue', href: '/contact?subject=issue' },
+  { name: 'Report an Issue', href: '/management-request' },
   { name: 'Help FAQ', href: '/guidelines#faq' },
   { name: 'Community Rules', href: '/guidelines' },
   { name: 'Contact Us', href: '/contact' },

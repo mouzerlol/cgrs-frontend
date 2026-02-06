@@ -62,28 +62,29 @@ export default function NewsGrid({
 function NewsCard({ article }: { article: NewsArticle }) {
   const [ref, isVisible] = useIntersectionObserver<HTMLElement>({ threshold: 0.1 });
 
-  // Use a placeholder image if none provided
   const imageUrl = article.image || 'https://placehold.co/800x600/f4a261/white?text=Community+News';
 
   return (
-    <article
-      ref={ref}
-      className={`card cursor-pointer fade-up ${isVisible ? 'visible' : ''}`}
-    >
-      <div className="card-image-wrapper">
-        <Image
-          src={imageUrl}
-          alt={article.title}
-          fill
-          className="card-image"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
-      </div>
-      <div className="card-content">
-        <p className="news-date">{formatDate(article.date)}</p>
-        <h3 className="news-title">{article.title}</h3>
-        <p className="news-excerpt">{article.excerpt}</p>
-      </div>
-    </article>
+    <Link href={`/blog/${article.slug}`}>
+      <article
+        ref={ref}
+        className={`card cursor-pointer fade-up ${isVisible ? 'visible' : ''}`}
+      >
+        <div className="card-image-wrapper">
+          <Image
+            src={imageUrl}
+            alt={article.title}
+            fill
+            className="card-image"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        </div>
+        <div className="card-content">
+          <p className="news-date">{formatDate(article.date)}</p>
+          <h3 className="news-title">{article.title}</h3>
+          <p className="news-excerpt">{article.excerpt}</p>
+        </div>
+      </article>
+    </Link>
   );
 }

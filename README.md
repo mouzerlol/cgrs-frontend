@@ -24,7 +24,7 @@ A modern, responsive website for the Coronation Gardens Residents Society in Man
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v3
-- **Deployment**: Vercel (static export)
+- **Deployment**: Vercel (SSR/SSG hybrid)
 - **Content**: JSON files (future CMS ready)
 - **Forms**: Formspree integration ready
 - **CAPTCHA**: hCaptcha integration ready
@@ -124,7 +124,7 @@ The JSON structure is designed for easy migration to:
 Custom color palette and design tokens are configured in `tailwind.config.js`.
 
 ### Next.js
-Static export configuration in `next.config.js` for Vercel deployment.
+Next.js 15 App Router with mixed rendering strategies (SSG + SSR). Configured for optimal Vercel deployment. See `DEPLOYMENT.md` for detailed deployment documentation.
 
 ### TypeScript
 Strict type checking with custom type definitions for content and components.
@@ -139,17 +139,43 @@ Strict type checking with custom type definitions for content and components.
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Configure build settings:
-   - Build Command: `npm run build`
-   - Output Directory: `out`
-3. Deploy automatically on push to main branch
 
-### Manual Deployment
-```bash
-npm run build
-# Upload the 'out' directory to your hosting provider
-```
+This project is configured for automatic deployment to Vercel. See `DEPLOYMENT.md` for comprehensive deployment documentation.
+
+#### Quick Start
+
+1. **Automatic Deployment** (Recommended):
+   - Connect your GitHub repository to Vercel
+   - Vercel auto-detects Next.js and configures build settings
+   - Every push to main branch triggers automatic deployment
+   - Preview deployments created for pull requests
+
+2. **Manual Deployment via CLI**:
+   ```bash
+   # Install Vercel CLI (if not already installed)
+   npm i -g vercel
+
+   # Login to Vercel
+   vercel login
+
+   # Deploy to production
+   vercel --prod
+   ```
+
+#### Build Configuration
+
+- **Build Command**: `npm run build` (auto-detected)
+- **Output Directory**: `.next` (auto-detected)
+- **Framework**: Next.js 15 (auto-detected)
+- **Node Version**: 18+ (auto-detected)
+
+#### Project Status
+
+- ✅ Already linked to Vercel project
+- ✅ Project ID: `prj_83OCS3oa9f37Y5GkWUa9Bt1OSDU4`
+- ✅ Configured for SSR/SSG hybrid rendering
+
+For detailed information about Next.js bundling, Vercel deployment process, and troubleshooting, see [`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
 ## 🔒 Security Features
 

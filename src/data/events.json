@@ -2,36 +2,63 @@
   "events": [
     {
       "id": "1",
+      "slug": "summer-barbecue",
       "title": "Summer Barbecue",
       "date": "2026-01-15",
-      "time": "12:00 PM - 4:00 PM",
+      "time": "12:00 PM",
+      "endTime": "4:00 PM",
       "location": "Rooftop Terrace",
       "description": "Join us for our annual summer barbecue on the rooftop terrace.",
-      "rsvp": false,
+      "fullContent": "The annual summer barbecue is back! We'll have a fully catered spread with grilled meats, fresh salads, and desserts. Drinks will be available from the bar.\n\nPlease RSVP so we can plan for numbers. Families and friends are welcome! The rooftop terrace offers stunning views, so bring your camera.\n\nWeather backup: If it rains, we'll move to the Common Room.",
+      "rsvp": true,
       "featured": true,
-      "image": "/images/events/barbecue.svg"
+      "image": "/images/events/barbecue.svg",
+      "eventType": "Social",
+      "hasMap": false,
+      "discussionThreadId": "thread-events-1"
     },
     {
       "id": "2",
+      "slug": "yoga-in-the-garden",
       "title": "Yoga in the Garden",
       "date": "2026-01-22",
-      "time": "8:00 AM - 9:00 AM",
+      "time": "8:00 AM",
+      "endTime": "9:00 AM",
       "location": "Community Garden",
       "description": "Morning yoga session led by resident instructor.",
+      "fullContent": "Start your morning with a relaxing yoga session in our beautiful community garden. All levels welcome - from beginners to experienced practitioners.\n\nPlease bring your own mat and water bottle. The session will be led by Sarah, our certified yoga instructor who has been practicing for 10 years.\n\nAfter the session, we'll have herbal tea and light refreshments.",
       "rsvp": true,
       "featured": false,
-      "image": "/images/events/yoga.svg"
+      "image": "/images/events/yoga.svg",
+      "eventType": "Wellness",
+      "hasMap": true,
+      "mapDestination": {
+        "lat": -36.9477,
+        "lng": 174.7893,
+        "label": "Mangere Mountain Walkway"
+      },
+      "discussionThreadId": "thread-events-2",
+      "organizer": {
+        "name": "Sarah Chen",
+        "title": "Certified Yoga Instructor"
+      }
     },
     {
       "id": "3",
+      "slug": "monthly-residents-meeting",
       "title": "Monthly Residents Meeting",
       "date": "2026-02-01",
-      "time": "7:00 PM - 8:30 PM",
+      "time": "7:00 PM",
+      "endTime": "8:30 PM",
       "location": "Common Room",
       "description": "Common room meeting to discuss community matters.",
+      "fullContent": "Join us for our monthly residents meeting where we'll discuss important community matters including:\n\n- Budget update for Q1\n- Upcoming maintenance schedule\n- New amenity booking system\n- Community feedback session\n\nAll residents are encouraged to attend. Light refreshments will be provided.",
       "rsvp": false,
       "featured": false,
-      "image": "/images/events/meeting.svg"
+      "image": "/images/events/meeting.svg",
+      "eventType": "Meeting",
+      "hasMap": false,
+      "discussionThreadId": "thread-events-3"
     }
   ]
 }

@@ -1,6 +1,15 @@
 {
   "categories": [
     {
+      "slug": "introductions",
+      "name": "Introductions",
+      "description": "Welcome new residents! Introduce yourself to the community",
+      "icon": "lucide:hand-wave",
+      "color": "sage",
+      "maxBodyLength": 300,
+      "isSpecial": true
+    },
+    {
       "slug": "announcements",
       "name": "Announcements",
       "description": "Official updates from the committee and important community notices",
@@ -34,6 +43,13 @@
       "description": "Safety updates, security concerns, and community vigilance",
       "icon": "lucide:eye",
       "color": "forest"
+    },
+    {
+      "slug": "events",
+      "name": "Events",
+      "description": "Discussion threads for community events",
+      "icon": "lucide:calendar",
+      "color": "terracotta"
     },
     {
       "slug": "general",

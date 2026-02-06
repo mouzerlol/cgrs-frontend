@@ -1,6 +1,84 @@
 {
   "threads": [
     {
+      "id": "thread-intro-001",
+      "title": "Hello from Block D! New to the neighborhood",
+      "body": "Hi everyone! My name is Sarah and I just moved into Block D last week with my husband and our golden retriever, Max. We're really excited to be here!\n\nI work as a graphic designer from home, and my husband is an engineer at a local firm. We were looking for a community with nice amenities and friendly neighbors - so far we're loving it!\n\nA few quick facts about us:\n• We're both avid hikers and love exploring local tracks\n• I'm trying to get into gardening (any tips for balcony plants would be appreciated!)\n• We enjoy hosting dinner parties\n\nLooking forward to meeting you all at the next community event!",
+      "category": "introductions",
+      "author": {
+        "id": "user-intro-001",
+        "displayName": "SarahDesigns",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": ["newcomer"],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 0,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-14"
+      },
+      "createdAt": "2026-01-15T09:00:00",
+      "upvotes": 12,
+      "upvotedBy": ["user-001", "user-002", "user-003", "user-005"],
+      "replyCount": 4,
+      "isPinned": false,
+      "bookmarkedBy": ["user-003"],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-intro-002",
+      "title": "Moving in this weekend! Any tips for a first-time apartment dweller?",
+      "body": "Hey CGRS community!\n\nI'm James, and I'm moving into Block B this Saturday. This will be my first time living in an apartment/strata situation, so I have a few questions:\n\n• What are the must-know rules I should be aware of?\n• Any recommended moving companies or tips for the move?\n• Best spots to grab coffee or food nearby?\n\nA bit about me: I'm a recent grad working in tech, into gaming, photography, and trying to stay active. Very excited to start this new chapter!\n\nSee you around!",
+      "category": "introductions",
+      "author": {
+        "id": "user-intro-002",
+        "displayName": "JamesTech",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 0,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-15"
+      },
+      "createdAt": "2026-01-15T11:30:00",
+      "upvotes": 8,
+      "upvotedBy": ["user-002", "user-004", "user-001"],
+      "replyCount": 3,
+      "isPinned": false,
+      "bookmarkedBy": [],
+      "reportedBy": []
+    },
+    {
+      "id": "thread-intro-003",
+      "title": "Empty nesters moving to Coronation Gardens",
+      "body": "Dear Neighbors,\n\nMy wife Margaret and I are delighted to be joining your community. We've lived in Mangere Bridge for 30 years but decided to downsize now that our kids have left home.\n\nWe were drawn to Coronation Gardens for its beautiful gardens and sense of community. After visiting several times and seeing how well-maintained everything is, we knew this was the place for us.\n\nA bit about us:\n• We've been married for 35 years\n• Margaret is retired from nursing at Middlemore Hospital\n• I'm a retired teacher, formerly at Pt England School\n• We love gardening, walking, and meeting new people\n• Our daughter lives in Sydney, son in Wellington\n\nWe're looking forward to becoming part of this wonderful community. If anyone has recommendations for the best walking groups or gardening clubs, we'd love to hear about them!\n\nWarm regards,\nDavid and Margaret",
+      "category": "introductions",
+      "author": {
+        "id": "user-intro-003",
+        "displayName": "DavidAndMargaret",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 0,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-13"
+      },
+      "createdAt": "2026-01-14T14:00:00",
+      "upvotes": 18,
+      "upvotedBy": ["user-001", "user-003", "user-005", "user-002", "user-004"],
+      "replyCount": 5,
+      "isPinned": false,
+      "bookmarkedBy": ["user-001", "user-003"],
+      "reportedBy": []
+    },
+    {
       "id": "thread-001",
       "title": "Welcome to the CGRS Community Discussion Board!",
       "body": "We're excited to launch our new community forum! This is your space to connect with fellow residents, share ideas, ask questions, and stay informed about what's happening in Coronation Gardens.\n\nFeel free to explore the different categories and start conversations. Remember to be respectful and helpful to your neighbors. Together, we can build an even stronger community!",
@@ -228,6 +306,263 @@
     }
   ],
   "replies": [
+    {
+      "id": "reply-intro-001",
+      "threadId": "thread-intro-001",
+      "body": "Welcome Sarah! Max is such a cute name for your golden retriever. We're in Block C and have a labradoodle - maybe they can be friends at the dog park area! The community has a great walking group that meets Saturday mornings if you're interested.",
+      "author": {
+        "id": "user-004",
+        "displayName": "NewNeighbor2026",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 3,
+          "repliesCount": 2,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-12"
+      },
+      "createdAt": "2026-01-15T09:45:00",
+      "upvotes": 5,
+      "upvotedBy": ["user-intro-001", "user-005"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-002",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-001",
+      "body": "Ooh yes! I'm in Block C too with my cavoodle. @NewNeighbor2026 - what's the schedule for the walking group? I'd love to join!",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-15T10:15:00",
+      "upvotes": 3,
+      "upvotedBy": ["user-intro-001", "user-004"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-intro-003",
+      "threadId": "thread-intro-001",
+      "body": "Welcome to the neighborhood Sarah! For balcony gardening, my top tip is to use self-watering pots - they have been game changers for me. Also, succulents are surprisingly hardy if you get lots of sun on your balcony. Feel free to DM me if you want to chat more about plants!",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-15T09:30:00",
+      "upvotes": 7,
+      "upvotedBy": ["user-intro-001", "user-005", "user-002"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-004",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-003",
+      "body": "Thank you so much! Self-watering pots sound perfect for someone like me who's still learning. I definitely need to try succulents - do you know if they do okay with the sea breeze around here?",
+      "author": {
+        "id": "user-intro-001",
+        "displayName": "SarahDesigns",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": ["newcomer"],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 1,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-14"
+      },
+      "createdAt": "2026-01-15T10:00:00",
+      "upvotes": 2,
+      "upvotedBy": ["user-003"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-intro-005",
+      "threadId": "thread-intro-002",
+      "body": "Welcome James! Block B resident here. For moving tips: book the lift early (email the building manager), and bring boxes that fit through the doors. Moving company-wise, I used 'Auckland Movers Plus' and they were great.\n\nBest coffee: The Bridge Cafe on Coronation Road. Best pizza: Vinnies Eatery. You're going to love it here!",
+      "author": {
+        "id": "user-002",
+        "displayName": "BlockAResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 34,
+          "repliesCount": 28,
+          "threadsCreated": 5
+        },
+        "createdAt": "2026-01-02"
+      },
+      "createdAt": "2026-01-15T12:00:00",
+      "upvotes": 6,
+      "upvotedBy": ["user-intro-002", "user-004"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-006",
+      "threadId": "thread-intro-002",
+      "parentReplyId": "reply-intro-005",
+      "body": "Seconding The Bridge Cafe! Their Sunday brunch is amazing. Also +1 for booking the lift early - learned that lesson the hard way on my move day 😅",
+      "author": {
+        "id": "user-004",
+        "displayName": "NewNeighbor2026",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 3,
+          "repliesCount": 2,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-12"
+      },
+      "createdAt": "2026-01-15T12:30:00",
+      "upvotes": 4,
+      "upvotedBy": ["user-intro-002", "user-002"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-intro-007",
+      "threadId": "thread-intro-002",
+      "body": "Welcome James! Quick tip for first-timers: make sure you read the body corporate rules carefully, especially about renovations and alterations. The committee sends a welcome packet with all the essentials - check your email from last week.\n\nRe: gaming - there are a few of us who play on Switch and PC, maybe we can organize a gaming night sometime?",
+      "author": {
+        "id": "user-005",
+        "displayName": "WatchfulResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Master Cultivator",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 67,
+          "repliesCount": 45,
+          "threadsCreated": 12
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-15T14:00:00",
+      "upvotes": 5,
+      "upvotedBy": ["user-intro-002", "user-001"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-008",
+      "threadId": "thread-intro-003",
+      "body": "Welcome David and Margaret! What a lovely introduction. We've been here 3 years and can confirm you've chosen a wonderful community. There's a lovely walking group that meets every Tuesday and Thursday morning - usually starts from the community garden area around 8am.\n\nMargaret might enjoy the garden committee - they're always looking for experienced gardeners!",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": ["green-thumb"],
+        "stats": {
+          "upvotesReceived": 12,
+          "repliesCount": 8,
+          "threadsCreated": 2
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-14T15:00:00",
+      "upvotes": 8,
+      "upvotedBy": ["user-intro-003", "user-001", "user-005"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-009",
+      "threadId": "thread-intro-003",
+      "body": "David and Margaret, welcome! Your daughter would be proud of you for downsizing and embracing this new adventure. Margaret - if you're interested in nursing connections, there's a retired nurses coffee group that meets monthly. Let me know and I'll add you to the list!\n\nDavid - there's also a men's walking group that meets Saturday mornings. Great bunch of guys, very welcoming.",
+      "author": {
+        "id": "user-001",
+        "displayName": "CGRSCommittee",
+        "avatar": "/images/avatars/committee.svg",
+        "title": "Garden Guardian",
+        "badges": ["founding-member", "committee"],
+        "stats": {
+          "upvotesReceived": 156,
+          "repliesCount": 42,
+          "threadsCreated": 15
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-14T16:00:00",
+      "upvotes": 11,
+      "upvotedBy": ["user-intro-003", "user-003", "user-005", "user-002"],
+      "reportedBy": [],
+      "depth": 0
+    },
+    {
+      "id": "reply-intro-010",
+      "threadId": "thread-intro-003",
+      "parentReplyId": "reply-intro-009",
+      "body": "Oh that sounds wonderful! I'd love to be added to the retired nurses coffee group, thank you so much for the suggestion. My nursing career was such a big part of my life, it would be lovely to connect with others who understand.\n\nDavid is already excited about the men's walking group!",
+      "author": {
+        "id": "user-intro-003",
+        "displayName": "DavidAndMargaret",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Budding Gardener",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 2,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-13"
+      },
+      "createdAt": "2026-01-14T17:00:00",
+      "upvotes": 6,
+      "upvotedBy": ["user-001", "user-003"],
+      "reportedBy": [],
+      "depth": 1
+    },
+    {
+      "id": "reply-intro-011",
+      "threadId": "thread-intro-003",
+      "body": "Welcome to the community, David and Margaret! Such a beautiful story. We've lived here for 5 years and the gardens truly are something special. The rose garden in particular is worth a visit this time of year.\n\nIf you ever need help with anything during your move-in, please don't hesitate to ask. That's what neighbors are for!",
+      "author": {
+        "id": "user-005",
+        "displayName": "WatchfulResident",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Master Cultivator",
+        "badges": ["early-bird", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 67,
+          "repliesCount": 45,
+          "threadsCreated": 12
+        },
+        "createdAt": "2026-01-01"
+      },
+      "createdAt": "2026-01-14T18:00:00",
+      "upvotes": 7,
+      "upvotedBy": ["user-intro-003", "user-001", "user-003"],
+      "reportedBy": [],
+      "depth": 0
+    },
     {
       "id": "reply-001",
       "threadId": "thread-001",

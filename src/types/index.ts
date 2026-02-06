@@ -13,6 +13,7 @@ export interface Committee {
 
 export interface NewsArticle {
   id: string;
+  slug: string;
   title: string;
   excerpt: string;
   content: string;
@@ -20,18 +21,53 @@ export interface NewsArticle {
   category: 'general' | 'guidelines' | 'events' | 'maintenance' | 'policy';
   image: string;
   featured: boolean;
+  author: string;
+  readTime?: string;
+}
+
+export interface EventOrganizer {
+  name: string;
+  avatar?: string;
+  title: string;
 }
 
 export interface Event {
   id: string;
+  slug: string;
   title: string;
   date: string;
   time: string;
+  endTime?: string;
   location: string;
   description: string;
+  fullContent?: string;
   rsvp: boolean;
   featured: boolean;
-  image?: string;
+  image: string;
+  eventType: string;
+  hasMap: boolean;
+  mapDestination?: {
+    lat: number;
+    lng: number;
+    label: string;
+  };
+  discussionThreadId?: string;
+  organizer?: EventOrganizer;
+}
+
+export type RsvpStatus = 'attending' | 'maybe' | 'interested';
+
+export interface EventRsvp {
+  eventId: string;
+  status: RsvpStatus;
+  createdAt: string;
+}
+
+export interface MiniCalendarEvent {
+  slug: string;
+  title: string;
+  date: string;
+  eventType: string;
 }
 
 export interface SiteConfig {
@@ -76,6 +112,7 @@ export interface CalendarItem {
   category: string;
   image?: string; // Optional, falls back to category default
   author: CalendarItemAuthor;
+  slug?: string; // URL slug for linking to full page
 }
 
 export interface DateGrouping {
@@ -105,7 +142,9 @@ export type DiscussionCategorySlug =
   | 'waste-management'
   | 'questions-help'
   | 'neighborhood-watch'
-  | 'general';
+  | 'general'
+  | 'events'
+  | 'introductions';
 
 /**
  * Discussion category with metadata for display.
@@ -118,6 +157,10 @@ export interface DiscussionCategory {
   icon: string; // Iconify icon name (e.g., "lucide:megaphone")
   color: 'terracotta' | 'forest' | 'sage';
   isDefault?: boolean;
+  /** Maximum body length in characters (e.g., 300 for introductions) */
+  maxBodyLength?: number;
+  /** Whether this category has special thread behavior */
+  isSpecial?: boolean;
 }
 
 /**
@@ -274,7 +317,7 @@ export interface Reply {
 /**
  * Sort options for thread listings.
  */
-export type ThreadSortOption = 'newest' | 'most-upvoted' | 'most-discussed';
+export type ThreadSortOption = 'newest' | 'oldest' | 'most-replies' | 'most-upvotes' | 'most-upvoted' | 'most-discussed';
 
 /**
  * Filter options for thread queries.
@@ -284,4 +327,26 @@ export interface ThreadFilters {
   search?: string;
   sort?: ThreadSortOption;
   pinnedOnly?: boolean;
+}
+
+/**
+ * Latest reply info for compact thread cards.
+ * Used to show who replied most recently without loading all replies.
+ */
+export interface LatestReply {
+  author: {
+    id: string;
+    displayName: string;
+    avatar?: string;
+  };
+  createdAt: string;
+  replyId: string;
+}
+
+/**
+ * Thread with computed latest reply.
+ * Extended type for thread list views that show recent activity.
+ */
+export interface ThreadWithLatestReply extends Thread {
+  latestReply?: LatestReply;
 }

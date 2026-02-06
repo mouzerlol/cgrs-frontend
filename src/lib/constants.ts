@@ -9,7 +9,7 @@ export const SITE_CONFIG = {
 
 export const NAVIGATION_ITEMS = [
   { name: 'Discussion', href: '/discussion' },
-  { name: 'Report Issue', href: '/contact?subject=report' },
+  { name: 'Report Issue', href: '/management-request' },
   { name: 'Calendar', href: '/calendar' },
   { name: 'Blog', href: '/blog' },
 ] as const;
@@ -27,10 +27,10 @@ export const UTILITY_DOCK_ITEMS = [
     label: 'Notice\nBoard',
   },
   {
-    name: 'Maintenance Request',
-    href: '/contact?subject=maintenance',
+    name: 'Management Request',
+    href: '/management-request',
     icon: '/icons/maintenance-request-icon.png',
-    label: 'Maintenance\nRequest',
+    label: 'Management\nRequest',
   },
   {
     name: 'Community Events',

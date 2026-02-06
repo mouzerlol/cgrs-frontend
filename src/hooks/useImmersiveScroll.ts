@@ -1,9 +1,11 @@
 'use client';
 
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 
 /**
  * Hook for scroll behavior - positions content below fixed nav on user interaction.
+ * Note: For initial page scroll (e.g., on /map), use a direct useEffect in the component
+ * rather than relying on scrollOnMount, for more reliable behavior.
  */
 export function useImmersiveScroll(
   sectionRef: React.RefObject<HTMLElement | null>,
@@ -16,12 +18,18 @@ export function useImmersiveScroll(
   const hasScrolledRef = useRef(false);
   const ignoreScrollRef = useRef(false);
   const lastScrollRef = useRef(0);
+  const [isReady, setIsReady] = useState(false);
 
   const enterImmersive = useCallback(() => {
-    if (hasScrolledRef.current || !sectionRef.current) return;
+    if (hasScrolledRef.current) return;
 
     hasScrolledRef.current = true;
     ignoreScrollRef.current = true;
+
+    if (!sectionRef.current) {
+      setIsReady(true);
+      return;
+    }
 
     const rect = sectionRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -30,7 +38,7 @@ export function useImmersiveScroll(
 
     window.scrollTo({
       top: Math.max(0, targetY),
-      behavior: 'smooth',
+      behavior: 'instant',
     });
 
     setTimeout(() => {
@@ -72,6 +80,13 @@ export function useImmersiveScroll(
       enterImmersive();
     }
   }, [scrollOnMount, enterImmersive]);
+
+  useEffect(() => {
+    if (isReady && sectionRef.current && !hasScrolledRef.current) {
+      enterImmersive();
+      setIsReady(false);
+    }
+  }, [isReady, sectionRef, enterImmersive]);
 
   return {
     enterImmersive,

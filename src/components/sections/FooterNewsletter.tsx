@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import Button from '@/components/ui/Button';
 
 /**
@@ -13,7 +12,6 @@ export default function FooterNewsletter() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [ref, isVisible] = useIntersectionObserver<HTMLElement>({ threshold: 0.2 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +30,7 @@ export default function FooterNewsletter() {
 
   return (
     <section
-      ref={ref}
-      className={`relative min-h-[450px] flex items-center justify-center overflow-hidden fade-up ${isVisible ? 'visible' : ''}`}
+      className="relative min-h-[340px] flex items-center justify-center overflow-hidden mt-8 md:mt-16"
     >
       {/* Background Image with overlays */}
       <div className="absolute inset-0 z-0">
@@ -51,7 +48,7 @@ export default function FooterNewsletter() {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 py-12 md:py-16">
+      <div className="container relative z-10 py-12 md:py-20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-display text-3xl md:text-4xl font-semibold text-bone mb-4">
             Stay Connected

@@ -1,0 +1,16 @@
+# Beads (bd) tool files
+.beads/
+
+# Development files
+.cursor/
+.cache/
+*.log
+
+# Test files
+tests/
+playwright.config.ts
+
+# Build artifacts (already handled, but explicit)
+.next/
+out/
+dist/

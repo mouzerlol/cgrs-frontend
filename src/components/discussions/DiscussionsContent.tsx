@@ -41,7 +41,7 @@ export default function DiscussionsContent({
   // State for filters
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ThreadSortOption>('newest');
-  const [viewMode, setViewMode] = useState<'card' | 'compact'>('card');
+  const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
   // Fetch threads with filters
   const { data: threadsData, isLoading } = useThreads({

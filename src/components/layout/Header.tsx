@@ -18,7 +18,7 @@ export default function Header() {
     <header className="nav">
       {/* Logo */}
       <Link href="/" className="nav-logo" onClick={closeMenu}>
-        <span className="flex flex-col">
+        <span className="flex flex-col leading-tight">
           <span className="block whitespace-nowrap">CORONATION</span>
           <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
         </span>

@@ -14,6 +14,7 @@ import {
   getUserBadges,
   getUserBadge,
   getForumStats,
+  getThreadsWithLatestReply,
   type GetThreadsOptions,
 } from '@/lib/api/discussions';
 import type { DiscussionCategorySlug } from '@/types';
@@ -35,6 +36,8 @@ export const discussionKeys = {
     [...discussionKeys.threads(), 'list', options] as const,
   threadDetail: (id: string) =>
     [...discussionKeys.threads(), 'detail', id] as const,
+  threadListWithLatestReply: (options?: GetThreadsOptions) =>
+    [...discussionKeys.threads(), 'listWithLatestReply', options] as const,
   pinnedThreads: (category?: DiscussionCategorySlug) =>
     [...discussionKeys.threads(), 'pinned', category] as const,
   userThreads: (userId: string) =>
@@ -108,6 +111,17 @@ export function useUserThreads(userId: string) {
     queryKey: discussionKeys.userThreads(userId),
     queryFn: () => getThreadsByUser(userId),
     enabled: !!userId,
+  });
+}
+
+/**
+ * Fetch threads with computed latest reply info.
+ * Useful for thread list views that show recent activity.
+ */
+export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
+  return useQuery({
+    queryKey: discussionKeys.threadListWithLatestReply(options),
+    queryFn: () => getThreadsWithLatestReply(options),
   });
 }
 

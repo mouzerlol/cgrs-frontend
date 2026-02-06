@@ -9,8 +9,9 @@ import MapSkeleton from '@/components/map/MapSkeleton';
  * Dedicated Map page for exploring Coronation Gardens
  * Features an interactive Leaflet map with POIs
  *
- * Uses Suspense boundary to enable streaming and show a skeleton
- * while the MapSection component and its data load.
+ * The MapSection component handles scrolling to show the map below
+ * the fixed header via useImmersiveScroll with scrollOnMount: true.
+ * This is an intentional exception to the global scroll-to-top behavior.
  */
 export default function MapPage() {
   return (

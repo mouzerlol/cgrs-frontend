@@ -23,12 +23,12 @@ export default function Navigation() {
   }, [handleClickOutside]);
 
   return (
-    <nav className="hidden md:flex items-center gap-10">
+    <nav className="hidden md:flex items-center gap-8 lg:gap-10">
       {NAVIGATION_ITEMS.map((item) => (
         <Link
           key={item.name}
           href={item.href}
-          className="nav-link text-bone text-[0.875rem]"
+          className="nav-link text-bone text-[0.875rem] whitespace-nowrap"
         >
           {item.name}
         </Link>
@@ -37,7 +37,7 @@ export default function Navigation() {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="nav-link text-bone text-[0.875rem] flex items-center gap-2 font-bold"
+          className="nav-link text-bone text-[0.875rem] flex items-center gap-2 font-bold whitespace-nowrap"
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
         >

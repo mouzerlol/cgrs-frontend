@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,16 @@ export function CalendarItemCard({
 }: CalendarItemCardProps) {
   const config = getCategoryConfig(item.type, item.category);
   const imageSrc = item.image || config.defaultImage;
+
+  const getReadMoreHref = () => {
+    if (!item.slug) return null;
+    if (item.type === 'event') {
+      return `/calendar/${item.slug}`;
+    }
+    return `/blog/${item.slug}`;
+  };
+
+  const readMoreHref = getReadMoreHref();
 
   return (
     <div
@@ -75,6 +86,14 @@ export function CalendarItemCard({
                 </div>
               )}
               <p className="calendar-item-description">{item.description}</p>
+              {readMoreHref && (
+                <Link
+                  href={readMoreHref}
+                  className="calendar-item-read-more"
+                >
+                  Read more →
+                </Link>
+              )}
               <div className="calendar-item-author">
                 <Image
                   src={item.author.avatar}

@@ -28,6 +28,7 @@ interface ThreadCardProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * Card view for a discussion thread.
  * Reddit-inspired design with upvote, author info, and preview.
+ * Shows featured image on left side when available.
  * Default view for thread listings.
  * Entire card is clickable to navigate to thread detail.
  */
@@ -68,15 +69,19 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
       onBookmark?.();
     };
 
+    // Check if thread has images for the left-side layout
+    const hasImages = thread.images && thread.images.length > 0;
+    const featuredImage = hasImages ? thread.images![0] : null;
+
     return (
       <div
         ref={ref}
         className={cn(
-          'relative bg-white rounded-2xl border border-sage/30',
+          'relative bg-white rounded-2xl border border-sage/30 overflow-hidden',
           // Dramatic hover animation - lift, scale, shadow, border glow
           'transition-all duration-300 ease-out',
-          'hover:-translate-y-3 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(217,93,57,0.2)]',
-          'hover:border-terracotta/50',
+          'hover:-translate-y-2 hover:shadow-[0_16px_32px_rgba(217,93,57,0.15)]',
+          'hover:border-terracotta/40',
           // Pinned state
           thread.isPinned && 'border-l-4 border-l-terracotta',
           className
@@ -88,8 +93,26 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
           className="block"
         >
           <div className="flex">
+            {/* Featured Image (Left Side) - Only shown when images exist */}
+            {hasImages && featuredImage && (
+              <div className="relative w-32 md:w-40 flex-shrink-0 bg-sage-light">
+                <Image
+                  src={featuredImage.url || featuredImage.thumbnail}
+                  alt={featuredImage.alt || thread.title}
+                  fill
+                  className="object-cover"
+                />
+                {/* Image count badge if multiple images */}
+                {thread.images!.length > 1 && (
+                  <div className="absolute bottom-2 right-2 bg-forest/80 text-bone text-xs px-2 py-0.5 rounded-full">
+                    +{thread.images!.length - 1}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Upvote Column */}
-            <div className="flex-shrink-0 p-4 flex flex-col items-center">
+            <div className="flex-shrink-0 p-3 md:p-4 flex flex-col items-center">
               <UpvoteButton
                 count={thread.upvotes}
                 isUpvoted={hasUpvoted}
@@ -99,9 +122,9 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 py-4 pr-4 min-w-0">
+            <div className="flex-1 py-3 md:py-4 pr-3 md:pr-4 min-w-0">
               {/* Header: Category + Pin + Time */}
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                 {thread.isPinned && (
                   <span className="inline-flex items-center gap-1 text-xs font-semibold text-terracotta">
                     <Icon icon="lucide:pin" className="w-3 h-3" />
@@ -117,46 +140,20 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
               </div>
 
               {/* Title */}
-              <h3 className="font-display text-lg font-medium text-forest leading-snug mb-2 group-hover:text-terracotta transition-colors">
+              <h3 className="font-display text-base md:text-lg font-medium text-forest leading-snug mb-1.5 group-hover:text-terracotta transition-colors line-clamp-2">
                 {thread.title}
               </h3>
 
               {/* Body Preview */}
               {thread.body && (
-                <p className="text-sm text-forest/70 line-clamp-2 mb-3">
+                <p className="text-sm text-forest/70 line-clamp-2 mb-2">
                   {thread.body}
                 </p>
               )}
 
-              {/* Image Thumbnails */}
-              {thread.images && thread.images.length > 0 && (
-                <div className="flex gap-2 mb-3">
-                  {thread.images.slice(0, 3).map((img, idx) => (
-                    <div
-                      key={img.id}
-                      className="relative w-16 h-16 rounded-lg overflow-hidden bg-sage-light"
-                    >
-                      <Image
-                        src={img.thumbnail}
-                        alt={img.alt || `Image ${idx + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                      {thread.images!.length > 3 && idx === 2 && (
-                        <div className="absolute inset-0 bg-forest/60 flex items-center justify-center">
-                          <span className="text-bone text-sm font-semibold">
-                            +{thread.images!.length - 3}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
               {/* Poll Indicator */}
               {thread.poll && (
-                <div className="flex items-center gap-1.5 text-xs text-terracotta font-medium mb-3">
+                <div className="flex items-center gap-1.5 text-xs text-terracotta font-medium mb-2">
                   <Icon icon="lucide:bar-chart-2" className="w-4 h-4" />
                   <span>Poll: {thread.poll.question}</span>
                   {thread.poll.isClosed && (
@@ -166,10 +163,10 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
               )}
 
               {/* Footer: Author + Stats */}
-              <div className="flex items-center justify-between gap-4 pt-3 border-t border-sage/20">
+              <div className="flex items-center justify-between gap-3 pt-2 border-t border-sage/20">
                 <UserAvatar user={thread.author} size="sm" showBadges={false} />
 
-                <div className="flex items-center gap-4 text-sm text-forest/50">
+                <div className="flex items-center gap-3 text-sm text-forest/50">
                   <span className="flex items-center gap-1">
                     <Icon icon="lucide:message-circle" className="w-4 h-4" />
                     <span>{thread.replyCount}</span>

@@ -50,3 +50,8 @@ export { default as ThreadCardSkeleton } from './skeletons/ThreadCardSkeleton';
 export { default as DiscussionsLanding } from './DiscussionsLanding';
 export { default as DiscussionsContent } from './DiscussionsContent';
 export { ThreadForm } from './ThreadForm';
+
+// Sidebar Navigation Components
+export { DiscussionCategorySidebar } from './DiscussionCategorySidebar';
+export { DiscussionCategoryDropdown } from './DiscussionCategoryDropdown';
+export { DiscussionsSidebarLayout } from './DiscussionsSidebarLayout';

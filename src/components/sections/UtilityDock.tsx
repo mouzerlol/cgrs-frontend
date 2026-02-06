@@ -29,10 +29,10 @@ export default function UtilityDock({ items, useIconComponent = false }: Utility
 
   const defaultItems: UtilityDockItem[] = [
     {
-      name: 'Maintenance Request',
-      href: '/contact?subject=maintenance',
+      name: 'Management Request',
+      href: '/management-request',
       icon: '/icons/maintenance-request-icon.png',
-      label: 'Maintenance<br>Request',
+      label: 'Management<br>Request',
     },
     {
       name: 'Notice Board',

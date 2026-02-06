@@ -1,4 +1,4 @@
-.PHONY: help install dev build build_static start lint test clean
+.PHONY: help install dev build start lint test test_unit test_e2e test_all clean
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
@@ -12,17 +12,23 @@ dev: ## Start development server
 build: ## Build for production
 	npm run build
 
-build_static: ## Build static site
-	npm run build:static
-
 start: ## Start production server
 	npm run start
 
 lint: ## Run linter
 	npm run lint
 
-test: ## Run tests
+test: ## Run all tests (unit + e2e)
+	npm run test && npm run test:e2e
+
+test_unit: ## Run Vitest unit tests
 	npx vitest run
+
+test_e2e: ## Run Playwright e2e tests
+	npx playwright test --reporter=list
+
+test_all: ## Run all tests with coverage
+	npx vitest run --coverage && npx playwright test --reporter=list
 
 clean: ## Clean build artifacts
 	rm -rf .next/

@@ -39,6 +39,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
     isBookmarked = false,
     onUpvote,
     onBookmark,
+    onShare,
     onReport,
     replyCount = 0,
     className,

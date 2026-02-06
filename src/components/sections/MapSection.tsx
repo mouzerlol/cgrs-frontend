@@ -37,9 +37,42 @@ export default function MapSection({ className }: MapSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Use the immersive scroll hook for consistent behavior
+  // scrollOnMount: true ensures the page scrolls to show the map on initial load
   const { enterImmersive: scrollToFullView } = useImmersiveScroll(sectionRef, {
     scrollUpThreshold: 50,
+    scrollOnMount: true,
   });
+
+  // Direct scroll on mount - ensures the map section is visible below the fixed header
+  // This is a fallback/backup to useImmersiveScroll for more reliable behavior
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const scrollToMapSection = () => {
+      const element = sectionRef.current || document.querySelector('.map-section-wrapper');
+      if (!element) return;
+
+      const rect = element.getBoundingClientRect();
+      const navHeight = 64;
+      const targetY = rect.top + (window.scrollY || document.documentElement.scrollTop) - navHeight;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'instant',
+      });
+    };
+
+    scrollToMapSection();
+    const frameId = requestAnimationFrame(scrollToMapSection);
+    const timeoutId = setTimeout(scrollToMapSection, 100);
+    const timeoutId2 = setTimeout(scrollToMapSection, 300);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      clearTimeout(timeoutId);
+      clearTimeout(timeoutId2);
+    };
+  }, []);
 
   // Dynamic height based on viewport
   const [mapHeight, setMapHeight] = useState<number>(600);

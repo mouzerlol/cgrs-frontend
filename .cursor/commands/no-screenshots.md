@@ -10,6 +10,8 @@ CRITICAL INSTRUCTION: Do NOT take, capture, or append any screenshots during dev
 - Do not attempt to verify UI changes visually through screenshots
 
 ### Alternative Approaches:
+Example: browser_evaluate(() => document.querySelector('.result').textContent) then verify the returned text matches expectations.
+
 - Describe UI changes in text
 - Use code comments to explain visual elements
 - Provide detailed textual descriptions of expected visual output
