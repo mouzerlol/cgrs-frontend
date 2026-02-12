@@ -28,6 +28,7 @@ const nextConfig = {
   // Production optimizations
   compress: true,
   poweredByHeader: false, // Remove X-Powered-By header for security
+  productionBrowserSourceMaps: false, // Prevent source map leaks in production
 }
 
 module.exports = nextConfig

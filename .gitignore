@@ -107,5 +107,16 @@ Thumbs.db
 # Vercel
 .vercel
 
-.playwright-mcp/* 
+.playwright-mcp/*
 docs/*
+
+# Agent skills (local installs, regenerated per machine)
+.agents/
+.claude/
+.cursor/skills/
+
+# Playwright test results (regenerated on each run)
+test-results/
+
+# Squirrelscan runtime (DB is local, config is committed)
+.squirrel/

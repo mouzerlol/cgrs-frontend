@@ -48,13 +48,6 @@ const CARDS = [
     icon: 'document'
   },
   {
-    title: 'Community Projects',
-    description: 'Contribute ideas & initiatives',
-    href: '/projects',
-    type: 'simple' as const,
-    icon: 'lightbulb'
-  },
-  {
     title: 'Connect',
     description: 'Join our Facebook & Messenger',
     href: '/contact?subject=connect',
