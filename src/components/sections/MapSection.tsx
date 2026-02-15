@@ -91,7 +91,7 @@ export default function MapSection({ className }: MapSectionProps) {
     const maxHeight = window.innerHeight - navHeight - legendBuffer - padding;
 
     // Minimum height for usability
-    const minHeight = 400;
+    const minHeight = 500;
 
     return Math.max(minHeight, maxHeight);
   }, []);

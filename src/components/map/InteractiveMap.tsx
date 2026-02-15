@@ -149,7 +149,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
       )}
 
       {/* Map Container */}
-      <div className="map-container" style={{ background: '#f5f5f5', minHeight: '400px', marginLeft: showSidebar ? '280px' : 0 }}>
+      <div className="map-container" style={{ background: '#f5f5f5', minHeight: '500px', marginLeft: showSidebar ? '280px' : 0 }}>
         <BaseMap
           center={MAP_CENTER}
           zoom={MAP_ZOOM + 1}
