@@ -1,7 +1,14 @@
+'use client';
+
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import PageHeader from '@/components/sections/PageHeader';
-import MapSection from '@/components/sections/MapSection';
 import MapSkeleton from '@/components/map/MapSkeleton';
+
+const MapSection = dynamic(() => import('@/components/sections/MapSection'), {
+  ssr: false,
+  loading: () => <MapSkeleton />,
+});
 
 /**
  * Dedicated Map page for exploring Coronation Gardens
