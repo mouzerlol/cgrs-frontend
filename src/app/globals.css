@@ -1391,6 +1391,25 @@
   border-bottom: 1px solid var(--sage-light) !important;
 }
 
+/* Mobile: increase touch targets to WCAG 44px minimum */
+@media (max-width: 1024px) {
+  .leaflet-control-zoom a {
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+  }
+
+  .leaflet-control-zoom .leaflet-control-home-button {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .leaflet-control-zoom .leaflet-control-home-button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
 /* Ensure tiles render properly */
 .leaflet-tile {
   image-rendering: -webkit-optimize-contrast;
