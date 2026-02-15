@@ -5371,8 +5371,12 @@ img.leaflet-tile {
   border: 1px solid var(--sage);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(26, 34, 24, 0.12);
-  overflow: hidden;
+  max-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   list-style: none;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .category-dropdown-option {
