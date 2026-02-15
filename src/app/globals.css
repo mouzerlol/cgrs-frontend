@@ -16,6 +16,13 @@
   --sage: #A8B5A0;
   --sage-light: #E8EDE6;
 
+  /* Thread Tree Colors — slightly darkened for contrast against bone bg */
+  --thread-color-0: #8A9B82; /* sage darkened */
+  --thread-color-1: #D95D39; /* terracotta */
+  --thread-color-2: #C08E40; /* amber darkened */
+  --thread-color-3: #2C3E2D; /* forest-light */
+  --thread-color-4: #7A8C72; /* sage-dark muted */
+
   /* Typography - uses CSS variables from next/font/google */
   --font-display: var(--font-fraunces), serif;
   --font-body: var(--font-manrope), sans-serif;
@@ -958,8 +965,111 @@
 }
 
 /* ==========================================================================
-   Map Section Styles
+   Discussion Thread Tree Styles
    ========================================================================== */
+
+/* Thread line — vertical connector on the left side of nested comments */
+.thread-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  opacity: 0.6;
+  border-radius: 1.5px;
+  transition: opacity var(--transition-fast), width var(--transition-fast);
+  cursor: pointer;
+}
+
+/* Expand the clickable/touch area to 44px minimum around the thin line */
+.thread-line::before {
+  content: '';
+  position: absolute;
+  left: -21px;
+  right: -21px;
+  top: 0;
+  bottom: 0;
+}
+
+.thread-line:hover {
+  opacity: 1;
+  width: 4px;
+}
+
+.thread-line:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+/* Horizontal connector stub from thread line to comment */
+.thread-connector {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 20px;
+  height: 2px;
+  opacity: 0.5;
+  border-radius: 1px;
+}
+
+/* Subtle nested background to create visual channel */
+.thread-nested-bg {
+  background-color: rgba(168, 181, 160, 0.06);
+  border-radius: 8px;
+  padding: 8px 0 8px 0;
+}
+
+/* Collapse/expand animation using CSS grid row trick */
+.thread-children {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--transition-medium);
+}
+
+.thread-children[data-collapsed='true'] {
+  grid-template-rows: 0fr;
+}
+
+.thread-children-inner {
+  overflow: hidden;
+}
+
+/* Collapsed pill indicator */
+.thread-collapsed-pill {
+  transition: opacity var(--transition-fast);
+}
+
+/* Responsive: tighter indentation on mobile */
+@media (max-width: 639px) {
+  .thread-indent {
+    --thread-indent: 16px;
+  }
+
+  .thread-line {
+    width: 2px;
+  }
+
+  .thread-line:hover {
+    width: 3px;
+  }
+
+  .thread-connector {
+    width: 12px;
+  }
+
+  /* Reduce content padding from thread line on mobile */
+  .thread-content-pad {
+    padding-left: 1rem; /* 16px instead of 28px */
+  }
+}
+
+@media (min-width: 640px) {
+  .thread-indent {
+    --thread-indent: 32px;
+  }
+}
 
 /* ==========================================================================
    Map Section Styles

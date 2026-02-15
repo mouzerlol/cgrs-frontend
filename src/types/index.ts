@@ -289,7 +289,7 @@ export interface Thread {
 
 /**
  * Reply to a thread or another reply.
- * Supports 2-level nesting maximum.
+ * Supports multi-level nesting (visually capped at depth 5).
  */
 export interface Reply {
   id: string;
@@ -310,8 +310,8 @@ export interface Reply {
   // Reports
   reportedBy: string[];
 
-  // Nesting depth (0 = direct reply to thread, 1 = reply to reply)
-  depth: 0 | 1;
+  // Nesting depth (0 = direct reply to thread, 1+ = reply to reply)
+  depth: number;
 }
 
 /**
