@@ -256,33 +256,54 @@ export async function getThreadsWithLatestReply(
 
 /**
  * Get all replies for a thread, properly ordered with nesting.
+ * Returns a depth-first ordered flat list with computed depths.
  * Top-level replies are sorted by upvotes, nested replies by date.
  */
 export async function getRepliesForThread(threadId: string): Promise<Reply[]> {
   const { replies } = await importDiscussionsData();
   const threadReplies = replies.filter((r) => r.threadId === threadId);
 
-  // Get top-level replies (no parent), sorted by upvotes
-  const topLevel = threadReplies
-    .filter((r) => !r.parentReplyId)
+  // Build a lookup of children by parentReplyId
+  const childrenMap = new Map<string | undefined, Reply[]>();
+  for (const reply of threadReplies) {
+    const key = reply.parentReplyId || '__root__';
+    const children = childrenMap.get(key) || [];
+    children.push(reply);
+    childrenMap.set(key, children);
+  }
+
+  // Get top-level replies sorted by upvotes
+  const topLevel = (childrenMap.get('__root__') || [])
     .sort((a, b) => b.upvotes - a.upvotes);
 
-  // Build result with nested replies
+  // Depth-first traversal to build ordered flat list
   const result: Reply[] = [];
+  const visited = new Set<string>();
 
-  for (const reply of topLevel) {
-    result.push(reply);
+  function traverse(parentId: string | undefined, depth: number) {
+    const key = parentId || '__root__';
 
-    // Find and add nested replies (sorted by date)
-    const nested = threadReplies
-      .filter((r) => r.parentReplyId === reply.id)
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
+    // Guard against circular references in data
+    if (parentId && visited.has(parentId)) return;
+    if (parentId) visited.add(parentId);
 
-    result.push(...nested);
+    const children = childrenMap.get(key) || [];
+
+    // Sort nested replies by date (top-level already sorted by upvotes)
+    const sorted = depth === 0
+      ? children
+      : [...children].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+
+    for (const reply of sorted) {
+      result.push({ ...reply, depth });
+      traverse(reply.id, depth + 1);
+    }
   }
+
+  traverse(undefined, 0);
 
   return result;
 }

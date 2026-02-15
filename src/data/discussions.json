@@ -401,6 +401,102 @@
       "depth": 1
     },
     {
+      "id": "reply-intro-004a",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-004",
+      "body": "Absolutely! Succulents do great here. The sea breeze actually helps prevent overwatering issues. I recommend starting with echeveria or jade plants - they're practically indestructible. Happy to share some cuttings if you want!",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["green-thumb", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 45,
+          "repliesCount": 32,
+          "threadsCreated": 8
+        },
+        "createdAt": "2026-01-03"
+      },
+      "createdAt": "2026-01-15T10:30:00",
+      "upvotes": 4,
+      "upvotedBy": ["user-intro-001", "user-004"],
+      "reportedBy": [],
+      "depth": 2
+    },
+    {
+      "id": "reply-intro-004b",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-004a",
+      "body": "That would be amazing! I'd love some jade plant cuttings. Should I come by this weekend? Also, is there a community garden area we could use?",
+      "author": {
+        "id": "user-intro-001",
+        "displayName": "SarahDesigns",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": ["newcomer"],
+        "stats": {
+          "upvotesReceived": 0,
+          "repliesCount": 1,
+          "threadsCreated": 1
+        },
+        "createdAt": "2026-01-14"
+      },
+      "createdAt": "2026-01-15T11:00:00",
+      "upvotes": 1,
+      "upvotedBy": [],
+      "reportedBy": [],
+      "depth": 3
+    },
+    {
+      "id": "reply-intro-004c",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-004b",
+      "body": "Yes! Saturday morning works great. And there IS a community garden patch behind Block D - the committee is expanding it this spring. I can show you around!",
+      "author": {
+        "id": "user-003",
+        "displayName": "GreenGardener42",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Garden Enthusiast",
+        "badges": ["green-thumb", "helpful-neighbor"],
+        "stats": {
+          "upvotesReceived": 45,
+          "repliesCount": 32,
+          "threadsCreated": 8
+        },
+        "createdAt": "2026-01-03"
+      },
+      "createdAt": "2026-01-15T11:30:00",
+      "upvotes": 3,
+      "upvotedBy": ["user-intro-001"],
+      "reportedBy": [],
+      "depth": 4
+    },
+    {
+      "id": "reply-intro-004d",
+      "threadId": "thread-intro-001",
+      "parentReplyId": "reply-intro-004c",
+      "body": "Count me in for the garden tour too! I've been wanting to start a herb garden. Saturday mornings work perfectly.",
+      "author": {
+        "id": "user-004",
+        "displayName": "NewNeighbor2026",
+        "avatar": "/images/avatars/default.svg",
+        "title": "Seedling",
+        "badges": [],
+        "stats": {
+          "upvotesReceived": 3,
+          "repliesCount": 4,
+          "threadsCreated": 0
+        },
+        "createdAt": "2026-01-05"
+      },
+      "createdAt": "2026-01-15T12:15:00",
+      "upvotes": 2,
+      "upvotedBy": ["user-003"],
+      "reportedBy": [],
+      "depth": 5
+    },
+    {
       "id": "reply-intro-005",
       "threadId": "thread-intro-002",
       "body": "Welcome James! Block B resident here. For moving tips: book the lift early (email the building manager), and bring boxes that fit through the doors. Moving company-wise, I used 'Auckland Movers Plus' and they were great.\n\nBest coffee: The Bridge Cafe on Coronation Road. Best pizza: Vinnies Eatery. You're going to love it here!",

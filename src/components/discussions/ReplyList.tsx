@@ -1,10 +1,10 @@
 'use client';
 
-import { forwardRef, HTMLAttributes } from 'react';
+import { forwardRef, useMemo, HTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import type { Reply } from '@/types';
-import ReplyCard from './ReplyCard';
+import CommentThread, { buildReplyTree } from './CommentThread';
 
 interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   replies: Reply[];
@@ -15,13 +15,9 @@ interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId?: string;
 }
 
-const isNestedReply = (reply: Reply): boolean => {
-  return reply.depth === 1;
-};
-
 /**
- * Reply list component that groups nested replies with their parents.
- * Displays replies in threaded format (max 2 levels).
+ * Reply list component that displays replies in a Reddit-inspired tree structure.
+ * Builds a tree from the flat reply list and renders recursive CommentThread nodes.
  */
 const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
   ({
@@ -34,18 +30,8 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     className,
     ...props
   }, ref) => {
-    // Group replies: parent reply followed by its nested replies
-    const groupedReplies: { parent: Reply; nested: Reply[] }[] = [];
-
-    for (const reply of replies) {
-      if (!isNestedReply(reply)) {
-        // This is a parent-level reply
-        const nested = replies.filter(
-          (r) => r.parentReplyId === reply.id && isNestedReply(r)
-        );
-        groupedReplies.push({ parent: reply, nested });
-      }
-    }
+    // Build tree from flat list — memoized to avoid rebuilding on every render
+    const tree = useMemo(() => buildReplyTree(replies), [replies]);
 
     if (replies.length === 0) {
       return (
@@ -57,7 +43,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     }
 
     return (
-      <div ref={ref} className={cn('space-y-6', className)} {...props}>
+      <div ref={ref} className={cn('space-y-4', className)} {...props}>
         {/* Reply Count */}
         <div className="flex items-center gap-2 pb-4 border-b border-sage/30">
           <Icon icon="lucide:message-circle" className="w-5 h-5 text-forest/40" />
@@ -66,36 +52,20 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
           </span>
         </div>
 
-        {/* Reply Groups */}
-        {groupedReplies.map(({ parent, nested }) => (
-          <div key={parent.id} className="space-y-4">
-            {/* Parent Reply */}
-            <ReplyCard
-              reply={parent}
-              isUpvoted={upvotedReplies.has(parent.id)}
-              onUpvote={onUpvote ? () => onUpvote(parent.id) : undefined}
+        {/* Threaded Reply Tree */}
+        <div className="space-y-4">
+          {tree.map((rootNode) => (
+            <CommentThread
+              key={rootNode.reply.id}
+              node={rootNode}
+              depth={0}
+              onUpvote={onUpvote}
               onReply={onReply}
-              onReport={onReport ? () => onReport(parent.id) : undefined}
+              onReport={onReport}
+              upvotedReplies={upvotedReplies}
             />
-
-            {/* Nested Replies */}
-            {nested.length > 0 && (
-              <div className="space-y-3">
-                {nested.map((reply) => (
-                  <ReplyCard
-                    key={reply.id}
-                    reply={reply}
-                    isUpvoted={upvotedReplies.has(reply.id)}
-                    onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
-                    onReply={onReply}
-                    onReport={onReport ? () => onReport(reply.id) : undefined}
-                    isNested
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
