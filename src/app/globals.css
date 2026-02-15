@@ -1500,6 +1500,30 @@
   background: var(--sage-light) !important;
 }
 
+/* Mobile: increase zoom control touch targets to WCAG 2.5.5 44px minimum */
+@media (max-width: 768px) {
+  .leaflet-control-zoom a {
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 20px !important;
+  }
+
+  .leaflet-control-zoom a + a {
+    border-top: 1px solid var(--sage-light) !important;
+  }
+
+  .leaflet-control-zoom .leaflet-control-home-button {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .leaflet-control-zoom .leaflet-control-home-button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
 /* Scale control styling */
 .leaflet-control-scale {
   background: rgba(255, 255, 255, 0.9) !important;
