@@ -976,16 +976,14 @@
 }
 
 /* Mobile responsive for map section */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .map-section-wrapper {
     grid-template-columns: 1fr;
     padding: var(--space-sm);
   }
-  
+
   .map-sidebar {
-    position: relative;
-    top: 0;
-    max-height: 300px;
+    display: none;
   }
 }
 
@@ -1406,25 +1404,28 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .map-section-wrapper {
     grid-template-columns: 1fr;
     padding: var(--space-sm);
   }
 
   .map-sidebar {
-    position: relative;
-    top: 0;
-    max-height: 300px;
+    display: none;
   }
 
   .map-container {
     /* On mobile, allow JavaScript to control height */
     min-height: 300px;
+    margin-left: 0 !important;
   }
 
   .interactive-map {
     height: 100%;
+  }
+
+  .map-legend {
+    margin-left: 0 !important;
   }
 }
 
