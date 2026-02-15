@@ -1550,6 +1550,16 @@
     justify-content: center;
     gap: 12px;
   }
+
+  .leaflet-control-scale-line {
+    font-size: 12px !important;
+    padding: 2px 6px !important;
+  }
+
+  .leaflet-control-scale {
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+  }
 }
 
 /* Footer map link */
