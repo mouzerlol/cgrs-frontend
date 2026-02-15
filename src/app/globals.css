@@ -1697,17 +1697,45 @@ img.leaflet-tile {
   border-radius: 16px 16px 0 0;
   padding: var(--space-sm);
   box-shadow: 0 4px 24px rgba(26, 34, 24, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  height: 100%;
   overflow: hidden;
-  max-height: 40vh;
 }
 
 @media (min-width: 768px) {
   .calendar-grid-column {
     border-radius: 16px 0 0 16px;
     padding: var(--space-md);
-    height: 100%;
-    max-height: none;
-    overflow: hidden;
+    gap: var(--space-md);
+  }
+}
+
+/* Calendar Section - Main month calendar grid (65% of vertical space) */
+.calendar-section {
+  flex: 0 1 65%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Section - Year overview mini calendars (35% of vertical space) */
+.navigation-section {
+  flex: 0 1 35%;
+  overflow: visible;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--sage-light);
+  padding-top: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .navigation-section {
+    padding-top: var(--space-md);
   }
 }
 
@@ -2826,8 +2854,6 @@ img.leaflet-tile {
   flex-direction: column;
   min-height: 0;
   width: 100%;
-  margin-top: var(--space-sm);
-  padding-bottom: var(--space-xs);
 }
 
 .month-pages-grid {

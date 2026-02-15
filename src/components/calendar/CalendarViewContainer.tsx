@@ -39,19 +39,23 @@ export function CalendarViewContainer({
   return (
     <div className="calendar-view-container">
       <div className="calendar-grid-column">
-        <MonthCalendar
-          currentMonth={currentMonth}
-          itemsByDate={itemsByDate}
-          selectedDate={selectedDate}
-          onPrevMonth={onPrevMonth}
-          onNextMonth={onNextMonth}
-          onDateClick={onDateClick}
-        />
-        <MonthNavigation
-          currentMonth={currentMonth}
-          items={items}
-          onMonthSelect={onMonthSelect}
-        />
+        <div className="calendar-section">
+          <MonthCalendar
+            currentMonth={currentMonth}
+            itemsByDate={itemsByDate}
+            selectedDate={selectedDate}
+            onPrevMonth={onPrevMonth}
+            onNextMonth={onNextMonth}
+            onDateClick={onDateClick}
+          />
+        </div>
+        <div className="navigation-section">
+          <MonthNavigation
+            currentMonth={currentMonth}
+            items={items}
+            onMonthSelect={onMonthSelect}
+          />
+        </div>
       </div>
       <div className="calendar-detail-column">
         <CalendarCategoryKey />
