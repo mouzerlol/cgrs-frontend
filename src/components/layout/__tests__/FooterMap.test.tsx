@@ -32,15 +32,16 @@ describe('FooterMap', () => {
     const customClass = 'custom-footer-map';
     render(<FooterMap className={customClass} />);
 
-    const container = screen.getByTestId('footer-map-container');
-    expect(container).toHaveClass(customClass);
+    const wrapper = screen.getByTestId('footer-map-wrapper');
+    const mapContainer = wrapper.firstElementChild;
+    expect(mapContainer).toHaveClass(customClass);
   });
 
   it('renders with placeholder background before map loads', () => {
     render(<FooterMap />);
 
     const wrapper = screen.getByTestId('footer-map-wrapper');
-    expect(wrapper).toHaveStyle({ background: '#2C3E2D' });
+    expect(wrapper).toHaveStyle({ background: '#1A2218' });
   });
 
   it('has proper wrapper structure with border radius and overflow hidden', () => {
@@ -55,8 +56,9 @@ describe('FooterMap', () => {
   it('renders map container with 100% dimensions', () => {
     render(<FooterMap />);
 
-    const container = screen.getByTestId('footer-map-container');
-    expect(container).toHaveStyle({ width: '100%' });
-    expect(container).toHaveStyle({ height: '100%' });
+    const wrapper = screen.getByTestId('footer-map-wrapper');
+    const mapContainer = wrapper.firstElementChild;
+    expect(mapContainer).toHaveStyle({ width: '100%' });
+    expect(mapContainer).toHaveStyle({ height: '100%' });
   });
 });
