@@ -1108,7 +1108,7 @@
   box-shadow: 0 4px 24px rgba(26, 34, 24, 0.12);
   background: transparent;
   /* Height is set dynamically via JavaScript to fill available viewport */
-  min-height: 400px;
+  min-height: 500px;
 }
 
 .interactive-map {
