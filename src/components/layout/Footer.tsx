@@ -17,6 +17,7 @@ const SUPPORT_LINKS = [
   { name: 'Report an Issue', href: '/management-request' },
   { name: 'Help FAQ', href: '/guidelines#faq' },
   { name: 'Community Rules', href: '/guidelines' },
+  { name: 'Privacy Policy', href: '/privacy-policy' },
   { name: 'Contact Us', href: '/contact' },
 ];
 
