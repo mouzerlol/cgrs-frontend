@@ -1,12 +1,8 @@
-'use client';
-
-import { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import PageHeader from '@/components/sections/PageHeader';
 import ContactForm from '@/components/forms/ContactForm';
-import { ContactFormData } from '@/types';
 import { EMERGENCY_CONTACT } from '@/lib/constants';
 import Link from 'next/link';
 
@@ -31,13 +27,6 @@ const FAQ_ITEMS = [
  * Contact page with new design system.
  */
 export default function ContactPage() {
-  const [, setContactFormData] = useState<ContactFormData | null>(null);
-
-  const handleFormSubmit = (data: ContactFormData) => {
-    setContactFormData(data);
-    console.log('Form submitted:', data);
-  };
-
   return (
     <div className="min-h-screen">
       <PageHeader
@@ -53,7 +42,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <ContactForm onSubmit={handleFormSubmit} />
+              <ContactForm />
             </div>
 
             {/* Contact Information */}

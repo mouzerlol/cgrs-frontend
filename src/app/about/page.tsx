@@ -1,5 +1,3 @@
-'use client';
-
 import { CommitteeMember } from '@/types';
 import PageHeader from '@/components/sections/PageHeader';
 import AboutContent from '@/components/about/AboutContent';
