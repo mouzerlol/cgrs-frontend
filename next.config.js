@@ -29,6 +29,33 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false, // Remove X-Powered-By header for security
   productionBrowserSourceMaps: false, // Prevent source map leaks in production
+
+  // Security headers for all routes
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
+              "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+              "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.openstreetmap.org",
+              "connect-src 'self' https://*.tile.openstreetmap.org",
+              "frame-ancestors 'none'",
+            ].join('; '),
+          },
+        ],
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig
