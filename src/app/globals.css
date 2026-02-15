@@ -5936,6 +5936,7 @@ img.leaflet-tile {
   display: flex;
   gap: 0;
   min-height: 600px;
+  align-items: stretch;
 }
 
 .discussions-content-wrapper {
@@ -6086,7 +6087,7 @@ img.leaflet-tile {
 /* Content Panel - Elevated Design */
 .discussions-content-panel {
   flex: 1;
-  background: white;
+  background: var(--sage-light);
   border: 1px solid rgba(168, 181, 160, 0.2);
   border-radius: 0 16px 16px 16px;
   padding: var(--space-lg);
