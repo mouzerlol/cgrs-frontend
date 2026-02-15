@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  */
 export default function ManagementRequestPage() {
   return (
-    <main>
+    <div>
       <PageHeader
         title="Management Request"
         description="Submit a request or report an issue to society management"
@@ -28,6 +28,6 @@ export default function ManagementRequestPage() {
           <ManagementRequestForm />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

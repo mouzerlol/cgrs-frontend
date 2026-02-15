@@ -39,7 +39,7 @@ export function DiscussionCategorySidebar({
       className={cn('category-tabs hidden lg:flex flex-col w-64 flex-shrink-0', className)}
       aria-label="Discussion categories"
     >
-      <div className="category-tabs-list">
+      <div className="category-tabs-list" role="tablist">
         {/* "All Categories" Tab */}
         <button
           type="button"

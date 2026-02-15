@@ -25,7 +25,7 @@ export function CategoryTabs({
       className="category-tabs hidden lg:flex flex-col w-64 flex-shrink-0"
       aria-label="Request categories"
     >
-      <div className="category-tabs-list">
+      <div className="category-tabs-list" role="tablist">
         {categories.map((category) => {
           const isActive = category.id === activeCategory;
 
