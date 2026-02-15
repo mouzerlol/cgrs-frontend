@@ -70,6 +70,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
           onClick={addLink}
           disabled={!isValidUrl(url)}
           className="link-add-button"
+          aria-label="Add link"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -87,6 +88,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
                 type="button"
                 onClick={() => removeLink(index)}
                 className="link-item-remove"
+                aria-label="Remove link"
               >
                 <X className="w-4 h-4" />
               </button>

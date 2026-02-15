@@ -35,19 +35,19 @@ export default function UtilityDock({ items, useIconComponent = false }: Utility
       label: 'Management<br>Request',
     },
     {
-      name: 'Notice Board',
+      name: 'Message Board',
       href: '/discussion',
       icon: '/icons/notice-board-icon.png',
       label: 'Message<br>Board',
     },
     {
-      name: 'Community Events',
+      name: 'Community Calendar',
       href: '/calendar',
       icon: '/icons/community-events-icon.png',
       label: 'Community<br>Calendar',
     },
     {
-      name: 'Community News',
+      name: 'Blog',
       href: '/blog',
       icon: '/icons/community-news-icon.png',
       label: 'Blog',

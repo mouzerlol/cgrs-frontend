@@ -235,6 +235,9 @@ export default function RegisterPage() {
                         </button>
                       </div>
                     </div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+                      Confirm Password <span className="text-terracotta">*</span>
+                    </label>
                     <input
                       type={showPasswords ? 'text' : 'password'}
                       id="confirmPassword"
