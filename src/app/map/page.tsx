@@ -1,5 +1,3 @@
-'use client';
-
 import { Suspense } from 'react';
 import PageHeader from '@/components/sections/PageHeader';
 import MapSection from '@/components/sections/MapSection';

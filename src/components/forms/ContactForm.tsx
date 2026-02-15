@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card';
 import { ContactFormData } from '@/types';
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => void;
+  onSubmit?: (data: ContactFormData) => void;
 }
 
 /**
@@ -59,7 +59,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      onSubmit(formData);
+      onSubmit?.(formData);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {

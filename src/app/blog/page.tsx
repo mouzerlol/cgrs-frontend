@@ -1,5 +1,3 @@
-'use client';
-
 import { NewsArticle } from '@/types';
 import PageHeader from '@/components/sections/PageHeader';
 import BlogListing from '@/components/blog/BlogListing';
