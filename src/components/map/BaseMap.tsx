@@ -63,6 +63,24 @@ export default function BaseMap({
   const initializedRef = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Store callbacks and object props in refs to avoid triggering re-initialization.
+  // These refs always hold the latest values so the init effect can read them
+  // without including unstable references in its dependency array.
+  const onMapReadyRef = useRef(onMapReady);
+  const onHomeClickRef = useRef(onHomeClick);
+  const tileOptionsRef = useRef(tileOptions);
+  const centerRef = useRef(center);
+  const maxZoomRef = useRef(maxZoom);
+
+  useEffect(() => { onMapReadyRef.current = onMapReady; }, [onMapReady]);
+  useEffect(() => { onHomeClickRef.current = onHomeClick; }, [onHomeClick]);
+  useEffect(() => { tileOptionsRef.current = tileOptions; }, [tileOptions]);
+  useEffect(() => { centerRef.current = center; }, [center]);
+  useEffect(() => { maxZoomRef.current = maxZoom; }, [maxZoom]);
+
+  // Map initialization effect - runs only once on mount.
+  // All mutable/unstable props are accessed via refs so that changing callbacks
+  // or object props does not destroy and recreate the map instance.
   useEffect(() => {
     if (!containerRef.current || typeof window === 'undefined') return;
 
@@ -75,7 +93,7 @@ export default function BaseMap({
         const L = Leaflet.default;
 
         if (!containerRef.current) return;
-        
+
         const map = L.map(containerRef.current, {
           zoomControl,
           scrollWheelZoom,
@@ -89,11 +107,12 @@ export default function BaseMap({
           minZoom,
         }).setView(center, zoom);
 
+        const opts = tileOptionsRef.current;
         if (tileUrl) {
           L.tileLayer(tileUrl, {
-            maxZoom: tileOptions.maxZoom ?? 19,
-            crossOrigin: tileOptions.crossOrigin as boolean | 'anonymous' | 'use-credentials' | undefined,
-            attribution: tileOptions.attribution,
+            maxZoom: opts.maxZoom ?? 19,
+            crossOrigin: opts.crossOrigin as boolean | 'anonymous' | 'use-credentials' | undefined,
+            attribution: opts.attribution,
           }).addTo(map);
         }
 
@@ -126,12 +145,12 @@ export default function BaseMap({
             L.DomEvent.on(homeButton, 'click', (e: Event) => {
               L.DomEvent.preventDefault(e);
               L.DomEvent.stopPropagation(e);
-              if (onHomeClick) {
-                onHomeClick(map);
+              if (onHomeClickRef.current) {
+                onHomeClickRef.current(map);
               } else {
                 // Default fallback: fly to center at max zoom
-                const zoom = map.getMaxZoom() || maxZoom || 18;
-                map.flyTo(center, zoom, {
+                const zoom = map.getMaxZoom() || maxZoomRef.current || 18;
+                map.flyTo(centerRef.current, zoom, {
                   duration: 1.5,
                   easeLinearity: 0.25
                 });
@@ -145,8 +164,8 @@ export default function BaseMap({
 
         map.invalidateSize();
 
-        if (onMapReady) {
-          onMapReady(map);
+        if (onMapReadyRef.current) {
+          onMapReadyRef.current(map);
         }
       } catch (error) {
         console.error('Error initializing map:', error);
@@ -163,24 +182,8 @@ export default function BaseMap({
         initializedRef.current = false;
       }
     };
-  }, [
-    center,
-    zoom,
-    tileUrl,
-    tileOptions,
-    zoomControl,
-    scrollWheelZoom,
-    dragging,
-    doubleClickZoom,
-    boxZoom,
-    keyboard,
-    attributionControl,
-    preferCanvas,
-    maxZoom,
-    minZoom,
-    onMapReady,
-    onHomeClick,
-  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
