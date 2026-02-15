@@ -1,8 +1,14 @@
 'use client';
 
 import { Suspense, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import PageHeader from '@/components/sections/PageHeader';
-import { CalendarContent, CalendarSkeleton } from '@/components/calendar';
+import { CalendarSkeleton } from '@/components/calendar/CalendarContent';
+
+const CalendarContent = dynamic(
+  () => import('@/components/calendar/CalendarContent').then(m => m.CalendarContent),
+  { loading: () => <CalendarSkeleton /> }
+);
 
 /**
  * Hook for managing immersive scroll behavior.

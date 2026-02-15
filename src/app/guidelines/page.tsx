@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import PageHeader from '@/components/sections/PageHeader';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Community Guidelines | Coronation Gardens',
+  description:
+    'Resident responsibilities, parking rules, noise policies, and community standards for Coronation Gardens in Mangere Bridge.',
+};
 
 const RESPONSIBILITIES = [
   {

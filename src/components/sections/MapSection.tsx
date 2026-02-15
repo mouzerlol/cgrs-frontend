@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useCallback, useState, useEffect } from 'react';
-import { POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
+import { MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
 import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
@@ -136,7 +136,7 @@ export default function MapSection({ className }: MapSectionProps) {
       const poiType = POI_TYPES[poi.type as keyof typeof POI_TYPES];
 
       const iconHtml = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" style="
+        <svg xmlns="http://www.w3.org/2000/svg" width="${MARKER_SIZE}" height="${MARKER_SIZE}" viewBox="0 0 24 24" style="
           color: ${poiType.color};
           filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         ">
@@ -149,9 +149,9 @@ export default function MapSection({ className }: MapSectionProps) {
       const customIcon = L.divIcon({
         className: 'poi-marker',
         html: iconHtml,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -25],
+        iconSize: [MARKER_SIZE, MARKER_SIZE],
+        iconAnchor: [MARKER_SIZE / 2, MARKER_SIZE / 2],
+        popupAnchor: [0, -(MARKER_SIZE / 2)],
       });
 
       const marker = L.marker(poi.coordinates, { icon: customIcon }).addTo(map);

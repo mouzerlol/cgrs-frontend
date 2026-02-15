@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { NewsArticle } from '@/types';
 import { getLatestArticles } from '@/lib/utils';
 import Hero from '@/components/sections/Hero';
@@ -11,6 +12,12 @@ import QuickAccessGrid from '@/components/sections/QuickAccessGrid';
 import newsData from '@/data/news.json';
 import calendarData from '@/data/calendar-items.json';
 import type { CalendarItem } from '@/types';
+
+export const metadata: Metadata = {
+  title: 'Coronation Gardens Residents Society | Mangere Bridge',
+  description:
+    'Official community hub for Coronation Gardens residents in Mangere Bridge, Auckland. Find news, events, and neighbourhood resources.',
+};
 
 // Make page dynamic to ensure events are filtered at request time
 export const dynamic = 'force-dynamic';
@@ -35,7 +42,7 @@ export default function HomePage() {
       <Hero
         title="Living at<br>the Bridge"
         subtitle="Māngere Bridge, Auckland • Est. 2024"
-        backgroundImage="https://www.cgrs.co.nz/images/mangere-mountain.jpg"
+        backgroundImage="/images/mangere-mountain.jpg"
       />
 
       {/* Floating Utility Dock */}

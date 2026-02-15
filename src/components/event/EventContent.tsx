@@ -1,14 +1,28 @@
 'use client';
 
 import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { parseISO, isPast } from 'date-fns';
 import { Event, MiniCalendarEvent } from '@/types';
 import EventHero from './EventHero';
 import EventMiniCalendar from '@/components/calendar/EventMiniCalendar';
 import EventRsvpButton from '@/components/calendar/EventRsvpButton';
-import EventMapStatic from '@/components/calendar/EventMapStatic';
 import EventDiscussion from './EventDiscussion';
 import EventOrganizer from './EventOrganizer';
+
+const EventMapStatic = dynamic(() => import('@/components/calendar/EventMapStatic'), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        width: '100%',
+        height: '300px',
+        borderRadius: '12px',
+        background: '#1A2218',
+      }}
+    />
+  ),
+});
 
 interface EventContentProps {
   event: Event;

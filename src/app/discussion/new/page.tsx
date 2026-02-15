@@ -1,7 +1,7 @@
 'use client';
 
 import PageHeader from '@/components/sections/PageHeader';
-import { ThreadForm } from '@/components/discussions';
+import { ThreadForm } from '@/components/discussions/ThreadForm';
 
 /**
  * New thread creation page.

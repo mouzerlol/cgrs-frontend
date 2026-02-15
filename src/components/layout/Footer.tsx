@@ -1,8 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import FooterMap from './FooterMap';
+import dynamic from 'next/dynamic';
 import SocialMediaTray from './SocialMediaTray';
+
+const FooterMap = dynamic(() => import('./FooterMap'), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        width: '100%',
+        height: '160px',
+        borderRadius: '8px',
+        background: '#2C3E2D',
+      }}
+    />
+  ),
+});
 
 const QUICK_LINKS = [
   { name: 'About Us', href: '/about' },

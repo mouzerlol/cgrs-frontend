@@ -1,13 +1,3 @@
-export { CalendarContent } from './CalendarContent';
-export { CalendarViewContainer } from './CalendarViewContainer';
-export { MonthCalendar } from './MonthCalendar';
-export { CalendarDetailView } from './CalendarDetailView';
-export { CalendarGrid } from './CalendarGrid';
-export { DateCell } from './DateCell';
-export { DateGroup } from './DateGroup';
-export { CalendarItemCard } from './CalendarItemCard';
-export { CategoryIcon } from './CategoryIcon';
-export { MonthNavigationBar } from './MonthNavigationBar';
-export { MonthNavigation } from './MonthNavigation';
-export { CalendarCategoryKey } from './CalendarCategoryKey';
-export { CalendarSkeleton } from './CalendarContent';
+// Barrel file removed to improve tree-shaking and reduce bundle size.
+// Import components directly from their source files instead.
+// Example: import { CalendarContent } from '@/components/calendar/CalendarContent'

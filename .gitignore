@@ -120,3 +120,6 @@ test-results/
 
 # Squirrelscan runtime (DB is local, config is committed)
 .squirrel/
+
+# Git worktrees (isolated workspaces)
+.worktrees/

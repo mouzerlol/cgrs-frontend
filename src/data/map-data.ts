@@ -25,6 +25,9 @@ export const BOUNDARY_COORDINATES = [
 export const MAP_CENTER: [number, number] = [-36.9497, 174.7912];
 export const MAP_ZOOM = 16;
 
+/** Minimum marker size in pixels to meet WCAG 2.1 AA touch target requirement (44px) */
+export const MARKER_SIZE = 44;
+
 // Points of Interest - passive markers (just shown on map)
 export const POINTS_OF_INTEREST = [
   // Additional POIs

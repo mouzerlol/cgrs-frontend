@@ -15,12 +15,15 @@ import PageHeader from '@/components/sections/PageHeader';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UtilityDock, { UtilityDockItem } from '@/components/sections/UtilityDock';
-import MapPreview, { MAP_VARIATIONS } from '@/components/ui/MapPreview';
-import BaseMap from '@/components/map/BaseMap';
+import dynamic from 'next/dynamic';
+import { MAP_VARIATIONS } from '@/components/ui/MapPreview';
 import MapMarker from '@/components/map/MapMarker';
-import BoundaryMap from '@/components/layout/BoundaryMap';
-import FooterMap from '@/components/layout/FooterMap';
 import { cn } from '@/lib/utils';
+
+const MapPreview = dynamic(() => import('@/components/ui/MapPreview'), { ssr: false });
+const BaseMap = dynamic(() => import('@/components/map/BaseMap'), { ssr: false });
+const BoundaryMap = dynamic(() => import('@/components/layout/BoundaryMap'), { ssr: false });
+const FooterMap = dynamic(() => import('@/components/layout/FooterMap'), { ssr: false });
 
 const colors = [
   { name: 'Bone', class: 'bg-bone', hex: '#F4F1EA', textClass: 'text-forest' },

@@ -1,4 +1,3 @@
-export * from './news';
-export * from './events';
-export * from './committee';
-export * from './site-config';
+// Barrel file removed to improve tree-shaking and reduce bundle size.
+// Import API functions directly from their source files instead.
+// Example: import { fetchNews } from '@/lib/api/news'

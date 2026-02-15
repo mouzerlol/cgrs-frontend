@@ -26,7 +26,7 @@ export default function MapMarker({
   map,
   position,
   color = '#D95D39',
-  size = 24,
+  size = 44,
   iconAnchor,
   popupAnchor,
   popup,

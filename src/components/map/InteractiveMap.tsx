@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback, useMemo } from 'react';
-import { MAP_CENTER, MAP_ZOOM, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
+import { MAP_CENTER, MAP_ZOOM, MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
 import MapMarker from '@/components/map/MapMarker';
@@ -181,7 +181,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
                 map={mapRef.current}
                 position={poi.coordinates}
                 color={poiType.color}
-                size={24}
+                size={MARKER_SIZE}
                 popup={poi.name}
                 popupDescription={poi.description}
                 popupType={{ label: poiType.label, color: poiType.color }}

@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import PageHeader from '@/components/sections/PageHeader';
-import { ThreadDetail } from '@/components/discussions';
+import ThreadDetail from '@/components/discussions/ThreadDetail';
 import { useThread, useReplies, useCategories } from '@/hooks/useDiscussions';
 import type { Reply } from '@/types';
 

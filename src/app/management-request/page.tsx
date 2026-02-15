@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import PageHeader from '@/components/sections/PageHeader';
-import { ManagementRequestForm } from '@/components/management-request';
+import { ManagementRequestForm } from '@/components/management-request/ManagementRequestForm';
 
 export const metadata: Metadata = {
   title: 'Management Request | Coronation Gardens',

@@ -1,6 +1,3 @@
-export { ManagementRequestForm } from './ManagementRequestForm';
-export { CategoryTabs } from './CategoryTabs';
-export { CategoryDropdown } from './CategoryDropdown';
-export { RequestFormFields } from './RequestFormFields';
-export { LocationPicker } from './LocationPicker';
-export { SuccessConfirmation } from './SuccessConfirmation';
+// Barrel file removed to improve tree-shaking and reduce bundle size.
+// Import components directly from their source files instead.
+// Example: import { ManagementRequestForm } from '@/components/management-request/ManagementRequestForm'
