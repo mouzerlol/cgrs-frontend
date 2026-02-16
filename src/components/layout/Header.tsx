@@ -77,10 +77,10 @@ export default function Header() {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <DialogPanel className="w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 min-h-full">
+                <DialogPanel className="w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 pb-8 min-h-full">
                   
                   {/* Mobile: Logo */}
-                  <Link href="/" onClick={closeMenu} className="mb-6">
+                  <Link href="/" onClick={closeMenu} className="mb-10">
                     <span className="flex flex-col text-bone">
                       <span className="block whitespace-nowrap font-display text-2xl">CORONATION</span>
                       <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
@@ -88,7 +88,7 @@ export default function Header() {
                   </Link>
 
                   {/* Mobile: Navigation Items */}
-                  <nav className="space-y-2">
+                  <nav className="space-y-3">
                     {NAVIGATION_ITEMS.map((item) => (
                       <Link
                         key={item.name}
@@ -102,11 +102,11 @@ export default function Header() {
                   </nav>
 
                   {/* Mobile: More Section */}
-                  <div className="mt-4 mb-4">
-                    <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-3">
+                  <div className="mt-8 mb-8">
+                    <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-4">
                       More
                     </h3>
-                    <nav className="space-y-2">
+                    <nav className="space-y-3">
                       {MORE_NAVIGATION_ITEMS.map((item) => (
                         <Link
                           key={item.name}
@@ -124,7 +124,7 @@ export default function Header() {
                   {/* Mobile: Login Button */}
                   <button
                     onClick={closeMenu}
-                    className="mt-auto w-full nav-button"
+                    className="mt-auto mb-8 w-full nav-button"
                   >
                     Resident Login
                   </button>
