@@ -82,8 +82,9 @@ export default function Header() {
                   {/* Mobile: Logo */}
                   <Link href="/" onClick={closeMenu} className="mb-10">
                     <span className="flex flex-col text-bone">
-                      <span className="block whitespace-nowrap font-display text-2xl">CORONATION</span>
+                      <span className="block whitespace-nowrap font-display text-3xl">CORONATION</span>
                       <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
+                      <span className="text-xs tracking-widest text-bone/50 mt-1">Residents Society</span>
                     </span>
                   </Link>
 
@@ -100,6 +101,8 @@ export default function Header() {
                       </Link>
                     ))}
                   </nav>
+
+                  <hr className="border-bone/10 my-2" />
 
                   {/* Mobile: More Section */}
                   <div className="mt-8 mb-8">
@@ -120,6 +123,8 @@ export default function Header() {
                       ))}
                     </nav>
                   </div>
+
+                  <hr className="border-bone/10" />
 
                   {/* Mobile: Login Button */}
                   <button
