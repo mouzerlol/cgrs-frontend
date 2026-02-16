@@ -29,7 +29,7 @@ export default function Header() {
 
       {/* Mobile Nav Toggle */}
       <button
-        className="md:hidden z-[1001] bg-transparent border-none cursor-pointer p-2"
+        className="md:hidden z-[1001] bg-transparent border-none cursor-pointer p-3"
         aria-label="Toggle navigation"
         aria-expanded={isMenuOpen}
         onClick={() => setIsMenuOpen(true)}
@@ -94,7 +94,7 @@ export default function Header() {
                         key={item.name}
                         href={item.href}
                         onClick={closeMenu}
-                        className="px-4 py-3 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                        className="block px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -112,7 +112,7 @@ export default function Header() {
                           key={item.name}
                           href={item.href}
                           onClick={closeMenu}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                          className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
                         >
                           <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
                           <span>{item.name}</span>
