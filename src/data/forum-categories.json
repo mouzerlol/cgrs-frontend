@@ -4,7 +4,7 @@
       "slug": "introductions",
       "name": "Introductions",
       "description": "Welcome new residents! Introduce yourself to the community",
-      "icon": "lucide:hand-wave",
+      "icon": "lucide:hand",
       "color": "sage",
       "maxBodyLength": 300,
       "isSpecial": true

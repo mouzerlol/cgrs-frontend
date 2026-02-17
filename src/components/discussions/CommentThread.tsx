@@ -148,15 +148,17 @@ const CommentThread = memo(function CommentThread({
 
       {/* Reply content — generous padding from thread line for clarity */}
       <div className={cn(depth > 0 && 'pl-7 thread-content-pad')}>
-        <ReplyCard
-          reply={reply}
-          isUpvoted={upvotedReplies.has(reply.id)}
-          onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
-          onReply={onReply}
-          onReport={onReport ? () => onReport(reply.id) : undefined}
-          depth={visualDepth}
-          showReplyForm
-        />
+        <div className="comment-card">
+          <ReplyCard
+            reply={reply}
+            isUpvoted={upvotedReplies.has(reply.id)}
+            onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
+            onReply={onReply}
+            onReport={onReport ? () => onReport(reply.id) : undefined}
+            depth={visualDepth}
+            showReplyForm
+          />
+        </div>
       </div>
 
       {/* Children — collapsible */}

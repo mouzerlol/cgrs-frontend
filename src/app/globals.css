@@ -1028,6 +1028,50 @@
   padding: 8px 0 8px 0;
 }
 
+/* Comment card styling — borders and background for individual comments */
+.comment-card {
+  position: relative;
+  background-color: #FDFCF9; /* Slightly lighter than bone */
+  border: 1px solid rgba(168, 181, 160, 0.25); /* sage at 25% */
+  border-radius: 8px;
+  padding: 12px 14px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* Hover state for subtle interactivity */
+.comment-card:hover {
+  border-color: rgba(168, 181, 160, 0.4);
+  box-shadow: 0 2px 8px rgba(26, 34, 24, 0.04);
+}
+
+/* For nested comments, extend left border to connect with horizontal connector */
+.thread-content-pad .comment-card {
+  /* Pull left border back to meet the horizontal connector */
+  margin-left: -7px; /* Compensate for pl-7 to align with connector end (~20px from article left) */
+  padding-left: 21px; /* 14px base + 7px to maintain visual padding */
+}
+
+/* Focus state for keyboard navigation accessibility */
+.comment-card:focus-within {
+  border-color: rgba(168, 181, 160, 0.6);
+  box-shadow: 0 0 0 3px rgba(168, 181, 160, 0.15);
+  outline: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 639px) {
+  .comment-card {
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+
+  .thread-content-pad .comment-card {
+    /* Mobile has pl-4 (16px), connector is 12px wide */
+    margin-left: -4px;
+    padding-left: 16px; /* 12px base + 4px compensation */
+  }
+}
+
 /* Collapse/expand animation using CSS grid row trick */
 .thread-children {
   display: grid;

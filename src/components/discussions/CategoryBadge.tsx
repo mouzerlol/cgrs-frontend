@@ -18,7 +18,7 @@ interface CategoryBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 
 /** Default category metadata for slug-only usage */
 const DEFAULT_CATEGORIES: Record<DiscussionCategorySlug, { name: string; icon: string; color: 'terracotta' | 'forest' | 'sage' }> = {
-  introductions: { name: 'Introductions', icon: 'lucide:hand-wave', color: 'sage' },
+  introductions: { name: 'Introductions', icon: 'lucide:hand', color: 'sage' },
   announcements: { name: 'Announcements', icon: 'lucide:megaphone', color: 'terracotta' },
   parking: { name: 'Parking', icon: 'lucide:car', color: 'forest' },
   'waste-management': { name: 'Waste Management', icon: 'lucide:recycle', color: 'sage' },

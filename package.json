@@ -24,6 +24,7 @@
   "description": "Coronation Gardens Residents Society Website",
   "dependencies": {
     "@headlessui/react": "^2.2.9",
+    "@iconify-json/lucide": "^1.2.91",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify/react": "^6.0.2",
     "@tanstack/react-query": "^5.0.0",
