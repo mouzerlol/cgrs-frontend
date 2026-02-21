@@ -4,6 +4,7 @@ import { memo, useState, useCallback, useId } from 'react';
 import { cn } from '@/lib/utils';
 import type { Reply } from '@/types';
 import ReplyCard from './ReplyCard';
+import UserAvatar from './UserAvatar';
 
 // =============================================================================
 // Tree Data Types
@@ -13,19 +14,6 @@ export interface TreeNode {
   reply: Reply;
   children: TreeNode[];
   descendantCount: number;
-}
-
-// Thread line colors matching the design system palette
-const THREAD_COLORS = [
-  'var(--thread-color-0)', // sage
-  'var(--thread-color-1)', // terracotta
-  'var(--thread-color-2)', // amber
-  'var(--thread-color-3)', // forest-light
-  'var(--thread-color-4)', // sage/50
-];
-
-function getThreadColor(depth: number): string {
-  return THREAD_COLORS[depth % THREAD_COLORS.length];
 }
 
 /** Max visual nesting depth — deeper replies render at this level */
@@ -80,6 +68,7 @@ export function buildReplyTree(replies: Reply[]): TreeNode[] {
 interface CommentThreadProps {
   node: TreeNode;
   depth?: number;
+  hasMoreSiblingsBelow?: boolean;
   onUpvote?: (replyId: string) => void;
   onReply?: (body: string, parentReplyId?: string) => void;
   onReport?: (replyId: string) => void;
@@ -89,6 +78,7 @@ interface CommentThreadProps {
 const CommentThread = memo(function CommentThread({
   node,
   depth = 0,
+  hasMoreSiblingsBelow = false,
   onUpvote,
   onReply,
   onReport,
@@ -114,102 +104,114 @@ const CommentThread = memo(function CommentThread({
   }, []);
 
   return (
-    <article
-      className={cn(
-        'relative thread-indent',
-        depth > 0 && 'pl-[var(--thread-indent)]',
-        depth > 0 && 'mt-2'
-      )}
-    >
-      {/* Thread line — vertical connector for nested comments */}
+    <article className={cn('relative', depth > 0 && 'mt-3')}>
+      {/* Thread Connector from Parent (The Curve) */}
       {depth > 0 && (
-        <div
-          className="thread-line"
-          style={{ backgroundColor: getThreadColor(depth - 1) }}
-          {...(hasChildren && {
-            onClick: toggleCollapse,
-            onKeyDown: handleKeyDown,
-            role: 'button',
-            tabIndex: 0,
-            'aria-expanded': !isCollapsed,
-            'aria-controls': childrenId,
-            'aria-label': `${isCollapsed ? 'Expand' : 'Collapse'} thread by ${reply.author.displayName}`,
-          })}
+        <div 
+          className="absolute pointer-events-none border-sage opacity-40"
+          style={{
+            left: '-28.5px',
+            top: '-12px',
+            width: '28.5px',
+            height: '28px',
+            borderBottomLeftRadius: '20px',
+            borderBottomWidth: '1px',
+            borderBottomStyle: 'solid',
+            borderLeftWidth: '1px',
+            borderLeftStyle: 'solid',
+          }}
         />
       )}
 
-      {/* Horizontal connector stub */}
-      {depth > 0 && (
-        <div
-          className="thread-connector"
-          style={{ backgroundColor: getThreadColor(depth - 1) }}
+      {/* Continuation Line to next sibling */}
+      {depth > 0 && hasMoreSiblingsBelow && (
+        <div 
+          className="absolute pointer-events-none border-sage opacity-40"
+          style={{
+            left: '-28.5px',
+            top: '16px',
+            bottom: '-12px',
+            borderLeftWidth: '1px',
+            borderLeftStyle: 'solid',
+          }}
         />
       )}
 
-      {/* Reply content — generous padding from thread line for clarity */}
-      <div className={cn(depth > 0 && 'pl-7 thread-content-pad')}>
-        <div className="comment-card">
-          <ReplyCard
-            reply={reply}
-            isUpvoted={upvotedReplies.has(reply.id)}
-            onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
-            onReply={onReply}
-            onReport={onReport ? () => onReport(reply.id) : undefined}
-            depth={visualDepth}
-            showReplyForm
-          />
+      {/* Parent Comment Row */}
+      <div className="flex gap-3">
+        {/* Left Column: Avatar + Thread Line to bottom of ReplyCard */}
+        <div className="flex flex-col items-center shrink-0 w-8">
+          <div className="relative">
+            <UserAvatar user={reply.author} size="sm" avatarOnly />
+            {hasChildren && (
+              <button
+                onClick={toggleCollapse}
+                className="absolute -bottom-2 -right-2 bg-[#FDFCF9] border border-sage/30 rounded-full w-5 h-5 flex items-center justify-center text-[12px] text-forest/60 hover:text-forest hover:bg-sage/10 transition-colors z-10"
+                aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+              >
+                {isCollapsed ? '+' : '−'}
+              </button>
+            )}
+          </div>
+          
+          {/* Thread Line connecting down to children container */}
+          {!isCollapsed && hasChildren && (
+            <div className="w-[1px] grow mt-2 bg-sage opacity-40" />
+          )}
+        </div>
+
+        {/* Right Column: Content */}
+        <div className="flex-1 min-w-0 pb-1">
+          {isCollapsed ? (
+            <div className="flex items-center gap-2 h-8 cursor-pointer" onClick={toggleCollapse}>
+              <span className="font-semibold text-forest text-sm">
+                {reply.author.displayName}
+              </span>
+              <span className="text-[11px] text-forest/40">
+                • {totalDescendants} {totalDescendants === 1 ? 'reply' : 'replies'} hidden
+              </span>
+            </div>
+          ) : (
+            <ReplyCard
+              reply={reply}
+              isUpvoted={upvotedReplies.has(reply.id)}
+              onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
+              onReply={onReply}
+              onReport={onReport ? () => onReport(reply.id) : undefined}
+              showReplyForm
+            />
+          )}
         </div>
       </div>
 
-      {/* Children — collapsible */}
-      {hasChildren && (
-        <>
-          <div
-            id={childrenId}
-            className="thread-children"
-            data-collapsed={isCollapsed}
-          >
-            <div className="thread-children-inner">
-              <div
-                className="mt-1"
-                role="group"
-                aria-label={`Replies to ${reply.author.displayName}`}
-              >
-                {children.map((child) => (
-                  <CommentThread
-                    key={child.reply.id}
-                    node={child}
-                    depth={depth + 1}
-                    onUpvote={onUpvote}
-                    onReply={onReply}
-                    onReport={onReport}
-                    upvotedReplies={upvotedReplies}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Collapsed indicator pill */}
-          {isCollapsed && (
-            <button
-              type="button"
-              onClick={toggleCollapse}
-              className="thread-collapsed-pill mt-1.5 ml-7 inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-forest/60 bg-sage-light rounded-full hover:bg-sage/30 transition-colors"
-            >
-              <span aria-hidden="true">&#9656;</span>
-              {totalDescendants} {totalDescendants === 1 ? 'reply' : 'replies'}{' '}
-              hidden
-            </button>
-          )}
-        </>
+      {/* Children Container */}
+      {!isCollapsed && hasChildren && (
+        <div 
+          id={childrenId}
+          className="relative flex flex-col ml-[44px]"
+          role="group"
+          aria-label={`Replies to ${reply.author.displayName}`}
+        >
+          {children.map((child, index) => (
+            <CommentThread
+              key={child.reply.id}
+              node={child}
+              depth={depth + 1}
+              hasMoreSiblingsBelow={index < children.length - 1}
+              onUpvote={onUpvote}
+              onReply={onReply}
+              onReport={onReport}
+              upvotedReplies={upvotedReplies}
+            />
+          ))}
+        </div>
       )}
-
+      
       {/* "Continue thread" link for max depth */}
-      {depth >= MAX_RENDER_DEPTH && hasChildren && (
+      {!isCollapsed && depth >= MAX_RENDER_DEPTH && hasChildren && (
         <button
           type="button"
-          className="mt-1.5 ml-7 text-[11px] font-medium text-terracotta hover:text-terracotta-dark transition-colors"
+          className="mt-2 ml-[44px] text-[11px] font-medium text-terracotta hover:text-terracotta-dark transition-colors"
         >
           Continue thread &rarr;
         </button>

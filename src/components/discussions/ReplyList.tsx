@@ -54,11 +54,12 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
 
         {/* Threaded Reply Tree */}
         <div className="space-y-4">
-          {tree.map((rootNode) => (
+          {tree.map((rootNode, index) => (
             <CommentThread
               key={rootNode.reply.id}
               node={rootNode}
               depth={0}
+              hasMoreSiblingsBelow={index < tree.length - 1}
               onUpvote={onUpvote}
               onReply={onReply}
               onReport={onReport}

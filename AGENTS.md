@@ -2,6 +2,8 @@
 
 This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
 
+> **Important:** The "Landing the Plane" workflow below only applies when working on an issue tracked by `bd`. For ad-hoc changes or one-off requests not tied to a tracked issue, do NOT commit or push unless explicitly requested by the user.
+
 ## Quick Reference
 
 ```bash
