@@ -159,16 +159,21 @@ function CalendarSkeleton() {
   return (
     <div className="calendar-view-container">
       <div className="calendar-grid-column">
-        <div className="month-calendar">
-          <div className="month-navigation">
-            <div className="skeleton h-8 w-40 mx-auto rounded" />
-          </div>
-          <div className="calendar-grid-skeleton">
-            {Array.from({ length: 35 }).map((_, i) => (
-              <div key={i} className="skeleton h-20 rounded-lg" />
-            ))}
+        <div className="calendar-section">
+          <div className="month-calendar">
+            <div className="month-navigation">
+              <div className="skeleton h-8 w-40 mx-auto rounded" />
+            </div>
+            <div className="calendar-grid-skeleton">
+              {Array.from({ length: 35 }).map((_, i) => (
+                <div key={i} className="skeleton h-20 rounded-lg" />
+              ))}
+            </div>
           </div>
         </div>
+      </div>
+      <div className="navigation-section">
+        <div className="skeleton h-full w-full rounded" />
       </div>
       <div className="calendar-detail-column">
         <div className="space-y-4">

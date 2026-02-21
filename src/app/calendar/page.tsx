@@ -1,63 +1,53 @@
 'use client';
 
-import { Suspense, useRef } from 'react';
+import { Suspense, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import PageHeader from '@/components/sections/PageHeader';
 import { CalendarSkeleton } from '@/components/calendar/CalendarContent';
+import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
 
 const CalendarContent = dynamic(
   () => import('@/components/calendar/CalendarContent').then(m => m.CalendarContent),
   { loading: () => <CalendarSkeleton /> }
 );
 
-/**
- * Hook for managing immersive scroll behavior.
- */
-function useImmersiveScroll(
-  sectionRef: React.RefObject<HTMLElement | null>,
-  options: {
-    scrollOnMount?: boolean;
-  } = {}
-) {
-  const { scrollOnMount = false } = options;
-  const hasScrolledRef = useRef(false);
-
-  const scrollToSection = useRef<(() => void) | null>(null);
-
-  const enterImmersive = useRef(() => {
-    if (hasScrolledRef.current || !sectionRef.current) return;
-    hasScrolledRef.current = true;
-
-    const rect = sectionRef.current.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const navHeight = 64;
-    const targetY = rect.top + scrollTop - navHeight;
-
-    window.scrollTo({
-      top: Math.max(0, targetY),
-      behavior: 'smooth',
-    });
-  });
-
-  if (scrollOnMount && !scrollToSection.current) {
-    scrollToSection.current = () => {
-      setTimeout(() => {
-        enterImmersive.current();
-      }, 100);
-    };
-  }
-
-  return {
-    enterImmersive: enterImmersive.current,
-  };
-}
-
 export default function CalendarPage() {
   const sectionRef = useRef<HTMLElement>(null);
 
   const { enterImmersive } = useImmersiveScroll(sectionRef, {
-    scrollOnMount: false,
+    scrollOnMount: true,
   });
+
+  // Direct scroll on mount - ensures the calendar section is visible below the fixed header
+  // This is a fallback/backup to useImmersiveScroll for more reliable behavior
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const scrollToSection = () => {
+      const element = sectionRef.current;
+      if (!element) return;
+
+      const rect = element.getBoundingClientRect();
+      const navHeight = 64;
+      const targetY = rect.top + (window.scrollY || document.documentElement.scrollTop) - navHeight;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'instant',
+      });
+    };
+
+    scrollToSection();
+    const frameId = requestAnimationFrame(scrollToSection);
+    const timeoutId = setTimeout(scrollToSection, 100);
+    const timeoutId2 = setTimeout(scrollToSection, 300);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      clearTimeout(timeoutId);
+      clearTimeout(timeoutId2);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -73,11 +63,9 @@ export default function CalendarPage() {
         ref={sectionRef}
         onClick={enterImmersive}
       >
-        <div className="container">
-          <Suspense fallback={<CalendarSkeleton />}>
-            <CalendarContent />
-          </Suspense>
-        </div>
+        <Suspense fallback={<CalendarSkeleton />}>
+          <CalendarContent />
+        </Suspense>
       </section>
     </div>
   );

@@ -1680,25 +1680,23 @@ img.leaflet-tile {
 
 /* Calendar View Container - Two-pane layout with NO gap */
 .calendar-view-container {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0;
-  overflow: hidden;
-  max-width: 100%;
-  height: 80vh;
-}
-
-@media (min-width: 768px) {
-  .calendar-view-container {
-    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
-    gap: 0;
-  }
+  width: 100%;
+  height: auto;
 }
 
 @media (min-width: 1024px) {
   .calendar-view-container {
-    grid-template-columns: 60fr 40fr;
-    height: calc(100vh - 250px);
+    display: grid;
+    grid-template-columns: 45% 55%;
+    grid-template-rows: auto 1fr;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
   }
 }
 
@@ -1710,57 +1708,88 @@ img.leaflet-tile {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  overflow: visible;
+  order: 1;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .calendar-grid-column {
-    border-radius: 16px 0 0 16px;
-    padding: var(--space-md);
+    border-radius: 0;
+    padding: var(--space-md) var(--space-lg) var(--space-md) var(--space-md);
     gap: var(--space-md);
+    height: 100%;
+    overflow: hidden;
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    order: 3;
   }
 }
 
-/* Calendar Section - Main month calendar grid (65% of vertical space) */
+/* Calendar Section - Main month calendar grid */
 .calendar-section {
-  flex: 0 1 65%;
-  overflow-y: auto;
+  flex: 1 1 auto;
+  overflow-y: visible;
   overflow-x: hidden;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* Navigation Section - Year overview mini calendars (35% of vertical space) */
-.navigation-section {
-  flex: 0 1 35%;
-  overflow: visible;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--sage-light);
-  padding-top: var(--space-sm);
+@media (min-width: 1024px) {
+  .calendar-section {
+    overflow-y: hidden;
+    height: 100%;
+  }
 }
 
-@media (min-width: 768px) {
+.month-calendar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Navigation Section - Year overview mini calendars */
+.navigation-section {
+  display: none;
+}
+
+@media (min-width: 1024px) {
   .navigation-section {
-    padding-top: var(--space-md);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    background: white;
+    border-bottom: 1px solid var(--sage-light);
+    padding: 8px var(--space-md);
+    max-height: 120px;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    order: 2;
+    z-index: 5;
   }
 }
 
 .calendar-detail-column {
   background: var(--sage-light);
   border-radius: 0 0 16px 16px;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  order: 2;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .calendar-detail-column {
-    border-radius: 0 16px 16px 0;
+    border-radius: 0;
+    height: 100%;
+    overflow: hidden;
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    order: 1;
+    box-shadow: 4px 0 24px rgba(26, 34, 24, 0.05);
+    z-index: 10;
   }
 }
 
@@ -1810,6 +1839,9 @@ img.leaflet-tile {
 /* Calendar Grid */
 .calendar-grid {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .calendar-grid-header {
@@ -1840,7 +1872,9 @@ img.leaflet-tile {
 .calendar-grid-body {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
   gap: 2px;
+  flex: 1;
 }
 
 .calendar-grid-skeleton {
@@ -1870,6 +1904,12 @@ img.leaflet-tile {
 @media (min-width: 768px) {
   .date-cell-compact {
     padding: 6px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .date-cell-compact {
+    aspect-ratio: auto;
   }
 }
 
@@ -1982,13 +2022,14 @@ img.leaflet-tile {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  padding-top: var(--space-md);
-  padding-bottom: var(--space-xl);
+  padding: var(--space-md) calc(var(--space-xs) / 3) var(--space-xl);
 }
 
 /* Date Group */
 .date-group {
   scroll-margin-top: 32px;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px;
 }
 
 .date-group-header {
@@ -2034,6 +2075,8 @@ img.leaflet-tile {
   overflow: hidden;
   border: 1px solid var(--sage);
   transition: all var(--transition-fast);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 100px;
 }
 
 .calendar-item-card:hover {
@@ -2877,6 +2920,25 @@ img.leaflet-tile {
   align-content: start;
 }
 
+@media (min-width: 1024px) {
+  .month-pages-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 8px;
+    height: auto;
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  .month-pages-grid::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
 .month-page {
   position: relative;
   display: flex;
@@ -2894,6 +2956,14 @@ img.leaflet-tile {
   aspect-ratio: 1.2 / 1; /* Slightly wider than tall to save vertical space */
   padding: 0;
   min-height: 40px;
+}
+
+@media (min-width: 1024px) {
+  .month-page {
+    aspect-ratio: auto;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .month-page::before {
@@ -2946,7 +3016,7 @@ img.leaflet-tile {
 }
 
 .month-page-header {
-  padding: 10px 4px 2px; /* Adjusted for thinner header */
+  padding: 12px 4px 2px; /* Adjusted for thinner header and 120px max-height */
   text-align: center;
   flex-shrink: 0;
   z-index: 2;

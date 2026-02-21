@@ -49,13 +49,13 @@ export function CalendarViewContainer({
             onDateClick={onDateClick}
           />
         </div>
-        <div className="navigation-section">
-          <MonthNavigation
-            currentMonth={currentMonth}
-            items={items}
-            onMonthSelect={onMonthSelect}
-          />
-        </div>
+      </div>
+      <div className="navigation-section">
+        <MonthNavigation
+          currentMonth={currentMonth}
+          items={items}
+          onMonthSelect={onMonthSelect}
+        />
       </div>
       <div className="calendar-detail-column">
         <CalendarCategoryKey />
