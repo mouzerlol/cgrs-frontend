@@ -60,9 +60,7 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${manrope.variable}`}>
       <body>
         <Providers>
-          <Layout>
-            {children}
-          </Layout>
+          {children}
         </Providers>
       </body>
     </html>

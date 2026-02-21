@@ -1,29 +1,22 @@
 export type TaskPriority = 'urgent' | 'high' | 'medium' | 'low';
-
-export type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'review' | 'done';
+export type TaskStatus = 'backlog' | 'todo' | 'in_progress' | 'review' | 'done';
 
 export interface BoardMember {
   id: string;
   name: string;
-  role: string;
   avatar: string;
-  email?: string;
+  role: string;
 }
 
-export type TaskTag =
-  | 'maintenance'
-  | 'landscaping'
-  | 'community'
-  | 'admin'
-  | 'safety'
-  | 'infrastructure'
-  | 'events'
-  | 'urgent-repair';
+export interface TaskTag {
+  id: string;
+  label: string;
+}
 
 export interface TaskLocation {
-  block?: string;
-  area?: string;
-  description?: string;
+  lat: number;
+  lng: number;
+  label?: string;
 }
 
 export interface TaskImage {
@@ -33,25 +26,31 @@ export interface TaskImage {
   alt?: string;
 }
 
+export interface TaskComment {
+  id: string;
+  authorId: string;
+  content: string;
+  createdAt: string;
+}
+
 export interface Task {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   status: TaskStatus;
   priority: TaskPriority;
-  assignee?: BoardMember;
-  tags: TaskTag[];
+  assignee?: string;
+  reporter: string;
+  tags: string[];
+  images: TaskImage[];
+  comments?: TaskComment[];
   location?: TaskLocation;
-  dueDate?: string;
-  images?: TaskImage[];
   createdAt: string;
   updatedAt?: string;
-  commentCount: number;
-  attachments: number;
+  dueDate?: string;
 }
 
 export interface BoardColumn {
   id: TaskStatus;
   title: string;
-  taskIds: string[];
 }

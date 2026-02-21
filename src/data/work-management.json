@@ -1,441 +1,244 @@
 {
   "members": [
     {
-      "id": "member-001",
-      "name": "Patricia Hamilton",
-      "role": "Committee Chairperson",
-      "avatar": "/images/avatars/committee.svg",
-      "email": "patricia.hamilton@cgrs.nz"
+      "id": "m1",
+      "name": "Sarah Jenkins",
+      "avatar": "https://i.pravatar.cc/150?u=sarah",
+      "role": "Maintenance Coordinator"
     },
     {
-      "id": "member-002",
-      "name": "Robert Chen",
-      "role": "Maintenance Coordinator",
-      "avatar": "/images/avatars/default.svg",
-      "email": "robert.chen@cgrs.nz"
+      "id": "m2",
+      "name": "David Chen",
+      "avatar": "https://i.pravatar.cc/150?u=david",
+      "role": "Committee Member"
     },
     {
-      "id": "member-003",
-      "name": "Margaret Thompson",
-      "role": "Treasurer",
-      "avatar": "/images/avatars/default.svg",
-      "email": "margaret.t@cgrs.nz"
+      "id": "m3",
+      "name": "Mike Roa",
+      "avatar": "https://i.pravatar.cc/150?u=mike",
+      "role": "Caretaker"
     },
     {
-      "id": "member-004",
-      "name": "David Kawana",
-      "role": "Head Caretaker",
-      "avatar": "/images/avatars/default.svg"
+      "id": "m4",
+      "name": "Emma Wilson",
+      "avatar": "https://i.pravatar.cc/150?u=emma",
+      "role": "Committee Member"
     },
     {
-      "id": "member-005",
-      "name": "Susan Miller",
-      "role": "Community Events Lead",
-      "avatar": "/images/avatars/default.svg",
-      "email": "susan.m@cgrs.nz"
+      "id": "m5",
+      "name": "James Taylor",
+      "avatar": "https://i.pravatar.cc/150?u=james",
+      "role": "Landscaping Lead"
     },
     {
-      "id": "member-006",
-      "name": "James Alipate",
-      "role": "Landscaping Contractor",
-      "avatar": "/images/avatars/default.svg"
-    },
-    {
-      "id": "member-007",
-      "name": "Elizabeth Reid",
-      "role": "Committee Secretary",
-      "avatar": "/images/avatars/default.svg",
-      "email": "elizabeth.r@cgrs.nz"
-    },
-    {
-      "id": "member-008",
-      "name": "Michael O'Brien",
-      "role": "Safety Officer",
-      "avatar": "/images/avatars/default.svg"
+      "id": "m6",
+      "name": "Lisa Wang",
+      "avatar": "https://i.pravatar.cc/150?u=lisa",
+      "role": "Admin"
     }
   ],
   "tasks": [
     {
-      "id": "task-001",
-      "title": "Fix leaking tap in Block B ground floor",
-      "description": "Resident reported a leaking tap in the common area bathroom on the ground floor of Block B. Water is pooling and causing a slip hazard.",
-      "status": "in-progress",
-      "priority": "high",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "urgent-repair"],
-      "location": {
-        "block": "Block B",
-        "area": "Ground Floor Common Area",
-        "description": "Near the laundry room"
-      },
-      "dueDate": "2026-02-24",
-      "createdAt": "2026-02-15T09:30:00",
-      "updatedAt": "2026-02-18T14:00:00",
-      "commentCount": 3,
-      "attachments": 1
-    },
-    {
-      "id": "task-002",
-      "title": "Plan summer community BBQ",
-      "description": "Organise the annual summer BBQ event. Need to confirm date, location, catering, and send invitations to all residents.",
+      "id": "t1",
+      "title": "Fix leaking tap in Block B",
+      "description": "Resident reported a continuous drip from the garden tap near Block B entrance.",
       "status": "todo",
       "priority": "medium",
-      "assignee": {
-        "id": "member-005",
-        "name": "Susan Miller",
-        "role": "Community Events Lead",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["community", "events"],
-      "location": {
-        "area": "Community Garden Area"
-      },
-      "dueDate": "2026-03-01",
-      "createdAt": "2026-02-10T11:00:00",
-      "commentCount": 5,
-      "attachments": 0
+      "assignee": "m3",
+      "reporter": "m1",
+      "tags": ["maintenance", "infrastructure"],
+      "images": [],
+      "comments": [],
+      "createdAt": "2026-02-15T09:00:00Z"
     },
     {
-      "id": "task-003",
-      "title": "Review insurance renewal documents",
-      "description": "Annual building insurance is up for renewal. Need to review coverage, premiums, and any policy changes with the committee.",
-      "status": "in-progress",
-      "priority": "high",
-      "assignee": {
-        "id": "member-003",
-        "name": "Margaret Thompson",
-        "role": "Treasurer",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["admin"],
-      "dueDate": "2026-02-28",
-      "createdAt": "2026-02-12T08:00:00",
-      "updatedAt": "2026-02-17T10:30:00",
-      "commentCount": 2,
-      "attachments": 2
+      "id": "t2",
+      "title": "Replace broken light in carpark L2",
+      "description": "Fluorescent tube is flickering and needs replacement above bay 45.",
+      "status": "in_progress",
+      "priority": "medium",
+      "assignee": "m3",
+      "reporter": "m2",
+      "tags": ["maintenance", "safety"],
+      "images": [],
+      "comments": [
+        {
+          "id": "c1",
+          "authorId": "m1",
+          "content": "I'll order a replacement tube today.",
+          "createdAt": "2026-02-18T15:00:00Z"
+        }
+      ],
+      "createdAt": "2026-02-18T14:30:00Z",
+      "dueDate": "2026-02-23T17:00:00Z"
     },
     {
-      "id": "task-004",
-      "title": "Service fire safety equipment - all blocks",
-      "description": "Annual fire safety equipment inspection and servicing required for all blocks. Includes extinguishers, alarms, and emergency lighting.",
+      "id": "t3",
+      "title": "Repaint speed bumps",
+      "description": "The yellow paint on the main entrance speed bumps has worn off.",
       "status": "backlog",
-      "priority": "urgent",
-      "assignee": {
-        "id": "member-008",
-        "name": "Michael O'Brien",
-        "role": "Safety Officer",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["safety", "infrastructure", "urgent-repair"],
-      "location": {
-        "description": "All blocks - common areas and hallways"
-      },
-      "dueDate": "2026-02-22",
-      "createdAt": "2026-02-14T13:00:00",
-      "commentCount": 1,
-      "attachments": 0
+      "priority": "low",
+      "assignee": "m5",
+      "reporter": "m1",
+      "tags": ["maintenance", "infrastructure"],
+      "images": [],
+      "comments": [],
+      "createdAt": "2026-02-10T11:20:00Z"
     },
     {
-      "id": "task-005",
-      "title": "Trim hedges along southern boundary",
-      "description": "Hedges along the southern boundary are overgrown and blocking the walkway. Need trimming before the summer.",
-      "status": "todo",
+      "id": "t4",
+      "title": "Plan summer BBQ",
+      "description": "Annual residents summer BBQ planning. Need to arrange catering and permits.",
+      "status": "in_progress",
       "priority": "medium",
-      "assignee": {
-        "id": "member-006",
-        "name": "James Alipate",
-        "role": "Landscaping Contractor",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["landscaping", "maintenance"],
-      "location": {
-        "description": "Southern boundary walkway"
-      },
-      "dueDate": "2026-03-05",
-      "createdAt": "2026-02-11T09:00:00",
-      "commentCount": 0,
-      "attachments": 1
+      "assignee": "m4",
+      "reporter": "m4",
+      "tags": ["community", "events"],
+      "images": [],
+      "comments": [],
+      "createdAt": "2026-02-05T10:00:00Z"
     },
     {
-      "id": "task-006",
-      "title": "Replace broken light in Block C car park",
-      "description": "Car park lighting not working in section C2. Safety concern for residents returning home after dark.",
+      "id": "t5",
+      "title": "Install new notice board",
+      "description": "Put up the new cork board in the main lobby.",
       "status": "review",
-      "priority": "high",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "safety", "urgent-repair"],
-      "location": {
-        "block": "Block C",
-        "area": "Car Park Section C2"
-      },
-      "dueDate": "2026-02-20",
-      "createdAt": "2026-02-16T16:00:00",
-      "updatedAt": "2026-02-19T11:00:00",
-      "commentCount": 2,
-      "attachments": 0
-    },
-    {
-      "id": "task-007",
-      "title": "Prepare AGM meeting agenda and documents",
-      "description": "Compile documents for upcoming Annual General Meeting including financial reports, maintenance updates, and election nominations.",
-      "status": "backlog",
-      "priority": "high",
-      "assignee": {
-        "id": "member-007",
-        "name": "Elizabeth Reid",
-        "role": "Committee Secretary",
-        "avatar": "/images/avatars/default.svg"
-      },
+      "priority": "low",
+      "assignee": "m3",
+      "reporter": "m6",
       "tags": ["admin", "community"],
-      "dueDate": "2026-03-15",
-      "createdAt": "2026-02-08T10:00:00",
-      "commentCount": 4,
-      "attachments": 3
+      "images": [],
+      "comments": [],
+      "createdAt": "2026-02-19T08:45:00Z"
     },
     {
-      "id": "task-008",
-      "title": "Repair damaged gate latch - Block A entrance",
-      "description": "The main entrance gate latch is broken. Residents are having difficulty securing the door.",
-      "status": "done",
-      "priority": "medium",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "infrastructure"],
-      "location": {
-        "block": "Block A",
-        "area": "Main Entrance"
-      },
-      "dueDate": "2026-02-18",
-      "createdAt": "2026-02-13T14:30:00",
-      "updatedAt": "2026-02-19T09:00:00",
-      "commentCount": 1,
-      "attachments": 0
-    },
-    {
-      "id": "task-009",
-      "title": "Organise mid-winter community morning tea",
-      "description": "Plan and coordinate a casual morning tea for residents to socialise and combat the winter blues.",
-      "status": "done",
-      "priority": "low",
-      "assignee": {
-        "id": "member-005",
-        "name": "Susan Miller",
-        "role": "Community Events Lead",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["community", "events"],
-      "location": {
-        "area": "Community Hall"
-      },
-      "dueDate": "2026-07-20",
-      "createdAt": "2026-06-01T11:00:00",
-      "updatedAt": "2026-07-20T13:00:00",
-      "commentCount": 8,
-      "attachments": 0
-    },
-    {
-      "id": "task-010",
-      "title": "Investigate water pressure issues - Block D top floors",
-      "description": "Multiple residents from top floors of Block D reporting low water pressure. Need to investigate the pump system.",
+      "id": "t6",
+      "title": "Coordinate tree planting",
+      "description": "Plant 5 new native trees along the western boundary fence.",
       "status": "todo",
-      "priority": "high",
-      "assignee": {
-        "id": "member-002",
-        "name": "Robert Chen",
-        "role": "Maintenance Coordinator",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "infrastructure"],
-      "location": {
-        "block": "Block D",
-        "description": "Top floors (5-8)"
-      },
-      "dueDate": "2026-02-25",
-      "createdAt": "2026-02-17T08:00:00",
-      "commentCount": 4,
-      "attachments": 0
-    },
-    {
-      "id": "task-011",
-      "title": "Refresh garden beds in central courtyard",
-      "description": "Plant new seasonal flowers and add mulch to the central courtyard garden beds to improve appearance.",
-      "status": "backlog",
       "priority": "low",
-      "assignee": {
-        "id": "member-006",
-        "name": "James Alipate",
-        "role": "Landscaping Contractor",
-        "avatar": "/images/avatars/default.svg"
-      },
+      "assignee": "m5",
+      "reporter": "m5",
       "tags": ["landscaping", "community"],
-      "location": {
-        "area": "Central Courtyard"
-      },
-      "dueDate": "2026-03-20",
-      "createdAt": "2026-02-09T12:00:00",
-      "commentCount": 0,
-      "attachments": 1
+      "images": [],
+      "createdAt": "2026-02-20T13:15:00Z",
+      "dueDate": "2026-03-05T00:00:00Z"
     },
     {
-      "id": "task-012",
-      "title": "Update resident contact directory",
-      "description": "Annual update of the resident contact directory. Verify all details and add new residents.",
-      "status": "backlog",
-      "priority": "low",
-      "assignee": {
-        "id": "member-007",
-        "name": "Elizabeth Reid",
-        "role": "Committee Secretary",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["admin"],
-      "dueDate": "2026-04-01",
-      "createdAt": "2026-02-01T09:00:00",
-      "commentCount": 1,
-      "attachments": 0
-    },
-    {
-      "id": "task-013",
-      "title": "Deep clean common area carpets - Blocks A and B",
-      "description": "Schedule professional carpet cleaning for the common area carpets in Blocks A and B.",
-      "status": "review",
-      "priority": "medium",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance"],
-      "location": {
-        "description": "Blocks A and B common areas"
-      },
-      "dueDate": "2026-02-23",
-      "createdAt": "2026-02-14T10:00:00",
-      "updatedAt": "2026-02-19T15:00:00",
-      "commentCount": 2,
-      "attachments": 0
-    },
-    {
-      "id": "task-014",
-      "title": "Paint touch-ups - Block C stairwells",
-      "description": "Wall paint in Block C stairwells is chipping in several areas. Need to touch up before it gets worse.",
-      "status": "todo",
-      "priority": "medium",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "infrastructure"],
-      "location": {
-        "block": "Block C",
-        "area": "Stairwells"
-      },
-      "dueDate": "2026-03-10",
-      "createdAt": "2026-02-16T11:00:00",
-      "commentCount": 0,
-      "attachments": 0
-    },
-    {
-      "id": "task-015",
-      "title": "Schedule playground equipment inspection",
-      "description": "Annual safety inspection of all playground equipment is due. Contact certified inspector and schedule visit.",
-      "status": "backlog",
-      "priority": "high",
-      "assignee": {
-        "id": "member-008",
-        "name": "Michael O'Brien",
-        "role": "Safety Officer",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["safety", "maintenance"],
-      "location": {
-        "area": "Children's Playground"
-      },
-      "dueDate": "2026-03-01",
-      "createdAt": "2026-02-11T14:00:00",
-      "commentCount": 1,
-      "attachments": 0
-    },
-    {
-      "id": "task-016",
-      "title": "Fix intercom system - Block B",
-      "description": "Intercom in Block B lobby is not working properly. Residents cannot buzz visitors up.",
+      "id": "t7",
+      "title": "Update resident contact database",
+      "description": "Ensure all new move-ins from Q4 are added to the mailing list.",
       "status": "done",
       "priority": "high",
-      "assignee": {
-        "id": "member-002",
-        "name": "Robert Chen",
-        "role": "Maintenance Coordinator",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "infrastructure", "urgent-repair"],
-      "location": {
-        "block": "Block B",
-        "area": "Main Lobby"
-      },
-      "dueDate": "2026-02-16",
-      "createdAt": "2026-02-12T09:00:00",
-      "updatedAt": "2026-02-15T16:00:00",
-      "commentCount": 3,
-      "attachments": 0
+      "assignee": "m6",
+      "reporter": "m6",
+      "tags": ["admin"],
+      "images": [],
+      "createdAt": "2026-02-01T09:30:00Z",
+      "updatedAt": "2026-02-15T16:20:00Z"
     },
     {
-      "id": "task-017",
-      "title": "Create newsletter for March",
-      "description": "Write and design the monthly community newsletter with updates on committee activities, upcoming events, and maintenance schedules.",
+      "id": "t8",
+      "title": "Review insurance renewal",
+      "description": "Compare quotes from 3 providers for the upcoming building insurance renewal.",
+      "status": "todo",
+      "priority": "high",
+      "assignee": "m2",
+      "reporter": "m2",
+      "tags": ["admin"],
+      "images": [],
+      "createdAt": "2026-02-20T10:00:00Z",
+      "dueDate": "2026-03-01T12:00:00Z"
+    },
+    {
+      "id": "t9",
+      "title": "Emergency — water main leak near Block A",
+      "description": "Water pooling on the path. Plumber needs to be called urgently to isolate the valve.",
+      "status": "in_progress",
+      "priority": "urgent",
+      "assignee": "m1",
+      "reporter": "m3",
+      "tags": ["urgent-repair", "maintenance", "infrastructure"],
+      "location": {
+        "lat": -36.938883,
+        "lng": 174.786968,
+        "label": "Block A entrance"
+      },
+      "images": [],
+      "createdAt": "2026-02-21T07:15:00Z"
+    },
+    {
+      "id": "t10",
+      "title": "Clean gutters Block C",
+      "description": "Annual gutter cleaning before autumn rains.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "m3",
+      "reporter": "m1",
+      "tags": ["maintenance", "infrastructure"],
+      "images": [],
+      "createdAt": "2026-02-10T14:00:00Z"
+    },
+    {
+      "id": "t11",
+      "title": "Audit fire extinguishers",
+      "description": "Check expiry dates on all extinguishers across the complex.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "m3",
+      "reporter": "m1",
+      "tags": ["safety", "admin"],
+      "images": [],
+      "createdAt": "2026-01-15T09:00:00Z",
+      "updatedAt": "2026-01-20T11:00:00Z"
+    },
+    {
+      "id": "t12",
+      "title": "Repair pool gate latch",
+      "description": "Gate occasionally fails to self-latch. Needs adjustment.",
+      "status": "review",
+      "priority": "high",
+      "assignee": "m3",
+      "reporter": "m2",
+      "tags": ["safety", "maintenance"],
+      "images": [],
+      "createdAt": "2026-02-19T15:30:00Z"
+    },
+    {
+      "id": "t13",
+      "title": "Draft quarterly newsletter",
+      "description": "Write up updates on the recent AGM and upcoming events.",
+      "status": "in_progress",
+      "priority": "medium",
+      "assignee": "m4",
+      "reporter": "m6",
+      "tags": ["community", "admin"],
+      "images": [],
+      "createdAt": "2026-02-17T11:00:00Z"
+    },
+    {
+      "id": "t14",
+      "title": "Fix loose paving stone",
+      "description": "Trip hazard near the BBQ area.",
       "status": "todo",
       "priority": "medium",
-      "assignee": {
-        "id": "member-001",
-        "name": "Patricia Hamilton",
-        "role": "Committee Chairperson",
-        "avatar": "/images/avatars/committee.svg"
-      },
-      "tags": ["admin", "community"],
-      "dueDate": "2026-02-28",
-      "createdAt": "2026-02-18T10:00:00",
-      "commentCount": 0,
-      "attachments": 0
+      "assignee": "m5",
+      "reporter": "m1",
+      "tags": ["safety", "maintenance", "landscaping"],
+      "images": [],
+      "createdAt": "2026-02-18T09:20:00Z"
     },
     {
-      "id": "task-018",
-      "title": "Clear blocked drain - Block A courtyard",
-      "description": "Drain in Block A courtyard is blocked and causing water pooling. Needs urgent attention.",
-      "status": "in-progress",
-      "priority": "urgent",
-      "assignee": {
-        "id": "member-004",
-        "name": "David Kawana",
-        "role": "Head Caretaker",
-        "avatar": "/images/avatars/default.svg"
-      },
-      "tags": ["maintenance", "urgent-repair"],
-      "location": {
-        "block": "Block A",
-        "area": "Courtyard"
-      },
-      "dueDate": "2026-02-21",
-      "createdAt": "2026-02-20T07:00:00",
-      "updatedAt": "2026-02-21T08:30:00",
-      "commentCount": 2,
-      "attachments": 1
+      "id": "t15",
+      "title": "Order more green waste bins",
+      "description": "We don't have enough capacity for garden waste after weekend working bees.",
+      "status": "todo",
+      "priority": "low",
+      "assignee": "m6",
+      "reporter": "m5",
+      "tags": ["admin", "landscaping"],
+      "images": [],
+      "createdAt": "2026-02-21T08:00:00Z"
     }
   ]
 }

@@ -62,13 +62,11 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
       return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
     };
 
-    const handleUpvoteClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
+    const handleUpvoteClick = () => {
       onUpvote?.();
     };
 
-    const handleBookmarkClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
+    const handleBookmarkClick = () => {
       onBookmark?.();
     };
 

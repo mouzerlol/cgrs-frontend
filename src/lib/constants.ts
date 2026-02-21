@@ -12,6 +12,7 @@ export const NAVIGATION_ITEMS = [
   { name: 'Report Issue', href: '/management-request' },
   { name: 'Calendar', href: '/calendar' },
   { name: 'Blog', href: '/blog' },
+  { name: 'Management', href: '/work-management' },
 ] as const;
 
 export const MORE_NAVIGATION_ITEMS = [
