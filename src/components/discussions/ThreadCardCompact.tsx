@@ -3,6 +3,7 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import type { Thread, LatestReply } from '@/types';
@@ -47,6 +48,8 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
     className,
     ...props
   }, ref) => {
+    const router = useRouter();
+
     // Format relative time for display
     const formatRelativeTime = (dateStr: string): string => {
       const date = new Date(dateStr);
@@ -87,14 +90,31 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
       onReport?.();
     };
 
+    const handleCardClick = (e: React.MouseEvent) => {
+      // Don't navigate if clicking on interactive elements that didn't stop propagation
+      // (though our buttons do stop propagation)
+      router.push(`/discussion/thread/${thread.id}`);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        router.push(`/discussion/thread/${thread.id}`);
+      }
+    };
+
     return (
       <div
         ref={ref}
+        onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
         className={cn(
-          'flex gap-3 p-3',
+          'flex gap-3 p-3 group/card cursor-pointer',
           'bg-white rounded-xl border border-sage/30',
           'transition-all duration-200',
-          'hover:bg-sage-light/50 hover:border-sage',
+          'hover:bg-sage-light/50 hover:border-sage hover:shadow-sm',
           thread.isPinned && 'border-l-4 border-l-terracotta',
           className
         )}
@@ -155,14 +175,9 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
           </div>
 
           {/* Row 2: Thread Title */}
-          <Link
-            href={`/discussion/thread/${thread.id}`}
-            className="group"
-          >
-            <h3 className="text-sm font-medium text-forest line-clamp-1 group-hover:text-terracotta transition-colors">
-              {thread.title}
-            </h3>
-          </Link>
+          <h3 className="text-sm font-medium text-forest line-clamp-1 group-hover/card:text-terracotta transition-colors">
+            {thread.title}
+          </h3>
 
           {/* Row 3: Actions */}
           <div className="flex items-center gap-2 mt-0.5">

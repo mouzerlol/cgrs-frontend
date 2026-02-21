@@ -59,7 +59,7 @@ export default function CalendarPage() {
       />
 
       <section
-        className="py-3 md:py-4 bg-bone"
+        className="py-3 md:py-4 px-[10px] bg-bone"
         ref={sectionRef}
         onClick={enterImmersive}
       >

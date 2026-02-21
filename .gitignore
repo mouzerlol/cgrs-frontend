@@ -123,3 +123,7 @@ test-results/
 
 # Git worktrees (isolated workspaces)
 .worktrees/
+# bd worktree
+.worktrees/work/
+# bd worktree
+.worktrees/stream2/

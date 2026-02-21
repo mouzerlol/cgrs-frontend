@@ -3,6 +3,7 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import CategoryBadge from './CategoryBadge';
@@ -43,6 +44,8 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
     className,
     ...props
   }, ref) => {
+    const router = useRouter();
+
     // Format relative time
     const formatRelativeTime = (dateStr: string): string => {
       const date = new Date(dateStr);
@@ -59,8 +62,8 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
       return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
     };
 
-    // UpvoteButton handles stopPropagation internally
-    const handleUpvoteClick = () => {
+    const handleUpvoteClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
       onUpvote?.();
     };
 
@@ -73,11 +76,27 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
     const hasImages = thread.images && thread.images.length > 0;
     const featuredImage = hasImages ? thread.images![0] : null;
 
+    const handleCardClick = (e: React.MouseEvent) => {
+      // Navigate to thread detail on card click
+      router.push(`/discussion/thread/${thread.id}`);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        router.push(`/discussion/thread/${thread.id}`);
+      }
+    };
+
     return (
       <div
         ref={ref}
+        onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
         className={cn(
-          'relative bg-white rounded-2xl border border-sage/30 overflow-hidden',
+          'relative bg-white rounded-2xl border border-sage/30 overflow-hidden cursor-pointer group/card',
           // Dramatic hover animation - lift, scale, shadow, border glow
           'transition-all duration-300 ease-out',
           'hover:-translate-y-2 hover:shadow-[0_16px_32px_rgba(217,93,57,0.15)]',
@@ -88,12 +107,8 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
         )}
         {...props}
       >
-        <Link
-          href={`/discussion/thread/${thread.id}`}
-          className="block"
-        >
-          <div className="flex">
-            {/* Featured Image (Left Side) - Only shown when images exist */}
+        <div className="flex">
+          {/* Featured Image (Left Side) - Only shown when images exist */}
             {hasImages && featuredImage && (
               <div className="relative w-32 md:w-40 flex-shrink-0 bg-sage-light">
                 <Image
@@ -140,7 +155,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
               </div>
 
               {/* Title */}
-              <h3 className="font-display text-base md:text-lg font-medium text-forest leading-snug mb-1.5 group-hover:text-terracotta transition-colors line-clamp-2">
+              <h3 className="font-display text-base md:text-lg font-medium text-forest leading-snug mb-1.5 group-hover/card:text-terracotta transition-colors line-clamp-2">
                 {thread.title}
               </h3>
 
@@ -182,7 +197,6 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
               </div>
             </div>
           </div>
-        </Link>
       </div>
     );
   }

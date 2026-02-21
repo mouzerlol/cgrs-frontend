@@ -1694,9 +1694,9 @@ img.leaflet-tile {
     grid-template-rows: auto 1fr;
     height: calc(100vh - 120px);
     overflow: hidden;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
+    width: calc(100vw - 20px);
+    margin-left: calc(-50vw + 50% + 10px);
+    margin-right: calc(-50vw + 50% + 10px);
   }
 }
 
@@ -1842,6 +1842,7 @@ img.leaflet-tile {
   display: flex;
   flex-direction: column;
   flex: 1;
+  container-type: inline-size;
 }
 
 .calendar-grid-header {
@@ -1875,6 +1876,12 @@ img.leaflet-tile {
   grid-auto-rows: 1fr;
   gap: 2px;
   flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .calendar-grid-body {
+    max-height: calc(var(--num-rows, 5) * (100cqw - 12px) / 7 * 1.2 + (var(--num-rows, 5) - 1) * 2px);
+  }
 }
 
 .calendar-grid-skeleton {
@@ -3145,7 +3152,7 @@ img.leaflet-tile {
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--sage-light);
-  padding: 0 2px;
+  padding: 0 12px;
 }
 
 @media (max-width: 640px) {

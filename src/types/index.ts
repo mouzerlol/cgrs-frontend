@@ -350,3 +350,9 @@ export interface LatestReply {
 export interface ThreadWithLatestReply extends Thread {
   latestReply?: LatestReply;
 }
+
+// =============================================================================
+// Work Management Types
+// =============================================================================
+
+export * from './work-management';

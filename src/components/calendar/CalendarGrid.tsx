@@ -22,6 +22,7 @@ export function CalendarGrid({
   onDateClick,
 }: CalendarGridProps) {
   const days = generateCalendarDays(currentMonth);
+  const numRows = Math.ceil(days.length / 7);
 
   return (
     <div className="calendar-grid">
@@ -32,7 +33,10 @@ export function CalendarGrid({
           </div>
         ))}
       </div>
-      <div className="calendar-grid-body">
+      <div 
+        className="calendar-grid-body"
+        style={{ '--num-rows': numRows } as React.CSSProperties}
+      >
         {days.map((date) => {
           const dateKey = formatDateKey(date);
           const items = itemsByDate.get(dateKey) || [];
