@@ -24,6 +24,8 @@ export interface TaskImage {
   url: string;
   thumbnail: string;
   alt?: string;
+  type?: 'image' | 'video';
+  duration?: number;
 }
 
 export interface TaskComment {

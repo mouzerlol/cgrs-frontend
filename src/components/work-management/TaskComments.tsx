@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TaskComment, BoardMember } from '@/types/work-management';
 import { formatRelativeDate } from '@/lib/utils';
 import mockData from '@/data/work-management.json';
+import { Avatar } from '@/components/design-system/Avatar';
 
 interface TaskCommentsProps {
   comments: TaskComment[];
@@ -33,59 +34,53 @@ export default function TaskComments({ comments, onChange, readonly = false }: T
     return mockData.members.find((m: any) => m.id === authorId);
   };
 
+  const currentUser = getAuthor(currentUserId);
+
   return (
-    <div className="space-y-4 mt-6">
-      <h4 className="font-body text-xs text-forest/50 uppercase tracking-wider mb-2">Comments</h4>
-      
+    <div className="space-y-4">
       {comments.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {comments.map(comment => {
             const author = getAuthor(comment.authorId);
             return (
-              <div key={comment.id} className="flex gap-3">
-                <img 
-                  src={author?.avatar || 'https://via.placeholder.com/150'} 
-                  alt={author?.name || 'Unknown User'} 
-                  className="w-8 h-8 rounded-full object-cover shrink-0" 
-                />
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-forest">{author?.name || 'Unknown User'}</span>
-                    <span className="text-xs text-forest/50">{formatRelativeDate(comment.createdAt)}</span>
+              <div key={comment.id} className="flex gap-4 group">
+                <Avatar src={author?.avatar} alt={author?.name} size="sm" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-forest">{author?.name || 'Unknown User'}</span>
+                    <span className="text-[10px] font-medium text-forest/30 uppercase tracking-wider">{formatRelativeDate(comment.createdAt)}</span>
                   </div>
-                  <p className="text-sm text-forest/80 bg-sage-light/10 p-3 rounded-lg border border-sage/20 whitespace-pre-wrap">
+                  <div className="text-sm text-forest/80 bg-white p-3.5 rounded-2xl rounded-tl-none border border-sage/20 shadow-sm group-hover:border-sage/40 transition-colors whitespace-pre-wrap leading-relaxed">
                     {comment.content}
-                  </p>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <p className="text-sm text-forest/50 italic mb-4">No comments yet.</p>
+        <div className="py-8 text-center bg-sage-light/20 rounded-2xl border border-dashed border-sage/30">
+          <p className="text-sm text-forest/40 font-medium italic">No comments yet. Start the conversation!</p>
+        </div>
       )}
 
       {!readonly && (
-        <div className="flex gap-3 mt-4">
-          <img 
-            src={getAuthor(currentUserId)?.avatar || 'https://via.placeholder.com/150'} 
-            alt="Current User" 
-            className="w-8 h-8 rounded-full object-cover shrink-0" 
-          />
-          <div className="flex-1 space-y-2">
+        <div className="flex gap-4 mt-8 pt-6 border-t border-sage/10">
+          <Avatar src={currentUser?.avatar} alt="Current User" size="sm" />
+          <div className="flex-1 relative group">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
-              className="w-full bg-white text-sm text-forest/80 rounded-lg border border-sage/30 px-3 py-2 min-h-[80px] focus:outline-none focus:ring-2 focus:ring-terracotta/20 resize-none"
+              className="w-full bg-white text-sm text-forest/80 rounded-2xl border border-sage/30 p-4 pb-12 focus:outline-none focus:ring-4 focus:ring-terracotta/5 focus:border-terracotta/30 transition-all resize-none min-h-[110px]"
             />
-            <div className="flex justify-end">
+            <div className="absolute bottom-3 right-3">
               <button 
                 onClick={handleAddComment}
                 disabled={!newComment.trim()}
-                className="bg-terracotta text-white text-xs font-medium px-4 py-1.5 rounded-full hover:bg-terracotta/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-terracotta text-white text-xs font-bold px-5 py-2 rounded-xl shadow-lg shadow-terracotta/20 hover:bg-terracotta/90 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none"
               >
-                Save
+                Send
               </button>
             </div>
           </div>

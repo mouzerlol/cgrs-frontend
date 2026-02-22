@@ -13,10 +13,10 @@ interface TaskCardProps {
 const getTagColorClass = (tag: string) => {
   const hash = tag.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
   const colors = [
-    'bg-terracotta/15 text-terracotta font-medium',
-    'bg-sage/30 text-forest font-medium',
-    'bg-forest/10 text-forest font-medium',
-    'bg-sage-light text-forest/70 border border-sage/20'
+    'bg-terracotta/15 text-black font-medium',
+    'bg-sage/30 text-black font-medium',
+    'bg-forest/10 text-black font-medium',
+    'bg-sage-light text-black border border-sage/20'
   ];
   return colors[hash % colors.length];
 };
@@ -41,50 +41,45 @@ export default function TaskCard({ task, onClick, className }: TaskCardProps) {
     <button 
       type="button"
       className={cn(
-        "w-full text-left bg-white rounded-card shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 ease-out-custom cursor-pointer overflow-hidden flex flex-col border border-transparent focus-visible:ring-2 focus-visible:ring-forest focus-visible:outline-none",
+        "w-full text-left bg-white rounded-[10px] shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 active:translate-y-0 transition-[box-shadow,transform,background-color] duration-300 ease-out-custom cursor-pointer overflow-hidden flex flex-col border border-transparent focus-visible:ring-2 focus-visible:ring-forest focus-visible:outline-none",
         className
       )}
-      style={{ borderTopColor: priorityConfig.color, borderTopWidth: '3px' }}
       onClick={() => onClick(task.id)}
+      onKeyDown={handleKeyDown}
       aria-label={`Task: ${task.title}`}
     >
       <div className="p-3 flex-1 flex flex-col gap-3 min-w-0 w-full">
+        {/* Top Row: Title and Priority Indicator */}
+        <div className="flex justify-between items-start gap-2">
+          <h3 className="font-display text-sm font-medium text-forest leading-snug line-clamp-2">
+            {task.title}
+          </h3>
+          <div 
+            className="flex-shrink-0 w-3 h-3 mt-1 rounded-full shadow-sm"
+            style={{ backgroundColor: priorityConfig.color }}
+            title={`Priority: ${priorityConfig.label}`}
+          />
+        </div>
+        
+        {/* Middle Row: Tags */}
         {task.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-1">
+          <div className="flex flex-wrap gap-1.5">
             {visibleTags.map(tag => (
               <span key={tag} className={cn("text-[10px] px-2 py-0.5 rounded-sm whitespace-nowrap", getTagColorClass(tag))}>
                 {tag}
               </span>
             ))}
             {hiddenTagsCount > 0 && (
-              <span className="bg-sage-light text-forest/70 text-[10px] px-2 py-0.5 rounded-sm whitespace-nowrap">
+              <span className="bg-sage-light text-black text-[10px] px-2 py-0.5 rounded-sm whitespace-nowrap">
                 +{hiddenTagsCount}
               </span>
             )}
           </div>
         )}
         
-        <h3 className="font-display text-sm font-medium text-forest leading-snug line-clamp-2">
-          {task.title}
-        </h3>
-        
-        <div className="flex items-center justify-between mt-auto pt-2 w-full">
-          <div className="flex items-center gap-3 text-forest/50">
-            {hasDescription && (
-              <AlignLeft className="w-3.5 h-3.5" aria-hidden="true" />
-            )}
-            {commentsCount > 0 && (
-              <div className="flex items-center gap-1">
-                <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
-                <span className="text-[11px] font-medium">{commentsCount}</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[11px] text-forest/40 font-medium">
-              {task.dueDate ? formatRelativeDate(task.dueDate) : formatRelativeDate(task.createdAt)}
-            </span>
+        {/* Bottom Row: Avatar (left) and Time Open (right) */}
+        <div className="flex items-center justify-between mt-auto pt-1 w-full">
+          <div className="flex items-center gap-2">
             {assignee && (
               <img 
                 src={assignee.avatar} 
@@ -96,6 +91,23 @@ export default function TaskCard({ task, onClick, className }: TaskCardProps) {
                 title={`Assigned to ${assignee.name}`}
               />
             )}
+            <div className="flex items-center gap-2 text-forest/50 ml-1">
+              {hasDescription && (
+                <AlignLeft className="w-3.5 h-3.5" aria-hidden="true" />
+              )}
+              {commentsCount > 0 && (
+                <div className="flex items-center gap-1">
+                  <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span className="text-[11px] font-medium">{commentsCount}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex items-center shrink-0">
+            <span className="text-[11px] text-forest/40 font-medium">
+              {formatRelativeDate(task.createdAt)}
+            </span>
           </div>
         </div>
       </div>

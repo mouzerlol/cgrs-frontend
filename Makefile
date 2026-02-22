@@ -1,4 +1,4 @@
-.PHONY: help install dev build start lint test test_unit test_e2e test_all clean worktree worktree-prune board
+.PHONY: help install dev build start lint test test_unit test_e2e test_all clean deploy worktree worktree-prune board
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
@@ -32,6 +32,9 @@ test_all: ## Run all tests with coverage
 
 clean: ## Clean build artifacts
 	rm -rf .next/
+
+deploy: ## Deploy the application to Vercel production
+	vercel --prod --yes
 
 board: ## Start the Beads issue board UI (bdui)
 	bdui start --open

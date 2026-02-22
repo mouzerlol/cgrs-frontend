@@ -29,14 +29,6 @@ export default function WorkManagementPage() {
     setSelectedTaskId(taskId);
   };
 
-  const handleTaskMove = (taskId: string, newStatus: TaskStatus) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === taskId ? { ...task, status: newStatus, updatedAt: new Date().toISOString() } : task
-      )
-    );
-  };
-
   const handleTaskUpdate = (updatedTask: Task) => {
     setTasks(prevTasks => 
       prevTasks.map(task => 
@@ -50,6 +42,11 @@ export default function WorkManagementPage() {
   };
 
   const groupedTasks = groupTasksByStatus(filteredTasks);
+  
+  // Sort grouped tasks based on their order in the main tasks array
+  // This is necessary because groupTasksByStatus groups them, but they might need sorting based on the main array order
+  // Actually, groupTasksByStatus preserves the order from the filteredTasks array, which preserves the order from the tasks array.
+  // Wait, if filteredTasks preserves order, it should be fine.
   const selectedTask = selectedTaskId ? tasks.find(t => t.id === selectedTaskId) || null : null;
   const availableTags = Array.from(new Set(tasks.flatMap(t => t.tags))).sort();
 
@@ -68,7 +65,7 @@ export default function WorkManagementPage() {
         }
       />
       
-      <BoardDndContext tasks={tasks} onTaskMove={handleTaskMove}>
+      <BoardDndContext tasks={tasks} setTasks={setTasks}>
         <div className="flex-1 overflow-x-auto overflow-y-hidden flex items-start gap-4 p-4 md:p-6 scrollbar-thin">
           {BOARD_COLUMNS.map(column => (
             <BoardColumn

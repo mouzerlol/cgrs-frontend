@@ -20,6 +20,7 @@ module.exports = {
         },
         sage: {
           DEFAULT: '#A8B5A0',
+          lite: '#D4DFD0',
           light: '#E8EDE6',
         },
         // Warm amber for secondary UI elements (timestamps, reply counts, stats)
