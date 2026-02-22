@@ -47,7 +47,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-              "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.openstreetmap.org",
+              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://*.tile.openstreetmap.org https://*.openstreetmap.org",
               "connect-src 'self' https://*.tile.openstreetmap.org",
               "frame-ancestors 'none'",
             ].join('; '),

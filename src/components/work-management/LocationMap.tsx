@@ -4,8 +4,14 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { TaskLocation } from '@/types/work-management';
+import { MAP_CENTER } from '@/data/map-data';
+import { getOSMTileUrl, getOSMTileOptions, addBoundaryLayer, fitMapToBoundary, BOUNDARY_STYLE_COMPACT } from '@/lib/maps';
 
-const DEFAULT_CENTER: [number, number] = [-36.939, 174.787];
+/** Treat (0,0) as "no location" so we show pin at MAP_CENTER for user to drag. */
+function effectivePosition(location?: TaskLocation | null): [number, number] {
+  if (!location || (location.lat === 0 && location.lng === 0)) return MAP_CENTER;
+  return [location.lat, location.lng];
+}
 
 interface LocationMapProps {
   location?: TaskLocation;
@@ -17,8 +23,7 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
-  
-  // Use a ref for onChange to avoid stale closures in event listeners without causing re-renders
+
   const onChangeRef = useRef(onChange);
   useEffect(() => {
     onChangeRef.current = onChange;
@@ -30,13 +35,15 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
     let resizeObserver: ResizeObserver | null = null;
 
     if (!mapInstanceRef.current) {
-      const center = location ? [location.lat, location.lng] : DEFAULT_CENTER;
+      const center = effectivePosition(location);
       const map = L.map(mapRef.current).setView(center as L.LatLngExpression, 16);
-      
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(map);
+
+      const osmUrl = getOSMTileUrl();
+      const osmOpts = getOSMTileOptions();
+      L.tileLayer(osmUrl, { ...osmOpts }).addTo(map);
+
+      addBoundaryLayer(L, map, BOUNDARY_STYLE_COMPACT);
+      fitMapToBoundary(L, map, 20);
 
       mapInstanceRef.current = map;
 
@@ -57,25 +64,34 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
       });
       resizeObserver.observe(mapRef.current);
 
-      const icon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41]
+      const markerIcon = L.divIcon({
+        className: 'location-map-marker',
+        html: `
+          <div class="location-marker-pin">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 24 30">
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 8 12 18 12 18s12-10 12-18c0-6.627-5.373-12-12-12z" fill="#D95D39"/>
+              <circle cx="12" cy="12" r="5" fill="white"/>
+            </svg>
+          </div>
+        `,
+        iconSize: [32, 40],
+        iconAnchor: [16, 40],
       });
 
-      if (location) {
-        markerRef.current = L.marker([location.lat, location.lng], {
+      // In edit mode always show a pin (at location or MAP_CENTER); in readonly only if location is set and valid
+      const showPin = !readonly || (location && !(location.lat === 0 && location.lng === 0));
+      if (showPin) {
+        const pos = effectivePosition(location);
+        markerRef.current = L.marker(pos, {
           draggable: !readonly,
-          icon
+          icon: markerIcon,
         }).addTo(map);
       }
 
       if (!readonly) {
         map.on('click', (e) => {
           if (!markerRef.current) {
-            markerRef.current = L.marker(e.latlng, { draggable: true, icon }).addTo(map);
+            markerRef.current = L.marker(e.latlng, { draggable: true, icon: markerIcon }).addTo(map);
             markerRef.current.on('dragend', () => {
               const pos = markerRef.current!.getLatLng();
               onChangeRef.current({ lat: pos.lat, lng: pos.lng });
@@ -109,34 +125,49 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync marker position when location prop changes
+  // Sync marker position when location prop changes (or add marker when location appears in edit mode)
   useEffect(() => {
-    if (!mapInstanceRef.current || !location) return;
+    if (!mapInstanceRef.current) return;
 
-    if (!markerRef.current) {
-      const icon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41]
-      });
-      
-      markerRef.current = L.marker([location.lat, location.lng], {
+    const pos = effectivePosition(location);
+    const hasValidLocation = location && !(location.lat === 0 && location.lng === 0);
+    const shouldShowPin = !readonly || hasValidLocation;
+
+    const markerIcon = L.divIcon({
+      className: 'location-map-marker',
+      html: `
+        <div class="location-marker-pin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 24 30">
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 8 12 18 12 18s12-10 12-18c0-6.627-5.373-12-12-12z" fill="#D95D39"/>
+            <circle cx="12" cy="12" r="5" fill="white"/>
+          </svg>
+        </div>
+      `,
+      iconSize: [32, 40],
+      iconAnchor: [16, 40],
+    });
+
+    if (!markerRef.current && shouldShowPin) {
+      markerRef.current = L.marker(pos, {
         draggable: !readonly,
-        icon
+        icon: markerIcon,
       }).addTo(mapInstanceRef.current);
 
       if (!readonly) {
         markerRef.current.on('dragend', () => {
-          const pos = markerRef.current!.getLatLng();
-          onChangeRef.current({ lat: pos.lat, lng: pos.lng });
+          const p = markerRef.current!.getLatLng();
+          onChangeRef.current({ lat: p.lat, lng: p.lng });
         });
       }
-    } else {
-      const currentPos = markerRef.current.getLatLng();
-      if (currentPos.lat !== location.lat || currentPos.lng !== location.lng) {
-        markerRef.current.setLatLng([location.lat, location.lng]);
+    } else if (markerRef.current) {
+      if (!shouldShowPin) {
+        markerRef.current.remove();
+        markerRef.current = null;
+      } else {
+        const currentPos = markerRef.current.getLatLng();
+        if (currentPos.lat !== pos[0] || currentPos.lng !== pos[1]) {
+          markerRef.current.setLatLng(pos);
+        }
       }
     }
   }, [location, readonly]);

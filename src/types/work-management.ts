@@ -56,3 +56,16 @@ export interface BoardColumn {
   id: TaskStatus;
   title: string;
 }
+
+export type BoardColor = 'sage' | 'terracotta' | 'forest' | 'amber';
+
+export interface Board {
+  id: string;
+  name: string;
+  description: string;
+  color: BoardColor;
+  icon: string;
+  taskCount: number;
+  createdAt: string;
+  updatedAt: string;
+}

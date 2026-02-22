@@ -1,0 +1,24 @@
+{
+  "boards": [
+    {
+      "id": "society-management",
+      "name": "Society Management",
+      "description": "Manage society maintenance, facilities, and resident communications",
+      "color": "sage",
+      "icon": "🏢",
+      "taskCount": 12,
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-02-20T14:30:00Z"
+    },
+    {
+      "id": "committee-management",
+      "name": "Committee Management",
+      "description": "Track committee meetings, decisions, and action items",
+      "color": "terracotta",
+      "icon": "👥",
+      "taskCount": 5,
+      "createdAt": "2024-02-01T09:00:00Z",
+      "updatedAt": "2024-02-19T11:00:00Z"
+    }
+  ]
+}

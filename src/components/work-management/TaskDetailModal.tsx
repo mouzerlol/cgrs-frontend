@@ -3,6 +3,7 @@ import Modal from '@/components/ui/Modal';
 import { Task } from '@/types/work-management';
 import { PRIORITY_CONFIG } from '@/lib/work-management';
 import mockData from '@/data/work-management.json';
+import { MAP_CENTER } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/design-system/Avatar';
 import { Badge } from '@/components/design-system/Badge';
@@ -172,7 +173,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onUpdate }: Tas
                   </Card>
                 ) : (
                   <button
-                    onClick={() => handleChange('location', { lat: 0, lng: 0 })}
+                    onClick={() => handleChange('location', { lat: MAP_CENTER[0], lng: MAP_CENTER[1] })}
                     className="w-full h-[180px] rounded-2xl border-2 border-dashed border-sage/20 bg-white/50 hover:bg-white hover:border-sage/40 transition-all flex flex-col items-center justify-center gap-2 group"
                   >
                     <div className="p-3 rounded-full bg-sage-light group-hover:bg-sage-light/80 transition-colors">

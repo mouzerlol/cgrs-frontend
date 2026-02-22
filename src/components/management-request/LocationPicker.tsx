@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { RequestLocation } from '@/types/management-request';
 import { MAP_CENTER, BOUNDARY_COORDINATES } from '@/data/map-data';
 import { formatCoordinates } from '@/lib/management-request';
+import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
 
 interface LocationPickerProps {
   value: RequestLocation | null;
@@ -65,13 +66,10 @@ export function LocationPicker({
           attributionControl: false,
         });
 
-        // Add tile layer
-        L.tileLayer(
-          'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-          {
-            maxZoom: 19,
-          }
-        ).addTo(map);
+        // Add tile layer (same OSM set as map page and footer)
+        const osmUrl = getOSMTileUrl();
+        const osmOpts = getOSMTileOptions();
+        L.tileLayer(osmUrl, osmOpts).addTo(map);
 
         // Add boundary polygon
         const boundaryCoords = BOUNDARY_COORDINATES.map(

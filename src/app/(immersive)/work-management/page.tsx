@@ -1,97 +1,109 @@
 'use client';
 
 import { useState } from 'react';
-import BoardTopBar from '@/components/work-management/BoardTopBar';
-import BoardColumn from '@/components/work-management/BoardColumn';
-import BoardDndContext from '@/components/work-management/BoardDndContext';
-import TaskDetailModal from '@/components/work-management/TaskDetailModal';
-import CreateTaskModal from '@/components/work-management/CreateTaskModal';
-import FilterBar from '@/components/work-management/FilterBar';
-import { BOARD_COLUMNS, groupTasksByStatus } from '@/lib/work-management';
-import { useBoardFilters } from '@/hooks/useBoardFilters';
-import mockData from '@/data/work-management.json';
-import { Task, TaskStatus } from '@/types/work-management';
+import { motion } from 'framer-motion';
+import BoardCard from '@/components/work-management/BoardCard';
+import CreateBoardModal from '@/components/work-management/CreateBoardModal';
+import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
+import Card from '@/components/ui/Card';
+import boardsData from '@/data/boards.json';
+import { Board } from '@/types/work-management';
 
-export default function WorkManagementPage() {
-  const [tasks, setTasks] = useState<Task[]>(mockData.tasks as Task[]);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+export default function WorkManagementDashboard() {
+  const [boards, setBoards] = useState<Board[]>(boardsData.boards as Board[]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [createColumnId, setCreateColumnId] = useState<TaskStatus | null>(null);
 
-  const { filters, setFilter, clearFilters, filteredTasks, hasActiveFilters } = useBoardFilters(tasks);
-
-  const handleCreateTask = (status: TaskStatus) => {
-    setCreateColumnId(status);
-    setIsCreateModalOpen(true);
+  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'taskCount' | 'createdAt' | 'updatedAt'>) => {
+    const board: Board = {
+      ...newBoard,
+      id: newBoard.name.toLowerCase().replace(/\s+/g, '-'),
+      taskCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setBoards([...boards, board]);
   };
-
-  const handleCardClick = (taskId: string) => {
-    setSelectedTaskId(taskId);
-  };
-
-  const handleTaskUpdate = (updatedTask: Task) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === updatedTask.id ? { ...updatedTask, updatedAt: new Date().toISOString() } : task
-      )
-    );
-  };
-
-  const handleTaskCreate = (newTask: Task) => {
-    setTasks(prev => [...prev, newTask]);
-  };
-
-  const groupedTasks = groupTasksByStatus(filteredTasks);
-  
-  // Sort grouped tasks based on their order in the main tasks array
-  // This is necessary because groupTasksByStatus groups them, but they might need sorting based on the main array order
-  // Actually, groupTasksByStatus preserves the order from the filteredTasks array, which preserves the order from the tasks array.
-  // Wait, if filteredTasks preserves order, it should be fine.
-  const selectedTask = selectedTaskId ? tasks.find(t => t.id === selectedTaskId) || null : null;
-  const availableTags = Array.from(new Set(tasks.flatMap(t => t.tags))).sort();
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-gradient-to-br from-bone via-bone to-sage/20">
-      <BoardTopBar 
-        onNewTask={() => handleCreateTask('todo')} 
-        filterSlot={
-          <FilterBar 
-            filters={filters} 
-            setFilter={setFilter} 
-            clearFilters={clearFilters} 
-            hasActiveFilters={hasActiveFilters}
-            availableTags={availableTags}
-          />
-        }
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-bone">
+      <WorkManagementNavBar
+        title="Work Management"
+        actions={[
+          {
+            label: '+ Create Board',
+            onClick: () => setIsCreateModalOpen(true),
+            variant: 'primary',
+          },
+        ]}
       />
       
-      <BoardDndContext tasks={tasks} setTasks={setTasks}>
-        <div className="flex-1 overflow-x-auto overflow-y-hidden flex items-start gap-4 p-4 md:p-6 scrollbar-thin">
-          {BOARD_COLUMNS.map(column => (
-            <BoardColumn
-              key={column.id}
-              status={column.id}
-              title={column.title}
-              tasks={groupedTasks[column.id]}
-              onCreateTask={handleCreateTask}
-              onCardClick={handleCardClick}
-            />
-          ))}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-sage-light/50 rounded-[20px] p-6 md:p-8 mb-8">
+              <h1 className="font-display text-3xl md:text-4xl font-semibold text-forest mb-2">
+                Your Boards
+              </h1>
+              <p className="text-forest/70">
+                Manage your projects and tasks across multiple boards
+              </p>
+            </div>
+
+            {boards.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <Card variant="sage" className="p-12 text-center">
+                  <div className="text-6xl mb-4">📋</div>
+                  <h2 className="font-display text-2xl text-forest mb-2">No boards yet</h2>
+                  <p className="text-forest/60 mb-6">
+                    Create your first board to start managing tasks
+                  </p>
+                </Card>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {boards.map((board, index) => (
+                  <motion.div
+                    key={board.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                  >
+                    <BoardCard board={board} />
+                  </motion.div>
+                ))}
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: boards.length * 0.1 }}
+                >
+                  <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="w-full h-full min-h-[200px] rounded-[20px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
+                  >
+                    <div className="w-14 h-14 rounded-full bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
+                      <span className="text-2xl">+</span>
+                    </div>
+                    <span className="font-medium">Create New Board</span>
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </motion.div>
         </div>
-      </BoardDndContext>
+      </main>
 
-      <TaskDetailModal 
-        isOpen={!!selectedTaskId} 
-        onClose={() => setSelectedTaskId(null)} 
-        task={selectedTask}
-        onUpdate={handleTaskUpdate}
-      />
-
-      <CreateTaskModal 
-        isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
-        defaultStatus={createColumnId}
-        onSubmit={handleTaskCreate}
+      <CreateBoardModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateBoard}
       />
     </div>
   );
