@@ -117,39 +117,44 @@ export function PollBuilder({
   // Collapsed state - show "Add a poll" button
   if (!isExpanded) {
     return (
-      <div className="poll-builder-collapsed">
+      <div className="p-md">
         <button
           type="button"
           onClick={() => setIsExpanded(true)}
-          className="poll-builder-add-button"
+          className="group flex items-center gap-md w-full p-md bg-gradient-to-br from-sage-light to-sage/30 border-2 border-dashed border-sage rounded-xl cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[72px] hover:border-terracotta hover:from-terracotta/5 hover:to-sage-light"
         >
-          <div className="poll-builder-add-icon">
+          <div className="w-11 h-11 flex items-center justify-center bg-bone rounded-[10px] text-terracotta shrink-0">
             <BarChart2 className="w-5 h-5" />
           </div>
-          <div className="poll-builder-add-content">
-            <span className="poll-builder-add-title">Add a poll</span>
-            <span className="poll-builder-add-description">
+          <div className="flex-1 flex flex-col items-start gap-0.5">
+            <span className="font-semibold text-forest text-base">Add a poll</span>
+            <span className="text-sm text-forest/60">
               Let the community vote on options
             </span>
           </div>
-          <Plus className="w-5 h-5 poll-builder-add-plus" />
+          <Plus className="w-5 h-5 text-terracotta opacity-60 transition-all duration-[250ms] ease-out-custom group-hover:opacity-100 group-hover:rotate-90" />
         </button>
       </div>
     );
   }
 
   return (
-    <div className={cn('poll-builder', isValid && 'poll-builder-active')}>
+    <div
+      className={cn(
+        'bg-sage-light rounded-xl p-md border border-sage',
+        isValid && 'border-terracotta'
+      )}
+    >
       {/* Header */}
-      <div className="poll-builder-header">
-        <div className="poll-builder-header-left">
+      <div className="flex justify-between items-center mb-md">
+        <div className="flex items-center gap-sm">
           <BarChart2 className="w-5 h-5 text-terracotta" />
           <h4 className="font-display text-lg font-semibold text-forest">Create Poll</h4>
         </div>
         <button
           type="button"
           onClick={clearPoll}
-          className="poll-builder-close"
+          className="w-9 h-9 flex items-center justify-center bg-transparent border-none rounded-lg text-forest/50 cursor-pointer transition-all duration-[250ms] ease-out-custom hover:opacity-100 hover:bg-terracotta/10 hover:text-terracotta"
           aria-label="Remove poll"
         >
           <X className="w-4 h-4" />
@@ -157,11 +162,11 @@ export function PollBuilder({
       </div>
 
       {/* Question Input */}
-      <div className="poll-question">
-        <label htmlFor="poll-question" className="poll-input-label">
+      <div className="relative mb-md">
+        <label htmlFor="poll-question" className="flex items-center gap-xs text-sm font-semibold text-forest mb-xs">
           Question
         </label>
-        <div className="poll-question-wrapper">
+        <div className="relative">
           <input
             id="poll-question"
             type="text"
@@ -169,15 +174,15 @@ export function PollBuilder({
             onChange={(e) => handleQuestionChange(e.target.value)}
             placeholder="What would you like to ask the community?"
             maxLength={200}
-            className="poll-question-input"
+            className="w-full py-sm px-md pr-20 bg-white border border-sage rounded-lg text-base text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
             aria-describedby="poll-question-count"
           />
           <span
             id="poll-question-count"
             className={cn(
-              'poll-char-count',
-              question.length > 180 && 'poll-char-count-warning',
-              question.length >= 200 && 'poll-char-count-limit'
+              'absolute right-sm top-1/2 -translate-y-1/2 text-xs text-forest/50',
+              question.length > 180 && 'text-terracotta/80',
+              question.length >= 200 && 'text-terracotta font-semibold'
             )}
           >
             {question.length}/200
@@ -186,28 +191,28 @@ export function PollBuilder({
       </div>
 
       {/* Options */}
-      <div className="poll-options">
-        <label className="poll-input-label">
+      <div className="flex flex-col gap-sm mb-md">
+        <label className="flex items-center gap-xs text-sm font-semibold text-forest mb-xs">
           Options
-          <span className="poll-options-count">
+          <span className="font-normal opacity-50">
             ({validOptionsCount} of {options.length})
           </span>
         </label>
 
-        <div className="poll-options-list">
+        <div className="flex flex-col gap-sm">
           {options.map((option, index) => (
             <div
               key={index}
               className={cn(
-                'poll-option-row',
-                focusedOption === index && 'poll-option-row-focused'
+                'flex gap-sm items-center',
+                focusedOption === index && 'z-[1]'
               )}
             >
-              <div className="poll-option-grip" aria-hidden="true">
+              <div className="text-forest/30 cursor-grab p-xs -m-xs" aria-hidden="true">
                 <GripVertical className="w-4 h-4" />
               </div>
 
-              <div className="poll-option-number">
+              <div className="w-6 h-6 flex items-center justify-center bg-sage rounded-md text-xs font-semibold text-forest shrink-0">
                 {index + 1}
               </div>
 
@@ -219,7 +224,7 @@ export function PollBuilder({
                 onBlur={() => setFocusedOption(null)}
                 placeholder={`Option ${index + 1}`}
                 maxLength={100}
-                className="poll-option-input"
+                className="flex-1 py-sm bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
                 aria-label={`Poll option ${index + 1}`}
                 ref={(el) => {
                   if (focusedOption === index && el) {
@@ -229,9 +234,9 @@ export function PollBuilder({
               />
 
               <span className={cn(
-                'poll-option-char-count',
-                option.length > 80 && 'poll-char-count-warning',
-                option.length >= 100 && 'poll-char-count-limit'
+                'text-xs text-forest/40 shrink-0 min-w-[48px] text-right',
+                option.length > 80 && 'text-terracotta/80',
+                option.length >= 100 && 'text-terracotta font-semibold'
               )}>
                 {option.length}/100
               </span>
@@ -240,7 +245,7 @@ export function PollBuilder({
                 <button
                   type="button"
                   onClick={() => removeOption(index)}
-                  className="poll-option-remove"
+                  className="w-8 h-8 flex items-center justify-center bg-transparent border-none rounded text-terracotta cursor-pointer transition-colors duration-[250ms] ease-out-custom shrink-0 hover:bg-terracotta/10"
                   aria-label={`Remove option ${index + 1}`}
                 >
                   <X className="w-4 h-4" />
@@ -255,11 +260,11 @@ export function PollBuilder({
           <button
             type="button"
             onClick={addOption}
-            className="poll-add-option"
+            className="flex items-center gap-xs py-sm px-md bg-white border border-dashed border-sage rounded-lg text-sm text-forest cursor-pointer transition-all duration-[250ms] ease-out-custom hover:border-terracotta hover:text-terracotta"
           >
             <Plus className="w-4 h-4" />
             Add option
-            <span className="poll-add-option-hint">
+            <span className="text-xs text-forest/50 ml-auto">
               ({options.length}/{maxOptions})
             </span>
           </button>
@@ -267,8 +272,8 @@ export function PollBuilder({
       </div>
 
       {/* Settings */}
-      <div className="poll-settings">
-        <label className="poll-multiple-toggle">
+      <div className="pt-md border-t border-sage mt-sm">
+        <label className="flex items-center gap-sm cursor-pointer text-sm text-forest">
           <input
             type="checkbox"
             checked={allowMultiple}
@@ -276,14 +281,14 @@ export function PollBuilder({
             className="sr-only"
           />
           <span className={cn(
-            'poll-checkbox-custom',
-            allowMultiple && 'poll-checkbox-custom-checked'
+            'w-5 h-5 border-2 border-sage rounded flex items-center justify-center transition-all duration-[250ms] ease-out-custom shrink-0',
+            allowMultiple && 'bg-terracotta border-terracotta text-bone'
           )}>
             {allowMultiple && <Check className="w-3 h-3" />}
           </span>
-          <div className="poll-toggle-content">
-            <span className="poll-toggle-label">Allow multiple choices</span>
-            <span className="poll-toggle-description">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium text-forest">Allow multiple choices</span>
+            <span className="text-xs text-forest/60">
               Voters can select more than one option
             </span>
           </div>
@@ -292,8 +297,8 @@ export function PollBuilder({
 
       {/* Validation Hint */}
       {!isValid && (
-        <div className="poll-validation-hint">
-          <div className="poll-validation-icon">!</div>
+        <div className="flex items-center gap-sm py-sm px-md bg-terracotta/[0.08] rounded-lg mt-md text-sm text-terracotta">
+          <div className="w-5 h-5 flex items-center justify-center bg-terracotta text-bone rounded-full text-xs font-bold shrink-0">!</div>
           <span>
             {!question.trim()
               ? 'Add a question to complete your poll'
@@ -306,7 +311,7 @@ export function PollBuilder({
 
       {/* Valid State Indicator */}
       {isValid && (
-        <div className="poll-valid-indicator">
+        <div className="flex items-center gap-sm py-sm px-md bg-forest/[0.08] rounded-lg mt-md text-sm text-forest font-medium">
           <Check className="w-4 h-4" />
           <span>Poll ready to publish</span>
         </div>

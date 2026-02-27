@@ -14,7 +14,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
 
   const addLink = () => {
     if (!url.trim()) return;
-    
+
     const newLink = { url: url.trim(), title: title.trim() || undefined };
     onChange([...value, newLink]);
     setUrl('');
@@ -42,20 +42,20 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
   };
 
   return (
-    <div className="link-input">
-      <label className="link-label">
+    <div className="flex flex-col gap-sm">
+      <label className="text-sm font-medium text-forest">
         <LinkIcon className="w-4 h-4 inline-block mr-1" />
-        Links <span className="link-optional">(optional)</span>
+        Links <span className="opacity-60 font-normal">(optional)</span>
       </label>
 
-      <div className="link-input-row">
+      <div className="flex gap-sm items-center">
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="https://example.com"
-          className="link-url-input"
+          className="flex-1 py-sm px-md bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
         />
         <input
           type="text"
@@ -63,13 +63,13 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Link title (optional)"
-          className="link-title-input"
+          className="flex-1 py-sm px-md bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
         />
         <button
           type="button"
           onClick={addLink}
           disabled={!isValidUrl(url)}
-          className="link-add-button"
+          className="w-10 h-10 flex items-center justify-center bg-forest border-none rounded-lg text-white cursor-pointer transition-all duration-[250ms] ease-out-custom shrink-0 hover:bg-terracotta disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Add link"
         >
           <Plus className="w-4 h-4" />
@@ -77,17 +77,17 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
       </div>
 
       {value.length > 0 && (
-        <div className="link-list">
+        <div className="flex flex-col gap-xs">
           {value.map((link, index) => (
-            <div key={index} className="link-item">
-              <div className="link-item-content">
-                <span className="link-item-title">{link.title || link.url}</span>
-                <span className="link-item-url">{link.url}</span>
+            <div key={index} className="flex items-center gap-sm p-sm bg-sage-light rounded-lg">
+              <div className="flex-1 min-w-0">
+                <span className="block text-sm font-medium text-forest">{link.title || link.url}</span>
+                <span className="block text-xs text-forest/60 overflow-hidden text-ellipsis whitespace-nowrap">{link.url}</span>
               </div>
               <button
                 type="button"
                 onClick={() => removeLink(index)}
-                className="link-item-remove"
+                className="w-7 h-7 flex items-center justify-center bg-transparent border-none rounded text-terracotta cursor-pointer transition-colors duration-[250ms] ease-out-custom shrink-0 hover:bg-terracotta/10"
                 aria-label="Remove link"
               >
                 <X className="w-4 h-4" />
@@ -97,7 +97,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
         </div>
       )}
 
-      <p className="link-hint">Add relevant links to support your discussion</p>
+      <p className="text-xs text-forest/60">Add relevant links to support your discussion</p>
     </div>
   );
 }

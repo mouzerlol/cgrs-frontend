@@ -25,16 +25,19 @@ export function CalendarGrid({
   const numRows = Math.ceil(days.length / 7);
 
   return (
-    <div className="calendar-grid">
-      <div className="calendar-grid-header">
+    <div className="w-full flex flex-col flex-1 [container-type:inline-size]">
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
         {WEEKDAY_LABELS.map((label) => (
-          <div key={label} className="calendar-weekday">
+          <div
+            key={label}
+            className="text-center font-body text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.05em] text-forest/60 py-1"
+          >
             {label}
           </div>
         ))}
       </div>
-      <div 
-        className="calendar-grid-body"
+      <div
+        className="grid grid-cols-7 gap-0.5 flex-1 [grid-auto-rows:1fr]"
         style={{ '--num-rows': numRows } as React.CSSProperties}
       >
         {days.map((date) => {

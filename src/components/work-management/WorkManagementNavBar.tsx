@@ -35,7 +35,7 @@ export default function WorkManagementNavBar({
       <div className="flex items-center gap-4 md:gap-6">
         <Link
           href="/"
-          className="nav-logo hover:opacity-80 transition-opacity text-bone"
+          className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 hover:opacity-80 transition-opacity text-bone"
         >
           <span className="flex flex-col leading-tight">
             <span className="block whitespace-nowrap">CORONATION</span>

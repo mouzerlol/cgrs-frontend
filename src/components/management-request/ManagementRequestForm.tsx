@@ -14,8 +14,8 @@ import {
   generateIssueId,
   getInitialFormData,
 } from '@/lib/management-request';
-import { CategoryTabs } from './CategoryTabs';
-import { CategoryDropdown } from './CategoryDropdown';
+import { SidebarLayout } from '@/components/shared/SidebarLayout';
+import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { RequestFormFields } from './RequestFormFields';
 import { SuccessConfirmation } from './SuccessConfirmation';
 
@@ -161,35 +161,34 @@ export function ManagementRequestForm() {
     );
   }
 
+  // Map management categories to sidebar format
+  const sidebarCategories: SidebarCategory[] = MANAGEMENT_CATEGORIES.map((c) => ({
+    id: c.id,
+    name: c.name,
+    icon: c.icon,
+  }));
+
   return (
-    <div className="management-request-form" ref={formContainerRef}>
-      {/* Desktop: Folder tabs on left */}
-      <CategoryTabs
-        categories={MANAGEMENT_CATEGORIES}
+    <div ref={formContainerRef}>
+      <SidebarLayout
+        categories={sidebarCategories}
         activeCategory={formData.category}
-        onCategoryChange={handleCategoryChange}
-      />
-
-      {/* Content Panel */}
-      <div className="management-request-content">
-        {/* Mobile: Dropdown at top */}
-        <CategoryDropdown
-          categories={MANAGEMENT_CATEGORIES}
-          activeCategory={formData.category}
-          onCategoryChange={handleCategoryChange}
-        />
-
+        onCategoryChange={(id) => {
+          if (id) handleCategoryChange(id as ManagementCategoryId);
+        }}
+        ariaLabel="Request categories"
+      >
         {/* Form Header */}
         {activeCategory && (
-          <div className="management-request-header">
-            <div className="management-request-header-icon">
+          <div className="flex items-start gap-md pb-md mb-md border-b border-sage-light max-sm:flex-col max-sm:items-center max-sm:text-center">
+            <div className="flex items-center justify-center w-12 h-12 bg-terracotta rounded-xl text-bone shrink-0">
               <Icon icon={activeCategory.icon} width={24} height={24} />
             </div>
-            <div className="management-request-header-text">
-              <h3 className="management-request-header-title">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-display text-xl font-medium text-forest mb-1">
                 {activeCategory.name}
               </h3>
-              <p className="management-request-header-desc">
+              <p className="text-sm text-forest/70 leading-relaxed">
                 {activeCategory.description}
               </p>
             </div>
@@ -197,7 +196,7 @@ export function ManagementRequestForm() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="management-request-form-inner">
+        <form onSubmit={handleSubmit}>
           <RequestFormFields
             data={formData}
             errors={errors}
@@ -206,13 +205,20 @@ export function ManagementRequestForm() {
           />
 
           {/* Submit Button */}
-          <div className="management-request-submit">
+          <div className="mt-lg pt-md border-t border-sage-light">
             <button
               type="submit"
               disabled={isSubmitting}
               className={cn(
-                'management-request-submit-btn',
-                isSubmitting && 'management-request-submit-btn-loading'
+                'inline-flex items-center justify-center gap-sm',
+                'py-3.5 px-8 min-h-[52px]',
+                'bg-terracotta rounded-xl',
+                'font-body text-base font-semibold text-bone',
+                'cursor-pointer border-none',
+                'transition-all duration-[250ms] ease-out-custom',
+                'hover:bg-terracotta-dark',
+                'disabled:opacity-70 disabled:cursor-not-allowed',
+                isSubmitting && 'bg-forest-light'
               )}
             >
               {isSubmitting ? (
@@ -234,7 +240,7 @@ export function ManagementRequestForm() {
             </button>
           </div>
         </form>
-      </div>
+      </SidebarLayout>
     </div>
   );
 }

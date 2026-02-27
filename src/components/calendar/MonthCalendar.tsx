@@ -22,7 +22,7 @@ export function MonthCalendar({
   onDateClick,
 }: MonthCalendarProps) {
   return (
-    <div className="month-calendar">
+    <div className="flex flex-col h-full">
       <MonthNavigationBar
         currentMonth={currentMonth}
         onPrevMonth={onPrevMonth}

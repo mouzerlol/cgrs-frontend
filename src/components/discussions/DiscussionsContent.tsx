@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import { useThreads } from '@/hooks/useDiscussions';
 import ThreadList from './ThreadList';
-import SearchBar from './SearchBar';
 import SortDropdown from './SortDropdown';
 import ViewToggle from './ViewToggle';
 import type { ThreadSortOption, DiscussionCategorySlug } from '@/types';
@@ -39,14 +38,12 @@ export default function DiscussionsContent({
   className,
 }: DiscussionsContentProps) {
   // State for filters
-  const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ThreadSortOption>('newest');
   const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
   // Fetch threads with filters
   const { data: threadsData, isLoading } = useThreads({
     category,
-    search: search || undefined,
     sort,
     limit: 20,
   });
@@ -98,21 +95,9 @@ export default function DiscussionsContent({
           </div>
 
           {/* Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="flex-1">
-              <SearchBar
-                value={search}
-                onChange={setSearch}
-                placeholder="Search discussions..."
-              />
-            </div>
-
-            {/* Sort & View Controls */}
-            <div className="flex items-center gap-2">
-              <SortDropdown value={sort} onChange={setSort} />
-              <ViewToggle value={viewMode} onChange={setViewMode} />
-            </div>
+          <div className="flex items-center gap-2">
+            <SortDropdown value={sort} onChange={setSort} />
+            <ViewToggle value={viewMode} onChange={setViewMode} />
           </div>
         </div>
 
@@ -127,11 +112,7 @@ export default function DiscussionsContent({
           showCategory={showCategoryBadges && !category}
           isLoading={isLoading}
           skeletonCount={5}
-          emptyMessage={
-            search
-              ? `No discussions found for "${search}"`
-              : 'No discussions yet. Be the first to start one!'
-          }
+          emptyMessage="No discussions yet. Be the first to start one!"
         />
 
         {/* Load More */}

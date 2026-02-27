@@ -130,9 +130,9 @@ export default function EventDiscussion({ threadId, eventTitle, eventDescription
   };
 
   return (
-    <section className="event-discussion">
-      <h2 className="event-discussion-title">Discussion</h2>
-      <p className="event-discussion-subtitle">
+    <section className="py-lg">
+      <h2 className="font-display text-xl font-medium text-forest mb-xs">Discussion</h2>
+      <p className="text-sm text-forest/70 mb-lg">
         Share your thoughts, ask questions, or connect with other attendees.
       </p>
 

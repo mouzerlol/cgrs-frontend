@@ -28,7 +28,7 @@ export default function Navigation() {
         <Link
           key={item.name}
           href={item.href}
-          className="nav-link text-bone text-[0.875rem] whitespace-nowrap"
+          className="text-sm font-medium tracking-wide uppercase relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap"
         >
           {item.name}
         </Link>
@@ -37,7 +37,7 @@ export default function Navigation() {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="nav-link text-bone text-[0.875rem] flex items-center gap-2 font-bold whitespace-nowrap"
+          className="text-sm font-medium tracking-wide uppercase relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone flex items-center gap-2 font-bold whitespace-nowrap"
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
         >
@@ -61,7 +61,7 @@ export default function Navigation() {
         )}
       </div>
 
-      <Link href="/login" className="nav-button">
+      <Link href="/login" className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px]">
         Resident Login
       </Link>
     </nav>

@@ -132,37 +132,6 @@ describe('Discussion Forum Navigation', () => {
     });
   });
 
-  describe('Search Functionality', () => {
-    test('filters threads by search term', async ({ page }) => {
-      const searchInput = page.locator('input[placeholder="Search discussions..."]');
-      await searchInput.fill('parking');
-      await page.waitForTimeout(500);
-
-      const threadTitles = page.locator('.discussions-content-panel h3');
-      await expect(threadTitles).toHaveCount(1);
-      await expect(threadTitles.first()).toContainText('Parking');
-    });
-
-    test('shows no results message for non-matching search', async ({ page }) => {
-      const searchInput = page.locator('input[placeholder="Search discussions..."]');
-      await searchInput.fill('xyznonexistent');
-      await page.waitForTimeout(500);
-
-      await expect(page.locator('text=No discussions found')).toBeVisible();
-    });
-
-    test('clears search when input is cleared', async ({ page }) => {
-      const searchInput = page.locator('input[placeholder="Search discussions..."]');
-      await searchInput.fill('parking');
-      await page.waitForTimeout(500);
-      await expect(page.locator('.discussions-content-panel h3')).toHaveCount(1);
-
-      await searchInput.clear();
-      await page.waitForTimeout(500);
-      await expect(page.locator('.discussions-content-panel h3')).toHaveCount(10);
-    });
-  });
-
   describe('Sort Functionality', () => {
     test('changes sort option', async ({ page }) => {
       const sortDropdown = page.locator('#headlessui-listbox-button');
@@ -268,10 +237,4 @@ describe('Discussion Forum - Empty States', () => {
     await expect(page.locator('text=No discussions in this category yet')).toBeVisible();
   });
 
-  test('shows search-specific empty message', async ({ page }) => {
-    await page.locator('input[placeholder="Search discussions..."]').fill('nonexistent');
-    await page.waitForTimeout(500);
-
-    await expect(page.locator(/No discussions found for/)).toBeVisible();
-  });
 });

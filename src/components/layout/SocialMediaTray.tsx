@@ -8,14 +8,14 @@ import Icon from '@/components/ui/Icon';
  */
 export default function SocialMediaTray() {
   return (
-    <div className="footer-social">
-      <h4 className="footer-social-title">Connect</h4>
-      <div className="footer-social-links">
+    <div className="pt-0">
+      <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Connect</h4>
+      <div className="flex gap-sm items-start">
         <a
           href="https://www.facebook.com/groups/1588752135253432"
           target="_blank"
           rel="noopener noreferrer"
-          className="footer-social-link"
+          className="flex items-center justify-center w-8 h-8 text-bone opacity-70 transition-opacity duration-300 hover:opacity-100"
           aria-label="Visit our Facebook community group"
         >
           <Icon name="mdi:facebook" size="lg" />
@@ -24,7 +24,7 @@ export default function SocialMediaTray() {
           href="https://m.me/ch/AbY9QUkOtr08iXCF/"
           target="_blank"
           rel="noopener noreferrer"
-          className="footer-social-link"
+          className="flex items-center justify-center w-8 h-8 text-bone opacity-70 transition-opacity duration-300 hover:opacity-100"
           aria-label="Message us on Messenger"
         >
           <Icon name="mdi:facebook-messenger" size="lg" />

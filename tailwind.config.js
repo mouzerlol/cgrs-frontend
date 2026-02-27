@@ -60,6 +60,7 @@ module.exports = {
       animation: {
         'fade-up': 'fadeUp 0.6s var(--ease-out) forwards',
         'scroll-bounce': 'scrollBounce 2s ease-in-out infinite',
+        'shimmer': 'shimmer 1.5s ease-in-out infinite',
       },
       keyframes: {
         fadeUp: {
@@ -69,6 +70,18 @@ module.exports = {
         scrollBounce: {
           '0%, 100%': { transform: 'translateX(-50%) translateY(0)', opacity: '1' },
           '50%': { transform: 'translateX(-50%) translateY(8px)', opacity: '0.5' },
+        },
+        'poll-pulse': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.1)', opacity: '0.8' },
+        },
+        'poll-voter-appear': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
         },
       },
     },

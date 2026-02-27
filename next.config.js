@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const debugConnectSrc = process.env.NODE_ENV !== 'production' ? ' http://127.0.0.1:7719' : '';
+
 const nextConfig = {
   // Rendering Strategy:
   // - Static export is disabled to enable SSR and ISR features
@@ -48,7 +50,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
               "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://*.tile.openstreetmap.org https://*.openstreetmap.org",
-              "connect-src 'self' https://*.tile.openstreetmap.org",
+              `connect-src 'self' https://*.tile.openstreetmap.org${debugConnectSrc}`,
               "frame-ancestors 'none'",
             ].join('; '),
           },

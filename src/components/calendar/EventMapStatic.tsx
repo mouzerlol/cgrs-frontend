@@ -127,15 +127,7 @@ export default function EventMapStatic({
 
   return (
     <div
-      className="event-map-static"
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '300px',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        background: '#1A2218',
-      }}
+      className="relative w-full h-[300px] rounded-xl overflow-hidden bg-forest"
     >
       <BaseMap
         center={CGRS_CENTER}
@@ -155,9 +147,9 @@ export default function EventMapStatic({
       />
 
       {destination && (
-        <div className="event-map-label">
-          <span className="event-map-label-icon">📍</span>
-          <span className="event-map-label-text">{destination.label}</span>
+        <div className="absolute bottom-md left-md flex items-center gap-xs p-sm px-md bg-forest/90 backdrop-blur-sm rounded-lg text-bone text-sm z-[1000]">
+          <span className="text-base">📍</span>
+          <span className="font-medium">{destination.label}</span>
         </div>
       )}
     </div>

@@ -19,6 +19,18 @@ interface RequestFormFieldsProps {
   isSubmitting: boolean;
 }
 
+const sectionTitleCls = 'font-body text-xs font-semibold uppercase tracking-widest text-terracotta mb-xs';
+const inputCls = [
+  'w-full py-3 px-4 bg-bone border border-sage rounded-[10px]',
+  'font-body text-base text-forest',
+  'transition-all duration-[250ms] ease-out-custom',
+  'focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
+  'placeholder:text-sage',
+  'disabled:opacity-60 disabled:cursor-not-allowed',
+].join(' ');
+const errorCls = 'text-[0.8125rem] text-terracotta';
+const labelCls = 'font-body text-sm font-medium text-forest';
+
 /**
  * Form fields for management request submission.
  * Includes contact info, issue details, photos, and location picker.
@@ -45,14 +57,14 @@ export function RequestFormFields({
   };
 
   return (
-    <div className="request-form-fields">
+    <div className="flex flex-col gap-lg">
       {/* Contact Information */}
-      <div className="request-form-section">
-        <h4 className="request-form-section-title">Contact Information</h4>
+      <div className="flex flex-col gap-sm">
+        <h4 className={sectionTitleCls}>Contact Information</h4>
 
-        <div className="request-form-row">
-          <div className="request-form-field">
-            <label htmlFor="fullName" className="request-form-label">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="fullName" className={labelCls}>
               Full Name <span className="text-terracotta">*</span>
             </label>
             <input
@@ -63,19 +75,19 @@ export function RequestFormFields({
               onChange={handleInputChange}
               disabled={isSubmitting}
               className={cn(
-                'request-form-input',
-                errors.fullName && 'request-form-input-error'
+                inputCls,
+                errors.fullName && 'border-terracotta'
               )}
               placeholder="Enter your full name"
               autoComplete="name"
             />
             {errors.fullName && (
-              <span className="request-form-error">{errors.fullName}</span>
+              <span className={errorCls}>{errors.fullName}</span>
             )}
           </div>
 
-          <div className="request-form-field">
-            <label htmlFor="email" className="request-form-label">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className={labelCls}>
               Email <span className="text-terracotta">*</span>
             </label>
             <input
@@ -86,25 +98,25 @@ export function RequestFormFields({
               onChange={handleInputChange}
               disabled={isSubmitting}
               className={cn(
-                'request-form-input',
-                errors.email && 'request-form-input-error'
+                inputCls,
+                errors.email && 'border-terracotta'
               )}
               placeholder="your.email@example.com"
               autoComplete="email"
             />
             {errors.email && (
-              <span className="request-form-error">{errors.email}</span>
+              <span className={errorCls}>{errors.email}</span>
             )}
           </div>
         </div>
       </div>
 
       {/* Issue Details */}
-      <div className="request-form-section">
-        <h4 className="request-form-section-title">Issue Details</h4>
+      <div className="flex flex-col gap-sm">
+        <h4 className={sectionTitleCls}>Issue Details</h4>
 
-        <div className="request-form-field">
-          <label htmlFor="subject" className="request-form-label">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="subject" className={labelCls}>
             Subject <span className="text-terracotta">*</span>
           </label>
           <input
@@ -115,18 +127,18 @@ export function RequestFormFields({
             onChange={handleInputChange}
             disabled={isSubmitting}
             className={cn(
-              'request-form-input',
-              errors.subject && 'request-form-input-error'
+              inputCls,
+              errors.subject && 'border-terracotta'
             )}
             placeholder="Brief summary of the issue"
           />
           {errors.subject && (
-            <span className="request-form-error">{errors.subject}</span>
+            <span className={errorCls}>{errors.subject}</span>
           )}
         </div>
 
-        <div className="request-form-field">
-          <label htmlFor="description" className="request-form-label">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="description" className={labelCls}>
             Description <span className="text-terracotta">*</span>
           </label>
           <textarea
@@ -136,21 +148,22 @@ export function RequestFormFields({
             onChange={handleInputChange}
             disabled={isSubmitting}
             className={cn(
-              'request-form-textarea',
-              errors.description && 'request-form-input-error'
+              inputCls,
+              'resize-y min-h-[120px]',
+              errors.description && 'border-terracotta'
             )}
             placeholder="Please provide detailed information about the issue, including when it started and any relevant context..."
             rows={5}
           />
-          <div className="request-form-field-footer">
+          <div className="flex justify-between items-center">
             {errors.description ? (
-              <span className="request-form-error">{errors.description}</span>
+              <span className={errorCls}>{errors.description}</span>
             ) : (
-              <span className="request-form-hint">
+              <span className="text-xs text-forest/50">
                 Minimum 20 characters, maximum 2000
               </span>
             )}
-            <span className="request-form-counter">
+            <span className="text-xs font-body text-forest/50">
               {data.description.length} / 2000
             </span>
           </div>
@@ -158,8 +171,8 @@ export function RequestFormFields({
       </div>
 
       {/* Photos */}
-      <div className="request-form-section">
-        <h4 className="request-form-section-title">Photos</h4>
+      <div className="flex flex-col gap-sm">
+        <h4 className={sectionTitleCls}>Photos</h4>
         <div id="photos">
           <ImageUploader
             value={data.photos}
@@ -169,13 +182,13 @@ export function RequestFormFields({
           />
         </div>
         {errors.photos && (
-          <span className="request-form-error mt-2">{errors.photos}</span>
+          <span className={cn(errorCls, 'mt-2')}>{errors.photos}</span>
         )}
       </div>
 
       {/* Location */}
-      <div className="request-form-section">
-        <h4 className="request-form-section-title">Issue Location</h4>
+      <div className="flex flex-col gap-sm">
+        <h4 className={sectionTitleCls}>Issue Location</h4>
         <LocationPicker
           value={data.location}
           onChange={handleLocationChange}
@@ -183,18 +196,18 @@ export function RequestFormFields({
       </div>
 
       {/* Captcha Placeholder */}
-      <div className="request-form-section">
-        <h4 className="request-form-section-title">Verification</h4>
-        <div className="captcha-placeholder">
-          <div className="captcha-placeholder-box">
-            <div className="captcha-placeholder-icon">
+      <div className="flex flex-col gap-sm">
+        <h4 className={sectionTitleCls}>Verification</h4>
+        <div className="p-md bg-bone border border-dashed border-sage rounded-xl">
+          <div className="flex items-center gap-md">
+            <div className="flex items-center justify-center w-12 h-12 bg-sage-light rounded-[10px] text-forest shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
             </div>
-            <div className="captcha-placeholder-text">
-              <span className="captcha-placeholder-label">CAPTCHA verification</span>
-              <span className="captcha-placeholder-hint">Will be integrated before launch</span>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-body text-sm font-semibold text-forest">CAPTCHA verification</span>
+              <span className="font-body text-xs text-sage">Will be integrated before launch</span>
             </div>
           </div>
         </div>

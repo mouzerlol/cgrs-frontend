@@ -15,9 +15,9 @@ export default function Header() {
   };
 
   return (
-    <header className="nav">
+    <header className="fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone">
       {/* Logo */}
-      <Link href="/" className="nav-logo" onClick={closeMenu}>
+      <Link href="/" className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0" onClick={closeMenu}>
         <span className="flex flex-col leading-tight">
           <span className="block whitespace-nowrap">CORONATION</span>
           <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
@@ -129,7 +129,7 @@ export default function Header() {
                   {/* Mobile: Login Button */}
                   <button
                     onClick={closeMenu}
-                    className="mt-auto mb-8 w-full nav-button"
+                    className="mt-auto mb-8 w-full text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px]"
                   >
                     Resident Login
                   </button>

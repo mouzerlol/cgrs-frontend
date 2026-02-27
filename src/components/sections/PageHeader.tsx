@@ -72,7 +72,7 @@ export default function PageHeader({
             {/* Card header - glassmorphism */}
             <div className={`bg-bone/50 backdrop-blur-md rounded-t-xl ${cardPadding}`}>
               {eyebrow && (
-                <span className="text-eyebrow inline-block px-2 py-0.5 mb-2 bg-terracotta text-bone rounded-md text-sm">
+                <span className="text-eyebrow !text-bone inline-block px-2 py-0.5 mb-2 bg-terracotta rounded-md">
                   {eyebrow}
                 </span>
               )}

@@ -18,12 +18,13 @@ export function getOSMTileUrl(): string {
 }
 
 /**
- * Get tile options for OpenStreetMap Standard tiles
+ * Get tile options for OpenStreetMap Standard tiles.
+ * Returns a mutable copy of subdomains for Leaflet TileLayerOptions compatibility.
  */
 export function getOSMTileOptions() {
   return {
     maxZoom: OSM_CONFIG.maxZoom,
-    subdomains: OSM_CONFIG.subdomains,
+    subdomains: [...OSM_CONFIG.subdomains],
     attribution: OSM_CONFIG.attribution,
   };
 }

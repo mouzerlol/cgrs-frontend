@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { cn } from '@/lib/utils';
 import Icon from '@/components/ui/Icon';
 
 const CARDS = [
@@ -118,12 +119,13 @@ function QuickAccessCard({ card, index }: { card: CardType; index: number }) {
     <Link
       ref={ref}
       href={card.href}
-      className={`
-        quick-access-card
-        ${isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]'}
-        ${isAccent ? 'quick-access-card-accent' : ''}
-        fade-up ${isVisible ? 'visible' : ''}
-      `}
+      className={cn(
+        'group relative block p-lg bg-white rounded-card border border-forest/[0.08] transition-all duration-400 ease-out-custom overflow-hidden text-forest hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
+        isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
+        isAccent && 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark hover:border-terracotta-dark',
+        'fade-up',
+        isVisible && 'visible',
+      )}
       style={{ transitionDelay: `${index * 0.08}s` }}
     >
       {isLarge && card.backgroundImage && (
@@ -138,7 +140,7 @@ function QuickAccessCard({ card, index }: { card: CardType; index: number }) {
 
       <div className={`relative z-10 h-full flex flex-col ${isLarge ? 'justify-end text-bone' : ''}`}>
         {!isLarge && (
-          <div className={`quick-access-card-icon ${isAccent ? '!bg-white/20' : ''}`}>
+          <div className={cn('w-12 h-12 flex items-center justify-center bg-sage-light rounded-xl mb-md transition-all duration-400 ease-out-custom group-hover:bg-sage group-hover:scale-105', isAccent && '!bg-white/20')}>
             <Icon name={card.icon as import('@/components/ui/Icon').IconName} size="md" className={isAccent ? 'stroke-bone' : 'stroke-forest'} />
           </div>
         )}

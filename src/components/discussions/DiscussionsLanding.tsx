@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import { useCategories, useCategoryStats, useThreadsWithLatestReply } from '@/hooks/useDiscussions';
 import CategoryButtonBar from './CategoryButtonBar';
-import SearchBar from './SearchBar';
 import SortDropdown from './SortDropdown';
 import ViewToggle from './ViewToggle';
 import ThreadList from './ThreadList';
@@ -24,7 +23,6 @@ interface DiscussionsLandingProps {
  */
 export default function DiscussionsLanding({ className }: DiscussionsLandingProps) {
   // State for filters
-  const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ThreadSortOption>('newest');
   const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
@@ -35,7 +33,6 @@ export default function DiscussionsLanding({ className }: DiscussionsLandingProp
   // Fetch all threads with latest reply info
   const { data: threadsData, isLoading: threadsLoading } = useThreadsWithLatestReply({
     sort,
-    search: search || undefined,
   });
 
   // Mock user interactions (will be replaced with real state management)
@@ -72,15 +69,6 @@ export default function DiscussionsLanding({ className }: DiscussionsLandingProp
         <div className="container space-y-4">
           {/* Controls Row - Search, Sort, View, New Button */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="flex-1">
-              <SearchBar
-                value={search}
-                onChange={setSearch}
-                placeholder="Search discussions..."
-              />
-            </div>
-
             {/* Sort, View Toggle & New Button */}
             <div className="flex items-center gap-2">
               <SortDropdown value={sort} onChange={setSort} />

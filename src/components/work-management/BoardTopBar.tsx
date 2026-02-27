@@ -8,9 +8,9 @@ interface BoardTopBarProps {
 
 export default function BoardTopBar({ onNewTask, filterSlot }: BoardTopBarProps) {
   return (
-    <div className="h-14 bg-[#1a2218]/95 backdrop-blur-md border-b border-white/10 px-4 md:px-6 flex items-center justify-between shrink-0 text-bone z-10">
+    <div className="h-14 bg-forest/95 backdrop-blur-md border-b border-white/10 px-4 md:px-6 flex items-center justify-between shrink-0 text-bone z-10">
       <div className="flex items-center gap-4 md:gap-6">
-        <Link href="/" className="nav-logo hover:opacity-80 transition-opacity text-bone">
+        <Link href="/" className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 hover:opacity-80 transition-opacity text-bone">
           <span className="flex flex-col leading-tight">
             <span className="block whitespace-nowrap">CORONATION</span>
             <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>

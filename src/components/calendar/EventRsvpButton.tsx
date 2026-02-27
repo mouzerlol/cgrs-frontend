@@ -64,22 +64,24 @@ export default function EventRsvpButton({
     : attendeeCount;
 
   return (
-    <div className="event-rsvp">
-      <div className="event-rsvp-label">
-        <span className="event-rsvp-count">{displayCount}</span>
+    <div className="flex flex-col gap-sm p-sm bg-sage-light rounded-xl">
+      <div className="flex items-baseline gap-xs text-xs text-forest">
+        <span className="font-bold text-base text-forest">{displayCount}</span>
         <span>{displayCount === 1 ? 'person' : 'people'} attending</span>
       </div>
 
-      <div className="event-rsvp-buttons">
+      <div className="flex gap-xs flex-nowrap">
         {RSVP_OPTIONS.map((option) => (
           <button
             key={option.status}
             onClick={() => handleRsvp(option.status)}
             disabled={isPastEvent}
             className={cn(
-              'event-rsvp-button',
-              selectedStatus === option.status && `event-rsvp-button-${option.status}`,
-              isPastEvent && 'event-rsvp-button-disabled'
+              'flex-1 py-2 px-3 rounded-md text-xs font-medium cursor-pointer transition-all duration-200 bg-white border border-sage text-forest whitespace-nowrap hover:border-forest hover:bg-sage-light',
+              selectedStatus === option.status && option.status === 'attending' && 'bg-forest border-forest text-bone hover:bg-forest-light hover:border-forest-light',
+              selectedStatus === option.status && option.status === 'maybe' && 'bg-terracotta border-terracotta text-bone hover:bg-terracotta-dark hover:border-terracotta-dark',
+              selectedStatus === option.status && option.status === 'interested' && 'bg-sage border-sage text-forest hover:bg-forest-light hover:border-forest-light hover:text-bone',
+              isPastEvent && 'opacity-50 cursor-not-allowed'
             )}
           >
             {option.label}
@@ -88,7 +90,7 @@ export default function EventRsvpButton({
       </div>
 
       {isPastEvent && (
-        <p className="event-rsvp-past-notice">
+        <p className="text-sm text-forest/60 text-center">
           This event has passed
         </p>
       )}

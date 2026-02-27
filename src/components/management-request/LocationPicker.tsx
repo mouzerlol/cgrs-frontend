@@ -153,8 +153,8 @@ export function LocationPicker({
   }, [value]);
 
   return (
-    <div className={cn('location-picker', className)}>
-      <label className="location-picker-label">
+    <div className={cn('flex flex-col gap-sm', className)}>
+      <label className="block">
         <span className="text-sm font-medium mb-2 block">
           Location <span className="text-sage opacity-60">(optional)</span>
         </span>
@@ -163,10 +163,10 @@ export function LocationPicker({
         </span>
       </label>
 
-      <div className="location-picker-map-container">
+      <div className="relative w-full h-[280px] max-lg:h-[200px] rounded-xl overflow-hidden border border-sage">
         <div
           ref={containerRef}
-          className="location-picker-map"
+          className="w-full h-full"
           style={{
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease',
@@ -174,15 +174,15 @@ export function LocationPicker({
         />
 
         {!isLoaded && (
-          <div className="location-picker-loading">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-sm bg-bone text-forest">
             <Icon icon="lucide:loader-2" className="animate-spin" width={24} height={24} />
             <span className="text-sm opacity-60">Loading map...</span>
           </div>
         )}
       </div>
 
-      <div className="location-picker-footer">
-        <div className="location-picker-coords">
+      <div className="flex items-center justify-between flex-wrap gap-sm">
+        <div className="flex items-center gap-1.5">
           <Icon icon="lucide:map-pin" width={14} height={14} className="text-terracotta" />
           <span className="text-xs font-mono opacity-70">
             {formatCoordinates(currentLocation.lat, currentLocation.lng)}

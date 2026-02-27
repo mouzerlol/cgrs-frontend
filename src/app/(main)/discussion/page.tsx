@@ -2,12 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import PageHeader from '@/components/sections/PageHeader';
-import { DiscussionsSidebarLayout } from '@/components/discussions/DiscussionsSidebarLayout';
+import { SidebarLayout } from '@/components/shared/SidebarLayout';
+import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import ThreadList from '@/components/discussions/ThreadList';
-import SearchBar from '@/components/discussions/SearchBar';
 import SortDropdown from '@/components/discussions/SortDropdown';
 import ViewToggle from '@/components/discussions/ViewToggle';
 import type { DiscussionCategorySlug, ThreadSortOption, Thread, DiscussionCategory } from '@/types';
@@ -26,7 +26,6 @@ export default function DiscussionPage() {
   const [activeCategory, setActiveCategory] = useState<DiscussionCategorySlug | null>(null);
 
   // Filter and view state
-  const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ThreadSortOption>('newest');
   const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
@@ -58,15 +57,6 @@ export default function DiscussionPage() {
       result = result.filter(thread => thread.category === activeCategory);
     }
 
-    // Filter by search
-    if (search) {
-      const searchLower = search.toLowerCase();
-      result = result.filter(thread =>
-        thread.title.toLowerCase().includes(searchLower) ||
-        (thread.body?.toLowerCase().includes(searchLower) ?? false)
-      );
-    }
-
     // Sort threads
     switch (sort) {
       case 'newest':
@@ -84,7 +74,7 @@ export default function DiscussionPage() {
     }
 
     return result;
-  }, [allThreads, activeCategory, search, sort]);
+  }, [allThreads, activeCategory, sort]);
 
   // Mock user interactions (will be replaced with real state management)
   const [upvotedThreads] = useState<Set<string>>(new Set());
@@ -120,23 +110,22 @@ export default function DiscussionPage() {
 
       <section className="section bg-bone">
         <div className="container">
-          <DiscussionsSidebarLayout
-            categories={categories}
-            stats={stats}
+          <SidebarLayout
+            categories={categories.map((c): SidebarCategory => ({
+              id: c.slug,
+              name: c.name,
+              icon: c.icon,
+              count: stats[c.slug]?.threadCount,
+            }))}
             activeCategory={activeCategory}
-            onCategoryChange={setActiveCategory}
+            onCategoryChange={(id) => setActiveCategory(id as DiscussionCategorySlug | null)}
+            showAllOption
+            allOptionLabel="All Categories"
+            allOptionIcon="lucide:layout-grid"
+            ariaLabel="Discussion categories"
           >
             {/* Controls Row - Search, Sort, View, New Button */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
-              {/* Search */}
-              <div className="flex-1">
-                <SearchBar
-                  value={search}
-                  onChange={setSearch}
-                  placeholder="Search discussions..."
-                />
-              </div>
-
+            <div className="flex justify-end gap-3 mb-4">
               {/* Sort, View Toggle & New Button */}
               <div className="flex items-center gap-2">
                 <SortDropdown value={sort} onChange={setSort} />
@@ -175,9 +164,7 @@ export default function DiscussionPage() {
               onShare={handleShare}
               showCategory={activeCategory === null}
               emptyMessage={
-                search
-                  ? `No discussions found for "${search}"`
-                  : activeCategory
+                activeCategory
                   ? "No discussions in this category yet. Be the first to start one!"
                   : "No discussions yet. Be the first to start one!"
               }
@@ -201,7 +188,7 @@ export default function DiscussionPage() {
                 </button>
               </div>
             )}
-          </DiscussionsSidebarLayout>
+          </SidebarLayout>
         </div>
       </section>
     </div>

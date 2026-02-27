@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-bone">
       {/* Skip Link for Accessibility */}
-      <a href="#main-content" className="skip-link">
+      <a href="#main-content" className="absolute -top-[100px] left-0 bg-forest text-bone p-4 z-[10000] transition-[top] duration-300 focus:top-0">
         Skip to main content
       </a>
       <Header />

@@ -21,17 +21,24 @@ export function DateGroup({
   const isToday = isTodayDate(date);
 
   return (
-    <div className="date-group" data-date={date}>
+    <div
+      className="scroll-mt-8 [content-visibility:auto] [contain-intrinsic-size:0_200px]"
+      data-date={date}
+    >
       <h3
         className={cn(
-          'date-group-header',
-          isToday && 'date-group-header-today'
+          'font-display text-lg font-medium text-forest mb-sm pb-xs pl-xs border-b border-sage-light flex items-center gap-sm',
+          isToday && 'text-terracotta'
         )}
       >
         {formatDateHeader(date)}
-        {isToday && <span className="date-group-today-badge">Today</span>}
+        {isToday && (
+          <span className="font-body text-xs font-semibold uppercase tracking-[0.1em] bg-terracotta text-bone py-0.5 px-2 rounded">
+            Today
+          </span>
+        )}
       </h3>
-      <div className="date-group-items">
+      <div className="flex flex-col gap-sm">
         {items.map((item) => (
           <CalendarItemCard
             key={item.id}

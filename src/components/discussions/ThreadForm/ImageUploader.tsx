@@ -35,7 +35,7 @@ export function ImageUploader({
   const addFiles = useCallback((newFiles: FileList | File[]) => {
     setError(null);
     const fileArray = Array.from(newFiles);
-    
+
     const totalCount = value.length + fileArray.length;
     if (totalCount > maxFiles) {
       setError(`Maximum ${maxFiles} images allowed`);
@@ -88,8 +88,8 @@ export function ImageUploader({
   };
 
   return (
-    <div className="image-uploader">
-      <label className="image-uploader-label">
+    <div className="flex flex-col gap-sm">
+      <label className="cursor-pointer block">
         <span className="text-sm font-medium mb-2 block">Images</span>
         <span className="text-xs opacity-60 mb-3 block">
           Up to {maxFiles} images, max {maxSizeMB}MB each
@@ -97,8 +97,8 @@ export function ImageUploader({
 
         <div
           className={cn(
-            'image-uploader-dropzone',
-            isDragging && 'image-uploader-dropzone-active'
+            'border-2 border-dashed border-sage rounded-xl p-lg text-center transition-all duration-[250ms] ease-out-custom bg-white hover:border-terracotta hover:bg-terracotta/5',
+            isDragging && 'border-terracotta bg-terracotta/5'
           )}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -113,7 +113,7 @@ export function ImageUploader({
             className="sr-only"
           />
 
-          <div className="image-uploader-content">
+          <div className="pointer-events-none">
             <Upload className="w-8 h-8 mx-auto mb-2 opacity-40" />
             <p className="text-sm opacity-60">
               Drag & drop or <span className="text-terracotta">browse</span>
@@ -123,30 +123,30 @@ export function ImageUploader({
       </label>
 
       {error && (
-        <p className="image-uploader-error">{error}</p>
+        <p className="text-sm text-terracotta">{error}</p>
       )}
 
       {value.length > 0 && (
-        <div className="image-uploader-preview">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-sm">
           {value.map((file, index) => (
-            <div key={index} className="image-uploader-thumb">
-              <div className="image-uploader-thumb-image">
+            <div key={index} className="relative rounded-lg overflow-hidden bg-sage-light">
+              <div className="aspect-square overflow-hidden">
                 <img
                   src={URL.createObjectURL(file)}
                   alt={file.name}
-                  className="image-uploader-thumb-img"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="image-uploader-thumb-info">
-                <span className="image-uploader-thumb-name">{file.name}</span>
-                <span className="image-uploader-thumb-size">
+              <div className="p-xs flex flex-col gap-0.5">
+                <span className="text-xs text-forest overflow-hidden text-ellipsis whitespace-nowrap">{file.name}</span>
+                <span className="text-[10px] text-forest/60">
                   {formatFileSize(file.size)}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => removeFile(index)}
-                className="image-uploader-thumb-remove"
+                className="absolute top-xs right-xs w-6 h-6 flex items-center justify-center bg-terracotta/90 border-none rounded-full text-white cursor-pointer transition-colors duration-[250ms] ease-out-custom hover:bg-terracotta-dark"
               >
                 <X className="w-4 h-4" />
               </button>

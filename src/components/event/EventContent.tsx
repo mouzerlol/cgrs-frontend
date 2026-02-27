@@ -52,14 +52,17 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
   }, [allEvents, event.id, eventDate]);
 
   return (
-    <div className="event-content">
+    <div className="min-h-screen">
       <EventHero event={event} isPastEvent={isPastEvent} />
 
-      <div className="event-content-body">
-        <div className="event-content-grid">
-          <div className="event-content-main">
-            <section className="event-description">
-              <div className="event-prose">
+      <div
+        className="p-lg px-md"
+        style={{ containerType: 'inline-size', containerName: 'event-content' }}
+      >
+        <div className="event-content-grid grid grid-cols-1 gap-lg max-w-[1200px] mx-auto">
+          <div className="min-w-0">
+            <section className="mb-xl">
+              <div className="text-forest leading-[1.8] [&>p]:mb-md">
                 {event.fullContent?.split('\n\n').map((paragraph, index) => {
                   const trimmed = paragraph.trim();
                   if (!trimmed) return null;
@@ -67,7 +70,7 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
                   if (trimmed.startsWith('- ')) {
                     const items = trimmed.split('\n').filter((i) => i.trim().startsWith('- '));
                     return (
-                      <ul key={index} className="event-list">
+                      <ul key={index} className="list-disc list-inside mb-md [&>li]:mb-xs">
                         {items.map((item, i) => (
                           <li key={i}>{item.replace(/^- /, '')}</li>
                         ))}
@@ -80,14 +83,14 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
               </div>
 
               {event.organizer && (
-                <div className="event-organizer" style={{ marginTop: 'var(--space-md)' }}>
+                <div className="pt-md mt-md border-t border-sage-light">
                   <EventOrganizer organizer={event.organizer} />
                 </div>
               )}
             </section>
 
             {event.hasMap && (
-              <section className="event-map-section">
+              <section className="mb-xl">
                 <EventMapStatic
                   destination={event.mapDestination || null}
                   showBoundary={!event.mapDestination}
@@ -102,7 +105,7 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
             />
           </div>
 
-          <aside className="event-content-sidebar">
+          <aside className="event-content-sidebar flex flex-col gap-lg">
             <EventMiniCalendar
               eventDate={event.date}
               currentEventSlug={event.slug}
@@ -111,7 +114,7 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
               otherEvents={otherEventsInMonth}
             />
             {event.rsvp && (
-              <section className="event-rsvp-section">
+              <section className="mb-xl">
                 <EventRsvpButton
                   eventId={event.id}
                   attendeeCount={Math.floor(Math.random() * 20) + 5}
@@ -122,6 +125,20 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
           </aside>
         </div>
       </div>
+
+      {/* Container query: at 900px+ switch to 2-col grid with sticky sidebar */}
+      <style>{`
+        @container event-content (min-width: 900px) {
+          .event-content-grid {
+            grid-template-columns: 1fr 280px;
+            align-items: start;
+          }
+          .event-content-sidebar {
+            position: sticky;
+            top: 100px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -106,10 +106,10 @@ export function ThreadForm({
   };
 
   return (
-    <section className="thread-form-section">
+    <section className="bg-bone">
       <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
         <div className="max-w-3xl mx-auto">
-          <div className="thread-form-header">
+          <div className="mb-lg">
             <Button
               variant="ghost"
               size="sm"
@@ -120,15 +120,15 @@ export function ThreadForm({
               Back
             </Button>
             <h1 className="font-display text-2xl md:text-3xl">Create a New Thread</h1>
-            <p className="thread-form-subtitle">
+            <p className="text-forest/70 mt-xs">
               Share your thoughts with the community. Please be respectful and constructive.
             </p>
           </div>
 
-          <Card className="thread-form-card">
-            <form onSubmit={handleSubmit} className="thread-form">
+          <Card className="p-lg mb-lg">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-lg">
               {submitError && (
-                <div className="thread-form-error">
+                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded-lg text-terracotta">
                   <AlertCircle className="w-5 h-5" />
                   <span>{submitError}</span>
                 </div>
@@ -168,7 +168,7 @@ export function ThreadForm({
                 onChange={(value) => setPoll(value)}
               />
 
-              <div className="thread-form-actions">
+              <div className="flex justify-end gap-md pt-md border-t border-sage">
                 <Button
                   type="button"
                   variant="outline"
@@ -189,9 +189,9 @@ export function ThreadForm({
             </form>
           </Card>
 
-          <div className="thread-form-guidelines">
+          <div className="bg-sage-light rounded-xl p-md">
             <h3 className="font-display text-lg mb-3">Community Guidelines</h3>
-            <ul className="thread-form-guidelines-list">
+            <ul className="list-disc pl-md text-forest/80 flex flex-col gap-xs text-sm">
               <li>Be respectful and constructive in your discussions</li>
               <li>Stay on topic and choose the appropriate category</li>
               <li>No spam, advertising, or promotional content</li>
