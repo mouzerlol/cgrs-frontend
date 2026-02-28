@@ -7,18 +7,22 @@ export const SITE_CONFIG = {
   established: '2024',
 } as const;
 
-export const NAVIGATION_ITEMS = [
-  { name: 'Discussion', href: '/discussion' },
-  { name: 'Report Issue', href: '/management-request' },
-  { name: 'Calendar', href: '/calendar' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Management', href: '/work-management' },
+/** All nav items in display order. Icons shown only when item appears in More dropdown. */
+export const ALL_NAV_ITEMS = [
+  { name: 'Discussion', href: '/discussion', icon: 'message' as const },
+  { name: 'Report Issue', href: '/management-request', icon: 'lightbulb' as const },
+  { name: 'Calendar', href: '/calendar', icon: 'calendar' as const },
+  { name: 'Blog', href: '/blog', icon: 'edit' as const },
+  { name: 'Management', href: '/work-management', icon: 'document' as const },
+  { name: 'About', href: '/about', icon: 'lucide:users' as const },
+  { name: 'Map', href: '/map', icon: 'map' as const },
 ] as const;
 
-export const MORE_NAVIGATION_ITEMS = [
-  { name: 'About', href: '/about', icon: 'users' },
-  { name: 'Map', href: '/map', icon: 'map' },
-] as const;
+/** @deprecated Use ALL_NAV_ITEMS. Kept for mobile menu structure. */
+export const NAVIGATION_ITEMS = ALL_NAV_ITEMS.slice(0, 5);
+
+/** @deprecated Use ALL_NAV_ITEMS overflow. Kept for mobile menu structure. */
+export const MORE_NAVIGATION_ITEMS = ALL_NAV_ITEMS.slice(5);
 
 export const UTILITY_DOCK_ITEMS = [
   {

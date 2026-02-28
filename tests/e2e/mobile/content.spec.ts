@@ -185,20 +185,13 @@ test.describe('Calendar Page - Grid Layout', () => {
     expect(titleText).toBeTruthy();
   });
 
-  test('should expand calendar item to show full details', async ({ page }) => {
+  test('should show calendar items expanded by default with full details', async ({ page }) => {
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto('/calendar');
 
     await expect(page.locator('h1:has-text("Community Calendar")')).toBeVisible();
 
-    // Click first calendar card to expand
-    const firstCard = page.locator('.calendar-item-card').first();
-    await firstCard.click();
-
-    // Wait for expansion animation
-    await page.waitForTimeout(400);
-
-    // Expanded panel should show description
+    // Cards start expanded by default - description should be visible without clicking
     const description = page.locator('.calendar-item-description').first();
     await expect(description).toBeVisible();
 

@@ -13,9 +13,20 @@ interface FilterDropdownProps {
   options: FilterOption[];
   selectedValues: string[];
   onChange: (values: string[]) => void;
+  /** Use 'light' when dropdown is on a light background (e.g. sage-light nav) */
+  variant?: 'light' | 'dark';
+  /** Use 'sm' for compact display in secondary nav */
+  size?: 'sm' | 'md';
 }
 
-export default function FilterDropdown({ label, options, selectedValues, onChange }: FilterDropdownProps) {
+export default function FilterDropdown({
+  label,
+  options,
+  selectedValues,
+  onChange,
+  variant = 'dark',
+  size = 'md',
+}: FilterDropdownProps) {
   const toggleValue = (value: string) => {
     if (selectedValues.includes(value)) {
       onChange(selectedValues.filter(v => v !== value));
@@ -26,19 +37,29 @@ export default function FilterDropdown({ label, options, selectedValues, onChang
 
   const isActive = selectedValues.length > 0;
 
+  const isLight = variant === 'light';
+  const isSm = size === 'sm';
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button
         className={cn(
-          "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-colors",
-          isActive 
-            ? "bg-terracotta/20 text-terracotta border-terracotta/30" 
-            : "bg-bone/10 text-bone/70 border-bone/20 hover:bg-bone/20 hover:text-bone"
+          "inline-flex items-center gap-1 rounded-full border transition-colors font-medium",
+          isSm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-xs",
+          isActive
+            ? "bg-terracotta/20 text-terracotta border-terracotta/30"
+            : isLight
+              ? "bg-forest/5 text-forest/70 border-forest/20 hover:bg-forest/10 hover:text-forest"
+              : "bg-bone/10 text-bone/70 border-bone/20 hover:bg-bone/20 hover:text-bone"
         )}
       >
         {label}
-        {isActive && <span className="ml-0.5 bg-terracotta text-white w-4 h-4 flex items-center justify-center rounded-full text-[10px]">{selectedValues.length}</span>}
-        <ChevronDown className="w-3.5 h-3.5 opacity-70" strokeWidth={1.5} />
+        {isActive && (
+          <span className={cn("ml-0.5 bg-terracotta text-white flex items-center justify-center rounded-full", isSm ? "w-3.5 h-3.5 text-[9px]" : "w-4 h-4 text-[10px]")}>
+            {selectedValues.length}
+          </span>
+        )}
+        <ChevronDown className={cn("opacity-70", isSm ? "w-3 h-3" : "w-3.5 h-3.5")} strokeWidth={1.5} />
       </Menu.Button>
 
       <Transition

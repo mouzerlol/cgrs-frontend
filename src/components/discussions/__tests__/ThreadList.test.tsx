@@ -13,6 +13,12 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+// Mock next/navigation - ThreadCard/ThreadCardCompact use useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn(), prefetch: vi.fn(), forward: vi.fn(), refresh: vi.fn() }),
+  usePathname: () => '/discussion',
+}));
+
 // Properly mock next/image with default export
 vi.mock('next/image', async () => {
   const actual = await vi.importActual('next/image');

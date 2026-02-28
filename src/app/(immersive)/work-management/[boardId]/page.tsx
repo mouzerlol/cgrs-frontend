@@ -54,7 +54,7 @@ export default function BoardPage() {
   const availableTags = Array.from(new Set(tasks.flatMap(t => t.tags))).sort();
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-gradient-to-br from-bone via-bone to-sage/20">
+    <div className="h-full w-full overflow-hidden flex flex-col bg-gradient-to-br from-bone via-bone to-sage/20">
       <WorkManagementNavBar
         title={board?.name || 'Board'}
         showBackButton
@@ -67,17 +67,18 @@ export default function BoardPage() {
           },
         ]}
       >
-        <FilterBar 
-          filters={filters} 
-          setFilter={setFilter} 
-          clearFilters={clearFilters} 
+        <FilterBar
+          filters={filters}
+          setFilter={setFilter}
+          clearFilters={clearFilters}
           hasActiveFilters={hasActiveFilters}
           availableTags={availableTags}
+          size="sm"
         />
       </WorkManagementNavBar>
       
       <BoardDndContext tasks={tasks} setTasks={setTasks}>
-        <div className="flex-1 overflow-x-auto overflow-y-hidden flex items-start gap-4 p-4 md:p-6 scrollbar-thin">
+        <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden flex items-stretch gap-4 p-4 md:p-6 scrollbar-thin">
           {BOARD_COLUMNS.map(column => (
             <BoardColumn
               key={column.id}

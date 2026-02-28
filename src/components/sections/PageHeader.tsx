@@ -9,8 +9,8 @@ interface PageHeaderProps {
   eyebrow?: string;
   dark?: boolean;
   backgroundImage?: string;
-  /** Variant for different page types: 'default' for marketing, 'compact' for functional pages */
-  variant?: 'default' | 'compact';
+  /** Variant for different page types: 'default' for marketing, 'compact' for functional pages, 'flush' for no gap below */
+  variant?: 'default' | 'compact' | 'flush';
 }
 
 /**
@@ -19,6 +19,7 @@ interface PageHeaderProps {
  * Variants:
  * - 'default': Standard marketing page header with generous spacing
  * - 'compact': Reduced spacing for functional/utility pages (e.g., discussions, calendar)
+ * - 'flush': No bottom gap, content flows directly below (e.g., calendar with forest-light bar)
  */
 export default function PageHeader({
   title,
@@ -30,14 +31,17 @@ export default function PageHeader({
 }: PageHeaderProps) {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
 
-  const isCompact = variant === 'compact';
+  const isCompact = variant === 'compact' || variant === 'flush';
+  const isFlush = variant === 'flush';
 
   // Variant-specific classes
   // Note: Top padding must account for fixed nav height (~64px) + margin
-  // Compact reduces bottom padding to match top visual balance
-  const sectionClasses = isCompact
-    ? 'page-header pt-20 pb-5 md:pt-24 md:pb-6 relative overflow-hidden'
-    : 'page-header pt-20 pb-6 md:pt-24 md:pb-8 relative overflow-hidden';
+  // Compact reduces bottom padding; flush removes it entirely
+  const sectionClasses = isFlush
+    ? 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden'
+    : isCompact
+      ? 'page-header pt-20 pb-5 md:pt-24 md:pb-6 relative overflow-hidden'
+      : 'page-header pt-20 pb-6 md:pt-24 md:pb-8 relative overflow-hidden';
 
   const containerMinHeight = isCompact ? 'min-h-[100px]' : 'min-h-[200px]';
   const cardPadding = isCompact ? 'p-3 md:p-4' : 'p-4 md:p-6';

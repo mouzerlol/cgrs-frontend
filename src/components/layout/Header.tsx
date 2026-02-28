@@ -2,22 +2,31 @@
 
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
 import { NAVIGATION_ITEMS, MORE_NAVIGATION_ITEMS } from '@/lib/constants';
 
+const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isManagementPage = MANAGEMENT_PATHS.some((p) => pathname === p || (pathname ?? '').startsWith(`${p}/`));
 
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
+  const headerClassName = isManagementPage
+    ? 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest border-b border-white/10 text-bone'
+    : 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone';
+
   return (
-    <header className="fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone">
+    <header className={headerClassName}>
       {/* Logo */}
-      <Link href="/" className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0" onClick={closeMenu}>
+      <Link href="/" className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 lg:pr-24" onClick={closeMenu}>
         <span className="flex flex-col leading-tight">
           <span className="block whitespace-nowrap">CORONATION</span>
           <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
@@ -88,14 +97,14 @@ export default function Header() {
                     </span>
                   </Link>
 
-                  {/* Mobile: Navigation Items */}
+                  {/* Mobile: Navigation Items - ALL CAPS for consistency */}
                   <nav className="space-y-3">
                     {NAVIGATION_ITEMS.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
                         onClick={closeMenu}
-                        className="block px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                        className="block px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
                       >
                         {item.name}
                       </Link>
@@ -104,7 +113,7 @@ export default function Header() {
 
                   <hr className="border-bone/10 my-2" />
 
-                  {/* Mobile: More Section */}
+                  {/* Mobile: More Section - ALL CAPS for consistency */}
                   <div className="mt-8 mb-8">
                     <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-4">
                       More
@@ -115,7 +124,7 @@ export default function Header() {
                           key={item.name}
                           href={item.href}
                           onClick={closeMenu}
-                          className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors"
+                          className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
                         >
                           <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
                           <span>{item.name}</span>

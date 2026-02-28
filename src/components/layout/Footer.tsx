@@ -42,23 +42,23 @@ const SUPPORT_LINKS = [
 export default function Footer() {
   return (
     <footer className="bg-forest text-bone py-[3.75rem] bg-[image:var(--texture-grain)] texture-signal" id="contact">
-      <div className="container">
+      <div className="container px-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-lg md:gap-xl mb-xl">
-          {/* Brand Column with Map */}
-          <div className="w-full md:col-span-1 flex flex-col">
+          {/* Brand Column with Map - min-w-0 prevents Leaflet overflow into adjacent columns */}
+          <div className="w-full min-w-0 md:col-span-1 flex flex-col">
             <h3 className="font-display text-[clamp(2rem,4vw,3rem)] mb-sm tracking-tight leading-[0.95] text-bone">
               <span className="block whitespace-nowrap">CORONATION</span>
               <span className="block whitespace-nowrap tracking-wider">GARDENS</span>
             </h3>
-            <div className="flex-1 flex items-start min-h-[160px] w-full">
-              <Link href="/map" aria-label="View interactive map" className="footer-map-link">
+            <div className="flex-1 flex items-start min-h-[160px] w-full min-w-0 overflow-hidden">
+              <Link href="/map" aria-label="View interactive map" className="footer-map-link block min-w-0 w-full">
                 <FooterMap className="footer-map-interactive w-full" />
               </Link>
             </div>
           </div>
 
           {/* Quick Links Column */}
-          <div className="pt-4">
+          <div className="pt-4 min-w-0 md:pl-5">
             <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Quick Links</h4>
             <ul className="flex flex-col gap-2 list-none">
               {QUICK_LINKS.map((link) => (
@@ -72,7 +72,7 @@ export default function Footer() {
           </div>
 
           {/* Support Column */}
-          <div className="pt-4">
+          <div className="pt-4 min-w-0 md:pl-5">
             <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Support</h4>
             <ul className="flex flex-col gap-2 list-none">
               {SUPPORT_LINKS.map((link) => (
@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
 
           {/* Social Media Column */}
-          <div className="pt-4">
+          <div className="pt-4 min-w-0 md:pl-5">
             <SocialMediaTray />
           </div>
         </div>

@@ -50,7 +50,7 @@ describe('Page Metadata - SEO Requirements', () => {
     pages = [];
 
     // Server component pages (export metadata from page.tsx)
-    const homePage = await import('../page');
+    const homePage = await import('../(main)/page');
     if (homePage.metadata) {
       pages.push({
         route: '/',
@@ -59,7 +59,7 @@ describe('Page Metadata - SEO Requirements', () => {
       });
     }
 
-    const guidelinesPage = await import('../guidelines/page');
+    const guidelinesPage = await import('../(main)/guidelines/page');
     if (guidelinesPage.metadata) {
       pages.push({
         route: '/guidelines',
@@ -68,7 +68,7 @@ describe('Page Metadata - SEO Requirements', () => {
       });
     }
 
-    const managementPage = await import('../management-request/page');
+    const managementPage = await import('../(main)/management-request/page');
     if (managementPage.metadata) {
       pages.push({
         route: '/management-request',
@@ -79,19 +79,19 @@ describe('Page Metadata - SEO Requirements', () => {
 
     // Route layouts (for client component pages)
     const layoutModules: Array<{ route: string; path: () => Promise<{ metadata?: Metadata }> }> = [
-      { route: '/about', path: () => import('../about/layout') },
-      { route: '/blog', path: () => import('../blog/layout') },
-      { route: '/calendar', path: () => import('../calendar/layout') },
-      { route: '/contact', path: () => import('../contact/layout') },
-      { route: '/discussion', path: () => import('../discussion/layout') },
-      { route: '/discussion/new', path: () => import('../discussion/new/layout') },
-      { route: '/discussion/thread/[id]', path: () => import('../discussion/thread/[id]/layout') },
-      { route: '/login', path: () => import('../login/layout') },
-      { route: '/register', path: () => import('../register/layout') },
-      { route: '/forgot-password', path: () => import('../forgot-password/layout') },
-      { route: '/map', path: () => import('../map/layout') },
-      { route: '/notice-board', path: () => import('../notice-board/layout') },
-      { route: '/design-system', path: () => import('../design-system/layout') },
+      { route: '/about', path: () => import('../(main)/about/layout') },
+      { route: '/blog', path: () => import('../(main)/blog/layout') },
+      { route: '/calendar', path: () => import('../(main)/calendar/layout') },
+      { route: '/contact', path: () => import('../(main)/contact/layout') },
+      { route: '/discussion', path: () => import('../(main)/discussion/layout') },
+      { route: '/discussion/new', path: () => import('../(main)/discussion/new/layout') },
+      { route: '/discussion/thread/[id]', path: () => import('../(main)/discussion/thread/[id]/layout') },
+      { route: '/login', path: () => import('../(main)/login/layout') },
+      { route: '/register', path: () => import('../(main)/register/layout') },
+      { route: '/forgot-password', path: () => import('../(main)/forgot-password/layout') },
+      { route: '/map', path: () => import('../(main)/map/layout') },
+      { route: '/notice-board', path: () => import('../(main)/notice-board/layout') },
+      { route: '/design-system', path: () => import('../(main)/design-system/layout') },
     ];
 
     for (const { route, path } of layoutModules) {
@@ -169,7 +169,7 @@ describe('Page Metadata - SEO Requirements', () => {
 
 describe('Dynamic Page Metadata - Blog Articles', () => {
   it('generateMetadata returns title and description for a known article', async () => {
-    const mod = await import('../blog/[slug]/page');
+    const mod = await import('../(main)/blog/[slug]/page');
     const generateMetadata = mod.generateMetadata;
     expect(generateMetadata).toBeDefined();
     const meta = await generateMetadata({ params: Promise.resolve({ slug: 'welcome-to-coronation-gardens' }) });
@@ -179,7 +179,7 @@ describe('Dynamic Page Metadata - Blog Articles', () => {
   });
 
   it('generateMetadata returns fallback for unknown slug', async () => {
-    const mod = await import('../blog/[slug]/page');
+    const mod = await import('../(main)/blog/[slug]/page');
     const meta = await mod.generateMetadata({ params: Promise.resolve({ slug: 'nonexistent-article' }) });
     expect(meta.title).toContain('Not Found');
   });
@@ -187,7 +187,7 @@ describe('Dynamic Page Metadata - Blog Articles', () => {
 
 describe('Dynamic Page Metadata - Calendar Events', () => {
   it('generateMetadata returns title and description for a known event', async () => {
-    const mod = await import('../calendar/[slug]/page');
+    const mod = await import('../(main)/calendar/[slug]/page');
     const generateMetadata = mod.generateMetadata;
     expect(generateMetadata).toBeDefined();
     const meta = await generateMetadata({ params: Promise.resolve({ slug: 'summer-barbecue' }) });
@@ -196,7 +196,7 @@ describe('Dynamic Page Metadata - Calendar Events', () => {
   });
 
   it('generateMetadata returns fallback for unknown slug', async () => {
-    const mod = await import('../calendar/[slug]/page');
+    const mod = await import('../(main)/calendar/[slug]/page');
     const meta = await mod.generateMetadata({ params: Promise.resolve({ slug: 'nonexistent-event' }) });
     expect(meta.title).toContain('Not Found');
   });

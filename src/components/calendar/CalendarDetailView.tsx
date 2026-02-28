@@ -6,13 +6,13 @@ import type { DateGrouping } from '@/types';
 
 interface CalendarDetailViewProps {
   groupedItems: DateGrouping[];
-  expandedItemId: string | null;
+  expandedItemIds: Set<string>;
   onItemClick: (itemId: string) => void;
 }
 
 export function CalendarDetailView({
   groupedItems,
-  expandedItemId,
+  expandedItemIds,
   onItemClick,
 }: CalendarDetailViewProps) {
   if (groupedItems.length === 0) {
@@ -37,7 +37,7 @@ export function CalendarDetailView({
           key={group.date}
           date={group.date}
           items={group.items}
-          expandedItemId={expandedItemId}
+          expandedItemIds={expandedItemIds}
           onItemClick={onItemClick}
         />
       ))}

@@ -132,7 +132,7 @@ export default function BoardColumn({ status, title, tasks, onCreateTask, onCard
   }, [activeTaskId, isDraggingTask, isTargetColumn, overTaskId, overType, sourceColumnId, status]);
 
   return (
-    <div className="bg-sage-lite/60 backdrop-blur-xl border border-sage/30 shadow-sm rounded-[10px] w-[280px] min-w-[280px] flex flex-col max-h-full transition-shadow hover:shadow-md">
+    <div className="bg-sage-lite/60 backdrop-blur-xl border border-sage/30 shadow-sm rounded-[10px] w-[280px] min-w-[280px] flex flex-col h-full min-h-0 transition-shadow hover:shadow-md">
       <div className="p-3 flex items-center justify-between shrink-0 border-b border-sage/10">
         <h2 className="font-display text-[15px] font-semibold text-forest tracking-wide">{title}</h2>
         <span className="bg-forest/10 text-forest/90 text-[10px] px-2 py-0.5 rounded-full font-medium">

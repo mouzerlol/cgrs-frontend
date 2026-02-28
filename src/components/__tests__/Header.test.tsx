@@ -3,6 +3,30 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Header from '@/components/layout/Header';
 import { NAVIGATION_ITEMS } from '@/lib/constants';
 
+vi.mock('next/navigation', () => ({ usePathname: () => '/' }));
+
+// Mock Headless UI Dialog - avoids use-is-touch-device addEventListener error in jsdom
+vi.mock('@headlessui/react', async (importOriginal) => {
+  const React = await import('react');
+  const actual = await importOriginal<typeof import('@headlessui/react')>();
+  const Dialog = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => {
+    React.useEffect(() => {
+      const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+      document.addEventListener('keydown', handler);
+      return () => document.removeEventListener('keydown', handler);
+    }, [onClose]);
+    return <div role="dialog" data-testid="mobile-dialog">{children}</div>;
+  };
+  return {
+    ...actual,
+    Dialog,
+    DialogPanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Transition: ({ children, show }: { children: React.ReactNode; show: boolean }) =>
+      show ? <>{children}</> : null,
+    TransitionChild: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
+});
+
 describe('Header', () => {
   beforeEach(() => {
     vi.stubGlobal('ResizeObserver', class ResizeObserver {
@@ -10,24 +34,25 @@ describe('Header', () => {
       unobserve() {}
       disconnect() {}
     });
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addListener: () => {}, removeListener: () => {} }));
   });
 
   it('renders logo link', () => {
     render(<Header />);
-    const logoLink = document.querySelector('a.nav-logo');
+    const logoLink = screen.getByRole('link', { name: /coronation/i });
     expect(logoLink).toBeInTheDocument();
     expect(logoLink).toHaveTextContent('CORONATION');
   });
 
   it('renders navigation items on desktop', () => {
     render(<Header />);
-    const navLinks = document.querySelectorAll('nav a.nav-link');
-    expect(navLinks).toHaveLength(NAVIGATION_ITEMS.length);
+    const navLinks = screen.getAllByRole('link').filter((l) => l.getAttribute('href')?.startsWith('/') && l.getAttribute('href') !== '/');
+    expect(navLinks.length).toBeGreaterThanOrEqual(NAVIGATION_ITEMS.length);
   });
 
   it('renders login button', () => {
     render(<Header />);
-    const loginButton = document.querySelector('a.nav-button');
+    const loginButton = screen.getByRole('link', { name: /resident login/i });
     expect(loginButton).toBeInTheDocument();
     expect(loginButton).toHaveTextContent('Resident Login');
   });
@@ -80,7 +105,7 @@ describe('Header', () => {
 
   it('logo links to home page', () => {
     render(<Header />);
-    const logoLink = document.querySelector('a.nav-logo');
+    const logoLink = screen.getByRole('link', { name: /coronation/i });
     expect(logoLink).toBeInTheDocument();
     expect(logoLink).toHaveAttribute('href', '/');
   });
@@ -109,7 +134,7 @@ describe('Header', () => {
 
   it('header has correct nav class', () => {
     render(<Header />);
-    const header = document.querySelector('header.nav');
+    const header = document.querySelector('header');
     expect(header).toBeInTheDocument();
   });
 

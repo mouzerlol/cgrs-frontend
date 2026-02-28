@@ -8,14 +8,14 @@ import type { CalendarItem } from '@/types';
 interface DateGroupProps {
   date: string;
   items: CalendarItem[];
-  expandedItemId: string | null;
+  expandedItemIds: Set<string>;
   onItemClick: (itemId: string) => void;
 }
 
 export function DateGroup({
   date,
   items,
-  expandedItemId,
+  expandedItemIds,
   onItemClick,
 }: DateGroupProps) {
   const isToday = isTodayDate(date);
@@ -43,7 +43,7 @@ export function DateGroup({
           <CalendarItemCard
             key={item.id}
             item={item}
-            isExpanded={expandedItemId === item.id}
+            isExpanded={expandedItemIds.has(item.id)}
             onToggle={() => onItemClick(item.id)}
           />
         ))}

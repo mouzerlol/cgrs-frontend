@@ -32,34 +32,9 @@ export function CalendarContent() {
     return itemParam ? null : null; // Will be set after items load
   });
 
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(() => {
-    return searchParams.get('item');
-  });
+  const [expandedItemIds, setExpandedItemIds] = useState<Set<string>>(() => new Set());
 
   const { containerRef, scrollToDate } = useScrollToDate();
-
-  // Find item from URL and set up initial state after items load
-  useEffect(() => {
-    if (items.length > 0 && searchParams.has('item')) {
-      const itemId = searchParams.get('item');
-      const monthParam = searchParams.get('month');
-      
-      const item = items.find(i => i.id === itemId);
-      if (item) {
-        // Set the date from the item
-        setSelectedDate(item.date);
-        pendingScrollRef.current = item.date;
-        setExpandedItemId(itemId);
-        
-        // If month param exists, ensure we're in that month
-        if (monthParam) {
-          const [year, month] = monthParam.split('-').map(Number);
-          const targetMonth = new Date(year, month - 1, 1);
-          setCurrentMonth(targetMonth);
-        }
-      }
-    }
-  }, [items, searchParams]);
 
   // Derived state
   const groupedItems = useMemo(
@@ -71,6 +46,36 @@ export function CalendarContent() {
     () => createDateItemMap(items, currentMonth),
     [items, currentMonth]
   );
+
+  // Initialize all items as expanded when groupedItems changes (initial load or month change)
+  const prevGroupKeyRef = useRef<string>('');
+  useEffect(() => {
+    const key = groupedItems.map((g) => g.date).join(',');
+    if (key !== prevGroupKeyRef.current) {
+      prevGroupKeyRef.current = key;
+      setExpandedItemIds(new Set(groupedItems.flatMap((g) => g.items.map((i) => i.id))));
+    }
+  }, [groupedItems]);
+
+  // Find item from URL and set up initial state after items load
+  useEffect(() => {
+    if (items.length > 0 && searchParams.has('item')) {
+      const itemId = searchParams.get('item');
+      const monthParam = searchParams.get('month');
+
+      const item = items.find((i) => i.id === itemId);
+      if (item) {
+        setSelectedDate(item.date);
+        pendingScrollRef.current = item.date;
+
+        if (monthParam) {
+          const [year, month] = monthParam.split('-').map(Number);
+          const targetMonth = new Date(year, month - 1, 1);
+          setCurrentMonth(targetMonth);
+        }
+      }
+    }
+  }, [items, searchParams]);
 
   // Handle pending scroll after animations complete
   useEffect(() => {
@@ -85,44 +90,39 @@ export function CalendarContent() {
 
       return () => clearTimeout(timer);
     }
-  }, [expandedItemId, scrollToDate]);
+  }, [selectedDate, scrollToDate]);
 
   // Event handlers
   const handlePrevMonth = useCallback(() => {
     setCurrentMonth((prev) => getPrevMonth(prev));
-    setExpandedItemId(null);
     setSelectedDate(null);
   }, []);
 
   const handleNextMonth = useCallback(() => {
     setCurrentMonth((prev) => getNextMonth(prev));
-    setExpandedItemId(null);
     setSelectedDate(null);
   }, []);
 
   const handleMonthSelect = useCallback((month: Date) => {
     setCurrentMonth(month);
-    setExpandedItemId(null);
     setSelectedDate(null);
   }, []);
 
-  const handleDateClick = useCallback(
-    (dateString: string) => {
-      setSelectedDate(dateString);
-      pendingScrollRef.current = dateString;
-      
-      const items = itemsByDate.get(dateString);
-      if (items && items.length > 0) {
-        setExpandedItemId(items[0].id);
-      } else {
-        setExpandedItemId(null);
-      }
-    },
-    [itemsByDate]
-  );
+  const handleDateClick = useCallback((dateString: string) => {
+    setSelectedDate(dateString);
+    pendingScrollRef.current = dateString;
+  }, []);
 
   const handleItemClick = useCallback((itemId: string) => {
-    setExpandedItemId((prev) => (prev === itemId ? null : itemId));
+    setExpandedItemIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
   }, []);
 
   if (isLoading) {
@@ -143,7 +143,7 @@ export function CalendarContent() {
       itemsByDate={itemsByDate}
       groupedItems={groupedItems}
       selectedDate={selectedDate}
-      expandedItemId={expandedItemId}
+      expandedItemIds={expandedItemIds}
       detailViewRef={containerRef}
       items={items}
       onPrevMonth={handlePrevMonth}

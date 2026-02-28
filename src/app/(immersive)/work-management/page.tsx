@@ -25,7 +25,7 @@ export default function WorkManagementDashboard() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-bone">
+    <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
       <WorkManagementNavBar
         title="Work Management"
         actions={[
@@ -37,7 +37,7 @@ export default function WorkManagementDashboard() {
         ]}
       />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 min-h-0 overflow-y-auto">
         <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

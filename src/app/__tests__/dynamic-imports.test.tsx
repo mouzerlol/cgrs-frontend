@@ -43,7 +43,7 @@ vi.mock('leaflet', () => ({
 describe('Dynamic import loading states', () => {
   describe('MapPage', () => {
     it('shows MapSkeleton loading fallback while MapSection loads', async () => {
-      const MapPage = (await import('@/app/map/page')).default;
+      const MapPage = (await import('@/app/(main)/map/page')).default;
       render(<MapPage />);
 
       // MapSkeleton renders elements with animate-pulse class
@@ -54,11 +54,11 @@ describe('Dynamic import loading states', () => {
 
   describe('CalendarPage', () => {
     it('shows CalendarSkeleton loading fallback while CalendarContent loads', async () => {
-      const CalendarPage = (await import('@/app/calendar/page')).default;
+      const CalendarPage = (await import('@/app/(main)/calendar/page')).default;
       render(<CalendarPage />);
 
-      // CalendarSkeleton renders a calendar-view-container with skeleton UI
-      const skeleton = document.querySelector('.calendar-view-container');
+      // CalendarSkeleton renders skeleton elements
+      const skeleton = document.querySelector('.skeleton');
       expect(skeleton).toBeInTheDocument();
     });
   });
