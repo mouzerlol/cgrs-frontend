@@ -32,6 +32,7 @@ module.exports = {
       fontFamily: {
         display: ['var(--font-fraunces)', 'serif'],
         body: ['var(--font-manrope)', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'monospace'],
       },
       fontSize: {
         'display': ['clamp(2.5rem, 8vw, 5rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],

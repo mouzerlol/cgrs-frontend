@@ -1,0 +1,667 @@
+{
+  "portfolios": [
+    {
+      "id": "finance",
+      "name": "Finance",
+      "description": "Managing the society's funds, levies, and financial reporting obligations",
+      "icon": "wallet",
+      "color": "amber",
+      "tag": "finance",
+      "lead": {
+        "id": "member-1",
+        "name": "Louise Putt",
+        "avatar": "/images/committee/louise-putt.jpg",
+        "role": "Chairperson",
+        "email": "cgrscommittee@gmail.com",
+        "phone": "+27 21 555 0100"
+      },
+      "coLead": {
+        "id": "member-2",
+        "name": "James Morton",
+        "avatar": "/images/committee/member1.jpg",
+        "role": "Treasurer",
+        "email": "treasurer@cgrs.co.za",
+        "phone": "+27 21 555 0101"
+      },
+      "members": [],
+      "linkedBoardIds": ["society-management"],
+      "sections": [
+        {
+          "id": "section-mission-finance",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Responsible for the prudent management of society funds, collection of levies, payment of service providers, financial reporting to members, and ensuring compliance with all relevant financial regulations and body corporate requirements."
+          }
+        },
+        {
+          "id": "section-people-finance",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-budget-finance",
+          "sectionType": "budget",
+          "title": "Budget",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {
+            "allocated": 285000,
+            "spent": 198500,
+            "currency": "NZD"
+          }
+        },
+        {
+          "id": "section-services-finance",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 2 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Levy collection and arrears management", "description": "Monthly levy billing, payment tracking, and follow-up on outstanding amounts" },
+              { "id": "s2", "name": "Financial reporting", "description": "Monthly management accounts and annual financial statements" },
+              { "id": "s3", "name": "Budget preparation", "description": "Annual budget forecasting and levy increase proposals" },
+              { "id": "s4", "name": "Service provider payments", "description": "Processing invoices and managing payment schedules" },
+              { "id": "s5", "name": "Insurance management", "description": "Building and liability insurance renewals and claims" },
+              { "id": "s6", "name": "Audit coordination", "description": "Working with external auditors for annual audit" }
+            ]
+          }
+        },
+        {
+          "id": "section-providers-finance",
+          "sectionType": "service-providers",
+          "title": "Service Providers",
+          "gridPosition": { "x": 2, "y": 2 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "providers": [
+              { "id": "sp1", "name": "Baxter & Associates", "service": "External Auditors", "email": "audit@baxter.co.za", "phone": "+27 21 555 2001", "contractType": "Annual" },
+              { "id": "sp2", "name": "Cape Accounting Services", "service": "Bookkeeping", "email": "info@capeaccounting.co.za", "phone": "+27 21 555 2002", "contractType": "Monthly" }
+            ]
+          }
+        },
+        {
+          "id": "section-systems-finance",
+          "sectionType": "systems",
+          "title": "Systems",
+          "gridPosition": { "x": 2, "y": 4 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "sys1", "name": "Xero Accounting", "type": "digital", "description": "Cloud accounting platform for financial management", "url": "https://xero.com" },
+              { "id": "sys2", "name": "Levy Register", "type": "documentation", "description": "Spreadsheet tracking all unit levies and payment status" },
+              { "id": "sys3", "name": "Financial Policies", "type": "governance", "description": "Approved financial management and procurement policies" }
+            ]
+          }
+        },
+        {
+          "id": "section-linked-boards-finance",
+          "sectionType": "linked-boards",
+          "title": "Linked Boards",
+          "gridPosition": { "x": 1, "y": 5 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-documents-finance",
+          "sectionType": "documents",
+          "title": "Documents & Policies",
+          "gridPosition": { "x": 0, "y": 5 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "doc1", "name": "Financial Management Policy", "type": "policy", "updatedAt": "2024-11-15T00:00:00Z" },
+              { "id": "doc2", "name": "2024/25 Annual Budget", "type": "report", "updatedAt": "2025-01-10T00:00:00Z" },
+              { "id": "doc3", "name": "Insurance Certificate", "type": "certificate", "updatedAt": "2025-02-01T00:00:00Z" }
+            ]
+          }
+        },
+        {
+          "id": "section-wif-finance",
+          "sectionType": "work-in-flight",
+          "title": "Work in Flight",
+          "gridPosition": { "x": 0, "y": 7 },
+          "gridSize": { "w": 4, "h": 2 },
+          "visible": true,
+          "content": {}
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-02-20T00:00:00Z"
+    },
+    {
+      "id": "maintenance",
+      "name": "Maintenance",
+      "description": "Building and grounds upkeep, repairs, and preventative maintenance programmes",
+      "icon": "wrench",
+      "color": "sage",
+      "tag": "maintenance",
+      "lead": {
+        "id": "member-3",
+        "name": "David Chen",
+        "avatar": "/images/committee/member2.jpg",
+        "role": "Maintenance Coordinator",
+        "email": "maintenance@cgrs.co.za",
+        "phone": "+27 21 555 0102"
+      },
+      "coLead": {
+        "id": "member-4",
+        "name": "Sarah Williams",
+        "avatar": "/images/committee/member3.jpg",
+        "role": "Committee Member",
+        "email": "sarah.w@cgrs.co.za"
+      },
+      "members": [
+        {
+          "id": "member-res-1",
+          "name": "Mike Reynolds",
+          "avatar": "",
+          "role": "Plumbing specialist (Resident)",
+          "email": "mike.r@email.co.za"
+        }
+      ],
+      "linkedBoardIds": ["society-management"],
+      "sections": [
+        {
+          "id": "section-mission-maint",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Responsible for maintaining all building structures, common areas, and shared facilities. This includes reactive repairs, preventative maintenance schedules, contractor management, and ensuring the development remains in excellent condition for all residents."
+          }
+        },
+        {
+          "id": "section-people-maint",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-budget-maint",
+          "sectionType": "budget",
+          "title": "Budget",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {
+            "allocated": 180000,
+            "spent": 124300,
+            "currency": "NZD"
+          }
+        },
+        {
+          "id": "section-services-maint",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 2 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Pool maintenance and water quality", "description": "Weekly pool servicing and chemical balance management" },
+              { "id": "s2", "name": "Building structural inspections", "description": "Quarterly inspections of common areas and building fabric" },
+              { "id": "s3", "name": "Plumbing and electrical upkeep", "description": "Reactive and preventative maintenance of building services" },
+              { "id": "s4", "name": "Elevator servicing", "description": "Monthly maintenance and annual compliance inspections" },
+              { "id": "s5", "name": "Common area cleaning contracts", "description": "Daily cleaning of lobbies, corridors, and shared spaces" },
+              { "id": "s6", "name": "Emergency repair coordination", "description": "24/7 response coordination for urgent maintenance issues" }
+            ]
+          }
+        },
+        {
+          "id": "section-providers-maint",
+          "sectionType": "service-providers",
+          "title": "Service Providers",
+          "gridPosition": { "x": 2, "y": 2 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "providers": [
+              { "id": "sp1", "name": "PoolCare SA", "service": "Pool Maintenance", "email": "info@poolcare.co.za", "phone": "+27 21 555 3001", "contractType": "Monthly" },
+              { "id": "sp2", "name": "SecureLift Elevators", "service": "Elevator Servicing", "email": "service@securelift.co.za", "phone": "+27 21 555 3002", "contractType": "Quarterly" },
+              { "id": "sp3", "name": "CapeClean Services", "service": "Common Area Cleaning", "email": "bookings@capeclean.co.za", "phone": "+27 21 555 3003", "contractType": "Monthly" }
+            ]
+          }
+        },
+        {
+          "id": "section-relationships-maint",
+          "sectionType": "relationships",
+          "title": "Key Relationships",
+          "gridPosition": { "x": 0, "y": 6 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "r1", "name": "Body Corporate", "type": "Internal", "description": "Approval for major maintenance expenditure" },
+              { "id": "r2", "name": "Managing Agent", "type": "Internal", "description": "Day-to-day coordination of contractors" },
+              { "id": "r3", "name": "City of Cape Town", "type": "External", "description": "Building compliance and municipal services" }
+            ]
+          }
+        },
+        {
+          "id": "section-systems-maint",
+          "sectionType": "systems",
+          "title": "Systems",
+          "gridPosition": { "x": 2, "y": 6 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "sys1", "name": "Maintenance Log", "type": "digital", "description": "Work Management boards tracking all maintenance tasks" },
+              { "id": "sys2", "name": "Asset Register", "type": "documentation", "description": "Inventory of all building assets and equipment" },
+              { "id": "sys3", "name": "Service Contracts Folder", "type": "documentation", "description": "Filed contracts with all service providers" }
+            ]
+          }
+        },
+        {
+          "id": "section-documents-maint",
+          "sectionType": "documents",
+          "title": "Documents & Policies",
+          "gridPosition": { "x": 0, "y": 8 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "doc1", "name": "Maintenance Policy v2.1", "type": "policy", "updatedAt": "2024-10-15T00:00:00Z" },
+              { "id": "doc2", "name": "Pool Compliance Certificate", "type": "certificate", "updatedAt": "2025-01-20T00:00:00Z" },
+              { "id": "doc3", "name": "Elevator Inspection Report", "type": "report", "updatedAt": "2025-02-10T00:00:00Z" },
+              { "id": "doc4", "name": "Emergency Procedures Manual", "type": "policy", "updatedAt": "2024-08-01T00:00:00Z" }
+            ]
+          }
+        },
+        {
+          "id": "section-wif-maint",
+          "sectionType": "work-in-flight",
+          "title": "Work in Flight",
+          "gridPosition": { "x": 0, "y": 10 },
+          "gridSize": { "w": 4, "h": 2 },
+          "visible": true,
+          "content": {}
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-03-01T00:00:00Z"
+    },
+    {
+      "id": "landscaping",
+      "name": "Landscaping",
+      "description": "Gardens, green spaces, irrigation, and outdoor aesthetics",
+      "icon": "trees",
+      "color": "sage",
+      "tag": "landscaping",
+      "lead": {
+        "id": "member-5",
+        "name": "Pam Thompson",
+        "avatar": "",
+        "role": "Committee Member",
+        "email": "pam.t@cgrs.co.za"
+      },
+      "members": [],
+      "linkedBoardIds": [],
+      "sections": [
+        {
+          "id": "section-mission-land",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Maintaining and enhancing the gardens, green spaces, and outdoor areas of the development to create a beautiful, sustainable environment for residents."
+          }
+        },
+        {
+          "id": "section-people-land",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-services-land",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Garden maintenance schedule", "description": "Weekly mowing, trimming, and general garden upkeep" },
+              { "id": "s2", "name": "Irrigation system management", "description": "Seasonal programming and leak repairs" },
+              { "id": "s3", "name": "Tree management", "description": "Annual pruning, removal of hazardous trees" },
+              { "id": "s4", "name": "Seasonal planting", "description": "Planning and planting seasonal flower beds and borders" }
+            ]
+          }
+        },
+        {
+          "id": "section-budget-land",
+          "sectionType": "budget",
+          "title": "Budget",
+          "gridPosition": { "x": 0, "y": 4 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {
+            "allocated": 65000,
+            "spent": 41200,
+            "currency": "NZD"
+          }
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-02-15T00:00:00Z"
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Access control, surveillance, safety protocols, and emergency preparedness",
+      "icon": "shield",
+      "color": "forest",
+      "tag": "security",
+      "lead": {
+        "id": "member-6",
+        "name": "Robert Nkosi",
+        "avatar": "",
+        "role": "Committee Member",
+        "email": "robert.n@cgrs.co.za",
+        "phone": "+27 21 555 0105"
+      },
+      "members": [],
+      "linkedBoardIds": [],
+      "sections": [
+        {
+          "id": "section-mission-sec",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Ensuring the safety and security of all residents, visitors, and property through effective access control, surveillance, and emergency response procedures."
+          }
+        },
+        {
+          "id": "section-people-sec",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-services-sec",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Access control management", "description": "Managing resident and visitor access systems" },
+              { "id": "s2", "name": "CCTV surveillance", "description": "Monitoring and maintaining camera systems" },
+              { "id": "s3", "name": "Guard service oversight", "description": "Managing security guard contracts and performance" },
+              { "id": "s4", "name": "Emergency response planning", "description": "Fire, medical, and security emergency procedures" },
+              { "id": "s5", "name": "Incident reporting", "description": "Tracking and reporting security incidents" }
+            ]
+          }
+        },
+        {
+          "id": "section-budget-sec",
+          "sectionType": "budget",
+          "title": "Budget",
+          "gridPosition": { "x": 0, "y": 4 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {
+            "allocated": 156000,
+            "spent": 130000,
+            "currency": "NZD"
+          }
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-02-28T00:00:00Z"
+    },
+    {
+      "id": "social-events",
+      "name": "Social Events",
+      "description": "Community gatherings, resident engagement, and social programmes",
+      "icon": "party-popper",
+      "color": "terracotta",
+      "tag": "social-events",
+      "lead": {
+        "id": "member-7",
+        "name": "Karen Mitchell",
+        "avatar": "",
+        "role": "Committee Member",
+        "email": "karen.m@cgrs.co.za"
+      },
+      "members": [],
+      "linkedBoardIds": [],
+      "sections": [
+        {
+          "id": "section-mission-social",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Building community spirit through social events, resident engagement activities, and creating opportunities for neighbours to connect and build meaningful relationships."
+          }
+        },
+        {
+          "id": "section-people-social",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-services-social",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Annual calendar planning", "description": "Planning the year's social events calendar" },
+              { "id": "s2", "name": "Event coordination", "description": "Organising venues, catering, and logistics" },
+              { "id": "s3", "name": "Resident communications for events", "description": "Invitations, reminders, and post-event updates" },
+              { "id": "s4", "name": "Welcome programme for new residents", "description": "Onboarding and welcome packs for newcomers" }
+            ]
+          }
+        },
+        {
+          "id": "section-budget-social",
+          "sectionType": "budget",
+          "title": "Budget",
+          "gridPosition": { "x": 0, "y": 4 },
+          "gridSize": { "w": 1, "h": 2 },
+          "visible": true,
+          "content": {
+            "allocated": 35000,
+            "spent": 12800,
+            "currency": "NZD"
+          }
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-02-10T00:00:00Z"
+    },
+    {
+      "id": "communications",
+      "name": "Communications",
+      "description": "Resident communications, website, newsletters, and information sharing",
+      "icon": "megaphone",
+      "color": "terracotta",
+      "tag": "communications",
+      "lead": {
+        "id": "member-8",
+        "name": "Angela Peters",
+        "avatar": "",
+        "role": "Committee Member",
+        "email": "angela.p@cgrs.co.za"
+      },
+      "members": [],
+      "linkedBoardIds": ["committee-management"],
+      "sections": [
+        {
+          "id": "section-mission-comms",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Ensuring clear, timely, and transparent communication between the committee and residents through multiple channels including the website, email, notice boards, and community forums."
+          }
+        },
+        {
+          "id": "section-people-comms",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-services-comms",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "Website management", "description": "Content updates, news articles, and event listings" },
+              { "id": "s2", "name": "Newsletter coordination", "description": "Monthly community newsletter production and distribution" },
+              { "id": "s3", "name": "Notice board management", "description": "Physical and digital notice board content" },
+              { "id": "s4", "name": "Emergency communications", "description": "Urgent notifications to residents via SMS and email" },
+              { "id": "s5", "name": "AGM documentation", "description": "Minutes, reports, and meeting notifications" }
+            ]
+          }
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-02-25T00:00:00Z"
+    },
+    {
+      "id": "systems",
+      "name": "Systems",
+      "description": "Operational, digital, governance, and documentation systems management",
+      "icon": "settings",
+      "color": "forest",
+      "tag": "systems",
+      "lead": {
+        "id": "member-9",
+        "name": "Dameon O'Reilly",
+        "avatar": "",
+        "role": "Committee Member",
+        "email": "dameon.o@cgrs.co.za"
+      },
+      "members": [],
+      "linkedBoardIds": ["committee-management"],
+      "sections": [
+        {
+          "id": "section-mission-sys",
+          "sectionType": "mission",
+          "title": "Mission & Scope",
+          "gridPosition": { "x": 0, "y": 0 },
+          "gridSize": { "w": 2, "h": 1 },
+          "visible": true,
+          "content": {
+            "text": "Managing and maintaining all operational systems that support the society's governance, including digital platforms, document management, access credentials, and ensuring business continuity through proper system documentation."
+          }
+        },
+        {
+          "id": "section-people-sys",
+          "sectionType": "people",
+          "title": "People",
+          "gridPosition": { "x": 2, "y": 0 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {}
+        },
+        {
+          "id": "section-systems-sys",
+          "sectionType": "systems",
+          "title": "Systems",
+          "gridPosition": { "x": 0, "y": 1 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "sys1", "name": "CGRS Website", "type": "digital", "description": "Next.js web application for society management", "url": "https://cgrs.co.za" },
+              { "id": "sys2", "name": "Google Workspace", "type": "digital", "description": "Email, documents, and shared drives" },
+              { "id": "sys3", "name": "Xero Accounting", "type": "digital", "description": "Financial management platform" },
+              { "id": "sys4", "name": "Governance Framework", "type": "governance", "description": "Rules, policies, and decision-making procedures" },
+              { "id": "sys5", "name": "Document Archive", "type": "documentation", "description": "Central repository for all society documents" },
+              { "id": "sys6", "name": "Access Control System", "type": "digital", "description": "Resident access management and visitor control" }
+            ]
+          }
+        },
+        {
+          "id": "section-services-sys",
+          "sectionType": "services",
+          "title": "Services & Responsibilities",
+          "gridPosition": { "x": 0, "y": 3 },
+          "gridSize": { "w": 2, "h": 3 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "s1", "name": "System access management", "description": "Managing user accounts and credentials across all platforms" },
+              { "id": "s2", "name": "Digital platform maintenance", "description": "Website updates, bug fixes, and feature development" },
+              { "id": "s3", "name": "Data backup procedures", "description": "Ensuring all critical data is regularly backed up" },
+              { "id": "s4", "name": "System documentation", "description": "Maintaining documentation for all operational systems" },
+              { "id": "s5", "name": "Technology evaluation", "description": "Assessing new tools and platforms for society needs" }
+            ]
+          }
+        },
+        {
+          "id": "section-documents-sys",
+          "sectionType": "documents",
+          "title": "Documents & Policies",
+          "gridPosition": { "x": 2, "y": 2 },
+          "gridSize": { "w": 2, "h": 2 },
+          "visible": true,
+          "content": {
+            "items": [
+              { "id": "doc1", "name": "Systems Inventory Register", "type": "report", "updatedAt": "2025-02-01T00:00:00Z" },
+              { "id": "doc2", "name": "IT Security Policy", "type": "policy", "updatedAt": "2024-12-15T00:00:00Z" },
+              { "id": "doc3", "name": "Data Protection Policy", "type": "policy", "updatedAt": "2024-11-01T00:00:00Z" },
+              { "id": "doc4", "name": "System Access Procedures", "type": "policy", "updatedAt": "2025-01-15T00:00:00Z" }
+            ]
+          }
+        }
+      ],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2025-03-01T00:00:00Z"
+    }
+  ]
+}

@@ -16,25 +16,17 @@ interface BoardColumnProps {
   onCardClick: (taskId: string) => void;
 }
 
-// #region agent log
-const logDebug = (hypothesisId: string, location: string, message: string, data: Record<string, unknown>) => {
-  fetch('http://127.0.0.1:7719/ingest/e80822c0-0494-4ae7-81f4-f09c3792dba1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d22ed8'},body:JSON.stringify({sessionId:'d22ed8',runId:'preview-v2',hypothesisId,location,message,data,timestamp:Date.now()})}).catch(()=>{});
-};
-// #endregion
-
 export default function BoardColumn({ status, title, tasks, onCreateTask, onCardClick }: BoardColumnProps) {
   const { active, over } = useDndContext();
   const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
   const [dropIndicatorHeight, setDropIndicatorHeight] = useState(96);
   const measuredActiveIdRef = useRef<string | null>(null);
-  const loggedPreviewKeyRef = useRef<string | null>(null);
   const overType = over?.data.current?.type;
   const overTaskId = overType === 'Task' ? String(over?.id) : null;
   const overColumnId = overType === 'Column' ? String(over?.id) : overType === 'Task' ? String(over?.data.current?.status) : null;
   const isDraggingTask = active?.data.current?.type === 'Task';
   const isTargetColumn = Boolean(isDraggingTask && overColumnId === status);
   const activeTaskId = isDraggingTask ? String(active?.id) : null;
-  const sourceColumnId = isDraggingTask ? String(active?.data.current?.status ?? '') : null;
   const lastTaskIdInColumn = tasks.length > 0 ? tasks[tasks.length - 1].id : null;
   const isOverLastTaskInTargetColumn = isTargetColumn && overType === 'Task' && overTaskId === lastTaskIdInColumn;
   const activeTop = active?.rect.current.translated?.top ?? active?.rect.current.initial?.top ?? null;
@@ -64,72 +56,8 @@ export default function BoardColumn({ status, title, tasks, onCreateTask, onCard
     if (measuredHeight > 0) {
       setDropIndicatorHeight(measuredHeight);
       measuredActiveIdRef.current = activeTaskId;
-      // #region agent log
-      logDebug('H5', 'BoardColumn.tsx:useEffect(measure)', 'measured-active-card-height', {
-        columnStatus: status,
-        activeTaskId,
-        measuredHeight,
-      });
-      // #endregion
     }
   }, [activeTaskId, status]);
-
-  useEffect(() => {
-    if (!isDraggingTask) {
-      loggedPreviewKeyRef.current = null;
-      return;
-    }
-
-    const previewKey = `${activeTaskId}|${status}|${String(overType ?? 'none')}|${String(overColumnId ?? 'none')}|${String(overTaskId ?? 'none')}`;
-    if (loggedPreviewKeyRef.current === previewKey) {
-      return;
-    }
-
-    loggedPreviewKeyRef.current = previewKey;
-    // #region agent log
-    logDebug('H7', 'BoardColumn.tsx:useEffect(preview)', 'preview-target-updated', {
-      activeTaskId,
-      columnStatus: status,
-      isTargetColumn,
-      overType: overType ?? null,
-      overColumnId,
-      overTaskId,
-      indicatorHeight: dropIndicatorHeight,
-      isOverLastTaskInTargetColumn,
-      isBelowOverMidpoint,
-      shouldShowBottomIndicatorForLastTask,
-    });
-    // #endregion
-  }, [
-    activeTaskId,
-    dropIndicatorHeight,
-    isDraggingTask,
-    isTargetColumn,
-    isOverLastTaskInTargetColumn,
-    isBelowOverMidpoint,
-    shouldShowBottomIndicatorForLastTask,
-    overColumnId,
-    overTaskId,
-    overType,
-    status,
-  ]);
-
-  useEffect(() => {
-    if (!isDraggingTask || !activeTaskId) {
-      return;
-    }
-    // #region agent log
-    logDebug('H15', 'BoardColumn.tsx:useEffect(source-lane)', 'source-target-lane-state', {
-      activeTaskId,
-      columnStatus: status,
-      sourceColumnId,
-      isSourceColumn: sourceColumnId === status,
-      isTargetColumn,
-      overType: overType ?? null,
-      overTaskId,
-    });
-    // #endregion
-  }, [activeTaskId, isDraggingTask, isTargetColumn, overTaskId, overType, sourceColumnId, status]);
 
   return (
     <div className="bg-sage-lite/60 backdrop-blur-xl border border-sage/30 shadow-sm rounded-[10px] w-[280px] min-w-[280px] flex flex-col h-full min-h-0 transition-shadow hover:shadow-md">

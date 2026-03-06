@@ -3,7 +3,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types/work-management';
 import { cn } from '@/lib/utils';
 import TaskCard from './TaskCard';
-import { useEffect, useRef } from 'react';
 
 interface DraggableCardProps {
   task: Task;
@@ -27,17 +26,6 @@ export default function DraggableCard({ task, onClick }: DraggableCardProps) {
       status: task.status,
     },
   });
-  const lastDraggingStateRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    if (lastDraggingStateRef.current === isDragging) {
-      return;
-    }
-    lastDraggingStateRef.current = isDragging;
-    // #region agent log
-    fetch('http://127.0.0.1:7719/ingest/e80822c0-0494-4ae7-81f4-f09c3792dba1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d22ed8'},body:JSON.stringify({sessionId:'d22ed8',runId:'preview-v3',hypothesisId:'H14',location:'DraggableCard.tsx:useEffect',message:'dragging-state-changed',data:{taskId:task.id,isDragging},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-  }, [isDragging, task.id]);
 
   const style = {
     transition: isDragging ? undefined : transition,

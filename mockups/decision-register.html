@@ -1,0 +1,51 @@
+<div id="resolutionModal" style="max-width: 600px; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+    <h2 style="margin-top: 0; color: #004a99;">Log Formal Committee Resolution</h2>
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    
+    <form style="display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <label style="font-size: 0.85rem; font-weight: bold;">Meeting Date
+          <input type="date" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </label>
+        <label style="font-size: 0.85rem; font-weight: bold;">Portfolio
+          <select style="width: 100%; padding: 8px; margin-top: 5px;">
+            <option>Infrastructure</option>
+            <option>Finance/Levies</option>
+            <option>Landscaping</option>
+            <option>Community Rules</option>
+          </select>
+        </label>
+      </div>
+  
+      <label style="font-size: 0.85rem; font-weight: bold;">Motion Text
+        <textarea rows="3" placeholder="That the Committee resolves to..." style="width: 100%; padding: 8px; margin-top: 5px; font-family: inherit;"></textarea>
+      </label>
+  
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <label style="font-size: 0.85rem; font-weight: bold;">Mover
+          <input type="text" placeholder="Name" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </label>
+        <label style="font-size: 0.85rem; font-weight: bold;">Seconder
+          <input type="text" placeholder="Name" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </label>
+      </div>
+  
+      <div style="background: #f8fafc; padding: 15px; border-radius: 4px; border: 1px dashed #cbd5e1;">
+        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem;">Vote Tally</h4>
+        <div style="display: flex; gap: 20px;">
+          <label>For: <input type="number" style="width: 40px;"></label>
+          <label>Against: <input type="number" style="width: 40px;"></label>
+          <label>Abstain: <input type="number" style="width: 40px;"></label>
+        </div>
+      </div>
+  
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" id="syncTask" checked>
+        <label for="syncTask" style="font-size: 0.85rem;">Automatically create card in <strong>Work Management Board</strong></label>
+      </div>
+  
+      <button type="submit" style="background: #16a34a; color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px;">
+        Record Resolution & Generate Task
+      </button>
+    </form>
+  </div>

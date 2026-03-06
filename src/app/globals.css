@@ -192,6 +192,49 @@
   .texture-signal {
     background-image: var(--texture-signal);
   }
+
+  /* Thin scrollbar for portfolio card content */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 181, 160, 0.3) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(168, 181, 160, 0.3);
+    border-radius: 2px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(168, 181, 160, 0.5);
+  }
+}
+
+/* ==========================================================================
+   Portfolio Pegboard — Resize Handle Overrides
+   ========================================================================== */
+
+/* Hide default react-resizable handles (we use custom ResizeHandle component) */
+.react-grid-item > .react-resizable-handle::after {
+  display: none;
+}
+
+/* Resize active state — subtle highlight on the card being resized */
+.react-grid-item.resizing {
+  border-color: var(--terracotta) !important;
+  box-shadow: 0 0 0 2px rgba(217, 93, 57, 0.15), 0 4px 12px rgba(217, 93, 57, 0.08) !important;
+  z-index: 30 !important;
+}
+
+/* Resize placeholder — the ghost outline showing target size */
+.react-grid-item.react-grid-placeholder {
+  background: rgba(217, 93, 57, 0.06) !important;
+  border: 2px dashed rgba(217, 93, 57, 0.3) !important;
+  border-radius: 16px !important;
+  opacity: 1 !important;
 }
 
 

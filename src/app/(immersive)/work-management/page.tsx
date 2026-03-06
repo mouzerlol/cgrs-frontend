@@ -1,44 +1,80 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import BoardCard from '@/components/work-management/BoardCard';
-import CreateBoardModal from '@/components/work-management/CreateBoardModal';
+import { LayoutGrid, ClipboardList, Scale } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
-import Card from '@/components/ui/Card';
+import portfoliosData from '@/data/portfolios.json';
 import boardsData from '@/data/boards.json';
-import { Board } from '@/types/work-management';
+import decisionsData from '@/data/decisions.json';
 
-export default function WorkManagementDashboard() {
-  const [boards, setBoards] = useState<Board[]>(boardsData.boards as Board[]);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+const features = [
+  {
+    id: 'portfolios',
+    name: 'Portfolios',
+    description: 'Define ownership, scope, and services for each area of committee work',
+    icon: ClipboardList,
+    href: '/work-management/portfolios',
+    color: 'terracotta' as const,
+    count: portfoliosData.portfolios.length,
+    countLabel: 'portfolios',
+  },
+  {
+    id: 'boards',
+    name: 'Boards',
+    description: 'Track tasks and manage workflows across your projects',
+    icon: LayoutGrid,
+    href: '/work-management/boards',
+    color: 'sage' as const,
+    count: boardsData.boards.length,
+    countLabel: 'boards',
+  },
+  {
+    id: 'decisions',
+    name: 'Decision Register',
+    description: 'Record and track formal committee resolutions and motions',
+    icon: Scale,
+    href: '/work-management/decisions',
+    color: 'amber' as const,
+    count: decisionsData.resolutions.length,
+    countLabel: 'resolutions',
+  },
+];
 
-  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'taskCount' | 'createdAt' | 'updatedAt'>) => {
-    const board: Board = {
-      ...newBoard,
-      id: newBoard.name.toLowerCase().replace(/\s+/g, '-'),
-      taskCount: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setBoards([...boards, board]);
-  };
+const colorMap = {
+  terracotta: {
+    bg: 'bg-[#FBEBE6]',
+    iconBg: 'bg-terracotta/10',
+    iconColor: 'text-terracotta',
+    border: 'border-terracotta/20',
+    hover: 'hover:shadow-[0_20px_40px_rgba(217,93,57,0.15)] hover:-translate-y-1 hover:border-terracotta/40',
+    badge: 'bg-terracotta/10 text-terracotta-dark',
+  },
+  sage: {
+    bg: 'bg-sage-light',
+    iconBg: 'bg-forest/10',
+    iconColor: 'text-forest',
+    border: 'border-sage/30',
+    hover: 'hover:shadow-[0_20px_40px_rgba(168,181,160,0.3)] hover:-translate-y-1 hover:border-sage',
+    badge: 'bg-forest/10 text-forest',
+  },
+  amber: {
+    bg: 'bg-amber/10',
+    iconBg: 'bg-amber/15',
+    iconColor: 'text-amber-dark',
+    border: 'border-amber/20',
+    hover: 'hover:shadow-[0_20px_40px_rgba(212,160,90,0.2)] hover:-translate-y-1 hover:border-amber/40',
+    badge: 'bg-amber/10 text-amber-dark',
+  },
+};
 
+export default function WorkManagementHub() {
   return (
     <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
-      <WorkManagementNavBar
-        title="Work Management"
-        actions={[
-          {
-            label: '+ Create Board',
-            onClick: () => setIsCreateModalOpen(true),
-            variant: 'primary',
-          },
-        ]}
-      />
-      
+      <WorkManagementNavBar title="Work Management" />
+
       <main className="flex-1 min-h-0 overflow-y-auto">
-        <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
+        <div className="max-w-5xl mx-auto p-6 md:p-8 lg:p-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -46,65 +82,53 @@ export default function WorkManagementDashboard() {
           >
             <div className="bg-sage-light/50 rounded-[20px] p-6 md:p-8 mb-8">
               <h1 className="font-display text-3xl md:text-4xl font-semibold text-forest mb-2">
-                Your Boards
+                Work Management
               </h1>
               <p className="text-forest/70">
-                Manage your projects and tasks across multiple boards
+                Tools for managing your society&apos;s operations, governance, and projects
               </p>
             </div>
 
-            {boards.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <Card variant="sage" className="p-12 text-center">
-                  <div className="text-6xl mb-4">📋</div>
-                  <h2 className="font-display text-2xl text-forest mb-2">No boards yet</h2>
-                  <p className="text-forest/60 mb-6">
-                    Create your first board to start managing tasks
-                  </p>
-                </Card>
-              </motion.div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {boards.map((board, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {features.map((feature, index) => {
+                const styles = colorMap[feature.color];
+                const Icon = feature.icon;
+                return (
                   <motion.div
-                    key={board.id}
+                    key={feature.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <BoardCard board={board} />
-                  </motion.div>
-                ))}
+                    <Link href={feature.href}>
+                      <div
+                        className={`relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group ${styles.bg} ${styles.border} ${styles.hover}`}
+                      >
+                        <div className="flex items-start justify-between mb-5">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${styles.iconBg}`}>
+                            <Icon className={`w-6 h-6 ${styles.iconColor}`} />
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles.badge}`}>
+                            {feature.count} {feature.countLabel}
+                          </span>
+                        </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: boards.length * 0.1 }}
-                >
-                  <button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="w-full h-full min-h-[200px] rounded-[20px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
-                  >
-                    <div className="w-14 h-14 rounded-full bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
-                      <span className="text-2xl">+</span>
-                    </div>
-                    <span className="font-medium">Create New Board</span>
-                  </button>
-                </motion.div>
-              </div>
-            )}
+                        <h3 className="font-display text-xl font-semibold text-forest mb-2 group-hover:text-terracotta transition-colors">
+                          {feature.name}
+                        </h3>
+
+                        <p className="text-forest/70 text-sm leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
           </motion.div>
         </div>
       </main>
-
-      <CreateBoardModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateBoard}
-      />
     </div>
   );
 }

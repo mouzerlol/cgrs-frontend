@@ -58,7 +58,8 @@ export default function BoardPage() {
       <WorkManagementNavBar
         title={board?.name || 'Board'}
         showBackButton
-        backHref="/work-management"
+        backHref="/work-management/boards"
+        backLabel="Boards"
         actions={[
           {
             label: '+ New Task',

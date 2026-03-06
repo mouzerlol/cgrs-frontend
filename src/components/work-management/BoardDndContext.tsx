@@ -1,16 +1,17 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { 
+  CollisionDetection,
   DndContext, 
   DragOverlay, 
   closestCorners, 
+  pointerWithin,
   KeyboardSensor, 
   PointerSensor, 
   useSensor, 
   useSensors,
   DragStartEvent,
-  DragOverEvent,
   DragEndEvent,
   defaultDropAnimationSideEffects
 } from '@dnd-kit/core';
@@ -80,15 +81,16 @@ const reorderInLanes = (
   return rebuilt;
 };
 
-// #region agent log
-const logDebug = (hypothesisId: string, location: string, message: string, data: Record<string, unknown>) => {
-  fetch('http://127.0.0.1:7719/ingest/e80822c0-0494-4ae7-81f4-f09c3792dba1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d22ed8'},body:JSON.stringify({sessionId:'d22ed8',runId:'preview-v1',hypothesisId,location,message,data,timestamp:Date.now()})}).catch(()=>{});
+const collisionDetectionStrategy: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+  if (pointerCollisions.length > 0) {
+    return pointerCollisions;
+  }
+  return closestCorners(args);
 };
-// #endregion
 
 export default function BoardDndContext({ children, tasks, setTasks }: BoardDndContextProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const lastLoggedOverIdRef = useRef<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -106,53 +108,11 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
     const task = tasks.find((t) => t.id === active.id);
     if (task) {
       setActiveTask(task);
-      lastLoggedOverIdRef.current = null;
-      // #region agent log
-      logDebug('H1', 'BoardDndContext.tsx:handleDragStart', 'drag-start', { activeId: String(active.id), status: task.status });
-      // #endregion
     }
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-
-    if (activeId === overId) return;
-
-    const isActiveTask = active.data.current?.type === 'Task';
-    const isOverTask = over.data.current?.type === 'Task';
-
-    if (!isActiveTask) return;
-
-    if (lastLoggedOverIdRef.current !== String(overId)) {
-      const activeTaskState = tasks.find((t) => t.id === activeId);
-      const overTaskState = isOverTask ? tasks.find((t) => t.id === overId) : null;
-      // #region agent log
-      logDebug('H2', 'BoardDndContext.tsx:handleDragOver', 'drag-over-target-change', {
-        activeId: String(activeId),
-        overId: String(overId),
-        overType: String(over.data.current?.type ?? 'unknown'),
-        activeStatus: activeTaskState?.status ?? null,
-        overStatus: overTaskState?.status ?? (over.data.current?.type === 'Column' ? String(overId) : null),
-      });
-      // #endregion
-      lastLoggedOverIdRef.current = String(overId);
-    }
-    // #region agent log
-    logDebug('H8', 'BoardDndContext.tsx:handleDragOver', 'preview-only-no-task-mutation', {
-      activeId: String(activeId),
-      overId: String(overId),
-      overType: String(over.data.current?.type ?? 'unknown'),
-    });
-    // #endregion
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
-    lastLoggedOverIdRef.current = null;
     const { active, over } = event;
     if (!over) return;
 
@@ -164,9 +124,6 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
     const isActiveTask = active.data.current?.type === 'Task';
     const isOverTask = over.data.current?.type === 'Task';
     const isOverColumn = over.data.current?.type === 'Column';
-    // #region agent log
-    logDebug('H4', 'BoardDndContext.tsx:handleDragEnd', 'drag-end', { activeId: String(activeId), overId: String(overId), overType: String(over.data.current?.type ?? 'unknown') });
-    // #endregion
 
     // Handle task dropped on another task
     if (isActiveTask && isOverTask) {
@@ -186,32 +143,8 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
         const overMidpoint = over.rect.top + (over.rect.height / 2);
         const isBelowOverMidpoint = activeTop > overMidpoint;
         const placeAfterOverTask = isOverLastInLane && isBelowOverMidpoint;
-        // #region agent log
-        logDebug('H10', 'BoardDndContext.tsx:handleDragEnd', 'drop-over-task-before-move', {
-          activeId: String(activeId),
-          overId: String(overId),
-          activeIndex,
-          overIndex,
-          activeStatus,
-          overStatus,
-          targetOrderBefore: targetOrderBefore.map(String),
-          overLaneIndex,
-          isOverLastInLane,
-          isBelowOverMidpoint,
-          placeAfterOverTask,
-        });
-        // #endregion
         
         const moved = reorderInLanes(prev, String(activeId), overStatus, String(overId), placeAfterOverTask);
-        // #region agent log
-        logDebug(activeStatus !== overStatus ? 'H11' : 'H12', 'BoardDndContext.tsx:handleDragEnd', 'drop-over-task-after-lane-rebuild', {
-          activeId: String(activeId),
-          overId: String(overId),
-          fromStatus: activeStatus,
-          targetStatus,
-          targetOrderAfter: moved.filter((t) => t.status === targetStatus).map((t) => String(t.id)),
-        });
-        // #endregion
         return moved;
       });
     }
@@ -223,25 +156,10 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
         const overStatus = overId as TaskStatus;
         
         if (activeIndex === -1) return prev;
-        // #region agent log
-        logDebug('H13', 'BoardDndContext.tsx:handleDragEnd', 'drop-over-column-before-move', {
-          activeId: String(activeId),
-          activeIndex,
-          fromStatus: prev[activeIndex].status,
-          toStatus: overStatus,
-        });
-        // #endregion
         
         // Update status when dropped on different column
         if (prev[activeIndex].status !== overStatus) {
           const moved = reorderInLanes(prev, String(activeId), overStatus, null, false);
-          // #region agent log
-          logDebug('H13', 'BoardDndContext.tsx:handleDragEnd', 'drop-over-column-after-move', {
-            activeId: String(activeId),
-            toStatus: overStatus,
-            targetOrderAfter: moved.filter((t) => t.status === overStatus).map((t) => String(t.id)),
-          });
-          // #endregion
           return moved;
         }
         return prev;
@@ -252,9 +170,8 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       {children}

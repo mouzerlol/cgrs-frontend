@@ -40,9 +40,11 @@ export function Modal({
 }: ModalProps) {
   const isRight = position === 'right';
 
+  const headerOffset = 76;
+
   return (
     <Transition show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
+      <Dialog as="div" className={cn("relative", isRight ? "z-[1001]" : "z-50")} onClose={onClose}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
@@ -52,10 +54,13 @@ export function Modal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+          <div
+            className="fixed bg-black/25 backdrop-blur-sm"
+            style={isRight ? { top: headerOffset, left: 0, right: 0, bottom: 0 } : { inset: 0 }}
+          />
         </TransitionChild>
 
-        <div className="fixed inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden" style={isRight ? { top: `${headerOffset}px` } : undefined}>
           <div className={cn("flex min-h-full", isRight ? "justify-end" : "items-center justify-center p-4 text-center")}>
             <TransitionChild
               as={Fragment}
@@ -70,10 +75,11 @@ export function Modal({
                 className={cn(
                   'w-full transform overflow-hidden',
                   'bg-white text-left align-middle shadow-xl transition-all flex flex-col',
-                  isRight ? 'h-screen' : 'rounded-card p-6',
+                  !isRight && 'rounded-card p-6',
                   sizeClasses[size],
                   className
                 )}
+                style={isRight ? { height: `calc(100vh - ${headerOffset}px)` } : undefined}
               >
                 {title && (
                   <div className={cn(isRight ? "p-6 border-b border-sage/20" : "")}>

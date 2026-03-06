@@ -15,6 +15,7 @@ interface WorkManagementNavBarProps {
   title: string;
   showBackButton?: boolean;
   backHref?: string;
+  backLabel?: string;
   actions?: NavButton[];
   children?: React.ReactNode;
 }
@@ -27,6 +28,7 @@ export default function WorkManagementNavBar({
   title,
   showBackButton = false,
   backHref = '/work-management',
+  backLabel,
   actions = [],
   children,
 }: WorkManagementNavBarProps) {
@@ -39,7 +41,7 @@ export default function WorkManagementNavBar({
             className="flex items-center gap-1 text-bone/80 hover:text-bone transition-colors text-sm"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>Boards</span>
+            <span>{backLabel || 'Back'}</span>
           </Link>
         )}
         {showBackButton && <div className="h-4 w-px bg-bone/30" />}

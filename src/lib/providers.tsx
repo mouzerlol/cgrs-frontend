@@ -3,13 +3,14 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
 import { addCollection } from '@iconify/react';
-import lucideIcons from '@iconify-json/lucide/icons.json';
-import mdiIcons from '@iconify-json/mdi/icons.json';
+import type { IconifyJSON } from '@iconify/react';
+import iconBundle from '@/lib/icon-bundle.json';
 
-// Register icon sets locally so they render without external API calls
-// (CSP blocks connect-src to api.iconify.design)
-addCollection(lucideIcons);
-addCollection(mdiIcons);
+// Register curated icon subset locally (CSP blocks api.iconify.design).
+// Run `node scripts/extract-icons.mjs` after adding new icon references.
+for (const collection of iconBundle) {
+  addCollection(collection as unknown as IconifyJSON);
+}
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(

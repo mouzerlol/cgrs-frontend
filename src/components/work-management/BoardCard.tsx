@@ -52,7 +52,7 @@ export default function BoardCard({ board }: BoardCardProps) {
   const styles = colorStyles[board.color];
 
   return (
-    <Link href={`/work-management/${board.id}`}>
+    <Link href={`/work-management/boards/${board.id}`}>
       <div
         className={cn(
           'relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group',
