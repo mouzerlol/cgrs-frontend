@@ -12,6 +12,10 @@ vi.mock('next/font/google', () => ({
     variable: '--font-manrope',
     className: 'mock-manrope',
   })),
+  JetBrains_Mono: vi.fn(() => ({
+    variable: '--font-jetbrains-mono',
+    className: 'mock-jetbrains-mono',
+  })),
 }));
 
 describe('Font Configuration', () => {
@@ -36,17 +40,18 @@ describe('Font Configuration', () => {
     const layoutPath = path.resolve(__dirname, '../layout.tsx');
     const layoutSource = fs.readFileSync(layoutPath, 'utf-8');
 
-    // Both font configurations should use display: 'swap'
+    // All 3 font configurations should use display: 'swap'
     const swapMatches = layoutSource.match(/display:\s*['"]swap['"]/g);
-    expect(swapMatches).toHaveLength(2);
+    expect(swapMatches).toHaveLength(3);
   });
 
   it('fonts are configured with latin subset', () => {
     const layoutPath = path.resolve(__dirname, '../layout.tsx');
     const layoutSource = fs.readFileSync(layoutPath, 'utf-8');
 
+    // All 3 font configurations should have latin subset
     const subsetMatches = layoutSource.match(/subsets:\s*\[['"]latin['"]\]/g);
-    expect(subsetMatches).toHaveLength(2);
+    expect(subsetMatches).toHaveLength(3);
   });
 
   it('font CSS variables are applied to html element', () => {
@@ -55,7 +60,8 @@ describe('Font Configuration', () => {
 
     expect(layoutSource).toContain('fraunces.variable');
     expect(layoutSource).toContain('manrope.variable');
-    expect(layoutSource).toMatch(/className=\{`\$\{fraunces\.variable\}\s+\$\{manrope\.variable\}`\}/);
+    expect(layoutSource).toContain('jetbrainsMono.variable');
+    expect(layoutSource).toMatch(/className=\{`\$\{fraunces\.variable\}\s+\$\{manrope\.variable\}\s+\$\{jetbrainsMono\.variable\}`\}/);
   });
 
   it('tailwind config references CSS variables for font families', () => {

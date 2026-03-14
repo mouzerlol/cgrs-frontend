@@ -9,6 +9,7 @@ interface SuccessConfirmationProps {
   issueId: string;
   categoryName: string;
   onSubmitAnother: () => void;
+  viewRequestHref?: string | null;
 }
 
 /**
@@ -19,6 +20,7 @@ export function SuccessConfirmation({
   issueId,
   categoryName,
   onSubmitAnother,
+  viewRequestHref,
 }: SuccessConfirmationProps) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
@@ -99,13 +101,27 @@ export function SuccessConfirmation({
 
         {/* Message */}
         <p className="text-[0.9375rem] text-forest/80 leading-relaxed mb-lg">
-          Your <strong className="text-terracotta font-semibold">{categoryName}</strong> request has been received and will
-          be reviewed by the committee. You&apos;ll receive an email confirmation
-          at the address provided.
+          Your <strong className="text-terracotta font-semibold">{categoryName}</strong> request has been received and a
+          linked work task has been created. You can track progress and leave comments from your request history.
         </p>
 
         {/* Actions */}
         <div className="flex flex-col gap-sm min-[480px]:flex-row min-[480px]:justify-center">
+          {viewRequestHref && (
+            <button
+              onClick={() => router.push(viewRequestHref)}
+              className={cn(
+                'inline-flex items-center justify-center gap-xs py-3 px-6',
+                'bg-bone border border-sage rounded-[10px]',
+                'font-body text-[0.9375rem] font-semibold text-forest',
+                'cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px]',
+                'hover:border-forest-light hover:bg-sage-light'
+              )}
+            >
+              <Icon icon="lucide:file-text" width={18} height={18} />
+              <span>View Request</span>
+            </button>
+          )}
           <button
             onClick={onSubmitAnother}
             className={cn(

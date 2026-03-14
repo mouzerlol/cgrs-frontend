@@ -6,6 +6,7 @@ export const BOARD_COLUMNS: BoardColumn[] = [
   { id: 'in_progress', title: 'In Progress' },
   { id: 'review', title: 'Review' },
   { id: 'done', title: 'Done' },
+  { id: 'closed', title: 'Closed' },
 ];
 
 export const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string }> = {
@@ -22,6 +23,7 @@ export function groupTasksByStatus(tasks: Task[]): Record<TaskStatus, Task[]> {
     in_progress: [],
     review: [],
     done: [],
+    closed: [],
   };
 
   tasks.forEach((task) => {

@@ -108,6 +108,7 @@ Thumbs.db
 .vercel
 
 .playwright-mcp/*
+tests/e2e/.auth/
 docs/*
 
 # Agent skills (local installs, regenerated per machine)
@@ -127,3 +128,6 @@ test-results/
 .worktrees/work/
 # bd worktree
 .worktrees/stream2/
+
+# clerk configuration (can include secrets)
+/.clerk/

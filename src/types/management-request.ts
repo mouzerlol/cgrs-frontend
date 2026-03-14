@@ -1,3 +1,5 @@
+import type { Task, TaskImage, TaskLocation } from './work-management';
+
 /**
  * Management Request Types
  * Types for the resident management request portal
@@ -44,14 +46,31 @@ export interface ManagementRequestFormData {
   location: RequestLocation | null;
 }
 
+export type ManagementRequestStatus = 'open' | 'closed';
+
 /**
  * Submitted management request with generated ID
  */
-export interface ManagementRequest extends Omit<ManagementRequestFormData, 'photos'> {
+export interface ManagementRequest {
   id: string;
-  photoUrls: string[];
-  submittedAt: string; // ISO date
+  category: ManagementCategoryId;
+  fullName: string;
+  email: string;
+  linkedTaskId: string | null;
+  status: ManagementRequestStatus;
+  closedReason?: string | null;
+  submittedAt: string;
+  updatedAt: string;
 }
+
+export interface ManagementRequestWithTask {
+  request: ManagementRequest;
+  task: Task;
+}
+
+export interface ManagementRequestImagePayload extends TaskImage {}
+
+export interface ManagementRequestLocationPayload extends TaskLocation {}
 
 /**
  * Validation errors for form fields

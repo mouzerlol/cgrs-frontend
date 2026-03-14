@@ -25,7 +25,7 @@ interface BoardDndContextProps {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-const STATUS_ORDER: TaskStatus[] = ['backlog', 'todo', 'in_progress', 'review', 'done'];
+const STATUS_ORDER: TaskStatus[] = ['backlog', 'todo', 'in_progress', 'review', 'done', 'closed'];
 
 const reorderInLanes = (
   items: Task[],

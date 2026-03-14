@@ -1,9 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
+import { formatRole, isNavItemVisible } from '@/lib/auth';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useCommunity } from '@/hooks/useCommunity';
 
 const NAV_LINK_CLASS =
   'text-sm font-medium tracking-wide uppercase relative px-2 py-1.5 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap';
@@ -11,15 +16,32 @@ const NAV_LINK_CLASS =
 /**
  * Desktop top nav with responsive overflow: rightmost links fold into More when space is limited.
  * Main nav links use ALL CAPS; More dropdown uses title case with icons.
+ * Consumes useCurrentUser so backend /users/me is called when signed in; shows role next to UserButton.
  */
 export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [overflowCount, setOverflowCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: community } = useCommunity();
 
-  const visibleItems = ALL_NAV_ITEMS.slice(0, ALL_NAV_ITEMS.length - overflowCount);
-  const overflowItems = ALL_NAV_ITEMS.slice(ALL_NAV_ITEMS.length - overflowCount);
+  const navItems = useMemo(() => {
+    const items = ALL_NAV_ITEMS.filter((item) =>
+        isNavItemVisible(
+          item.href,
+          currentUser?.membership?.role,
+          currentUser?.is_superadmin ?? false,
+          isSignedIn && (isCurrentUserLoading || currentUser === undefined),
+        ),
+    );
+    return items;
+  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading]);
+
+  const visibleItems = navItems.slice(0, navItems.length - overflowCount);
+  const overflowItems = navItems.slice(navItems.length - overflowCount);
   const showMore = overflowItems.length > 0;
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -54,24 +76,24 @@ export default function Navigation() {
         }
       });
 
-      setOverflowCount(ALL_NAV_ITEMS.length - bestCount);
+      setOverflowCount(navItems.length - bestCount);
     };
 
     updateOverflow();
     const ro = new ResizeObserver(() => requestAnimationFrame(updateOverflow));
     ro.observe(container);
     return () => ro.disconnect();
-  }, []);
+  }, [navItems.length]);
 
   return (
     <nav
       ref={containerRef}
       className="hidden md:flex flex-1 items-center justify-end min-w-0 relative"
     >
-      {/* Hidden measuring containers for every possible visible count */}
-      {Array.from({ length: ALL_NAV_ITEMS.length + 1 }).map((_, i) => {
-        const count = i; // 0 to ALL_NAV_ITEMS.length
-        const showMoreBtn = count < ALL_NAV_ITEMS.length;
+      {/* Hidden measuring containers for every possible visible count (role-filtered) */}
+      {Array.from({ length: navItems.length + 1 }).map((_, i) => {
+        const count = i; // 0 to navItems.length
+        const showMoreBtn = count < navItems.length;
         return (
           <div
             key={`measure-${count}`}
@@ -79,7 +101,7 @@ export default function Navigation() {
             aria-hidden="true"
             className="absolute top-0 right-0 w-full flex flex-wrap justify-end items-center gap-4 lg:gap-8 invisible pointer-events-none"
           >
-            {ALL_NAV_ITEMS.slice(0, count).map((item) => (
+            {navItems.slice(0, count).map((item) => (
               <span key={item.name} className={NAV_LINK_CLASS}>
                 {item.name}
               </span>
@@ -90,7 +112,7 @@ export default function Navigation() {
               </span>
             )}
             <span className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded shrink-0">
-              Resident Login
+              Login
             </span>
           </div>
         );
@@ -133,12 +155,34 @@ export default function Navigation() {
           </div>
         )}
 
-        <Link
-          href="/login"
-          className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px] shrink-0"
-        >
-          Resident Login
-        </Link>
+        {isLoaded && isSignedIn ? (
+          <div className="flex items-center gap-2 shrink-0">
+            {(currentUser?.membership?.role || community?.name) && (
+              <span className="text-xs font-medium uppercase tracking-wide text-bone/70 hidden sm:inline">
+                {currentUser?.membership?.role && formatRole(currentUser.membership.role)}
+                {currentUser?.membership?.role && community?.name && ' · '}
+                {community?.name && <span className="normal-case">{community.name}</span>}
+              </span>
+            )}
+            <UserButton />
+          </div>
+        ) : (
+          <SignInButton mode="redirect">
+            <span
+              role="button"
+              tabIndex={0}
+              className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest shrink-0 cursor-pointer inline-block"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  router.push('/login');
+                }
+              }}
+            >
+              Resident Login
+            </span>
+          </SignInButton>
+        )}
       </div>
     </nav>
   );

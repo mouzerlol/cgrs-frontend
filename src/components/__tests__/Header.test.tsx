@@ -2,8 +2,54 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Header from '@/components/layout/Header';
 import { NAVIGATION_ITEMS } from '@/lib/constants';
+import React from 'react';
 
-vi.mock('next/navigation', () => ({ usePathname: () => '/' }));
+vi.mock('next/navigation', () => ({
+  usePathname: () => '/',
+  useRouter: () => ({
+    push: vi.fn(),
+    back: vi.fn(),
+  }),
+}));
+
+// Mock @clerk/nextjs to provide ClerkProvider context
+vi.mock('@clerk/nextjs', () => ({
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useAuth: () => ({
+    isLoaded: true,
+    isSignedIn: false,
+    userId: null,
+  }),
+  useUser: () => ({
+    isLoaded: true,
+    isSignedIn: false,
+    user: null,
+  }),
+  useClerk: () => ({
+    openSignIn: vi.fn(),
+    openSignUp: vi.fn(),
+  }),
+  SignInButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  UserButton: () => null,
+}));
+
+// Mock useCurrentUser hook
+vi.mock('@/hooks/useCurrentUser', () => ({
+  useCurrentUser: () => ({
+    data: null,
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+// Mock useCommunity hook
+vi.mock('@/hooks/useCommunity', () => ({
+  useCommunity: () => ({
+    data: null,
+    isLoading: false,
+    error: null,
+  }),
+}));
 
 // Mock Headless UI Dialog - avoids use-is-touch-device addEventListener error in jsdom
 vi.mock('@headlessui/react', async (importOriginal) => {
@@ -52,9 +98,9 @@ describe('Header', () => {
 
   it('renders login button', () => {
     render(<Header />);
-    const loginButton = screen.getByRole('link', { name: /resident login/i });
-    expect(loginButton).toBeInTheDocument();
-    expect(loginButton).toHaveTextContent('Resident Login');
+    const loginButtons = screen.getAllByRole('button', { name: /resident login/i });
+    expect(loginButtons.length).toBeGreaterThanOrEqual(1);
+    expect(loginButtons[0]).toHaveTextContent('Resident Login');
   });
 
   it('renders hamburger menu button on mobile', () => {

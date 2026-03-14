@@ -1,22 +1,10 @@
 import React from 'react';
-import { Task, BoardMember } from '@/types/work-management';
+import { Task, BoardMember, TaskActivity } from '@/types/work-management';
 import { formatRelativeDate } from '@/lib/utils';
 import mockData from '@/data/work-management.json';
 
 interface TaskActivityLogProps {
   task: Task;
-}
-
-interface ActivityItem {
-  id: string;
-  type: 'status_change' | 'priority_change' | 'comment_added' | 'task_created';
-  userId: string;
-  timestamp: string;
-  details: {
-    from?: string;
-    to?: string;
-    content?: string;
-  };
 }
 
 /**
@@ -28,26 +16,32 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
     return mockData.members.find((m: any) => m.id === userId);
   };
 
-  // Generating mock activity based on task metadata
-  const activities: ActivityItem[] = [
-    {
-      id: '1',
-      type: 'task_created',
-      userId: task.reporter,
-      timestamp: task.createdAt,
-      details: {}
-    }
-  ];
-
-  if (task.updatedAt) {
-    activities.unshift({
-      id: '2',
-      type: 'status_change',
-      userId: task.assignee || task.reporter,
-      timestamp: task.updatedAt,
-      details: { to: task.status }
-    });
-  }
+  const activities: TaskActivity[] = task.activity && task.activity.length > 0
+    ? task.activity
+    : [
+        {
+          id: '1',
+          activityType: 'task_created',
+          actorId: task.reporter,
+          actorName: task.reporterName || 'Unknown User',
+          actorAvatarUrl: task.reporterAvatarUrl,
+          message: 'Created this task',
+          createdAt: task.createdAt,
+        },
+        ...(task.updatedAt
+          ? [
+              {
+                id: '2',
+                activityType: 'status_changed',
+                actorId: task.assignee || task.reporter,
+                actorName: task.assigneeName || task.reporterName || 'Unknown User',
+                actorAvatarUrl: task.assigneeAvatarUrl || task.reporterAvatarUrl,
+                message: `Changed status to ${task.status}`,
+                createdAt: task.updatedAt,
+              } satisfies TaskActivity,
+            ]
+          : []),
+      ];
 
   return (
     <div className="space-y-6 mt-4">
@@ -55,30 +49,27 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
         <div className="relative before:absolute before:inset-0 before:left-[15px] before:w-px before:bg-sage/20">
           <div className="space-y-8">
             {activities.map((activity) => {
-              const user = getAuthor(activity.userId);
+              const user = activity.actorId ? getAuthor(activity.actorId) : undefined;
+              const actorName = activity.actorName || user?.name || 'Unknown User';
+              const actorAvatar = activity.actorAvatarUrl || user?.avatar;
               return (
                 <div key={activity.id} className="relative flex gap-4 pl-1">
                   <div className="relative z-10 w-8 h-8 rounded-full bg-white border border-sage/30 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    {actorAvatar ? (
+                      <img src={actorAvatar} alt={actorName} className="w-full h-full object-cover" />
                     ) : (
                       <div className="text-[10px] font-bold text-forest/40 uppercase">
-                        {user?.name?.substring(0, 2) || '??'}
+                        {actorName.substring(0, 2) || '??'}
                       </div>
                     )}
                   </div>
                   <div className="flex-1 pt-1">
                     <div className="text-sm text-forest/80">
-                      <span className="font-semibold text-forest">{user?.name || 'Unknown User'}</span>{' '}
-                      {activity.type === 'task_created' && 'created this task'}
-                      {activity.type === 'status_change' && (
-                        <>
-                          changed status to <span className="font-medium text-terracotta">{activity.details.to}</span>
-                        </>
-                      )}
+                      <span className="font-semibold text-forest">{actorName}</span>{' '}
+                      {activity.message}
                     </div>
                     <div className="text-xs text-forest/40 mt-1">
-                      {formatRelativeDate(activity.timestamp)}
+                      {formatRelativeDate(activity.createdAt)}
                     </div>
                   </div>
                 </div>

@@ -10,6 +10,10 @@ vi.mock('next/font/google', () => ({
     variable: '--font-manrope',
     className: 'mock-manrope',
   })),
+  JetBrains_Mono: vi.fn(() => ({
+    variable: '--font-jetbrains-mono',
+    className: 'mock-jetbrains-mono',
+  })),
 }));
 
 import { metadata } from '../layout';

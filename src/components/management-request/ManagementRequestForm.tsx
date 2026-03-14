@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import {
@@ -8,12 +9,10 @@ import {
   ManagementRequestErrors,
   ManagementCategoryId,
 } from '@/types/management-request';
+import { createManagementRequest } from '@/lib/api/management-requests';
+import { ApiError, isLocalApi } from '@/lib/api/client';
 import { MANAGEMENT_CATEGORIES, getCategoryById } from '@/data/management-categories';
-import {
-  validateFormData,
-  generateIssueId,
-  getInitialFormData,
-} from '@/lib/management-request';
+import { validateFormData, getInitialFormData } from '@/lib/management-request';
 import { SidebarLayout } from '@/components/shared/SidebarLayout';
 import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { RequestFormFields } from './RequestFormFields';
@@ -68,7 +67,9 @@ export function ManagementRequestForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [submittedRequestHref, setSubmittedRequestHref] = useState<string | null>(null);
   const formContainerRef = useRef<HTMLDivElement>(null);
+  const { getToken, isSignedIn } = useAuth();
 
   const activeCategory = getCategoryById(formData.category);
 
@@ -114,17 +115,21 @@ export function ManagementRequestForm() {
         return;
       }
 
+      if (!isSignedIn && !isLocalApi) {
+        setErrors({
+          description: 'Please sign in to submit a management request.',
+        });
+        return;
+      }
+
       setIsSubmitting(true);
 
       try {
-        // Simulate API call (replace with actual API integration)
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        // Generate issue ID
-        const issueId = generateIssueId(formData.category);
+        const created = await createManagementRequest(formData, getToken);
 
         // Mark as submitted
-        setSubmittedId(issueId);
+        setSubmittedId(created.request.id);
+        setSubmittedRequestHref(`/my-requests/${created.request.id}`);
         setIsSubmitted(true);
 
         // Scroll to top to show success message
@@ -132,13 +137,16 @@ export function ManagementRequestForm() {
       } catch (error) {
         console.error('Submission error:', error);
         setErrors({
-          description: 'Failed to submit request. Please try again.',
+          description:
+            error instanceof ApiError
+              ? 'Failed to submit request. Please check your details and try again.'
+              : 'Failed to submit request. Please try again.',
         });
       } finally {
         setIsSubmitting(false);
       }
     },
-    [formData]
+    [formData, getToken, isSignedIn]
   );
 
   const handleSubmitAnother = useCallback(() => {
@@ -146,6 +154,7 @@ export function ManagementRequestForm() {
     setErrors({});
     setIsSubmitted(false);
     setSubmittedId(null);
+    setSubmittedRequestHref(null);
     // Scroll to top of page when starting a new request
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -157,6 +166,7 @@ export function ManagementRequestForm() {
         issueId={submittedId}
         categoryName={activeCategory.name}
         onSubmitAnother={handleSubmitAnother}
+        viewRequestHref={submittedRequestHref}
       />
     );
   }

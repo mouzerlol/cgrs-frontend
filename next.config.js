@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const debugConnectSrc = process.env.NODE_ENV !== 'production' ? ' http://127.0.0.1:7719' : '';
 
 const nextConfig = {
   // Rendering Strategy:
@@ -35,6 +34,19 @@ const nextConfig = {
   // Security headers for all routes
   async headers() {
     return [
+      // Long-lived cache for favicon so the browser doesn't refetch on every page load
+      {
+        source: '/favicon.svg',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/favicon.ico',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/favicon-32x32.png',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
       {
         source: '/(.*)',
         headers: [
@@ -46,11 +58,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://*.tile.openstreetmap.org https://*.openstreetmap.org",
-              `connect-src 'self' https://*.tile.openstreetmap.org${debugConnectSrc}`,
+              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://img.clerk.com",
+              `connect-src 'self' https://*.tile.openstreetmap.org https://*.clerk.accounts.dev https://clerk-telemetry.com http://localhost:8000 http://api:8000`,
+              "worker-src 'self' blob:",
+              "frame-src 'self' https://*.clerk.accounts.dev",
               "frame-ancestors 'none'",
             ].join('; '),
           },

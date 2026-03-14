@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useMemo } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
-import { NAVIGATION_ITEMS, MORE_NAVIGATION_ITEMS } from '@/lib/constants';
+import { ALL_NAV_ITEMS } from '@/lib/constants';
+import { formatRole, isNavItemVisible } from '@/lib/auth';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useCommunity } from '@/hooks/useCommunity';
 
 const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
 
@@ -14,6 +18,24 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const isManagementPage = MANAGEMENT_PATHS.some((p) => pathname === p || (pathname ?? '').startsWith(`${p}/`));
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: community } = useCommunity();
+
+  const mobileNavItems = useMemo(() => {
+    const items = ALL_NAV_ITEMS.filter((item) =>
+        isNavItemVisible(
+          item.href,
+          currentUser?.membership?.role,
+          currentUser?.is_superadmin ?? false,
+          isSignedIn && (isCurrentUserLoading || currentUser === undefined),
+        ),
+    );
+    return items;
+  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading]);
+  const mobileMainNav = mobileNavItems.slice(0, 5);
+  const mobileMoreNav = mobileNavItems.slice(5);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -33,8 +55,31 @@ export default function Header() {
         </span>
       </Link>
 
-      {/* Desktop Navigation */}
+      {/* Desktop Navigation (includes Resident Login on md+) */}
       <Navigation />
+
+      {/* Mobile: Resident Login visible in header so it's discoverable without opening menu */}
+      <div className="md:hidden flex items-center gap-2 shrink-0">
+        {isLoaded && isSignedIn ? (
+          <UserButton />
+        ) : (
+          <SignInButton mode="redirect">
+            <span
+              role="button"
+              tabIndex={0}
+              className="text-sm font-medium tracking-wide uppercase py-2 px-3 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest cursor-pointer inline-block"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  router.push('/login');
+                }
+              }}
+            >
+              Resident Login
+            </span>
+          </SignInButton>
+        )}
+      </div>
 
       {/* Mobile Nav Toggle */}
       <button
@@ -97,9 +142,9 @@ export default function Header() {
                     </span>
                   </Link>
 
-                  {/* Mobile: Navigation Items - ALL CAPS for consistency */}
+                  {/* Mobile: Navigation Items - ALL CAPS for consistency (role-filtered) */}
                   <nav className="space-y-3">
-                    {NAVIGATION_ITEMS.map((item) => (
+                    {mobileMainNav.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
@@ -115,33 +160,62 @@ export default function Header() {
 
                   {/* Mobile: More Section - ALL CAPS for consistency */}
                   <div className="mt-8 mb-8">
-                    <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-4">
-                      More
-                    </h3>
-                    <nav className="space-y-3">
-                      {MORE_NAVIGATION_ITEMS.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          onClick={closeMenu}
-                          className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
-                        >
-                          <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
-                          <span>{item.name}</span>
-                        </Link>
-                      ))}
-                    </nav>
+                    {mobileMoreNav.length > 0 && (
+                      <>
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-bone/50 mb-4">
+                          More
+                        </h3>
+                        <nav className="space-y-3">
+                          {mobileMoreNav.map((item) => (
+                            <Link
+                              key={item.name}
+                              href={item.href}
+                              onClick={closeMenu}
+                              className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
+                            >
+                              <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
+                              <span>{item.name}</span>
+                            </Link>
+                          ))}
+                        </nav>
+                      </>
+                    )}
                   </div>
 
                   <hr className="border-bone/10" />
 
-                  {/* Mobile: Login Button */}
-                  <button
-                    onClick={closeMenu}
-                    className="mt-auto mb-8 w-full text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px]"
-                  >
-                    Resident Login
-                  </button>
+                  {/* Mobile: Auth */}
+                  <div className="mt-auto mb-8">
+                    {isLoaded && isSignedIn ? (
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-3">
+                          <UserButton />
+                          <span className="text-sm text-bone/70">
+                            {currentUser?.membership?.role ? formatRole(currentUser.membership.role) : 'My Account'}
+                          </span>
+                        </div>
+                        {community?.name && (
+                          <span className="text-xs text-bone/50 pl-1">{community.name}</span>
+                        )}
+                      </div>
+                    ) : (
+                      <SignInButton mode="redirect">
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          className="block w-full text-center text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px] cursor-pointer"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              router.push('/login');
+                            }
+                          }}
+                        >
+                          Resident Login
+                        </span>
+                      </SignInButton>
+                    )}
+                  </div>
                 </DialogPanel>
               </TransitionChild>
             </div>

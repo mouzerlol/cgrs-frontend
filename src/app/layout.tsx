@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Fraunces, Manrope, JetBrains_Mono } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 import './globals.css';
 import Layout from '@/components/layout/Layout';
 import { Providers } from '@/lib/providers';
@@ -65,9 +67,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${manrope.variable} ${jetbrainsMono.variable}`}>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <ClerkProvider appearance={clerkAppearance}>
+          <Providers>
+            {children}
+          </Providers>
+        </ClerkProvider>
       </body>
     </html>
   );
