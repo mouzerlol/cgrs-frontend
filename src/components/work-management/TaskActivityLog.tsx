@@ -21,23 +21,23 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
     : [
         {
           id: '1',
-          activityType: 'task_created',
-          actorId: task.reporter,
-          actorName: task.reporterName || 'Unknown User',
-          actorAvatarUrl: task.reporterAvatarUrl,
+          activity_type: 'task_created',
+          actor_id: task.reporter,
+          actor_name: task.reporter_name || 'Unknown User',
+          actor_avatar_url: task.reporter_avatar_url,
           message: 'Created this task',
-          createdAt: task.createdAt,
+          created_at: task.created_at,
         },
-        ...(task.updatedAt
+        ...(task.updated_at
           ? [
               {
                 id: '2',
-                activityType: 'status_changed',
-                actorId: task.assignee || task.reporter,
-                actorName: task.assigneeName || task.reporterName || 'Unknown User',
-                actorAvatarUrl: task.assigneeAvatarUrl || task.reporterAvatarUrl,
+                activity_type: 'status_changed',
+                actor_id: task.assignee || task.reporter,
+                actor_name: task.assignee_name || task.reporter_name || 'Unknown User',
+                actor_avatar_url: task.assignee_avatar_url || task.reporter_avatar_url,
                 message: `Changed status to ${task.status}`,
-                createdAt: task.updatedAt,
+                created_at: task.updated_at,
               } satisfies TaskActivity,
             ]
           : []),
@@ -49,9 +49,9 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
         <div className="relative before:absolute before:inset-0 before:left-[15px] before:w-px before:bg-sage/20">
           <div className="space-y-8">
             {activities.map((activity) => {
-              const user = activity.actorId ? getAuthor(activity.actorId) : undefined;
-              const actorName = activity.actorName || user?.name || 'Unknown User';
-              const actorAvatar = activity.actorAvatarUrl || user?.avatar;
+              const user = activity.actor_id ? getAuthor(activity.actor_id) : undefined;
+              const actorName = activity.actor_name || user?.name || 'Unknown User';
+              const actorAvatar = activity.actor_avatar_url || user?.avatar;
               return (
                 <div key={activity.id} className="relative flex gap-4 pl-1">
                   <div className="relative z-10 w-8 h-8 rounded-full bg-white border border-sage/30 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
@@ -69,7 +69,7 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
                       {activity.message}
                     </div>
                     <div className="text-xs text-forest/40 mt-1">
-                      {formatRelativeDate(activity.createdAt)}
+                      {formatRelativeDate(activity.created_at)}
                     </div>
                   </div>
                 </div>

@@ -28,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'CGRS - Coronation Gardens Residents Society',
   description: 'Official website for the Coronation Gardens Residents Society in Mangere Bridge, Auckland',
-  metadataBase: new URL('https://coronationgardens.co.nz'),
+  metadataBase: new URL('https://www.cgrs.co.nz'),
   alternates: {
     canonical: './',
   },
@@ -67,7 +67,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${manrope.variable} ${jetbrainsMono.variable}`}>
       <body>
-        <ClerkProvider appearance={clerkAppearance}>
+        <ClerkProvider
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+          afterSignOutUrl="/"
+          appearance={clerkAppearance}
+        >
           <Providers>
             {children}
           </Providers>

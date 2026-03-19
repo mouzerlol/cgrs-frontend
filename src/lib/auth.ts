@@ -4,18 +4,18 @@
 
 /** All available capabilities exposed by the backend. */
 export const CAPABILITIES = {
-  VIEW_COMMUNITY_PROFILE: 'viewCommunityProfile',
-  VIEW_MEMBER_DIRECTORY: 'viewMemberDirectory',
-  SUBMIT_MANAGEMENT_REQUEST: 'submitManagementRequest',
-  VIEW_MANAGEMENT_REQUESTS: 'viewManagementRequests',
-  PUBLISH_BLOG: 'publishBlog',
-  PUBLISH_CALENDAR: 'publishCalendar',
-  MODERATE_DISCUSSIONS: 'moderateDiscussions',
-  PROMOTE_TO_RESIDENT: 'promoteToResident',
-  PROMOTE_TO_OWNER: 'promoteToOwner',
-  PROMOTE_TO_COMMITTEE_MEMBER: 'promoteToCommitteeMember',
-  PROMOTE_TO_SOCIETY_MANAGER: 'promoteToSocietyManager',
-  ASSIGN_CHAIR: 'assignChair',
+  VIEW_COMMUNITY_PROFILE: 'view_community_profile',
+  VIEW_MEMBER_DIRECTORY: 'view_member_directory',
+  SUBMIT_MANAGEMENT_REQUEST: 'submit_management_request',
+  VIEW_MANAGEMENT_REQUESTS: 'view_management_requests',
+  PUBLISH_BLOG: 'publish_blog',
+  PUBLISH_CALENDAR: 'publish_calendar',
+  MODERATE_DISCUSSIONS: 'moderate_discussions',
+  PROMOTE_TO_RESIDENT: 'promote_to_resident',
+  PROMOTE_TO_OWNER: 'promote_to_owner',
+  PROMOTE_TO_COMMITTEE_MEMBER: 'promote_to_committee_member',
+  PROMOTE_TO_SOCIETY_MANAGER: 'promote_to_society_manager',
+  ASSIGN_CHAIR: 'assign_chair',
 } as const;
 
 /** Role hierarchy - higher numeric values include lower role capabilities. */

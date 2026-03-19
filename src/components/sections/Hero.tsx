@@ -12,6 +12,9 @@ interface HeroProps {
 /**
  * Hero section with parallax background and fade-up animations.
  * Full viewport height with gradient overlay.
+ * 
+ * SECURITY NOTE: dangerouslySetInnerHTML is safe here - title/subtitle contain only
+ * hardcoded strings. If content ever becomes user-controlled, use a sanitizer.
  */
 export default function Hero({ title, subtitle, backgroundImage }: HeroProps) {
   const { bgRef, heroRef } = useHeroParallax(0.35);

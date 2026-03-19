@@ -22,7 +22,10 @@ function handleApiAuthError(error: unknown): void {
   if (typeof window === 'undefined') return;
   if (!(error instanceof ApiError)) return;
   if (error.isUnauthorized) {
-    window.location.href = '/login';
+    // Redirect to /no-access instead of /login to avoid redirect loop:
+    // Clerk SignIn redirects signed-in users from /login back to /, which triggers
+    // API calls that 401 again. /no-access has no auth-dependent queries.
+    window.location.href = '/no-access?reason=unauthorized';
     return;
   }
   if (error.isForbidden) {

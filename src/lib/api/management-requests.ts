@@ -12,13 +12,13 @@ const API_PATH = '/api/v1/management-requests';
 interface ApiManagementRequestResponse {
   id: string;
   category: ManagementRequest['category'];
-  fullName: string;
+  full_name: string;
   email: string;
-  linkedTaskId: string | null;
+  linked_task_id: string | null;
   status: ManagementRequest['status'];
-  closedReason?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  closed_reason?: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface ApiManagementRequestWithTaskResponse {
@@ -30,13 +30,13 @@ function mapManagementRequest(request: ApiManagementRequestResponse): Management
   return {
     id: request.id,
     category: request.category,
-    fullName: request.fullName,
+    full_name: request.full_name,
     email: request.email,
-    linkedTaskId: request.linkedTaskId,
+    linked_task_id: request.linked_task_id,
     status: request.status,
-    closedReason: request.closedReason ?? null,
-    submittedAt: request.createdAt,
-    updatedAt: request.updatedAt,
+    closed_reason: request.closed_reason ?? null,
+    submitted_at: request.created_at,
+    updated_at: request.updated_at,
   };
 }
 
@@ -72,7 +72,7 @@ async function mapFilesToTaskImages(files: File[]): Promise<TaskImage[]> {
 async function createPayload(data: ManagementRequestFormData) {
   return {
     category: data.category,
-    fullName: data.fullName.trim(),
+    full_name: data.full_name.trim(),
     email: data.email.trim(),
     subject: data.subject.trim(),
     description: data.description.trim(),

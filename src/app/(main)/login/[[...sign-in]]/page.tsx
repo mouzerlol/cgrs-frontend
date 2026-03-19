@@ -12,7 +12,7 @@ import { clerkAppearance } from '@/lib/clerk-appearance';
  */
 export default function LoginPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative flex flex-col">
       <PageHeader
         title="Resident Login"
         description="Access your resident account to manage your account, view statements, and update your details."
@@ -20,24 +20,33 @@ export default function LoginPage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      <section className="section">
+      <section className="section flex-grow flex flex-col items-center justify-center relative z-10 -mt-12">
         <div className="container">
-          <div className="max-w-md mx-auto py-12 flex flex-col items-center">
-            <Card className="p-8 w-full">
-              <SignIn
-                fallbackRedirectUrl="/"
-                signUpUrl="/register"
-                appearance={{
-                  ...clerkAppearance,
-                  elements: {
-                    rootBox: 'w-full',
-                    card: 'shadow-none w-full',
-                  },
-                }}
-              />
-            </Card>
-            <p className="mt-6 text-center text-sm text-forest/70">
-              Need help? <Link href="/contact?subject=login-help" className="underline hover:text-forest">Contact support</Link>
+          <div className="max-w-md mx-auto flex flex-col items-center w-full">
+            {/* Custom Card Wrapper to perfectly match CGRS Design System map menu */}
+            <div className="w-full bg-sage-light rounded-[24px] shadow-[0_20px_60px_rgba(26,34,24,0.1)] border border-sage/30 p-6 sm:p-10 relative overflow-hidden">
+              {/* Decorative grain overlay inside the card */}
+              <div className="absolute inset-0 pointer-events-none texture-grain opacity-50 mix-blend-multiply"></div>
+              
+              <div className="relative z-10">
+                <SignIn
+                  fallbackRedirectUrl="/"
+                  signUpUrl="/register"
+                  appearance={{
+                    ...clerkAppearance,
+                    elements: {
+                      ...clerkAppearance.elements,
+                      rootBox: 'w-full',
+                      cardBox: 'w-full shadow-none',
+                      card: 'shadow-none w-full bg-transparent p-0 border-none m-0',
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            
+            <p className="mt-8 text-center text-sm text-forest/70 font-medium">
+              Need help? <Link href="/contact?subject=login-help" className="text-terracotta hover:text-terracotta/80 underline underline-offset-4 transition-colors">Contact support</Link>
             </p>
           </div>
         </div>

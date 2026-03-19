@@ -6,96 +6,96 @@ const API_PATH = '/api/v1/tasks';
 interface ApiUserSummary {
   id: string;
   name: string;
-  avatarUrl?: string | null;
+  avatar_url?: string | null;
 }
 
 interface ApiTaskCommentResponse {
   id: string;
-  authorId: string;
-  authorName: string;
-  authorAvatarUrl?: string | null;
+  author_id: string;
+  author_name: string;
+  author_avatar_url?: string | null;
   content: string;
-  createdAt: string;
+  created_at: string;
 }
 
 interface ApiTaskActivityResponse {
   id: string;
-  actorId?: string | null;
-  actorName: string;
-  actorAvatarUrl?: string | null;
-  activityType: TaskActivity['activityType'];
+  actor_id?: string | null;
+  actor_name: string;
+  actor_avatar_url?: string | null;
+  activity_type: TaskActivity['activity_type'];
   message: string;
-  createdAt: string;
+  created_at: string;
 }
 
 interface ApiTaskResponse {
   id: string;
-  boardId?: string | null;
-  sourceRequestId?: string | null;
+  board_id?: string | null;
+  source_request_id?: string | null;
   title: string;
   description: string;
   status: Task['status'];
   priority: Task['priority'];
-  assigneeId?: string | null;
+  assignee_id?: string | null;
   assignee?: ApiUserSummary | null;
-  reporterId: string;
+  reporter_id: string;
   reporter?: ApiUserSummary | null;
   tags: string[];
   images: TaskImage[];
   comments: ApiTaskCommentResponse[];
   activity: ApiTaskActivityResponse[];
   location?: TaskLocation | null;
-  createdAt: string;
-  updatedAt: string;
-  dueDate?: string | null;
+  created_at: string;
+  updated_at: string;
+  due_date?: string | null;
 }
 
 function mapTaskComment(comment: ApiTaskCommentResponse): TaskComment {
   return {
     id: comment.id,
-    authorId: comment.authorId,
-    authorName: comment.authorName,
-    authorAvatarUrl: comment.authorAvatarUrl ?? null,
+    author_id: comment.author_id,
+    author_name: comment.author_name,
+    author_avatar_url: comment.author_avatar_url ?? null,
     content: comment.content,
-    createdAt: comment.createdAt,
+    created_at: comment.created_at,
   };
 }
 
 function mapTaskActivity(activity: ApiTaskActivityResponse): TaskActivity {
   return {
     id: activity.id,
-    actorId: activity.actorId ?? null,
-    actorName: activity.actorName,
-    actorAvatarUrl: activity.actorAvatarUrl ?? null,
-    activityType: activity.activityType,
+    actor_id: activity.actor_id ?? null,
+    actor_name: activity.actor_name,
+    actor_avatar_url: activity.actor_avatar_url ?? null,
+    activity_type: activity.activity_type,
     message: activity.message,
-    createdAt: activity.createdAt,
+    created_at: activity.created_at,
   };
 }
 
 export function mapTaskResponse(task: ApiTaskResponse): Task {
   return {
     id: task.id,
-    boardId: task.boardId ?? null,
-    sourceRequestId: task.sourceRequestId ?? null,
+    board_id: task.board_id ?? null,
+    source_request_id: task.source_request_id ?? null,
     title: task.title,
     description: task.description,
     status: task.status,
     priority: task.priority,
-    assignee: task.assigneeId ?? undefined,
-    assigneeName: task.assignee?.name,
-    assigneeAvatarUrl: task.assignee?.avatarUrl ?? null,
-    reporter: task.reporterId,
-    reporterName: task.reporter?.name,
-    reporterAvatarUrl: task.reporter?.avatarUrl ?? null,
+    assignee: task.assignee_id ?? undefined,
+    assignee_name: task.assignee?.name,
+    assignee_avatar_url: task.assignee?.avatar_url ?? null,
+    reporter: task.reporter_id,
+    reporter_name: task.reporter?.name,
+    reporter_avatar_url: task.reporter?.avatar_url ?? null,
     tags: task.tags,
     images: task.images ?? [],
     comments: (task.comments ?? []).map(mapTaskComment),
     activity: (task.activity ?? []).map(mapTaskActivity),
     location: task.location ?? undefined,
-    createdAt: task.createdAt,
-    updatedAt: task.updatedAt,
-    dueDate: task.dueDate ?? undefined,
+    created_at: task.created_at,
+    updated_at: task.updated_at,
+    due_date: task.due_date ?? undefined,
   };
 }
 

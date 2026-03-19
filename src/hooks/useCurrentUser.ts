@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { apiRequest } from '@/lib/api/client';
 
-/** Backend returns snake_case; match for API response. */
+/** Backend returns snake_case via Pydantic. */
 export interface UserResponse {
   id: string;
   clerk_user_id: string;
@@ -30,7 +30,7 @@ export interface MembershipResponse {
 
 export interface CurrentUserResponse {
   user: UserResponse;
-  membership: MembershipResponse;
+  membership: MembershipResponse | null;
   is_superadmin: boolean;
   capabilities: string[];
 }

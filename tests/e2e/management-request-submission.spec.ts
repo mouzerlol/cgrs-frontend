@@ -11,9 +11,9 @@ test.describe('Management Request - Form Submission', () => {
   });
 
   test('should display form and allow fill + submit (anonymous)', async ({ page }) => {
-    await expect(page.locator('#fullName')).toBeVisible();
+    await expect(page.locator('#full_name')).toBeVisible();
 
-    await page.fill('#fullName', 'Test User');
+    await page.fill('#full_name', 'Test User');
     await page.fill('#email', 'test@example.com');
     await page.fill('#subject', 'Test subject for debugging');
     await page.fill(
@@ -51,9 +51,9 @@ test.describe('Management Request - Form Submission', () => {
   test('signed-in user: submit and capture API response', async ({ page }) => {
     // Requires user to be signed in. Run with: npx playwright test management-request-submission --headed
     // Sign in first at /login if needed, then this test will submit.
-    await expect(page.locator('#fullName')).toBeVisible();
+    await expect(page.locator('#full_name')).toBeVisible();
 
-    await page.fill('#fullName', 'Test User');
+    await page.fill('#full_name', 'Test User');
     await page.fill('#email', 'test@example.com');
     await page.fill('#subject', 'Test subject for debugging');
     await page.fill(

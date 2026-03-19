@@ -64,25 +64,25 @@ export function RequestFormFields({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="fullName" className={labelCls}>
+            <label htmlFor="full_name" className={labelCls}>
               Full Name <span className="text-terracotta">*</span>
             </label>
             <input
               type="text"
-              id="fullName"
-              name="fullName"
-              value={data.fullName}
+              id="full_name"
+              name="full_name"
+              value={data.full_name}
               onChange={handleInputChange}
               disabled={isSubmitting}
               className={cn(
                 inputCls,
-                errors.fullName && 'border-terracotta'
+                errors.full_name && 'border-terracotta'
               )}
               placeholder="Enter your full name"
               autoComplete="name"
             />
-            {errors.fullName && (
-              <span className={errorCls}>{errors.fullName}</span>
+            {errors.full_name && (
+              <span className={errorCls}>{errors.full_name}</span>
             )}
           </div>
 

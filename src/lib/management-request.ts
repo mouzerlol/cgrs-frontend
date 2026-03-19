@@ -37,12 +37,12 @@ export function validateFormData(
   const errors: ManagementRequestErrors = {};
 
   // Full Name: Required, 2-100 chars
-  if (!data.fullName.trim()) {
-    errors.fullName = 'Full name is required';
-  } else if (data.fullName.trim().length < 2) {
-    errors.fullName = 'Name must be at least 2 characters';
-  } else if (data.fullName.trim().length > 100) {
-    errors.fullName = 'Name must be under 100 characters';
+  if (!data.full_name.trim()) {
+    errors.full_name = 'Full name is required';
+  } else if (data.full_name.trim().length < 2) {
+    errors.full_name = 'Name must be at least 2 characters';
+  } else if (data.full_name.trim().length > 100) {
+    errors.full_name = 'Name must be under 100 characters';
   }
 
   // Email: Required, valid format
@@ -100,7 +100,7 @@ export function isFormValid(data: ManagementRequestFormData): boolean {
 export function getInitialFormData(): ManagementRequestFormData {
   return {
     category: 'maintenance',
-    fullName: '',
+    full_name: '',
     email: '',
     subject: '',
     description: '',

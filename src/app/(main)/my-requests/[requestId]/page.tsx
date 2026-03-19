@@ -85,7 +85,7 @@ export default function ManagementRequestDetailPage() {
                     </p>
                     <h2 className="font-display text-3xl text-forest">{query.data.task.title}</h2>
                     <p className="text-sm text-forest/70">
-                      Submitted {formatRelativeDate(query.data.request.submittedAt)} by {query.data.request.fullName}
+                      Submitted {formatRelativeDate(query.data.request.submitted_at)} by {query.data.request.full_name}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -102,7 +102,7 @@ export default function ManagementRequestDetailPage() {
                   <div className="space-y-3">
                     <h3 className="text-xs font-semibold uppercase tracking-widest text-terracotta">Contact</h3>
                     <p className="text-sm text-forest">
-                      <span className="font-semibold">Full name:</span> {query.data.request.fullName}
+                      <span className="font-semibold">Full name:</span> {query.data.request.full_name}
                     </p>
                     <p className="text-sm text-forest">
                       <span className="font-semibold">Email:</span> {query.data.request.email}
@@ -119,9 +119,9 @@ export default function ManagementRequestDetailPage() {
                     <p className="text-sm text-forest">
                       <span className="font-semibold">Assignee:</span> {query.data.task.assigneeName || 'Unassigned'}
                     </p>
-                    {query.data.request.closedReason && (
+                    {query.data.request.closed_reason && (
                       <p className="text-sm text-forest">
-                        <span className="font-semibold">Closed reason:</span> {query.data.request.closedReason}
+                        <span className="font-semibold">Closed reason:</span> {query.data.request.closed_reason}
                       </p>
                     )}
                   </div>
@@ -184,10 +184,10 @@ export default function ManagementRequestDetailPage() {
                       <div key={item.id} className="rounded-2xl border border-sage/20 bg-bone p-4">
                         <div className="mb-2 flex items-center justify-between gap-3">
                           <span className="text-sm font-semibold text-forest">
-                            {item.authorName || 'System'}
+                            {item.author_name || 'System'}
                           </span>
                           <span className="text-xs uppercase tracking-wide text-forest/40">
-                            {formatRelativeDate(item.createdAt)}
+                            {formatRelativeDate(item.created_at)}
                           </span>
                         </div>
                         <p className="whitespace-pre-wrap text-sm leading-relaxed text-forest/80">{item.content}</p>
@@ -230,10 +230,10 @@ export default function ManagementRequestDetailPage() {
                     query.data.task.activity.map((item) => (
                       <div key={item.id} className="border-l-2 border-sage pl-4">
                         <p className="text-sm text-forest">
-                          <span className="font-semibold">{item.actorName}</span> {item.message}
+                          <span className="font-semibold">{item.actor_name}</span> {item.message}
                         </p>
                         <p className="mt-1 text-xs uppercase tracking-wide text-forest/40">
-                          {formatRelativeDate(item.createdAt)}
+                          {formatRelativeDate(item.created_at)}
                         </p>
                       </div>
                     ))

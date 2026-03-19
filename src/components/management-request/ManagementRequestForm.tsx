@@ -23,7 +23,7 @@ import { SuccessConfirmation } from './SuccessConfirmation';
  * Maps error keys to their corresponding input element IDs.
  */
 const FIELD_ORDER: (keyof ManagementRequestErrors)[] = [
-  'fullName',
+  'full_name',
   'email',
   'subject',
   'description',

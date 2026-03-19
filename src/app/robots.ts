@@ -5,8 +5,15 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/login/', '/register/', '/forgot-password/', '/design-system/'],
+      disallow: [
+        '/work-management/',
+        '/my-requests/',
+        '/discussion/new',
+        '/login/',
+        '/register/',
+        '/forgot-password/',
+      ],
     },
-    sitemap: 'https://coronationgardens.co.nz/sitemap.xml',
+    sitemap: 'https://www.cgrs.co.nz/sitemap.xml',
   }
 }

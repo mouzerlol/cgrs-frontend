@@ -7,25 +7,25 @@ export type RoleEnum = 'contact' | 'resident' | 'owner' | 'society_manager' | 'c
 
 export interface CapabilityResponse {
   role: RoleEnum | null;
-  isSuperadmin: boolean;
+  is_superadmin: boolean;
   capabilities: string[];
 }
 
 export interface MemberUserResponse {
   id: string;
-  clerkUserId: string;
+  clerk_user_id: string;
   email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  avatarUrl: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
 }
 
 export interface MemberSummaryResponse {
   id: string;
-  communityId: string;
-  userId: string;
+  community_id: string;
+  user_id: string;
   role: RoleEnum;
-  createdAt: string;
+  created_at: string;
   user: MemberUserResponse;
 }
 

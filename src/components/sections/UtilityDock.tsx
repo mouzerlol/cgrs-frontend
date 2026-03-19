@@ -22,6 +22,9 @@ interface UtilityDockProps {
  * Overlaps hero section with elevated shadow.
  * Pass custom items or use defaults from constants.
  * Set useIconComponent=true to use Icon component instead of images.
+ * 
+ * SECURITY NOTE: dangerouslySetInnerHTML is safe here - label contains only hardcoded
+ * strings with <br> tags. If labels ever become user-controlled, use a sanitizer.
  */
 export default function UtilityDock({ items, useIconComponent = false }: UtilityDockProps) {
   const setRef = useStaggeredReveal(200, 100);

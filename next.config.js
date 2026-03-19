@@ -12,12 +12,31 @@ const nextConfig = {
 
   // Image optimization configuration
   images: {
-    // Allow images from any HTTPS source
-    // For production, consider restricting to specific domains
+    // Restrict image sources to specific trusted domains
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '*.clerk.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.tile.openstreetmap.org',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.openstreetmap.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
       },
     ],
     // Production optimizations (defaults are good, but documented here)
@@ -58,13 +77,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.cloudflare.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
               "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://img.clerk.com",
-              `connect-src 'self' https://*.tile.openstreetmap.org https://*.clerk.accounts.dev https://clerk-telemetry.com http://localhost:8000 http://api:8000`,
+              `connect-src 'self' https://*.tile.openstreetmap.org https://*.clerk.accounts.dev https://clerk-telemetry.com https://*.cloudflare.com http://localhost:8000 http://api:8000`,
               "worker-src 'self' blob:",
-              "frame-src 'self' https://*.clerk.accounts.dev",
+              "frame-src 'self' https://*.clerk.accounts.dev https://challenges.cloudflare.com",
               "frame-ancestors 'none'",
             ].join('; '),
           },

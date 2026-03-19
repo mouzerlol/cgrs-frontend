@@ -17,6 +17,10 @@ interface NewsGridProps {
 /**
  * News grid section with image cards.
  * Three-column layout on desktop.
+ * 
+ * SECURITY NOTE: dangerouslySetInnerHTML is safe here - title contains only hardcoded
+ * strings (e.g., 'Community<br>News'). If title ever becomes user-controlled, 
+ * use a sanitizer like DOMPurify.
  */
 export default function NewsGrid({
   articles,

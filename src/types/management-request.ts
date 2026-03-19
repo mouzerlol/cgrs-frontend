@@ -38,7 +38,7 @@ export interface RequestLocation {
  */
 export interface ManagementRequestFormData {
   category: ManagementCategoryId;
-  fullName: string;
+  full_name: string;
   email: string;
   subject: string;
   description: string;
@@ -54,13 +54,13 @@ export type ManagementRequestStatus = 'open' | 'closed';
 export interface ManagementRequest {
   id: string;
   category: ManagementCategoryId;
-  fullName: string;
+  full_name: string;
   email: string;
-  linkedTaskId: string | null;
+  linked_task_id: string | null;
   status: ManagementRequestStatus;
-  closedReason?: string | null;
-  submittedAt: string;
-  updatedAt: string;
+  closed_reason?: string | null;
+  submitted_at: string;
+  updated_at: string;
 }
 
 export interface ManagementRequestWithTask {
@@ -76,7 +76,7 @@ export interface ManagementRequestLocationPayload extends TaskLocation {}
  * Validation errors for form fields
  */
 export interface ManagementRequestErrors {
-  fullName?: string;
+  full_name?: string;
   email?: string;
   subject?: string;
   description?: string;

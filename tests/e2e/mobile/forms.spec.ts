@@ -152,7 +152,7 @@ test.describe('Mobile Forms - Management Request Form', () => {
       });
 
       test('should have adequate tap targets', async ({ page }) => {
-        const fields = ['fullName', 'email', 'subject', 'description'];
+        const fields = ['full_name', 'email', 'subject', 'description'];
 
         for (const field of fields) {
           const box = await page.locator(`#${field}`).boundingBox();

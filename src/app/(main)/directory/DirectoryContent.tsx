@@ -12,7 +12,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
 function MemberCard({ member }: { member: import('@/types/authorization').MemberSummaryResponse }) {
-  const fullName = [member.user.firstName, member.user.lastName].filter(Boolean).join(' ') || 'Unknown';
+  const fullName = [member.user.first_name, member.user.last_name].filter(Boolean).join(' ') || 'Unknown';
   const initials = fullName
     .split(' ')
     .map((n) => n[0])
@@ -20,7 +20,7 @@ function MemberCard({ member }: { member: import('@/types/authorization').Member
     .toUpperCase()
     .slice(0, 2);
 
-  const joinDate = new Date(member.createdAt).toLocaleDateString('en-NZ', {
+  const joinDate = new Date(member.created_at).toLocaleDateString('en-NZ', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -30,9 +30,9 @@ function MemberCard({ member }: { member: import('@/types/authorization').Member
     <Card hover className="p-6">
       <div className="flex items-start gap-4">
         <div className="w-12 h-12 rounded-full bg-sage-light flex items-center justify-center text-sage font-medium shrink-0">
-          {member.user.avatarUrl ? (
+          {member.user.avatar_url ? (
             <img
-              src={member.user.avatarUrl}
+              src={member.user.avatar_url}
               alt={fullName}
               className="w-12 h-12 rounded-full object-cover"
             />

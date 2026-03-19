@@ -19,6 +19,10 @@ interface EventsSectionProps {
 /**
  * Events section with dark forest-light background.
  * Features enhanced calendar cards with date badges in terracotta.
+ * 
+ * SECURITY NOTE: dangerouslySetInnerHTML is safe here - title contains only hardcoded
+ * strings (e.g., 'Community<br>Events'). If title ever becomes user-controlled,
+ * use a sanitizer like DOMPurify.
  */
 export default function EventsSection({
   items,

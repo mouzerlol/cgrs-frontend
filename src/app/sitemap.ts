@@ -3,7 +3,7 @@ import newsData from '@/data/news.json'
 import eventsData from '@/data/events.json'
 import discussionsData from '@/data/discussions.json'
 
-const BASE_URL = 'https://coronationgardens.co.nz'
+const BASE_URL = 'https://www.cgrs.co.nz'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Static routes with their change frequencies and priorities

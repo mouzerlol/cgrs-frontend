@@ -106,7 +106,7 @@ export default function TaskCard({ task, onClick, className }: TaskCardProps) {
           
           <div className="flex items-center shrink-0">
             <span className="text-[11px] text-forest/40 font-medium">
-              {formatRelativeDate(task.createdAt)}
+              {formatRelativeDate(task.created_at)}
             </span>
           </div>
         </div>

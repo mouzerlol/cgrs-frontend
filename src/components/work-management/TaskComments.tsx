@@ -21,9 +21,9 @@ export default function TaskComments({ comments, onChange, readonly = false }: T
     
     const comment: TaskComment = {
       id: Math.random().toString(),
-      authorId: currentUserId,
+      author_id: currentUserId,
       content: newComment.trim(),
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     };
     
     onChange([...comments, comment]);
@@ -41,16 +41,16 @@ export default function TaskComments({ comments, onChange, readonly = false }: T
       {comments.length > 0 ? (
         <div className="space-y-6">
           {comments.map(comment => {
-            const author = getAuthor(comment.authorId);
-            const authorName = comment.authorName || author?.name || 'Unknown User';
-            const authorAvatar = comment.authorAvatarUrl || author?.avatar;
+            const author = getAuthor(comment.author_id);
+            const authorName = comment.author_name || author?.name || 'Unknown User';
+            const authorAvatar = comment.author_avatar_url || author?.avatar;
             return (
               <div key={comment.id} className="flex gap-4 group">
                 <Avatar src={authorAvatar} alt={authorName} size="sm" />
                 <div className="flex-1 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-forest">{authorName}</span>
-                    <span className="text-[10px] font-medium text-forest/30 uppercase tracking-wider">{formatRelativeDate(comment.createdAt)}</span>
+                    <span className="text-[10px] font-medium text-forest/30 uppercase tracking-wider">{formatRelativeDate(comment.created_at)}</span>
                   </div>
                   <div className="text-sm text-forest/80 bg-white p-3.5 rounded-2xl rounded-tl-none border border-sage/20 shadow-sm group-hover:border-sage/40 transition-colors whitespace-pre-wrap leading-relaxed">
                     {comment.content}

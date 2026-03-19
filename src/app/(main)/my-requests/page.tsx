@@ -66,7 +66,7 @@ export default function MyRequestsPage() {
                       </p>
                       <p>
                         <span className="font-semibold text-forest">Submitted:</span>{' '}
-                        {formatRelativeDate(request.submittedAt)}
+                        {formatRelativeDate(request.submitted_at)}
                       </p>
                     </div>
                   </div>

@@ -30,45 +30,45 @@ export interface TaskImage {
 
 export interface TaskComment {
   id: string;
-  authorId: string;
-  authorName?: string;
-  authorAvatarUrl?: string | null;
+  author_id: string;
+  author_name?: string;
+  author_avatar_url?: string | null;
   content: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface TaskActivity {
   id: string;
-  actorId?: string | null;
-  actorName: string;
-  actorAvatarUrl?: string | null;
-  activityType: 'task_created' | 'comment_added' | 'status_changed' | 'request_withdrawn' | 'request_closed';
+  actor_id?: string | null;
+  actor_name: string;
+  actor_avatar_url?: string | null;
+  activity_type: 'task_created' | 'comment_added' | 'status_changed' | 'request_withdrawn' | 'request_closed';
   message: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface Task {
   id: string;
-  boardId?: string | null;
-  sourceRequestId?: string | null;
+  board_id?: string | null;
+  source_request_id?: string | null;
   title: string;
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
   assignee?: string;
-  assigneeName?: string;
-  assigneeAvatarUrl?: string | null;
+  assignee_name?: string;
+  assignee_avatar_url?: string | null;
   reporter: string;
-  reporterName?: string;
-  reporterAvatarUrl?: string | null;
+  reporter_name?: string;
+  reporter_avatar_url?: string | null;
   tags: string[];
   images: TaskImage[];
   comments?: TaskComment[];
   activity?: TaskActivity[];
   location?: TaskLocation;
-  createdAt: string;
-  updatedAt?: string;
-  dueDate?: string;
+  created_at: string;
+  updated_at?: string;
+  due_date?: string;
 }
 
 export interface BoardColumn {
@@ -84,7 +84,7 @@ export interface Board {
   description: string;
   color: BoardColor;
   icon: string;
-  taskCount: number;
-  createdAt: string;
-  updatedAt: string;
+  task_count: number;
+  created_at: string;
+  updated_at: string;
 }
