@@ -9,6 +9,7 @@ interface PeopleSectionProps {
   coLead?: PortfolioMember;
   members: PortfolioMember[];
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
 function MemberRow({ member, badge }: { member: PortfolioMember; badge?: string }) {
@@ -50,9 +51,9 @@ function MemberRow({ member, badge }: { member: PortfolioMember; badge?: string 
   );
 }
 
-export default function PeopleSection({ lead, coLead, members, isEditingLayout }: PeopleSectionProps) {
+export default function PeopleSection({ lead, coLead, members, isEditingLayout, isLoading = false }: PeopleSectionProps) {
   return (
-    <SectionWrapper title="People" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="People" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       <div className="divide-y divide-sage/10">
         <MemberRow member={lead} badge="Lead" />
         {coLead && <MemberRow member={coLead} badge="Co-Lead" />}

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { NewsArticle } from '@/types';
 import ArticleContent from '@/components/blog/ArticleContent';
 import newsData from '@/data/news.json';
+import { getBreadcrumbsJsonLd } from '@/lib/breadcrumbs';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -17,12 +18,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Article Not Found | Coronation Gardens' };
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Blog', href: '/blog' },
+    { label: article.title },
+  ];
+
   return {
     title: `${article.title} | Coronation Gardens`,
     description:
       article.excerpt.length > 160
         ? article.excerpt.slice(0, 157) + '...'
         : article.excerpt,
+    other: {
+      'script[type="application/ld+json"]': JSON.stringify(getBreadcrumbsJsonLd(breadcrumbs)),
+    },
   };
 }
 

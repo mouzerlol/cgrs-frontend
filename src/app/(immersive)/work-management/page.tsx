@@ -100,7 +100,7 @@ export default function WorkManagementHub() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <Link href={feature.href}>
+                    <Link href={feature.href} prefetch={true}>
                       <div
                         className={`relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group ${styles.bg} ${styles.border} ${styles.hover}`}
                       >

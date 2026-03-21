@@ -10,6 +10,7 @@ interface LayoutProps {
 /**
  * Main layout wrapper with skip link for accessibility.
  * Fixed header with scroll-aware behavior.
+ * Site breadcrumbs render below each page hero via PageHeader, profile/article/event shells, etc. (`@/components/ui/breadcrumb`).
  */
 export default function Layout({ children }: LayoutProps) {
   return (

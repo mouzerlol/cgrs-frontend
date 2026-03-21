@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TagInputProps {
   tags: string[];
@@ -9,6 +10,13 @@ interface TagInputProps {
 
 export default function TagInput({ tags, onChange, readonly = false }: TagInputProps) {
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    if (!readonly) {
+      inputRef.current?.focus();
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -28,12 +36,25 @@ export default function TagInput({ tags, onChange, readonly = false }: TagInputP
   };
 
   return (
-    <div className="flex flex-wrap gap-2 items-center">
+    <div
+      className={cn(
+        'flex self-stretch flex-wrap gap-2 items-center w-full min-h-[42px] cursor-text',
+        readonly && 'cursor-default min-h-0 self-auto'
+      )}
+      onClick={focusInput}
+    >
       {tags.map(tag => (
         <span key={tag} className="bg-sage-light text-forest/70 text-xs px-2 py-1 rounded-full flex items-center gap-1">
           {tag}
           {!readonly && (
-            <button type="button" onClick={() => removeTag(tag)} className="hover:text-terracotta focus:outline-none">
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                removeTag(tag);
+              }}
+              className="hover:text-terracotta focus:outline-none"
+            >
               <X className="w-3 h-3" strokeWidth={1.5} />
             </button>
           )}
@@ -41,6 +62,7 @@ export default function TagInput({ tags, onChange, readonly = false }: TagInputP
       ))}
       {!readonly && (
         <input
+          ref={inputRef}
           type="text"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}

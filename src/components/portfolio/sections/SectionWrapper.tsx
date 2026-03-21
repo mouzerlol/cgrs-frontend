@@ -2,10 +2,13 @@
 
 import { GripVertical, X, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface SectionWrapperProps {
   title: string;
   isEditingLayout: boolean;
+  isLoading?: boolean;
+  skeletonContent?: React.ReactNode;
   onEdit?: () => void;
   onRemove?: () => void;
   children: React.ReactNode;
@@ -15,6 +18,8 @@ interface SectionWrapperProps {
 export default function SectionWrapper({
   title,
   isEditingLayout,
+  isLoading = false,
+  skeletonContent,
   onEdit,
   onRemove,
   children,
@@ -67,7 +72,17 @@ export default function SectionWrapper({
         'flex-1 min-h-0 px-4 pb-4 overflow-y-auto scrollbar-thin',
         isEditingLayout && 'opacity-40 pointer-events-none'
       )}>
-        {children}
+        {isLoading ? (
+          skeletonContent || (
+            <div className="space-y-3 mt-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/6" />
+            </div>
+          )
+        ) : (
+          children
+        )}
       </div>
     </div>
   );

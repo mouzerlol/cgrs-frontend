@@ -3,6 +3,7 @@
 import { formatDateHeader, isTodayDate } from '@/lib/calendar-utils';
 import { CalendarItemCard } from './CalendarItemCard';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import type { CalendarItem } from '@/types';
 
 interface DateGroupProps {
@@ -39,13 +40,19 @@ export function DateGroup({
         )}
       </h3>
       <div className="flex flex-col gap-sm">
-        {items.map((item) => (
-          <CalendarItemCard
+        {items.map((item, index) => (
+          <motion.div
             key={item.id}
-            item={item}
-            isExpanded={expandedItemIds.has(item.id)}
-            onToggle={() => onItemClick(item.id)}
-          />
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+          >
+            <CalendarItemCard
+              item={item}
+              isExpanded={expandedItemIds.has(item.id)}
+              onToggle={() => onItemClick(item.id)}
+            />
+          </motion.div>
         ))}
       </div>
     </div>

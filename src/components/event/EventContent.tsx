@@ -9,6 +9,7 @@ import EventMiniCalendar from '@/components/calendar/EventMiniCalendar';
 import EventRsvpButton from '@/components/calendar/EventRsvpButton';
 import EventDiscussion from './EventDiscussion';
 import EventOrganizer from './EventOrganizer';
+import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 
 const EventMapStatic = dynamic(() => import('@/components/calendar/EventMapStatic'), {
   ssr: false,
@@ -54,6 +55,8 @@ export default function EventContent({ event, allEvents }: EventContentProps) {
   return (
     <div className="min-h-screen">
       <EventHero event={event} isPastEvent={isPastEvent} />
+
+      <SiteBreadcrumbs variant="belowHero" />
 
       <div
         className="p-lg px-md"

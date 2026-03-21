@@ -1,6 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { cn } from '@/lib/utils';
 import { Pencil } from 'lucide-react';
+
+/** Imperative API so parent surfaces (e.g. assignee card) can open the editor for the whole row. */
+export type InlineEditFieldHandle = {
+  startEditing: () => void;
+};
 
 interface InlineEditFieldProps {
   value: string;
@@ -10,24 +15,38 @@ interface InlineEditFieldProps {
   className?: string;
   textClassName?: string;
   placeholder?: string;
+  /** Notified when inline vs input/select mode changes (for outer click targets / a11y). */
+  onEditModeChange?: (isEditing: boolean) => void;
 }
 
-export default function InlineEditField({
-  value,
-  onSave,
-  type = 'text',
-  options = [],
-  className,
-  textClassName,
-  placeholder = 'Click to edit...'
-}: InlineEditFieldProps) {
+const InlineEditField = forwardRef<InlineEditFieldHandle, InlineEditFieldProps>(function InlineEditField(
+  {
+    value,
+    onSave,
+    type = 'text',
+    options = [],
+    className,
+    textClassName,
+    placeholder = 'Click to edit...',
+    onEditModeChange,
+  }: InlineEditFieldProps,
+  ref,
+) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(null);
 
+  useImperativeHandle(ref, () => ({
+    startEditing: () => setIsEditing(true),
+  }));
+
   useEffect(() => {
     setEditValue(value);
   }, [value]);
+
+  useEffect(() => {
+    onEditModeChange?.(isEditing);
+  }, [isEditing, onEditModeChange]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -121,4 +140,6 @@ export default function InlineEditField({
       className={cn(commonClasses, className)}
     />
   );
-}
+});
+
+export default InlineEditField;

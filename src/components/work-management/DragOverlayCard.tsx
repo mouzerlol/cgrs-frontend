@@ -7,7 +7,7 @@ interface DragOverlayCardProps {
 
 export default function DragOverlayCard({ task }: DragOverlayCardProps) {
   return (
-    <div className="shadow-2xl shadow-forest/20 pointer-events-none opacity-90 rounded-[10px]">
+    <div className="shadow-[0_20px_40px_rgba(26,34,24,0.18)] pointer-events-none opacity-95 rounded-[10px] scale-[1.02] transition-transform duration-200">
       <TaskCard task={task} onClick={() => {}} />
     </div>
   );

@@ -12,6 +12,7 @@ import { NewsCardSkeleton } from '@/components/ui/NewsCardSkeleton';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import Hero from '@/components/sections/Hero';
 import PageHeader from '@/components/sections/PageHeader';
+import { BreadcrumbBar, BreadcrumbTrail, SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UtilityDock, { UtilityDockItem } from '@/components/sections/UtilityDock';
@@ -137,6 +138,8 @@ export default function DesignSystemPage() {
             </p>
           </div>
         </header>
+
+        <SiteBreadcrumbs variant="belowHero" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Color Palette */}
@@ -652,11 +655,52 @@ export default function DesignSystemPage() {
                       <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Section Components</h3>
                       <div className="space-y-6">
                         <div>
+                          <p className="text-xs opacity-50 mb-2">Breadcrumb</p>
+                          <p className="text-sm opacity-70 mb-3 max-w-3xl">
+                            Three pieces:{' '}
+                            <code className="rounded bg-sage-light px-1.5 py-0.5 text-xs text-terracotta">BreadcrumbBar</code>{' '}
+                            (strip + container),{' '}
+                            <code className="rounded bg-sage-light px-1.5 py-0.5 text-xs text-terracotta">BreadcrumbTrail</code>{' '}
+                            (<code className="text-xs">nav</code>/<code className="text-xs">ol</code>), and{' '}
+                            <code className="rounded bg-sage-light px-1.5 py-0.5 text-xs text-terracotta">SiteBreadcrumbs</code>{' '}
+                            (reads the URL; hidden on <code className="text-xs">/</code> and{' '}
+                            <code className="text-xs">/no-access</code> via{' '}
+                            <code className="text-xs">shouldShowSiteBreadcrumbs</code>).                             Work management embeds{' '}
+                            <code className="text-xs">SiteBreadcrumbs</code> with{' '}
+                            <code className="text-xs">variant=&quot;belowWorkManagementNav&quot;</code> inside{' '}
+                            <code className="text-xs">WorkManagementNavBar</code> (below the title bar).
+                          </p>
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-xs font-medium text-forest/60 mb-2">Manual — BreadcrumbBar + BreadcrumbTrail</p>
+                              <div className="rounded-lg border border-sage/20 overflow-hidden bg-bone">
+                                <BreadcrumbBar>
+                                  <BreadcrumbTrail
+                                    items={[
+                                      { label: 'Home', href: '/' },
+                                      { label: 'Work Management', href: '/work-management' },
+                                      { label: 'Boards', href: '/work-management/boards' },
+                                      { label: 'Society Management' },
+                                    ]}
+                                  />
+                                </BreadcrumbBar>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-forest/60 mb-2">URL-driven — SiteBreadcrumbs (this page)</p>
+                              <div className="rounded-lg border border-sage/20 overflow-hidden bg-bone">
+                                <SiteBreadcrumbs variant="belowHero" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
                           <p className="text-xs opacity-50 mb-2">Page Header</p>
                           <PageHeader
                             title="Page Header Example"
                             description="This is a page header component with an optional eyebrow label and description text."
                             eyebrow="Eyebrow Label"
+                            showBreadcrumbs={false}
                           />
                         </div>
                         <div>

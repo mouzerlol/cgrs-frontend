@@ -6,10 +6,11 @@ import SectionWrapper from './SectionWrapper';
 interface MissionSectionProps {
   content: { text?: string };
   isEditingLayout: boolean;
+  isLoading?: boolean;
   onUpdate?: (content: { text: string }) => void;
 }
 
-export default function MissionSection({ content, isEditingLayout, onUpdate }: MissionSectionProps) {
+export default function MissionSection({ content, isEditingLayout, isLoading = false, onUpdate }: MissionSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(content.text || '');
 
@@ -27,6 +28,7 @@ export default function MissionSection({ content, isEditingLayout, onUpdate }: M
     <SectionWrapper
       title="Mission & Scope"
       isEditingLayout={isEditingLayout}
+      isLoading={isLoading}
       onEdit={() => setIsEditing(true)}
     >
       {isEditing ? (

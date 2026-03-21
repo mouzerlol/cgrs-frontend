@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { NewsArticle } from '@/types';
 import { formatDate } from '@/lib/utils';
 import BlogFeatureCard from './BlogFeatureCard';
+import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 
 interface ArticleContentProps {
   article: NewsArticle;
@@ -69,6 +70,8 @@ export default function ArticleContent({ article, relatedArticles }: ArticleCont
           </div>
         </div>
       </div>
+
+      <SiteBreadcrumbs variant="belowHero" />
 
       <div className="container max-w-3xl py-12 md:py-16">
         <div className="prose prose-lg prose-forest max-w-none">

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes } from 'react';
+import { forwardRef, ButtonHTMLAttributes, useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +33,30 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
     disabled,
     ...props
   }, ref) => {
+    const [optimisticUpvoted, setOptimisticUpvoted] = useState(isUpvoted);
+    const [optimisticCount, setOptimisticCount] = useState(count);
+
+    // Sync with external state
+    useEffect(() => {
+      setOptimisticUpvoted(isUpvoted);
+      setOptimisticCount(count);
+    }, [isUpvoted, count]);
+
+    const handleUpvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (disabled) return;
+      
+      // Optimistic update
+      const newUpvoted = !optimisticUpvoted;
+      setOptimisticUpvoted(newUpvoted);
+      setOptimisticCount(newUpvoted ? optimisticCount + 1 : optimisticCount - 1);
+      
+      if (onUpvote) {
+        onUpvote();
+      }
+    };
+
     const sizeClasses = {
       sm: {
         button: direction === 'vertical' ? 'min-w-[40px] min-h-[44px] p-1' : 'min-h-[36px] px-2 py-1',
@@ -54,29 +78,25 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
       <button
         ref={ref}
         type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          onUpvote?.();
-        }}
+        onClick={handleUpvoteClick}
         disabled={disabled}
         className={cn(
           'flex items-center justify-center rounded-lg border transition-all duration-200',
           direction === 'vertical' ? 'flex-col' : 'flex-row',
           sizes.button,
           sizes.gap,
-          isUpvoted
+          optimisticUpvoted
             ? 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark'
             : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
           disabled && 'opacity-50 cursor-not-allowed',
           className
         )}
-        aria-label={isUpvoted ? 'Remove upvote' : 'Upvote'}
-        aria-pressed={isUpvoted}
+        aria-label={optimisticUpvoted ? 'Remove upvote' : 'Upvote'}
+        aria-pressed={optimisticUpvoted}
         {...props}
       >
         <Icon
-          icon={isUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
+          icon={optimisticUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
           className={cn(
             sizes.icon,
             'transition-transform duration-200',
@@ -84,7 +104,7 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
           )}
         />
         <span className={cn('font-semibold tabular-nums', sizes.text)}>
-          {count}
+          {optimisticCount}
         </span>
       </button>
     );

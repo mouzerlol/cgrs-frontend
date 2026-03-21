@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: [
         '/work-management/',
-        '/my-requests/',
+        '/profile/',
         '/discussion/new',
         '/login/',
         '/register/',

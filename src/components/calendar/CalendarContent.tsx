@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CalendarViewContainer } from './CalendarViewContainer';
 import { useAllCalendarItems } from '@/hooks/useCalendar';
 import { useScrollToDate } from '@/hooks/useScrollToDate';
@@ -125,33 +126,37 @@ export function CalendarContent() {
     });
   }, []);
 
-  if (isLoading) {
-    return <CalendarSkeleton />;
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center p-xl bg-terracotta/10 rounded-xl text-terracotta">
-        <p>Unable to load calendar. Please try again later.</p>
-      </div>
-    );
-  }
-
   return (
-    <CalendarViewContainer
-      currentMonth={currentMonth}
-      itemsByDate={itemsByDate}
-      groupedItems={groupedItems}
-      selectedDate={selectedDate}
-      expandedItemIds={expandedItemIds}
-      detailViewRef={containerRef}
-      items={items}
-      onPrevMonth={handlePrevMonth}
-      onNextMonth={handleNextMonth}
-      onDateClick={handleDateClick}
-      onItemClick={handleItemClick}
-      onMonthSelect={handleMonthSelect}
-    />
+    <AnimatePresence mode="wait">
+      {isLoading ? (
+        <motion.div key="skeleton" exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+          <CalendarSkeleton />
+        </motion.div>
+      ) : error ? (
+        <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div className="flex items-center justify-center p-xl bg-terracotta/10 rounded-xl text-terracotta">
+            <p>Unable to load calendar. Please try again later.</p>
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+          <CalendarViewContainer
+            currentMonth={currentMonth}
+            itemsByDate={itemsByDate}
+            groupedItems={groupedItems}
+            selectedDate={selectedDate}
+            expandedItemIds={expandedItemIds}
+            detailViewRef={containerRef}
+            items={items}
+            onPrevMonth={handlePrevMonth}
+            onNextMonth={handleNextMonth}
+            onDateClick={handleDateClick}
+            onItemClick={handleItemClick}
+            onMonthSelect={handleMonthSelect}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -172,9 +177,26 @@ function CalendarSkeleton() {
       </div>
       <div className="bg-sage-light rounded-b-[16px] h-auto flex flex-col overflow-visible order-1 lg:rounded-none lg:h-full lg:overflow-hidden lg:col-start-1 lg:col-end-2 lg:row-start-2 lg:row-end-3 lg:order-1 lg:shadow-[4px_0_24px_rgba(26,34,24,0.05)] lg:z-10">
         <div className="flex-1 overflow-y-auto overflow-x-hidden bg-sage-light px-3">
-          <div className="space-y-4 p-md">
+          <div className="space-y-6 pt-md pb-xl px-[calc(0.5rem/3)]">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="skeleton h-32 rounded-lg" />
+              <div key={i} className="flex flex-col gap-sm">
+                <div className="flex items-center gap-xs">
+                  <div className="skeleton h-6 w-8 rounded" />
+                  <div className="skeleton h-5 w-32 rounded" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  {Array.from({ length: 2 }).map((_, j) => (
+                    <div key={j} className="bg-white rounded-xl overflow-hidden border border-sage p-sm flex items-center gap-sm">
+                      <div className="skeleton h-10 w-10 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="skeleton h-4 w-3/4 rounded" />
+                        <div className="skeleton h-3 w-1/4 rounded" />
+                      </div>
+                      <div className="skeleton h-5 w-5 rounded-full shrink-0" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>

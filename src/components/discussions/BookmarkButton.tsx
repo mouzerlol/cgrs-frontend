@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes } from 'react';
+import { forwardRef, ButtonHTMLAttributes, useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
@@ -30,6 +30,26 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
     disabled,
     ...props
   }, ref) => {
+    const [optimisticBookmarked, setOptimisticBookmarked] = useState(isBookmarked);
+
+    // Sync with external state when it changes
+    useEffect(() => {
+      setOptimisticBookmarked(isBookmarked);
+    }, [isBookmarked]);
+
+    const handleBookmarkClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (disabled) return;
+      
+      // Optimistic update
+      setOptimisticBookmarked(!optimisticBookmarked);
+      
+      if (onBookmark) {
+        onBookmark();
+      }
+    };
+
     const sizeClasses = {
       sm: {
         button: 'min-w-[36px] min-h-[36px] p-1.5',
@@ -49,32 +69,32 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
       <button
         ref={ref}
         type="button"
-        onClick={onBookmark}
+        onClick={handleBookmarkClick}
         disabled={disabled}
         className={cn(
           'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
           sizes.button,
-          isBookmarked
+          optimisticBookmarked
             ? 'bg-forest text-bone border-forest'
             : 'bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20',
           disabled && 'opacity-50 cursor-not-allowed',
           className
         )}
-        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
-        aria-pressed={isBookmarked}
+        aria-label={optimisticBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
+        aria-pressed={optimisticBookmarked}
         {...props}
       >
         <Icon
-          icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
+          icon={optimisticBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
           className={cn(
             sizes.icon,
             'transition-transform duration-200',
-            isBookmarked && 'fill-current'
+            optimisticBookmarked && 'fill-current'
           )}
         />
         {showLabel && (
           <span className={cn('font-medium', sizes.text)}>
-            {isBookmarked ? 'Saved' : 'Save'}
+            {optimisticBookmarked ? 'Saved' : 'Save'}
           </span>
         )}
       </button>

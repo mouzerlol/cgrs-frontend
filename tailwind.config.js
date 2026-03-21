@@ -62,6 +62,10 @@ module.exports = {
         'fade-up': 'fadeUp 0.6s var(--ease-out) forwards',
         'scroll-bounce': 'scrollBounce 2s ease-in-out infinite',
         'shimmer': 'shimmer 1.5s ease-in-out infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'optimistic-pulse': 'optimisticPulse 0.4s ease-out',
+        'pulse-subtle': 'pulseSubtle 1.5s ease-in-out infinite',
+        'shake': 'shake 0.4s ease-out',
       },
       keyframes: {
         fadeUp: {
@@ -83,6 +87,19 @@ module.exports = {
         shimmer: {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
+        },
+        optimisticPulse: {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(217, 93, 57, 0)' },
+          '50%': { boxShadow: '0 0 0 4px rgba(217, 93, 57, 0.2)' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(217, 93, 57, 0)' },
+          '50%': { boxShadow: '0 0 0 4px rgba(217, 93, 57, 0.15)' },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '20%, 60%': { transform: 'translateX(-8px)' },
+          '40%, 80%': { transform: 'translateX(8px)' },
         },
       },
     },

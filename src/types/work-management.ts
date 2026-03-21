@@ -69,6 +69,22 @@ export interface Task {
   created_at: string;
   updated_at?: string;
   due_date?: string;
+  /** Order within a board column (status lane); lower is higher on the board. */
+  lane_position?: number;
+}
+
+/** Values collected in CreateTaskModal for POST /api/v1/tasks (parent maps to API body). */
+export interface CreateTaskFormValues {
+  title: string;
+  description: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  /** Backend `users.id`; empty string when unassigned. */
+  assigneeUserId: string;
+  tags: string[];
+  /** Raw value from `<input type="date">` (YYYY-MM-DD) or empty. */
+  dueDate: string;
+  location?: TaskLocation;
 }
 
 export interface BoardColumn {

@@ -6,13 +6,14 @@ import SectionWrapper from './SectionWrapper';
 interface RelationshipsSectionProps {
   content: { items?: RelationshipItem[] };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function RelationshipsSection({ content, isEditingLayout }: RelationshipsSectionProps) {
+export default function RelationshipsSection({ content, isEditingLayout, isLoading = false }: RelationshipsSectionProps) {
   const items = content.items || [];
 
   return (
-    <SectionWrapper title="Key Relationships" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Key Relationships" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {items.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No relationships documented yet.</p>
       ) : (

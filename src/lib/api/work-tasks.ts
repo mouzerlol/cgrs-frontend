@@ -1,5 +1,5 @@
 import { apiRequest } from '@/lib/api/client';
-import type { Task, TaskActivity, TaskComment, TaskImage, TaskLocation } from '@/types/work-management';
+import type { Task, TaskActivity, TaskComment, TaskImage, TaskLocation, TaskPriority, TaskStatus } from '@/types/work-management';
 
 const API_PATH = '/api/v1/tasks';
 
@@ -48,6 +48,7 @@ interface ApiTaskResponse {
   created_at: string;
   updated_at: string;
   due_date?: string | null;
+  lane_position?: number;
 }
 
 function mapTaskComment(comment: ApiTaskCommentResponse): TaskComment {
@@ -96,12 +97,124 @@ export function mapTaskResponse(task: ApiTaskResponse): Task {
     created_at: task.created_at,
     updated_at: task.updated_at,
     due_date: task.due_date ?? undefined,
+    lane_position: task.lane_position ?? 0,
   };
 }
 
 export async function getTask(taskId: string, getToken: () => Promise<string | null>): Promise<Task> {
   const response = await apiRequest<ApiTaskResponse>(`${API_PATH}/${taskId}`, getToken);
   return mapTaskResponse(response);
+}
+
+export interface TaskFilters {
+  board_id?: string;
+  assignee_id?: string;
+  status_value?: string;
+}
+
+/** JSON body for PATCH /api/v1/tasks/{id} (optional fields, matches backend UpdateTaskRequest). */
+export interface UpdateTaskRequestBody {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  assignee_id?: string | null;
+  tags?: string[];
+  location?: TaskLocation;
+  due_date?: string;
+  images?: TaskImage[];
+  /** Full ordered task ids for the task's status column after this update (board tasks only). */
+  lane_task_ids?: string[];
+}
+
+/** JSON body for POST /api/v1/tasks (snake_case, matches backend CreateTaskRequest). */
+export interface CreateTaskRequestBody {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  board_id: string;
+  tags: string[];
+  assignee_id?: string;
+  location?: TaskLocation;
+  due_date?: string;
+  images?: TaskImage[];
+}
+
+/**
+ * Convert a value from `<input type="date">` (YYYY-MM-DD) to an ISO-8601 instant for the API.
+ * Uses end-of-day UTC so the chosen calendar day is unambiguous.
+ */
+export function dueDateInputToIso(dateInput: string): string | undefined {
+  const trimmed = dateInput.trim();
+  if (!trimmed) return undefined;
+  return `${trimmed}T23:59:59.999Z`;
+}
+
+/** Create a work task; reporter is taken from the authenticated principal on the server. */
+export async function createTask(
+  body: CreateTaskRequestBody,
+  getToken: () => Promise<string | null>,
+): Promise<Task> {
+  const payload: Record<string, unknown> = {
+    title: body.title.trim(),
+    description: body.description.trim(),
+    status: body.status,
+    priority: body.priority,
+    board_id: body.board_id,
+    tags: body.tags,
+    images: body.images ?? [],
+  };
+  if (body.assignee_id) payload.assignee_id = body.assignee_id;
+  if (body.location) payload.location = body.location;
+  if (body.due_date) payload.due_date = body.due_date;
+
+  const response = await apiRequest<ApiTaskResponse>(API_PATH, getToken, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  return mapTaskResponse(response);
+}
+
+/** Partially update a work task. */
+export async function updateTask(
+  taskId: string,
+  body: UpdateTaskRequestBody,
+  getToken: () => Promise<string | null>,
+): Promise<Task> {
+  const payload: Record<string, unknown> = {};
+  if (body.title !== undefined) payload.title = body.title;
+  if (body.description !== undefined) payload.description = body.description;
+  if (body.status !== undefined) payload.status = body.status;
+  if (body.priority !== undefined) payload.priority = body.priority;
+  if (body.assignee_id !== undefined) payload.assignee_id = body.assignee_id;
+  if (body.tags !== undefined) payload.tags = body.tags;
+  if (body.location !== undefined) payload.location = body.location;
+  if (body.due_date !== undefined) payload.due_date = body.due_date;
+  if (body.images !== undefined) payload.images = body.images;
+  if (body.lane_task_ids !== undefined) payload.lane_task_ids = body.lane_task_ids;
+
+  const response = await apiRequest<ApiTaskResponse>(`${API_PATH}/${taskId}`, getToken, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  return mapTaskResponse(response);
+}
+
+export async function listTasks(
+  filters: TaskFilters,
+  getToken: () => Promise<string | null>,
+): Promise<Task[]> {
+  const searchParams = new URLSearchParams();
+  if (filters.board_id) searchParams.set('board_id', filters.board_id);
+  if (filters.assignee_id) searchParams.set('assignee_id', filters.assignee_id);
+  if (filters.status_value) searchParams.set('status_value', filters.status_value);
+
+  const queryString = searchParams.toString();
+  const url = queryString ? `${API_PATH}?${queryString}` : API_PATH;
+
+  const response = await apiRequest<ApiTaskResponse[]>(url, getToken);
+  return response.map(mapTaskResponse);
 }
 
 export async function addTaskComment(
@@ -114,4 +227,37 @@ export async function addTaskComment(
     body: JSON.stringify({ content }),
   });
   return mapTaskComment(response);
+}
+
+export async function updateTaskComment(
+  taskId: string,
+  commentId: string,
+  content: string,
+  getToken: () => Promise<string | null>,
+): Promise<TaskComment> {
+  const response = await apiRequest<ApiTaskCommentResponse>(
+    `${API_PATH}/${taskId}/comments/${commentId}`,
+    getToken,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ content }),
+    },
+  );
+  return mapTaskComment(response);
+}
+
+export async function deleteTaskComment(
+  taskId: string,
+  commentId: string,
+  getToken: () => Promise<string | null>,
+): Promise<void> {
+  await apiRequest<void>(`${API_PATH}/${taskId}/comments/${commentId}`, getToken, {
+    method: 'DELETE',
+  });
+}
+
+export async function deleteTask(taskId: string, getToken: () => Promise<string | null>): Promise<void> {
+  await apiRequest<void>(`${API_PATH}/${taskId}`, getToken, {
+    method: 'DELETE',
+  });
 }

@@ -18,7 +18,7 @@ export default function WorkManagementLoading() {
 
           {/* Feature cards skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[0, 1].map(i => (
+            {[0, 1, 2].map(i => (
               <div key={i} className="rounded-[20px] p-6 border border-sage/20 bg-sage-light/30">
                 <div className="flex items-start justify-between mb-5">
                   <Skeleton className="w-12 h-12 rounded-2xl" />

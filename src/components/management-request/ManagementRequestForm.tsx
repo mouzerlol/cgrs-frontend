@@ -129,7 +129,7 @@ export function ManagementRequestForm() {
 
         // Mark as submitted
         setSubmittedId(created.request.id);
-        setSubmittedRequestHref(`/my-requests/${created.request.id}`);
+        setSubmittedRequestHref(`/profile/reported-issues/${created.request.id}`);
         setIsSubmitted(true);
 
         // Scroll to top to show success message

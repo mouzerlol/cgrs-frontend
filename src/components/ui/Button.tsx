@@ -1,4 +1,6 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+"use client";
+
+import { ButtonHTMLAttributes, forwardRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,13 +14,24 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * Variants: primary (terracotta), outline (forest border), ghost (transparent), nav (bone border)
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', asChild = false, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', asChild = false, onClick, disabled, ...props }, ref) => {
+    const [isPressed, setIsPressed] = useState(false);
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled) return;
+      setIsPressed(true);
+      setTimeout(() => setIsPressed(false), 150);
+      onClick?.(e);
+    };
+
     const baseClasses = [
       'inline-flex items-center justify-center',
       'font-medium tracking-wide',
       'transition-all duration-300',
       'rounded cursor-pointer',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
+      isPressed ? 'scale-95 opacity-90' : '',
+      disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
     ].join(' ');
 
     const variants = {
@@ -62,7 +75,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (asChild) {
-      return <span className={classes} ref={ref as React.Ref<HTMLSpanElement>} {...props} />;
+      return <span className={classes} ref={ref as React.Ref<HTMLSpanElement>} onClick={onClick as any} {...props} />;
     }
 
     return (
@@ -70,6 +83,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={classes}
         ref={ref}
         suppressHydrationWarning
+        onClick={handleClick}
+        disabled={disabled}
         {...props}
       />
     );

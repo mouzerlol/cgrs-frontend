@@ -7,13 +7,14 @@ import SectionWrapper from './SectionWrapper';
 interface ServiceProvidersSectionProps {
   content: { providers?: ServiceProvider[] };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function ServiceProvidersSection({ content, isEditingLayout }: ServiceProvidersSectionProps) {
+export default function ServiceProvidersSection({ content, isEditingLayout, isLoading = false }: ServiceProvidersSectionProps) {
   const providers = content.providers || [];
 
   return (
-    <SectionWrapper title="Service Providers" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Service Providers" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {providers.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No service providers added yet.</p>
       ) : (

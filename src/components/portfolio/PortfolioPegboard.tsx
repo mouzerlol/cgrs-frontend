@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
 import { Responsive, useContainerWidth, verticalCompactor } from 'react-grid-layout';
 import type { Layout, LayoutItem } from 'react-grid-layout';
+import { motion } from 'framer-motion';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { Portfolio, DashboardSection } from '@/types/portfolio';
@@ -283,9 +284,16 @@ export default function PortfolioPegboard({
           onResizeStart={handleResizeStart}
           onResizeStop={handleResizeStop}
         >
-          {visibleSections.map((section) => (
-            <div key={section.id} className="z-10">
-              {renderSection(section)}
+          {visibleSections.map((section, index) => (
+            <div key={section.id} className="z-10 h-full w-full">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="h-full w-full"
+              >
+                {renderSection(section)}
+              </motion.div>
             </div>
           ))}
         </Responsive>

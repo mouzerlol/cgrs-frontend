@@ -21,13 +21,14 @@ const typeColors = {
 interface SystemsSectionProps {
   content: { items?: SystemItem[] };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function SystemsSection({ content, isEditingLayout }: SystemsSectionProps) {
+export default function SystemsSection({ content, isEditingLayout, isLoading = false }: SystemsSectionProps) {
   const items = content.items || [];
 
   return (
-    <SectionWrapper title="Systems" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Systems" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {items.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No systems documented yet.</p>
       ) : (

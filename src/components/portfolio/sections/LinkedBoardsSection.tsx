@@ -10,13 +10,14 @@ interface LinkedBoardsSectionProps {
   boards: Board[];
   portfolioTag: string;
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function LinkedBoardsSection({ linkedBoardIds, boards, portfolioTag, isEditingLayout }: LinkedBoardsSectionProps) {
+export default function LinkedBoardsSection({ linkedBoardIds, boards, portfolioTag, isEditingLayout, isLoading = false }: LinkedBoardsSectionProps) {
   const linkedBoards = boards.filter(b => linkedBoardIds.includes(b.id));
 
   return (
-    <SectionWrapper title="Linked Boards" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Linked Boards" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {linkedBoards.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No boards linked yet.</p>
       ) : (

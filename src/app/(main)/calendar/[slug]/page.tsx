@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Event } from '@/types';
 import EventContent from '@/components/event/EventContent';
 import eventsData from '@/data/events.json';
+import { getBreadcrumbsJsonLd } from '@/lib/breadcrumbs';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -17,12 +18,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Event Not Found | Coronation Gardens' };
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Calendar', href: '/calendar' },
+    { label: event.title },
+  ];
+
   return {
     title: `${event.title} | Coronation Gardens`,
     description:
       event.description.length > 160
         ? event.description.slice(0, 157) + '...'
         : event.description,
+    other: {
+      'script[type="application/ld+json"]': JSON.stringify(getBreadcrumbsJsonLd(breadcrumbs)),
+    },
   };
 }
 

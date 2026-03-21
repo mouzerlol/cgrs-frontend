@@ -129,16 +129,19 @@
    ========================================================================== */
 
 @layer utilities {
+  /* Horizontal padding only — do not use padding shorthand or it resets Tailwind py-/pt-/pb- on the same node (e.g. breadcrumbs). */
   .container {
     width: 100%;
-    padding: 0 theme('spacing.sm');
+    padding-left: theme('spacing.sm');
+    padding-right: theme('spacing.sm');
     max-width: 1400px;
     margin: 0 auto;
   }
 
   @media (min-width: 768px) {
     .container {
-      padding: 0 theme('spacing.md');
+      padding-left: theme('spacing.md');
+      padding-right: theme('spacing.md');
     }
   }
 

@@ -6,23 +6,72 @@ import BoardCard from '@/components/work-management/BoardCard';
 import CreateBoardModal from '@/components/work-management/CreateBoardModal';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import Card from '@/components/ui/Card';
-import boardsData from '@/data/boards.json';
-import { Board } from '@/types/work-management';
+import { useBoards, useCreateBoard } from '@/hooks/useBoards';
+import type { Board } from '@/types/work-management';
 
 export default function BoardsListPage() {
-  const [boards, setBoards] = useState<Board[]>(boardsData.boards as Board[]);
+  const { data: boards = [], isLoading, error } = useBoards();
+  const createBoard = useCreateBoard();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'taskCount' | 'createdAt' | 'updatedAt'>) => {
-    const board: Board = {
-      ...newBoard,
-      id: newBoard.name.toLowerCase().replace(/\s+/g, '-'),
-      taskCount: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setBoards([...boards, board]);
+  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>) => {
+    createBoard.mutate(newBoard, {
+      onSuccess: () => {
+        setIsCreateModalOpen(false);
+      },
+    });
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
+        <WorkManagementNavBar
+          title="Boards"
+          showBackButton
+          backHref="/work-management"
+          backLabel="Work Management"
+          actions={[
+            {
+              label: '+ Create Board',
+              onClick: () => setIsCreateModalOpen(true),
+              variant: 'primary',
+            },
+          ]}
+        />
+        <main className="flex-1 min-h-0 overflow-y-auto">
+          <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-[200px] rounded-[20px] bg-sage/10 animate-pulse" />
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
+        <WorkManagementNavBar
+          title="Boards"
+          showBackButton
+          backHref="/work-management"
+          backLabel="Work Management"
+        />
+        <main className="flex-1 min-h-0 overflow-y-auto flex items-center justify-center">
+          <Card variant="sage" className="p-12 text-center">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="font-display text-2xl text-forest mb-2">Failed to load boards</h2>
+            <p className="text-forest/60 mb-6">
+              Please try refreshing the page
+            </p>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col bg-bone">

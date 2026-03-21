@@ -7,13 +7,14 @@ import SectionWrapper from './SectionWrapper';
 interface ServicesSectionProps {
   content: { items?: ServiceItem[] };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function ServicesSection({ content, isEditingLayout }: ServicesSectionProps) {
+export default function ServicesSection({ content, isEditingLayout, isLoading = false }: ServicesSectionProps) {
   const items = content.items || [];
 
   return (
-    <SectionWrapper title="Services & Responsibilities" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Services & Responsibilities" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {items.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No services defined yet.</p>
       ) : (

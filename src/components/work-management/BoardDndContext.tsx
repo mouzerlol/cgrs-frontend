@@ -1,85 +1,39 @@
 'use client';
 
-import { useState } from 'react';
-import { 
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
   CollisionDetection,
-  DndContext, 
-  DragOverlay, 
-  closestCorners, 
+  DndContext,
+  DragOverlay,
+  closestCorners,
   pointerWithin,
-  KeyboardSensor, 
-  PointerSensor, 
-  useSensor, 
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
   useSensors,
   DragStartEvent,
   DragEndEvent,
-  defaultDropAnimationSideEffects
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { Task, TaskStatus } from '@/types/work-management';
+import { reorderTasksInLanes, type TaskBoardMoveArgs } from '@/lib/work-management-dnd';
+import type { Task, TaskStatus } from '@/types/work-management';
 import DragOverlayCard from './DragOverlayCard';
+
+interface BoardDndContextValue {
+  recentlyMovedTaskId: string | null;
+}
+
+const BoardDndContext = createContext<BoardDndContextValue>({ recentlyMovedTaskId: null });
+
+export function useBoardDndContext() {
+  return useContext(BoardDndContext);
+}
 
 interface BoardDndContextProps {
   children: React.ReactNode;
   tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  onTaskMove: (args: TaskBoardMoveArgs) => void;
 }
-
-const STATUS_ORDER: TaskStatus[] = ['backlog', 'todo', 'in_progress', 'review', 'done', 'closed'];
-
-const reorderInLanes = (
-  items: Task[],
-  activeId: string,
-  targetStatus: TaskStatus,
-  overTaskId: string | null,
-  placeAfterOverTask: boolean
-): Task[] => {
-  const byId = new Map(items.map((task) => [task.id, task]));
-  const activeTask = byId.get(activeId);
-  if (!activeTask) {
-    return items;
-  }
-
-  const lanes = new Map<TaskStatus, string[]>(
-    STATUS_ORDER.map((status) => [status, items.filter((task) => task.status === status).map((task) => task.id)])
-  );
-
-  const sourceStatus = activeTask.status;
-  lanes.set(
-    sourceStatus,
-    (lanes.get(sourceStatus) || []).filter((id) => id !== activeId)
-  );
-
-  const targetLane = [...(lanes.get(targetStatus) || [])];
-  let insertIndex = targetLane.length;
-  if (overTaskId) {
-    const overLaneIndex = targetLane.indexOf(overTaskId);
-    if (overLaneIndex >= 0) {
-      insertIndex = overLaneIndex + (placeAfterOverTask ? 1 : 0);
-    }
-  }
-
-  targetLane.splice(Math.max(0, Math.min(insertIndex, targetLane.length)), 0, activeId);
-  lanes.set(targetStatus, targetLane);
-
-  const updatedActiveTask: Task = {
-    ...activeTask,
-    status: targetStatus,
-    updatedAt: new Date().toISOString(),
-  };
-  byId.set(activeId, updatedActiveTask);
-
-  const rebuilt: Task[] = [];
-  for (const status of STATUS_ORDER) {
-    for (const id of lanes.get(status) || []) {
-      const task = byId.get(id);
-      if (task) {
-        rebuilt.push(task);
-      }
-    }
-  }
-  return rebuilt;
-};
 
 const collisionDetectionStrategy: CollisionDetection = (args) => {
   const pointerCollisions = pointerWithin(args);
@@ -89,8 +43,30 @@ const collisionDetectionStrategy: CollisionDetection = (args) => {
   return closestCorners(args);
 };
 
-export default function BoardDndContext({ children, tasks, setTasks }: BoardDndContextProps) {
+export default function BoardDndContextProvider({ children, tasks, onTaskMove }: BoardDndContextProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [recentlyMovedTaskId, setRecentlyMovedTaskId] = useState<string | null>(null);
+  const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerOptimisticPulse = useCallback((taskId: string) => {
+    setRecentlyMovedTaskId(taskId);
+
+    if (moveTimeoutRef.current) {
+      clearTimeout(moveTimeoutRef.current);
+    }
+
+    moveTimeoutRef.current = setTimeout(() => {
+      setRecentlyMovedTaskId(null);
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (moveTimeoutRef.current) {
+        clearTimeout(moveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -100,7 +76,7 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -112,82 +88,118 @@ export default function BoardDndContext({ children, tasks, setTasks }: BoardDndC
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveTask(null);
     const { active, over } = event;
-    if (!over) return;
+    if (!over) {
+      setActiveTask(null);
+      return;
+    }
 
-    const activeId = active.id;
-    const overId = over.id;
+    const activeId = String(active.id);
+    const overId = String(over.id);
 
-    if (activeId === overId) return;
+    if (activeId === overId) {
+      setActiveTask(null);
+      return;
+    }
 
     const isActiveTask = active.data.current?.type === 'Task';
     const isOverTask = over.data.current?.type === 'Task';
     const isOverColumn = over.data.current?.type === 'Column';
 
-    // Handle task dropped on another task
-    if (isActiveTask && isOverTask) {
-      setTasks((prev) => {
-        const activeIndex = prev.findIndex((t) => t.id === activeId);
-        const overIndex = prev.findIndex((t) => t.id === overId);
-        
-        if (activeIndex === -1 || overIndex === -1) return prev;
-        const activeStatus = prev[activeIndex].status;
-        const overStatus = prev[overIndex].status;
-        const targetStatus = overStatus;
-        const targetOrderBefore = prev.filter((t) => t.status === targetStatus).map((t) => t.id);
-        const targetLaneBefore = prev.filter((t) => t.status === overStatus).map((t) => t.id);
-        const overLaneIndex = targetLaneBefore.findIndex((id) => id === String(overId));
-        const isOverLastInLane = overLaneIndex === targetLaneBefore.length - 1;
-        const activeTop = active.rect.current.translated?.top ?? active.rect.current.initial?.top ?? 0;
-        const overMidpoint = over.rect.top + (over.rect.height / 2);
-        const isBelowOverMidpoint = activeTop > overMidpoint;
-        const placeAfterOverTask = isOverLastInLane && isBelowOverMidpoint;
-        
-        const moved = reorderInLanes(prev, String(activeId), overStatus, String(overId), placeAfterOverTask);
-        return moved;
+    const finish = (args: TaskBoardMoveArgs) => {
+      /** Defer cache/API work so @dnd-kit drop measurement is not racing React re-renders (avoids ghost snap-back). */
+      requestAnimationFrame(() => {
+        onTaskMove(args);
+        triggerOptimisticPulse(args.taskId);
+        setActiveTask(null);
       });
+    };
+
+    if (isActiveTask && isOverTask) {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const overIndex = tasks.findIndex((t) => t.id === overId);
+
+      if (activeIndex === -1 || overIndex === -1) {
+        setActiveTask(null);
+        return;
+      }
+
+      const overStatus = tasks[overIndex].status;
+      const activeTop = active.rect.current.translated?.top ?? active.rect.current.initial?.top ?? 0;
+      const overMidpoint = over.rect.top + over.rect.height / 2;
+      const placeAfterOverTask = activeTop > overMidpoint;
+
+      const previousStatus = tasks[activeIndex].status;
+      const nextTasks = reorderTasksInLanes(tasks, activeId, overStatus, overId, placeAfterOverTask);
+      const moved = nextTasks.find((t) => t.id === activeId);
+      if (!moved) {
+        setActiveTask(null);
+        return;
+      }
+
+      finish({
+        taskId: activeId,
+        previousStatus,
+        nextStatus: moved.status,
+        nextTasks,
+      });
+      return;
     }
 
-    // Handle task dropped on empty column
     if (isActiveTask && isOverColumn) {
-      setTasks((prev) => {
-        const activeIndex = prev.findIndex((t) => t.id === activeId);
-        const overStatus = overId as TaskStatus;
-        
-        if (activeIndex === -1) return prev;
-        
-        // Update status when dropped on different column
-        if (prev[activeIndex].status !== overStatus) {
-          const moved = reorderInLanes(prev, String(activeId), overStatus, null, false);
-          return moved;
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      if (activeIndex === -1) {
+        setActiveTask(null);
+        return;
+      }
+
+      const overStatus = overId as TaskStatus;
+      const previousStatus = tasks[activeIndex].status;
+
+      /** Dropping on the column droppable (e.g. bottom placeholder) appends to lane end; same-lane used to early-return and skipped PATCH. */
+      const nextTasks = reorderTasksInLanes(tasks, activeId, overStatus, null, false);
+      const moved = nextTasks.find((t) => t.id === activeId);
+      if (!moved) {
+        setActiveTask(null);
+        return;
+      }
+
+      if (previousStatus === overStatus) {
+        const prevLaneIds = tasks.filter((t) => t.status === overStatus).map((t) => t.id);
+        const nextLaneIds = nextTasks.filter((t) => t.status === overStatus).map((t) => t.id);
+        const laneOrderUnchanged =
+          prevLaneIds.length === nextLaneIds.length && prevLaneIds.every((id, i) => id === nextLaneIds[i]);
+        if (laneOrderUnchanged) {
+          setActiveTask(null);
+          return;
         }
-        return prev;
+      }
+
+      finish({
+        taskId: activeId,
+        previousStatus,
+        nextStatus: moved.status,
+        nextTasks,
       });
+      return;
     }
+
+    setActiveTask(null);
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={collisionDetectionStrategy}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      {children}
-      <DragOverlay
-        dropAnimation={{
-          sideEffects: defaultDropAnimationSideEffects({
-            styles: {
-              active: {
-                opacity: '0.5',
-              },
-            },
-          }),
-        }}
+    <BoardDndContext.Provider value={{ recentlyMovedTaskId }}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       >
-        {activeTask ? <DragOverlayCard task={activeTask} /> : null}
-      </DragOverlay>
-    </DndContext>
+        {children}
+        <DragOverlay dropAnimation={null}>
+          {activeTask ? <DragOverlayCard task={activeTask} /> : null}
+        </DragOverlay>
+      </DndContext>
+    </BoardDndContext.Provider>
   );
 }

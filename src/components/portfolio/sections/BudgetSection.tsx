@@ -5,9 +5,10 @@ import SectionWrapper from './SectionWrapper';
 interface BudgetSectionProps {
   content: { allocated?: number; spent?: number };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function BudgetSection({ content, isEditingLayout }: BudgetSectionProps) {
+export default function BudgetSection({ content, isEditingLayout, isLoading = false }: BudgetSectionProps) {
   const { allocated = 0, spent = 0 } = content;
   const percentage = allocated > 0 ? Math.round((spent / allocated) * 100) : 0;
   const isOverBudget = percentage > 100;
@@ -17,7 +18,7 @@ export default function BudgetSection({ content, isEditingLayout }: BudgetSectio
   };
 
   return (
-    <SectionWrapper title="Budget" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Budget" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       <div className="space-y-3">
         <div>
           <div className="flex items-baseline justify-between mb-1">

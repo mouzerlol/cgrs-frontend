@@ -15,14 +15,16 @@ const NAV_LINK_CLASS =
 
 /**
  * Desktop top nav with responsive overflow: rightmost links fold into More when space is limited.
- * Main nav links use ALL CAPS; More dropdown uses title case with icons.
- * Consumes useCurrentUser so backend /users/me is called when signed in; shows role next to UserButton.
+ * Hidden measure rows reserve the same width as the live auth block (role + UserButton or login CTA)
+ * so overflow counting matches signed-in layouts with long labels.
  */
 export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [overflowCount, setOverflowCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
+  /** Width of the trailing auth cluster (signed-in label + UserButton or Resident Login) for overflow measurement. */
+  const authSlotRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth();
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
@@ -55,35 +57,49 @@ export default function Navigation() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
 
+  const updateOverflow = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const measuredAuth = authSlotRef.current?.getBoundingClientRect().width ?? 0;
+    /** Conservative floor when Clerk/user text has not laid out yet (avoids one-frame over-count). */
+    const fallbackTail = !isLoaded ? 152 : isSignedIn ? 72 : 152;
+    const tailPx = Math.max(measuredAuth, fallbackTail);
+
+    container.querySelectorAll('[data-auth-spacer]').forEach((node) => {
+      (node as HTMLElement).style.width = `${tailPx}px`;
+    });
+
+    const measureContainers = container.querySelectorAll('[data-measure-count]');
+    let bestCount = 0;
+
+    measureContainers.forEach((el) => {
+      const count = parseInt(el.getAttribute('data-measure-count') || '0', 10);
+      const children = Array.from(el.children) as HTMLElement[];
+      if (children.length > 0) {
+        const firstTop = children[0].offsetTop;
+        const lastTop = children[children.length - 1].offsetTop;
+        if (Math.abs(firstTop - lastTop) < 10) {
+          if (count > bestCount) bestCount = count;
+        }
+      }
+    });
+
+    setOverflowCount(navItems.length - bestCount);
+  }, [isLoaded, isSignedIn, navItems.length]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const updateOverflow = () => {
-      const measureContainers = container.querySelectorAll('[data-measure-count]');
-      let bestCount = 0;
-
-      measureContainers.forEach((el) => {
-        const count = parseInt(el.getAttribute('data-measure-count') || '0', 10);
-        const children = Array.from(el.children) as HTMLElement[];
-        if (children.length > 0) {
-          const firstTop = children[0].offsetTop;
-          const lastTop = children[children.length - 1].offsetTop;
-          // If first and last child are on the same line (within 10px diff), this count fits
-          if (Math.abs(firstTop - lastTop) < 10) {
-            if (count > bestCount) bestCount = count;
-          }
-        }
-      });
-
-      setOverflowCount(navItems.length - bestCount);
-    };
-
     updateOverflow();
-    const ro = new ResizeObserver(() => requestAnimationFrame(updateOverflow));
+    const schedule = () => requestAnimationFrame(updateOverflow);
+    const ro = new ResizeObserver(schedule);
     ro.observe(container);
+    const authEl = authSlotRef.current;
+    if (authEl) ro.observe(authEl);
     return () => ro.disconnect();
-  }, [navItems.length]);
+  }, [updateOverflow, currentUser?.membership?.role, community?.name]);
 
   return (
     <nav
@@ -111,17 +127,16 @@ export default function Navigation() {
                 More <Icon name="chevron-down" size="sm" />
               </span>
             )}
-            <span className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded shrink-0">
-              Login
-            </span>
+            {/* Invisible spacer: width synced in updateOverflow to match real auth block */}
+            <div data-auth-spacer className="shrink-0 h-6 invisible" aria-hidden />
           </div>
         );
       })}
 
       {/* Actual visible navigation */}
-      <div className="flex items-center gap-4 lg:gap-8 shrink-0 relative z-10">
+      <div className="flex items-center gap-4 lg:gap-8 shrink-0">
         {visibleItems.map((item) => (
-          <Link key={item.name} href={item.href} className={NAV_LINK_CLASS}>
+          <Link key={item.name} href={item.href} className={NAV_LINK_CLASS} prefetch={true}>
             {item.name}
           </Link>
         ))}
@@ -145,6 +160,7 @@ export default function Navigation() {
                     key={item.name}
                     href={item.href}
                     className="flex items-center gap-3 px-4 py-2.5 text-[0.875rem] transition-all duration-200 text-bone/90 font-medium hover:bg-white/10 uppercase tracking-wide"
+                    prefetch={true}
                   >
                     <Icon name={item.icon as IconName} size="sm" />
                     {item.name}
@@ -155,49 +171,51 @@ export default function Navigation() {
           </div>
         )}
 
-        {isLoaded && isSignedIn ? (
-          <div className="flex items-center gap-2 shrink-0">
-            {(currentUser?.membership?.role || community?.name) && (
-              <span className="text-xs font-medium uppercase tracking-wide text-bone/70 hidden sm:inline">
-                {currentUser?.membership?.role && formatRole(currentUser.membership.role)}
-                {currentUser?.membership?.role && community?.name && ' · '}
-                {community?.name && <span className="normal-case">{community.name}</span>}
-              </span>
-            )}
-            <UserButton>
-              <UserButton.MenuItems>
-                <UserButton.Link
-                  label="My Profile"
-                  labelIcon={
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+        <div ref={authSlotRef} className="flex items-center shrink-0">
+          {isLoaded && isSignedIn ? (
+            <div className="flex items-center gap-2 shrink-0">
+              {(currentUser?.membership?.role || community?.name) && (
+                <span className="text-xs font-medium uppercase tracking-wide text-bone/70 hidden sm:inline">
+                  {currentUser?.membership?.role && formatRole(currentUser.membership.role)}
+                  {currentUser?.membership?.role && community?.name && ' · '}
+                  {community?.name && <span className="normal-case">{community.name}</span>}
+                </span>
+              )}
+              <UserButton>
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    label="My Profile"
+                    labelIcon={
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    }
+                    href="/profile"
+                  />
+                  <UserButton.Action label="manageAccount" />
+                  <UserButton.Action label="signOut" />
+                </UserButton.MenuItems>
+              </UserButton>
+            </div>
+          ) : (
+            <SignInButton mode="redirect">
+              <span
+                role="button"
+                tabIndex={0}
+                className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest shrink-0 cursor-pointer inline-block"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    router.push('/login');
                   }
-                  href="/profile"
-                />
-                <UserButton.Action label="manageAccount" />
-                <UserButton.Action label="signOut" />
-              </UserButton.MenuItems>
-            </UserButton>
-          </div>
-        ) : (
-          <SignInButton mode="redirect">
-            <span
-              role="button"
-              tabIndex={0}
-              className="text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest shrink-0 cursor-pointer inline-block"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  router.push('/login');
-                }
-              }}
-            >
-              Resident Login
-            </span>
-          </SignInButton>
-        )}
+                }}
+              >
+                Resident Login
+              </span>
+            </SignInButton>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 
 interface PageHeaderProps {
   title: string;
@@ -11,6 +12,8 @@ interface PageHeaderProps {
   backgroundImage?: string;
   /** Variant for different page types: 'default' for marketing, 'compact' for functional pages, 'flush' for no gap below */
   variant?: 'default' | 'compact' | 'flush';
+  /** When false, skip the trail under the hero (rare; e.g. embedded demos). Default true. */
+  showBreadcrumbs?: boolean;
 }
 
 /**
@@ -27,7 +30,8 @@ export default function PageHeader({
   eyebrow,
   dark = true,
   backgroundImage,
-  variant = 'default'
+  variant = 'default',
+  showBreadcrumbs = true,
 }: PageHeaderProps) {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
 
@@ -50,6 +54,7 @@ export default function PageHeader({
     : 'clamp(1.5rem, 4vw, 2rem)';
 
   return (
+    <>
     <section className={sectionClasses}>
       {/* Full-bleed Background Image */}
       {backgroundImage && (
@@ -99,5 +104,7 @@ export default function PageHeader({
         </div>
       </div>
     </section>
+    {showBreadcrumbs ? <SiteBreadcrumbs variant="belowHero" /> : null}
+    </>
   );
 }

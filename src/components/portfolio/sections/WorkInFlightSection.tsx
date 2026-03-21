@@ -11,6 +11,7 @@ interface WorkInFlightSectionProps {
   tasks: Task[];
   portfolioTag: string;
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
 function StatusBadge({ label, count, color }: { label: string; count: number; color: string }) {
@@ -22,7 +23,7 @@ function StatusBadge({ label, count, color }: { label: string; count: number; co
   );
 }
 
-export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, portfolioTag, isEditingLayout }: WorkInFlightSectionProps) {
+export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, portfolioTag, isEditingLayout, isLoading = false }: WorkInFlightSectionProps) {
   const linkedBoards = boards.filter(b => linkedBoardIds.includes(b.id));
 
   // Filter tasks by portfolio tag
@@ -39,7 +40,7 @@ export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, por
   const totalActive = statusCounts.todo + statusCounts.in_progress + statusCounts.review;
 
   return (
-    <SectionWrapper title="Work in Flight" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Work in Flight" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {linkedBoards.length === 0 ? (
         <p className="text-xs text-forest/40 italic">Link boards to see work in flight.</p>
       ) : (

@@ -3,6 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types/work-management';
 import { cn } from '@/lib/utils';
 import TaskCard from './TaskCard';
+import { useBoardDndContext } from './BoardDndContext';
 
 interface DraggableCardProps {
   task: Task;
@@ -10,13 +11,15 @@ interface DraggableCardProps {
 }
 
 export default function DraggableCard({ task, onClick }: DraggableCardProps) {
-  const { 
-    attributes, 
-    listeners, 
-    setNodeRef, 
-    transform, 
-    transition, 
-    isDragging 
+  const { recentlyMovedTaskId } = useBoardDndContext();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
   } = useSortable({
     id: task.id,
     animateLayoutChanges: () => false,
@@ -26,6 +29,8 @@ export default function DraggableCard({ task, onClick }: DraggableCardProps) {
       status: task.status,
     },
   });
+
+  const isRecentlyMoved = recentlyMovedTaskId === task.id;
 
   const style = {
     transition: isDragging ? undefined : transition,
@@ -48,8 +53,9 @@ export default function DraggableCard({ task, onClick }: DraggableCardProps) {
       {...attributes}
       {...listeners}
       className={cn(
-        "touch-none",
-        isDragging && "opacity-0 pointer-events-none"
+        "touch-none transition-shadow duration-200",
+        isDragging && "opacity-0 pointer-events-none",
+        isRecentlyMoved && "animate-optimistic-pulse"
       )}
     >
       <TaskCard task={task} onClick={onClick} />

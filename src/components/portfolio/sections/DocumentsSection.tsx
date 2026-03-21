@@ -16,13 +16,14 @@ const typeIcons = {
 interface DocumentsSectionProps {
   content: { items?: DocumentItem[] };
   isEditingLayout: boolean;
+  isLoading?: boolean;
 }
 
-export default function DocumentsSection({ content, isEditingLayout }: DocumentsSectionProps) {
+export default function DocumentsSection({ content, isEditingLayout, isLoading = false }: DocumentsSectionProps) {
   const items = content.items || [];
 
   return (
-    <SectionWrapper title="Documents & Policies" isEditingLayout={isEditingLayout}>
+    <SectionWrapper title="Documents & Policies" isEditingLayout={isEditingLayout} isLoading={isLoading}>
       {items.length === 0 ? (
         <p className="text-xs text-forest/40 italic">No documents added yet.</p>
       ) : (

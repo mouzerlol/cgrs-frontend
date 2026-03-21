@@ -2,6 +2,7 @@
 
 import { Resolution } from "@/types/decisions";
 import ResolutionCard from "./ResolutionCard";
+import { motion } from "framer-motion";
 
 interface ResolutionListProps {
     resolutions: Resolution[];
@@ -54,29 +55,35 @@ export default function ResolutionList({
         <div
             className={`flex flex-col gap-3 overflow-y-auto custom-scrollbar ${className}`}
         >
-            {resolutions.map((resolution) => (
-                <ResolutionCard
+            {resolutions.map((resolution, index) => (
+                <motion.div
                     key={resolution.id}
-                    resolution={resolution}
-                    memberName={
-                        resolution.actionOwner
-                            ? memberMap.get(resolution.actionOwner) || null
-                            : null
-                    }
-                    onClick={() => onSelectResolution(resolution)}
-                    onCopyLink={(e) => {
-                        e.stopPropagation();
-                        onCopyLink(resolution);
-                    }}
-                    onCopyEmail={(e) => {
-                        e.stopPropagation();
-                        onCopyEmail(resolution);
-                    }}
-                    onExportPdf={(e) => {
-                        e.stopPropagation();
-                        onExportPdf(resolution);
-                    }}
-                />
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                    <ResolutionCard
+                        resolution={resolution}
+                        memberName={
+                            resolution.actionOwner
+                                ? memberMap.get(resolution.actionOwner) || null
+                                : null
+                        }
+                        onClick={() => onSelectResolution(resolution)}
+                        onCopyLink={(e) => {
+                            e.stopPropagation();
+                            onCopyLink(resolution);
+                        }}
+                        onCopyEmail={(e) => {
+                            e.stopPropagation();
+                            onCopyEmail(resolution);
+                        }}
+                        onExportPdf={(e) => {
+                            e.stopPropagation();
+                            onExportPdf(resolution);
+                        }}
+                    />
+                </motion.div>
             ))}
         </div>
     );

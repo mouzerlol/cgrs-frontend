@@ -2,6 +2,7 @@ import { Task, BoardMember } from '@/types/work-management';
 import { PRIORITY_CONFIG } from '@/lib/work-management';
 import { cn, formatRelativeDate } from '@/lib/utils';
 import mockData from '@/data/work-management.json';
+import { Avatar } from '@/components/design-system/Avatar';
 import { MessageSquare, AlignLeft } from 'lucide-react';
 
 interface TaskCardProps {
@@ -23,7 +24,10 @@ const getTagColorClass = (tag: string) => {
 
 export default function TaskCard({ task, onClick, className }: TaskCardProps) {
   const priorityConfig = PRIORITY_CONFIG[task.priority];
-  const assignee = mockData.members.find((m: any) => m.id === task.assignee) as BoardMember | undefined;
+  const memberFromMock = mockData.members.find((m: BoardMember) => m.id === task.assignee);
+  const assigneeName = task.assignee_name ?? memberFromMock?.name;
+  const assigneeAvatarSrc = task.assignee_avatar_url ?? memberFromMock?.avatar ?? null;
+  const hasAssignee = Boolean(task.assignee);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -77,27 +81,26 @@ export default function TaskCard({ task, onClick, className }: TaskCardProps) {
           </div>
         )}
         
-        {/* Bottom Row: Avatar (left) and Time Open (right) */}
+        {/* Bottom Row: assignee avatar (left of icons), metadata icons, date (right) */}
         <div className="flex items-center justify-between mt-auto pt-1 w-full">
-          <div className="flex items-center gap-2">
-            {assignee && (
-              <img 
-                src={assignee.avatar} 
-                alt={assignee.name}
-                width={24}
-                height={24}
-                loading="lazy"
-                className="w-6 h-6 rounded-full object-cover border-2 border-white shadow-sm"
-                title={`Assigned to ${assignee.name}`}
+          <div className="flex items-center gap-2 min-w-0">
+            {hasAssignee && (
+              <Avatar
+                src={assigneeAvatarSrc}
+                alt={assigneeName ?? 'Assignee'}
+                name={assigneeName ?? ''}
+                size="card"
+                title={assigneeName ? `Assigned to ${assigneeName}` : 'Assigned'}
+                className="shrink-0"
               />
             )}
-            <div className="flex items-center gap-2 text-forest/50 ml-1">
+            <div className="flex items-center gap-2 text-forest/50">
               {hasDescription && (
-                <AlignLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                <AlignLeft className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               )}
               {commentsCount > 0 && (
                 <div className="flex items-center gap-1">
-                  <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
+                  <MessageSquare className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                   <span className="text-[11px] font-medium">{commentsCount}</span>
                 </div>
               )}
