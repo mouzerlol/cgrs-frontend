@@ -9,8 +9,9 @@ import CommentThread, { buildReplyTree } from './CommentThread';
 interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   replies: Reply[];
   onUpvote?: (replyId: string) => void;
-  onReply?: (body: string, parentReplyId?: string) => void;
+  onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: (replyId: string) => void;
+  onDelete?: (replyId: string) => void;
   upvotedReplies?: Set<string>;
   currentUserId?: string;
 }
@@ -25,6 +26,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     onUpvote,
     onReply,
     onReport,
+    onDelete,
     upvotedReplies = new Set(),
     currentUserId,
     className,
@@ -63,7 +65,9 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
               onUpvote={onUpvote}
               onReply={onReply}
               onReport={onReport}
+              onDelete={onDelete}
               upvotedReplies={upvotedReplies}
+              currentUserId={currentUserId}
             />
           ))}
         </div>

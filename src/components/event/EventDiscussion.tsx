@@ -107,27 +107,28 @@ export default function EventDiscussion({ threadId, eventTitle, eventDescription
   const [replies, setReplies] = useState<Reply[]>(MOCK_REPLIES);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleReply = (body: string, parentReplyId?: string) => {
-    setIsSubmitting(true);
+  const handleReply = (body: string, parentReplyId?: string) =>
+    new Promise<void>((resolve) => {
+      setIsSubmitting(true);
+      setTimeout(() => {
+        const newReply: Reply = {
+          id: `reply-${Date.now()}`,
+          threadId,
+          body,
+          parentReplyId,
+          author: MOCK_USER,
+          createdAt: new Date().toISOString(),
+          upvotes: 0,
+          upvotedBy: [],
+          reportedBy: [],
+          depth: parentReplyId ? 1 : 0,
+        };
 
-    setTimeout(() => {
-      const newReply: Reply = {
-        id: `reply-${Date.now()}`,
-        threadId,
-        body,
-        parentReplyId,
-        author: MOCK_USER,
-        createdAt: new Date().toISOString(),
-        upvotes: 0,
-        upvotedBy: [],
-        reportedBy: [],
-        depth: parentReplyId ? 1 : 0,
-      };
-
-      setReplies((prev) => [...prev, newReply]);
-      setIsSubmitting(false);
-    }, 500);
-  };
+        setReplies((prev) => [...prev, newReply]);
+        setIsSubmitting(false);
+        resolve();
+      }, 500);
+    });
 
   return (
     <section className="py-lg">

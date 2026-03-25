@@ -15,10 +15,12 @@ interface ThreadActionsProps extends HTMLAttributes<HTMLDivElement> {
   thread: Thread;
   isUpvoted?: boolean;
   isBookmarked?: boolean;
+  canDelete?: boolean;
   onUpvote?: () => void;
   onBookmark?: () => void;
   onShare?: (platform: string) => void;
   onReport?: () => void;
+  onDelete?: () => void;
   replyCount?: number;
 }
 
@@ -37,10 +39,12 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
     thread,
     isUpvoted = false,
     isBookmarked = false,
+    canDelete = false,
     onUpvote,
     onBookmark,
     onShare,
     onReport,
+    onDelete,
     replyCount = 0,
     className,
     ...props
@@ -109,6 +113,23 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
                     />
                   )}
                 </Menu.Item>
+                {canDelete && onDelete && (
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        onClick={onDelete}
+                        className={cn(
+                          'w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md',
+                          active ? 'bg-sage-light text-red-600' : 'text-red-600'
+                        )}
+                      >
+                        <Icon icon="lucide:trash-2" className="w-4 h-4" />
+                        <span>Delete thread</span>
+                      </button>
+                    )}
+                  </Menu.Item>
+                )}
               </div>
             </Menu.Items>
           </Transition>

@@ -100,6 +100,7 @@ export interface Board {
   description: string;
   color: BoardColor;
   icon: string;
+  is_system: boolean;
   task_count: number;
   created_at: string;
   updated_at: string;

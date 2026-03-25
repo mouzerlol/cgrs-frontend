@@ -1,11 +1,22 @@
 'use client';
 
-import { forwardRef, HTMLAttributes, useState, useCallback } from 'react';
+import { forwardRef, HTMLAttributes, useCallback, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import type { Thread } from '@/types';
+import type { Poll, Thread } from '@/types';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import ImageGallery from './ImageGallery';
 import PollDisplay from './PollDisplay';
+
+/** Collect option ids the current member has voted for, using server-side voter member IDs. */
+function deriveMyPollOptionIds(poll: Poll | undefined, memberId: string | undefined): string[] {
+  if (!poll || !memberId) return [];
+  const ids: string[] = [];
+  for (const opt of poll.options) {
+    if (opt.voters.includes(memberId)) ids.push(opt.id);
+  }
+  return ids;
+}
 
 interface ThreadBodyProps extends HTMLAttributes<HTMLDivElement> {
   thread: Thread;
@@ -60,42 +71,45 @@ const formatBody = (body?: string) => {
  * Used in the thread detail page.
  *
  * Enhanced with poll voting functionality and voter name display.
+ * Poll voting optimistic updates are handled by the React Query mutation hook.
  */
 const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
-  ({
-    thread,
-    voterNames,
-    currentUserId,
-    onPollVote,
-    onPollClose,
-    className,
-    ...props
-  }, ref) => {
-    // Local state for demo - in production this would come from server/context
-    const [hasVoted, setHasVoted] = useState(false);
-    const [votedFor, setVotedFor] = useState<string[]>([]);
+  (
+    {
+      thread,
+      voterNames,
+      currentUserId,
+      onPollVote,
+      onPollClose,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
+    const { data: me } = useCurrentUser();
+    const memberId = me?.membership?.id;
 
-    const handleVote = useCallback((optionId: string) => {
-      if (thread.poll?.allowMultiple) {
-        setVotedFor((prev) => {
-          if (prev.includes(optionId)) {
-            return prev.filter((id) => id !== optionId);
-          }
-          return [...prev, optionId];
-        });
-      } else {
-        setVotedFor([optionId]);
-        setHasVoted(true);
-      }
+    const votedFor = useMemo(
+      () => deriveMyPollOptionIds(thread.poll, memberId),
+      [thread.poll, memberId],
+    );
+    const hasVoted = votedFor.length > 0;
 
-      onPollVote?.(optionId);
-    }, [thread.poll?.allowMultiple, onPollVote]);
+    const handleVote = useCallback(
+      (optionId: string) => {
+        onPollVote?.(optionId);
+      },
+      [onPollVote],
+    );
 
-    const isCreator = currentUserId === thread.poll?.creatorId;
+    const isCreator = Boolean(
+      currentUserId &&
+        thread.poll?.creatorClerkUserId &&
+        currentUserId === thread.poll.creatorClerkUserId,
+    );
 
-    // Generate a default voter names map from the poll data if not provided
-    // This extracts display names from the thread data for demo purposes
-    const effectiveVoterNames = voterNames || generateVoterNamesFromThread(thread);
+    const effectiveVoterNames =
+      voterNames || thread.poll?.voterDisplayNames || generateVoterNamesFromThread(thread);
 
     return (
       <div ref={ref} className={cn('space-y-6', className)} {...props}>
@@ -114,7 +128,7 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
             hasVoted={hasVoted}
             votedFor={votedFor}
             voterNames={effectiveVoterNames}
-            currentUserId={currentUserId}
+            currentMemberId={memberId}
             isCreator={isCreator}
             onVote={handleVote}
             onClose={onPollClose}

@@ -20,7 +20,7 @@ export function BreadcrumbBar({ children, className, outerClassName }: Breadcrum
   const surface = (
     <div
       className={cn(
-        'relative border-t border-sage/40 border-b border-sage/25',
+        'relative border-t border-sage/40',
         'bg-gradient-to-b from-sage-light/95 via-bone to-bone',
         'shadow-[inset_0_1px_0_rgba(217,93,57,0.08)]',
         className

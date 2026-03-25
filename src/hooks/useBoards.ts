@@ -34,7 +34,7 @@ export function useCreateBoard() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>) =>
+    mutationFn: (data: Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>) =>
       createBoard(data, getToken),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['boards'] });
@@ -53,7 +53,7 @@ export function useUpdateBoard() {
       data,
     }: {
       boardId: string;
-      data: Partial<Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>>;
+      data: Partial<Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>>;
     }) => updateBoard(boardId, data, getToken),
     onSuccess: (_data, { boardId }) => {
       queryClient.invalidateQueries({ queryKey: ['boards'] });

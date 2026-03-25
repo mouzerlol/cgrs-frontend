@@ -18,8 +18,8 @@ interface PollDisplayProps extends HTMLAttributes<HTMLDivElement> {
   votedFor?: string[];
   /** Optional mapping of user IDs to display names for showing voter list */
   voterNames?: Record<string, string>;
-  /** Current user ID for showing "You" in voter list */
-  currentUserId?: string;
+  /** Current user's forum member id (matches `option.voters`) for highlighting "You" in voter list */
+  currentMemberId?: string;
   /** Whether the current user is the poll creator (can close poll) */
   isCreator?: boolean;
 }
@@ -36,14 +36,14 @@ const formatVoteCount = (count: number): string => {
 const formatVoterList = (
   voterIds: string[],
   voterNames?: Record<string, string>,
-  currentUserId?: string
+  currentMemberId?: string
 ): VoterInfo[] => {
   if (!voterNames) return [];
 
   return voterIds
     .map((id) => ({
       id,
-      displayName: id === currentUserId ? 'You' : (voterNames[id] || 'Anonymous'),
+      displayName: id === currentMemberId ? 'You' : (voterNames[id] || 'Anonymous'),
     }))
     .sort((a, b) => {
       // Put "You" first
@@ -139,7 +139,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
     hasVoted = false,
     votedFor = [],
     voterNames,
-    currentUserId,
+    currentMemberId,
     isCreator = false,
     className,
     ...props
@@ -149,9 +149,9 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
     const [isClosing, setIsClosing] = useState(false);
 
     const handleOptionClick = (optionId: string) => {
-      if (!hasVoted && !poll.isClosed && onVote) {
-        onVote(optionId);
-      }
+      if (poll.isClosed) return;
+      if (!poll.allowMultiple && hasVoted) return;
+      onVote?.(optionId);
     };
 
     const handleClosePoll = async () => {
@@ -244,7 +244,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
             const isSelected = votedFor.includes(option.id);
             const progressWidth = getProgressWidth(option.votes);
             const percentage = getPercentage(option.votes);
-            const voters = formatVoterList(option.voters, voterNames, currentUserId);
+            const voters = formatVoterList(option.voters, voterNames, currentMemberId);
             const isVotersExpanded = expandedOptions.has(option.id);
             const isWinning = hasVoted && option.votes === Math.max(...poll.options.map(o => o.votes)) && option.votes > 0;
 
@@ -253,7 +253,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                 <button
                   type="button"
                   onClick={() => handleOptionClick(option.id)}
-                  disabled={hasVoted || poll.isClosed}
+                  disabled={(!poll.allowMultiple && hasVoted) || poll.isClosed}
                   className={cn(
                     'relative w-full p-md rounded-xl border-2 border-sage bg-bone text-left cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[56px] overflow-hidden',
                     'max-sm:py-sm max-sm:px-md',

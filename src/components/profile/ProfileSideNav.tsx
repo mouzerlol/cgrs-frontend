@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useClerk } from '@clerk/nextjs';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +19,7 @@ interface ProfileSideNavProps {
 
 export default function ProfileSideNav({ onNavigate, className }: ProfileSideNavProps) {
   const pathname = usePathname();
+  const { openUserProfile } = useClerk();
 
   function isActive(href: string) {
     if (href === '/profile') return pathname === '/profile';
@@ -49,6 +51,21 @@ export default function ProfileSideNav({ onNavigate, className }: ProfileSideNav
             </li>
           );
         })}
+        <li className="mt-1 border-t border-sage/20 pt-1">
+          <button
+            type="button"
+            onClick={() => {
+              openUserProfile();
+              onNavigate?.();
+            }}
+            className={cn(
+              'flex w-full items-center gap-3 border-l-4 border-transparent px-4 py-3 text-left text-sm text-forest/70 transition-colors hover:bg-sage-light/30'
+            )}
+          >
+            <Icon icon="lucide:user-cog" className="h-5 w-5 shrink-0" aria-hidden="true" />
+            Manage account
+          </button>
+        </li>
       </ul>
     </nav>
   );

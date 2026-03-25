@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import type { DiscussionCategory, DiscussionCategorySlug } from '@/types';
+import type { DiscussionCategory } from '@/types';
 
 interface CategoryStats {
   threadCount: number;
@@ -14,7 +14,7 @@ interface CategoryButtonBarProps {
   /** List of categories to display */
   categories: DiscussionCategory[];
   /** Statistics per category */
-  stats?: Record<DiscussionCategorySlug, CategoryStats>;
+  stats?: Record<string, CategoryStats>;
   /** Additional class names */
   className?: string;
 }
@@ -53,7 +53,7 @@ export default function CategoryButtonBar({
       {/* Grid of category buttons */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {categories.map((category) => {
-          const threadCount = stats?.[category.slug as DiscussionCategorySlug]?.threadCount ?? 0;
+          const threadCount = stats?.[category.slug]?.threadCount ?? 0;
 
           return (
             <Link

@@ -10,6 +10,8 @@ interface CategorySelectProps {
   onChange: (value: string) => void;
   categories: DiscussionCategory[];
   error?: string;
+  /** When true, the control is non-interactive (e.g. categories still loading). */
+  disabled?: boolean;
 }
 
 export function CategorySelect({
@@ -17,6 +19,7 @@ export function CategorySelect({
   onChange,
   categories,
   error,
+  disabled = false,
 }: CategorySelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectedCategory = categories.find((c) => c.slug === value);
@@ -39,9 +42,14 @@ export function CategorySelect({
       <div className="relative">
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          aria-disabled={disabled}
+          disabled={disabled}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
           className={cn(
-            'w-full p-md bg-white border border-sage rounded-xl flex items-center justify-between cursor-pointer transition-all duration-[250ms] ease-out-custom text-left hover:border-forest focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
+            'w-full p-md bg-white border border-sage rounded-xl flex items-center justify-between transition-all duration-[250ms] ease-out-custom text-left focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
+            disabled
+              ? 'cursor-not-allowed opacity-60'
+              : 'cursor-pointer hover:border-forest',
             error && 'border-terracotta'
           )}
         >
@@ -67,7 +75,13 @@ export function CategorySelect({
               className="fixed inset-0 z-40"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-[calc(100%+4px)] left-0 right-0 bg-white border border-sage rounded-xl shadow-[0_8px_24px_rgba(26,34,24,0.12)] z-50 max-h-[320px] overflow-visible">
+            <div
+              className={cn(
+                'absolute top-[calc(100%+4px)] left-0 right-0 z-50 max-h-[min(320px,70vh)]',
+                'overflow-y-auto overscroll-contain rounded-xl border border-sage bg-white',
+                'shadow-[0_8px_24px_rgba(26,34,24,0.12)]',
+              )}
+            >
               {categories.map((category) => (
                 <button
                   key={category.slug}

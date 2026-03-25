@@ -30,6 +30,8 @@ vi.mock('@clerk/nextjs', () => ({
     openSignUp: vi.fn(),
   }),
   SignInButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SignOutButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  UserAvatar: () => <span data-testid="user-avatar" />,
   UserButton: () => null,
 }));
 

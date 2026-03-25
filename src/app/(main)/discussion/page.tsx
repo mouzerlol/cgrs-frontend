@@ -10,11 +10,15 @@ import { Icon } from '@iconify/react';
 import ThreadList from '@/components/discussions/ThreadList';
 import SortDropdown from '@/components/discussions/SortDropdown';
 import ViewToggle from '@/components/discussions/ViewToggle';
-import type { DiscussionCategorySlug, ThreadSortOption, Thread, DiscussionCategory } from '@/types';
-
-// Direct imports of data (build-time, works in client components)
-import categoriesData from '@/data/forum-categories.json';
-import discussionsData from '@/data/discussions.json';
+import type { ThreadSortOption, Thread } from '@/types';
+import {
+  useBookmarkThread,
+  useCategories,
+  useCategoryStats,
+  useReportThread,
+  useThreads,
+  useUpvoteThread,
+} from '@/hooks/useDiscussions';
 
 /**
  * Community Discussion page with sidebar navigation.
@@ -23,73 +27,60 @@ import discussionsData from '@/data/discussions.json';
  */
 export default function DiscussionPage() {
   // Category navigation state (null = "All Categories")
-  const [activeCategory, setActiveCategory] = useState<DiscussionCategorySlug | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   // Filter and view state
   const [sort, setSort] = useState<ThreadSortOption>('newest');
   const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
 
-  // Get categories and threads from imported data
-  const categories = categoriesData.categories as DiscussionCategory[];
-  const allThreads = discussionsData.threads as Thread[];
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
+  const { data: categoryStats = {}, isLoading: statsLoading } = useCategoryStats();
+  const { data: threadResult, isLoading: threadsLoading } = useThreads({
+    category: activeCategory ?? undefined,
+    limit: 100,
+    sort,
+  });
+  const upvoteThreadMutation = useUpvoteThread();
+  const bookmarkThreadMutation = useBookmarkThread();
+  const reportThreadMutation = useReportThread();
+  const allThreads = (threadResult?.threads ?? []) as Thread[];
+  const totalThreads = threadResult?.total ?? allThreads.length;
 
   // Calculate category stats
   const stats = useMemo(() => {
-    const statsMap: Record<DiscussionCategorySlug, { threadCount: number; replyCount: number }> = {} as any;
+    const statsMap: Record<string, { threadCount: number; replyCount: number }> = {};
 
-    categories.forEach(cat => {
-      const categoryThreads = allThreads.filter(t => t.category === cat.slug);
+    categories.forEach((cat) => {
       statsMap[cat.slug] = {
-        threadCount: categoryThreads.length,
-        replyCount: categoryThreads.reduce((sum, t) => sum + t.replyCount, 0),
+        threadCount: categoryStats[cat.slug]?.threadCount ?? 0,
+        replyCount: categoryStats[cat.slug]?.replyCount ?? 0,
       };
     });
 
     return statsMap;
-  }, [categories, allThreads]);
+  }, [categories, categoryStats]);
 
-  // Filter and sort threads
-  const filteredThreads = useMemo(() => {
-    let result = [...allThreads];
-
-    // Filter by category
-    if (activeCategory) {
-      result = result.filter(thread => thread.category === activeCategory);
-    }
-
-    // Sort threads
-    switch (sort) {
-      case 'newest':
-        result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      case 'oldest':
-        result.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        break;
-      case 'most-replies':
-        result.sort((a, b) => b.replyCount - a.replyCount);
-        break;
-      case 'most-upvotes':
-        result.sort((a, b) => b.upvotes - a.upvotes);
-        break;
-    }
-
-    return result;
-  }, [allThreads, activeCategory, sort]);
-
-  // Mock user interactions (will be replaced with real state management)
-  const [upvotedThreads] = useState<Set<string>>(new Set());
-  const [bookmarkedThreads] = useState<Set<string>>(new Set());
+  const upvotedThreads = useMemo(
+    () => new Set(allThreads.filter((thread) => thread.isUpvoted).map((thread) => thread.id)),
+    [allThreads],
+  );
+  const bookmarkedThreads = useMemo(
+    () => new Set(allThreads.filter((thread) => thread.isBookmarked).map((thread) => thread.id)),
+    [allThreads],
+  );
 
   const handleUpvote = (threadId: string) => {
-    console.log('Upvote thread:', threadId);
+    upvoteThreadMutation.mutate(threadId);
   };
 
   const handleBookmark = (threadId: string) => {
-    console.log('Bookmark thread:', threadId);
+    bookmarkThreadMutation.mutate(threadId);
   };
 
-  const handleReport = (threadId: string) => {
-    console.log('Report thread:', threadId);
+  const handleReport = async (threadId: string) => {
+    const reason = prompt('Please provide a reason for reporting this thread:');
+    if (!reason) return;
+    await reportThreadMutation.mutateAsync({ id: threadId, reason });
   };
 
   const handleShare = (threadId: string) => {
@@ -108,8 +99,30 @@ export default function DiscussionPage() {
         variant="compact"
       />
 
-      <section className="section bg-bone">
+      <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
+          <div className="mb-3 flex justify-end gap-3 sm:mb-4">
+            <div className="flex items-center gap-2">
+              <SortDropdown value={sort} onChange={setSort} />
+              <ViewToggle value={viewMode} onChange={setViewMode} />
+              <Link
+                href="/discussion/new"
+                className={cn(
+                  'inline-flex items-center gap-2 px-4 py-2.5',
+                  'bg-terracotta text-bone rounded-xl',
+                  'font-medium text-sm',
+                  'transition-all duration-200',
+                  'hover:bg-terracotta-dark hover:-translate-y-0.5',
+                  'hover:shadow-[0_6px_20px_rgba(217,93,57,0.35)]',
+                  'focus:outline-none focus:ring-2 focus:ring-terracotta/50'
+                )}
+              >
+                <Icon icon="lucide:plus" className="w-4 h-4" />
+                <span className="hidden sm:inline">New</span>
+              </Link>
+            </div>
+          </div>
+
           <SidebarLayout
             categories={categories.map((c): SidebarCategory => ({
               id: c.slug,
@@ -118,43 +131,17 @@ export default function DiscussionPage() {
               count: stats[c.slug]?.threadCount,
             }))}
             activeCategory={activeCategory}
-            onCategoryChange={(id) => setActiveCategory(id as DiscussionCategorySlug | null)}
+            onCategoryChange={(id) => setActiveCategory(id)}
             showAllOption
             allOptionLabel="All Categories"
             allOptionIcon="lucide:layout-grid"
             ariaLabel="Discussion categories"
           >
-            {/* Controls Row - Search, Sort, View, New Button */}
-            <div className="flex justify-end gap-3 mb-4">
-              {/* Sort, View Toggle & New Button */}
-              <div className="flex items-center gap-2">
-                <SortDropdown value={sort} onChange={setSort} />
-                <ViewToggle value={viewMode} onChange={setViewMode} />
-
-                {/* Start Discussion Button */}
-                <Link
-                  href="/discussion/new"
-                  className={cn(
-                    'inline-flex items-center gap-2 px-4 py-2.5',
-                    'bg-terracotta text-bone rounded-xl',
-                    'font-medium text-sm',
-                    'transition-all duration-200',
-                    'hover:bg-terracotta-dark hover:-translate-y-0.5',
-                    'hover:shadow-[0_6px_20px_rgba(217,93,57,0.35)]',
-                    'focus:outline-none focus:ring-2 focus:ring-terracotta/50'
-                  )}
-                >
-                  <Icon icon="lucide:plus" className="w-4 h-4" />
-                  <span className="hidden sm:inline">New</span>
-                </Link>
-              </div>
-            </div>
-
             {/* Thread List */}
             <ThreadList
-              threads={filteredThreads}
+              threads={allThreads}
               viewMode={viewMode}
-              isLoading={false}
+              isLoading={categoriesLoading || statsLoading || threadsLoading}
               skeletonCount={6}
               upvotedThreads={upvotedThreads}
               bookmarkedThreads={bookmarkedThreads}
@@ -171,7 +158,7 @@ export default function DiscussionPage() {
             />
 
             {/* Load More (pagination placeholder) */}
-            {filteredThreads.length > 20 && (
+            {totalThreads > allThreads.length && (
               <div className="pt-4 flex justify-center">
                 <button
                   className={cn(

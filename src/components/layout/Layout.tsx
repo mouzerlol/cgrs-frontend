@@ -2,6 +2,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import FooterNewsletter from '@/components/sections/FooterNewsletter';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
+import { AppToaster } from '@/components/ui/AppToaster';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export default function Layout({ children }: LayoutProps) {
       </main>
       <FooterNewsletter />
       <Footer />
+      <AppToaster />
     </div>
   );
 }

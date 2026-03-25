@@ -15,6 +15,7 @@ interface ApiBoardResponse {
   description: string;
   color: BoardColor;
   icon: string;
+  is_system: boolean;
   task_count: number;
   created_at: string;
   updated_at: string;
@@ -28,6 +29,7 @@ function mapBoardResponse(api: ApiBoardResponse): Board {
     description: api.description,
     color: api.color,
     icon: api.icon,
+    is_system: api.is_system,
     task_count: api.task_count,
     created_at: api.created_at,
     updated_at: api.updated_at,
@@ -50,7 +52,7 @@ export async function getBoard(
 }
 
 export async function createBoard(
-  data: Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>,
+  data: Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>,
   getToken: () => Promise<string | null>,
 ): Promise<Board> {
   const payload = {
@@ -68,7 +70,7 @@ export async function createBoard(
 
 export async function updateBoard(
   boardId: string,
-  data: Partial<Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>>,
+  data: Partial<Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>>,
   getToken: () => Promise<string | null>,
 ): Promise<Board> {
   const payload: Record<string, unknown> = {};

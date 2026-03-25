@@ -70,9 +70,11 @@ interface CommentThreadProps {
   depth?: number;
   hasMoreSiblingsBelow?: boolean;
   onUpvote?: (replyId: string) => void;
-  onReply?: (body: string, parentReplyId?: string) => void;
+  onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: (replyId: string) => void;
+  onDelete?: (replyId: string) => void;
   upvotedReplies?: Set<string>;
+  currentUserId?: string;
 }
 
 const CommentThread = memo(function CommentThread({
@@ -82,7 +84,9 @@ const CommentThread = memo(function CommentThread({
   onUpvote,
   onReply,
   onReport,
+  onDelete,
   upvotedReplies = new Set(),
+  currentUserId,
 }: CommentThreadProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const childrenId = useId();
@@ -91,6 +95,7 @@ const CommentThread = memo(function CommentThread({
   const visualDepth = Math.min(depth, MAX_RENDER_DEPTH);
   const hasChildren = children.length > 0;
   const totalDescendants = node.descendantCount;
+  const isAuthor = Boolean(currentUserId && reply.author.clerkUserId === currentUserId);
 
   const toggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => !prev);
@@ -107,7 +112,7 @@ const CommentThread = memo(function CommentThread({
     <article className={cn('relative', depth > 0 && 'mt-3')}>
       {/* Thread Connector from Parent (The Curve) */}
       {depth > 0 && (
-        <div 
+        <div
           className="absolute pointer-events-none border-sage opacity-40"
           style={{
             left: '-28.5px',
@@ -125,7 +130,7 @@ const CommentThread = memo(function CommentThread({
 
       {/* Continuation Line to next sibling */}
       {depth > 0 && hasMoreSiblingsBelow && (
-        <div 
+        <div
           className="absolute pointer-events-none border-sage opacity-40"
           style={{
             left: '-28.5px',
@@ -153,7 +158,7 @@ const CommentThread = memo(function CommentThread({
               </button>
             )}
           </div>
-          
+
           {/* Thread Line connecting down to children container */}
           {!isCollapsed && hasChildren && (
             <div className="w-[1px] grow mt-2 bg-sage opacity-40" />
@@ -178,7 +183,9 @@ const CommentThread = memo(function CommentThread({
               onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
               onReply={onReply}
               onReport={onReport ? () => onReport(reply.id) : undefined}
+              onDelete={onDelete ? () => onDelete(reply.id) : undefined}
               showReplyForm
+              isAuthor={isAuthor}
             />
           )}
         </div>
@@ -186,7 +193,7 @@ const CommentThread = memo(function CommentThread({
 
       {/* Children Container */}
       {!isCollapsed && hasChildren && (
-        <div 
+        <div
           id={childrenId}
           className="relative flex flex-col ml-[44px]"
           role="group"
@@ -201,12 +208,14 @@ const CommentThread = memo(function CommentThread({
               onUpvote={onUpvote}
               onReply={onReply}
               onReport={onReport}
+              onDelete={onDelete}
               upvotedReplies={upvotedReplies}
+              currentUserId={currentUserId}
             />
           ))}
         </div>
       )}
-      
+
       {/* "Continue thread" link for max depth */}
       {!isCollapsed && depth >= MAX_RENDER_DEPTH && hasChildren && (
         <button

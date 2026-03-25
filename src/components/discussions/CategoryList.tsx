@@ -3,18 +3,18 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 import CategoryCard from './CategoryCard';
-import type { DiscussionCategory, DiscussionCategorySlug } from '@/types';
+import type { DiscussionCategory } from '@/types';
 import type { CategoryStats } from '@/lib/api/discussions';
 
 interface CategoryListProps extends HTMLAttributes<HTMLDivElement> {
   /** List of categories */
   categories: DiscussionCategory[];
   /** Statistics per category */
-  stats?: Record<DiscussionCategorySlug, CategoryStats>;
+  stats?: Record<string, CategoryStats>;
   /** Currently active/selected category slug */
-  activeCategory?: DiscussionCategorySlug;
+  activeCategory?: string;
   /** Callback when category is selected */
-  onSelectCategory?: (slug: DiscussionCategorySlug) => void;
+  onSelectCategory?: (slug: string) => void;
   /** Number of columns on desktop */
   columns?: 2 | 3 | 4;
   /** Loading state */

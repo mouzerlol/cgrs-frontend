@@ -11,19 +11,19 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import type { DiscussionCategory, DiscussionCategorySlug } from '@/types';
+import type { DiscussionCategory } from '@/types';
 
 interface MobileNavProps extends HTMLAttributes<HTMLDivElement> {
   /** List of categories to display */
   categories: DiscussionCategory[];
   /** Currently active category (null = "All") */
-  activeCategory: DiscussionCategorySlug | null;
+  activeCategory: string | null;
   /** Callback when category is selected */
-  onSelectCategory: (slug: DiscussionCategorySlug | null) => void;
+  onSelectCategory: (slug: string | null) => void;
   /** Show thread count per category */
   showCounts?: boolean;
   /** Thread counts by category */
-  categoryCounts?: Record<DiscussionCategorySlug, number>;
+  categoryCounts?: Record<string, number>;
 }
 
 /**

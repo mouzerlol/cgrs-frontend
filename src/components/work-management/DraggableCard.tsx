@@ -11,7 +11,7 @@ interface DraggableCardProps {
 }
 
 export default function DraggableCard({ task, onClick }: DraggableCardProps) {
-  const { recentlyMovedTaskId } = useBoardDndContext();
+  const { recentlyMovedTaskId, consumeSuppressedTaskOpen } = useBoardDndContext();
 
   const {
     attributes,
@@ -45,6 +45,11 @@ export default function DraggableCard({ task, onClick }: DraggableCardProps) {
       : {}),
   };
 
+  const handleCardClick = (taskId: string) => {
+    if (consumeSuppressedTaskOpen(taskId)) return;
+    onClick(taskId);
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -58,7 +63,7 @@ export default function DraggableCard({ task, onClick }: DraggableCardProps) {
         isRecentlyMoved && "animate-optimistic-pulse"
       )}
     >
-      <TaskCard task={task} onClick={onClick} />
+      <TaskCard task={task} onClick={handleCardClick} />
     </div>
   );
 }

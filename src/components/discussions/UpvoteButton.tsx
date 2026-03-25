@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes, useState, useEffect } from 'react';
+import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
@@ -19,53 +19,43 @@ interface UpvoteButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 /**
  * Upvote button with count display.
- * Community-friendly: only upvotes, no downvotes.
+ * Optimistic updates are handled by the React Query mutation hook.
+ * The button is a pure display component that calls onUpvote immediately on click.
  * Minimum 44px touch target for mobile accessibility.
  */
 const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
-  ({
-    count,
-    isUpvoted = false,
-    onUpvote,
-    size = 'md',
-    direction = 'vertical',
-    className,
-    disabled,
-    ...props
-  }, ref) => {
-    const [optimisticUpvoted, setOptimisticUpvoted] = useState(isUpvoted);
-    const [optimisticCount, setOptimisticCount] = useState(count);
-
-    // Sync with external state
-    useEffect(() => {
-      setOptimisticUpvoted(isUpvoted);
-      setOptimisticCount(count);
-    }, [isUpvoted, count]);
-
+  (
+    {
+      count,
+      isUpvoted = false,
+      onUpvote,
+      size = 'md',
+      direction = 'vertical',
+      className,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     const handleUpvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
       if (disabled) return;
-      
-      // Optimistic update
-      const newUpvoted = !optimisticUpvoted;
-      setOptimisticUpvoted(newUpvoted);
-      setOptimisticCount(newUpvoted ? optimisticCount + 1 : optimisticCount - 1);
-      
-      if (onUpvote) {
-        onUpvote();
-      }
+
+      onUpvote?.();
     };
 
     const sizeClasses = {
       sm: {
-        button: direction === 'vertical' ? 'min-w-[40px] min-h-[44px] p-1' : 'min-h-[36px] px-2 py-1',
+        button:
+          direction === 'vertical' ? 'min-w-[40px] min-h-[44px] p-1' : 'min-h-[36px] px-2 py-1',
         icon: 'w-4 h-4',
         text: 'text-xs',
         gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1',
       },
       md: {
-        button: direction === 'vertical' ? 'min-w-[48px] min-h-[48px] p-1.5' : 'min-h-[44px] px-3 py-1.5',
+        button:
+          direction === 'vertical' ? 'min-w-[48px] min-h-[48px] p-1.5' : 'min-h-[44px] px-3 py-1.5',
         icon: 'w-5 h-5',
         text: 'text-sm',
         gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1.5',
@@ -85,30 +75,24 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
           direction === 'vertical' ? 'flex-col' : 'flex-row',
           sizes.button,
           sizes.gap,
-          optimisticUpvoted
+          isUpvoted
             ? 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark'
             : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
           disabled && 'opacity-50 cursor-not-allowed',
-          className
+          className,
         )}
-        aria-label={optimisticUpvoted ? 'Remove upvote' : 'Upvote'}
-        aria-pressed={optimisticUpvoted}
+        aria-label={isUpvoted ? 'Remove upvote' : 'Upvote'}
+        aria-pressed={isUpvoted}
         {...props}
       >
         <Icon
-          icon={optimisticUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
-          className={cn(
-            sizes.icon,
-            'transition-transform duration-200',
-            !disabled && 'group-hover:scale-110'
-          )}
+          icon={isUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
+          className={cn(sizes.icon, 'transition-transform duration-200')}
         />
-        <span className={cn('font-semibold tabular-nums', sizes.text)}>
-          {optimisticCount}
-        </span>
+        <span className={cn('font-semibold tabular-nums', sizes.text)}>{count}</span>
       </button>
     );
-  }
+  },
 );
 
 UpvoteButton.displayName = 'UpvoteButton';

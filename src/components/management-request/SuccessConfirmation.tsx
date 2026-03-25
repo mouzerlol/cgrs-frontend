@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
@@ -24,19 +24,33 @@ export function SuccessConfirmation({
 }: SuccessConfirmationProps) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const hasScrolledRef = useRef(false);
+  const successRegionRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * After submit the focused submit button unmounts; the browser may move focus to another
+   * focusable (often the last action button), which scrolls it into view and hides the heading.
+   * We scroll to top and move focus to this region with preventScroll, then repeat on a tick
+   * to beat any late focus/scroll from the browser.
+   */
+  const scrollTopAndClaimFocus = useCallback(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    successRegionRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  useLayoutEffect(() => {
+    scrollTopAndClaimFocus();
+  }, [scrollTopAndClaimFocus]);
 
   useEffect(() => {
-    if (!hasScrolledRef.current) {
-      hasScrolledRef.current = true;
-      const mainContent = document.getElementById('main-content');
-      if (mainContent) {
-        mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-  }, []);
+    const t0 = window.setTimeout(scrollTopAndClaimFocus, 0);
+    const t1 = window.setTimeout(scrollTopAndClaimFocus, 50);
+    const t2 = window.setTimeout(scrollTopAndClaimFocus, 150);
+    return () => {
+      window.clearTimeout(t0);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [scrollTopAndClaimFocus]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -54,7 +68,13 @@ export function SuccessConfirmation({
 
   return (
     <div className="flex items-center justify-center min-h-[500px] p-lg">
-      <div className="max-w-[480px] text-center py-xl px-lg bg-white rounded-card shadow-[0_8px_32px_rgba(26,34,24,0.08)] max-sm:py-lg max-sm:px-md">
+      <div
+        ref={successRegionRef}
+        tabIndex={-1}
+        role="status"
+        aria-live="polite"
+        className="max-w-[480px] text-center py-xl px-lg bg-white rounded-card shadow-[0_8px_32px_rgba(26,34,24,0.08)] max-sm:py-lg max-sm:px-md outline-none focus-visible:ring-2 focus-visible:ring-forest/25 focus-visible:ring-offset-2"
+      >
         {/* Success Icon */}
         <div className="flex items-center justify-center w-[72px] h-[72px] mx-auto mb-md bg-sage-light rounded-full text-forest">
           <Icon icon="lucide:check" width={32} height={32} />

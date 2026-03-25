@@ -84,6 +84,12 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
       onShare?.();
     };
 
+    const handleBookmarkClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onBookmark?.();
+    };
+
     const handleReportClick = (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -235,6 +241,24 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
 
             {/* Spacer */}
             <div className="flex-1" />
+
+            {/* Share Button */}
+            <button
+              onClick={handleBookmarkClick}
+              className={cn(
+                'p-1.5 rounded-lg transition-colors',
+                isBookmarked
+                  ? 'bg-sage/60 text-forest'
+                  : 'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
+                'hidden sm:flex items-center justify-center'
+              )}
+              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+            >
+              <Icon
+                icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
+                className="w-4 h-4"
+              />
+            </button>
 
             {/* Share Button */}
             <button

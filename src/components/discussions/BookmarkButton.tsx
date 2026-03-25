@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes, useState, useEffect } from 'react';
+import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
@@ -17,37 +17,29 @@ interface BookmarkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 /**
  * Bookmark/save button for threads.
- * Allows users to save threads for later reference.
+ * Optimistic updates are handled by the React Query mutation hook.
+ * The button is a pure display component that calls onBookmark immediately on click.
  * Minimum 44px touch target for mobile accessibility.
  */
 const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
-  ({
-    isBookmarked = false,
-    onBookmark,
-    size = 'md',
-    showLabel = false,
-    className,
-    disabled,
-    ...props
-  }, ref) => {
-    const [optimisticBookmarked, setOptimisticBookmarked] = useState(isBookmarked);
-
-    // Sync with external state when it changes
-    useEffect(() => {
-      setOptimisticBookmarked(isBookmarked);
-    }, [isBookmarked]);
-
+  (
+    {
+      isBookmarked = false,
+      onBookmark,
+      size = 'md',
+      showLabel = false,
+      className,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     const handleBookmarkClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
       if (disabled) return;
-      
-      // Optimistic update
-      setOptimisticBookmarked(!optimisticBookmarked);
-      
-      if (onBookmark) {
-        onBookmark();
-      }
+
+      onBookmark?.();
     };
 
     const sizeClasses = {
@@ -74,32 +66,26 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
         className={cn(
           'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
           sizes.button,
-          optimisticBookmarked
+          isBookmarked
             ? 'bg-forest text-bone border-forest'
             : 'bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20',
           disabled && 'opacity-50 cursor-not-allowed',
-          className
+          className,
         )}
-        aria-label={optimisticBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
-        aria-pressed={optimisticBookmarked}
+        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
+        aria-pressed={isBookmarked}
         {...props}
       >
         <Icon
-          icon={optimisticBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
-          className={cn(
-            sizes.icon,
-            'transition-transform duration-200',
-            optimisticBookmarked && 'fill-current'
-          )}
+          icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
+          className={cn(sizes.icon, 'transition-transform duration-200', isBookmarked && 'fill-current')}
         />
         {showLabel && (
-          <span className={cn('font-medium', sizes.text)}>
-            {optimisticBookmarked ? 'Saved' : 'Save'}
-          </span>
+          <span className={cn('font-medium', sizes.text)}>{isBookmarked ? 'Saved' : 'Save'}</span>
         )}
       </button>
     );
-  }
+  },
 );
 
 BookmarkButton.displayName = 'BookmarkButton';

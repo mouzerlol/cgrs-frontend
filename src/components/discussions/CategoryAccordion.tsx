@@ -18,7 +18,7 @@ interface CategoryAccordionProps {
   /** List of categories to display */
   categories: DiscussionCategory[];
   /** Statistics per category */
-  stats?: Record<DiscussionCategorySlug, CategoryStats>;
+  stats?: Record<string, CategoryStats>;
   /** Whether categories should be expanded by default */
   defaultExpanded?: boolean;
   /** Additional class names */

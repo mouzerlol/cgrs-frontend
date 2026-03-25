@@ -149,9 +149,11 @@ export type DiscussionCategorySlug =
 /**
  * Discussion category with metadata for display.
  * Categories group related threads together (like subreddits).
+ * Slug may be any tenant-defined value when loaded from the API.
  */
 export interface DiscussionCategory {
-  slug: DiscussionCategorySlug;
+  id?: string;
+  slug: string;
   name: string;
   description: string;
   icon: string; // Iconify icon name (e.g., "lucide:megaphone")
@@ -178,6 +180,8 @@ export interface ForumUserStats {
  */
 export interface ForumUser {
   id: string;
+  userId?: string;
+  clerkUserId?: string;
   displayName: string;
   avatar?: string;
   title: string; // Current garden-themed title
@@ -231,7 +235,12 @@ export interface Poll {
   allowMultiple: boolean;
   isClosed: boolean;
   closedAt?: string; // ISO date
+  /** Community member id of the poll creator */
   creatorId: string;
+  /** Clerk user id when linked — used for close-poll permission in the UI */
+  creatorClerkUserId?: string;
+  /** Member id -> display name for voters (from API) */
+  voterDisplayNames?: Record<string, string>;
 }
 
 /**
@@ -279,12 +288,17 @@ export interface Thread {
 
   // Admin features
   isPinned: boolean;
+  isLocked?: boolean;
+  isDeleted?: boolean;
   pinnedAt?: string;
   pinnedBy?: string;
+  visibility?: 'public' | 'logged_in' | 'resident' | 'owner' | 'committee';
 
   // User actions
   bookmarkedBy: string[]; // User IDs
   reportedBy: string[]; // User IDs
+  isUpvoted?: boolean;
+  isBookmarked?: boolean;
 }
 
 /**
@@ -309,6 +323,8 @@ export interface Reply {
 
   // Reports
   reportedBy: string[];
+  isUpvoted?: boolean;
+  isDeleted?: boolean;
 
   // Nesting depth (0 = direct reply to thread, 1+ = reply to reply)
   depth: number;
@@ -317,7 +333,7 @@ export interface Reply {
 /**
  * Sort options for thread listings.
  */
-export type ThreadSortOption = 'newest' | 'oldest' | 'most-replies' | 'most-upvotes' | 'most-upvoted' | 'most-discussed';
+export type ThreadSortOption = 'newest' | 'oldest' | 'most-upvoted' | 'most-discussed' | 'recent-activity';
 
 /**
  * Filter options for thread queries.

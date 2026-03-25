@@ -127,7 +127,35 @@ export function useAddTaskComment() {
   return useMutation({
     mutationFn: ({ taskId, content }: { taskId: string; content: string }) =>
       addTaskComment(taskId, content, getToken),
-    onSuccess: (_data, { taskId }) => {
+    onMutate: async ({ taskId, content }) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks', taskId] });
+
+      const previousTask = queryClient.getQueryData<Task>(['tasks', taskId]);
+
+      const optimisticComment: TaskComment = {
+        id: `temp-${Date.now()}`,
+        author_id: 'currentUser',
+        author_name: 'You',
+        content,
+        created_at: new Date().toISOString(),
+      };
+
+      queryClient.setQueryData(['tasks', taskId], (old: Task | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          comments: [...(old.comments || []), optimisticComment],
+        };
+      });
+
+      return { previousTask, taskId };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousTask && context?.taskId) {
+        queryClient.setQueryData(['tasks', context.taskId], context.previousTask);
+      }
+    },
+    onSettled: (_, __, { taskId }) => {
       queryClient.invalidateQueries({ queryKey: ['tasks', taskId] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
@@ -157,7 +185,27 @@ export function useDeleteTaskComment() {
   return useMutation({
     mutationFn: ({ taskId, commentId }: { taskId: string; commentId: string }) =>
       deleteTaskComment(taskId, commentId, getToken),
-    onSuccess: (_data, { taskId }) => {
+    onMutate: async ({ taskId, commentId }) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks', taskId] });
+
+      const previousTask = queryClient.getQueryData<Task>(['tasks', taskId]);
+
+      queryClient.setQueryData(['tasks', taskId], (old: Task | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          comments: (old.comments || []).filter((c) => c.id !== commentId),
+        };
+      });
+
+      return { previousTask, taskId };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousTask && context?.taskId) {
+        queryClient.setQueryData(['tasks', context.taskId], context.previousTask);
+      }
+    },
+    onSettled: (_, __, { taskId }) => {
       queryClient.invalidateQueries({ queryKey: ['tasks', taskId] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },

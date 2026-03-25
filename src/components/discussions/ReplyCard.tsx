@@ -12,9 +12,11 @@ interface ReplyCardProps extends HTMLAttributes<HTMLDivElement> {
   reply: Reply;
   isUpvoted?: boolean;
   onUpvote?: () => void;
-  onReply?: (body: string, parentReplyId?: string) => void;
+  onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: () => void;
+  onDelete?: () => void;
   showReplyForm?: boolean;
+  isAuthor?: boolean;
 }
 
 const formatDate = (dateStr: string): string => {
@@ -44,8 +46,7 @@ const formatRelativeTime = (dateStr: string): string => {
 
 /**
  * Reply card displaying a single reply with author, content, and actions.
- * No longer handles avatars or layout depth logic — that is now the responsibility
- * of CommentThread for the continuous thread line layout.
+ * Supports soft delete display with placeholder text.
  */
 const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
   ({
@@ -54,18 +55,54 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
     onUpvote,
     onReply,
     onReport,
+    onDelete,
     showReplyForm = false,
+    isAuthor = false,
     className,
     ...props
   }, ref) => {
     const [isReplying, setIsReplying] = useState(false);
 
-    const handleSubmitReply = (body: string) => {
-      if (onReply) {
-        onReply(body, reply.id);
+    const handleSubmitReply = async (body: string) => {
+      if (!onReply) return;
+      try {
+        await Promise.resolve(onReply(body, reply.id));
         setIsReplying(false);
+      } catch {
+        /* Parent rethrows on failure; keep nested form open */
       }
     };
+
+    const handleDelete = () => {
+      if (onDelete) {
+        onDelete();
+      }
+    };
+
+    // Soft delete display
+    if (reply.isDeleted) {
+      return (
+        <div
+          ref={ref}
+          className={cn('min-w-0 flex-1 opacity-50', className)}
+          {...props}
+        >
+          {/* Header */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-forest/40 text-sm">
+              [deleted]
+            </span>
+          </div>
+
+          {/* Body - placeholder */}
+          <div className="mt-1">
+            <p className="text-forest/40 text-sm italic">
+              This comment was deleted
+            </p>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div
@@ -116,6 +153,17 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
             onReport={onReport}
             className="text-xs text-forest/60 hover:text-terracotta"
           />
+
+          {isAuthor && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-red-500 transition-colors rounded"
+            >
+              <Icon icon="lucide:trash-2" className="w-3.5 h-3.5" />
+              <span>Delete</span>
+            </button>
+          )}
         </div>
 
         {/* Reply Form */}

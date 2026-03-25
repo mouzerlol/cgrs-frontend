@@ -6,18 +6,29 @@ import BoardCard from '@/components/work-management/BoardCard';
 import CreateBoardModal from '@/components/work-management/CreateBoardModal';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import Card from '@/components/ui/Card';
-import { useBoards, useCreateBoard } from '@/hooks/useBoards';
+import { useBoards, useCreateBoard, useDeleteBoard } from '@/hooks/useBoards';
 import type { Board } from '@/types/work-management';
 
 export default function BoardsListPage() {
   const { data: boards = [], isLoading, error } = useBoards();
   const createBoard = useCreateBoard();
+  const deleteBoard = useDeleteBoard();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [deletingBoardId, setDeletingBoardId] = useState<string | null>(null);
 
-  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'task_count' | 'created_at' | 'updated_at'>) => {
+  const handleCreateBoard = (newBoard: Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>) => {
     createBoard.mutate(newBoard, {
       onSuccess: () => {
         setIsCreateModalOpen(false);
+      },
+    });
+  };
+
+  const handleDeleteBoard = (boardId: string) => {
+    setDeletingBoardId(boardId);
+    deleteBoard.mutate(boardId, {
+      onSettled: () => {
+        setDeletingBoardId(null);
       },
     });
   };
@@ -118,7 +129,11 @@ export default function BoardsListPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <BoardCard board={board} />
+                    <BoardCard
+                    board={board}
+                    onDelete={handleDeleteBoard}
+                    isDeleting={deletingBoardId === board.id}
+                  />
                   </motion.div>
                 ))}
 

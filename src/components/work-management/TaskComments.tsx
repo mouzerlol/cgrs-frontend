@@ -64,43 +64,57 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
     clerkUser?.firstName ||
     'You';
 
-  const handleAddComment = async () => {
+  const handleAddComment = () => {
     const trimmed = newComment.trim();
     if (!trimmed || trimmed.length > COMMENT_MAX_LENGTH) return;
     setComposerError(null);
     setNewComment('');
 
-    try {
-      await addCommentMutation.mutateAsync({ taskId, content: trimmed });
-    } catch (e) {
-      setComposerError(formatTaskMutationError(e));
-      // Restore the comment text so user can retry
-      setNewComment(trimmed);
-    }
+    addCommentMutation.mutate(
+      { taskId, content: trimmed },
+      {
+        onError: (e) => {
+          setComposerError(formatTaskMutationError(e));
+          setNewComment(trimmed);
+        },
+      },
+    );
   };
 
-  const handleSaveEdit = async (commentId: string) => {
+  const handleSaveEdit = (commentId: string) => {
     const trimmed = editDraft.trim();
     if (!trimmed || trimmed.length > COMMENT_MAX_LENGTH) return;
     setEditError(null);
-    try {
-      await updateCommentMutation.mutateAsync({ taskId, commentId, content: trimmed });
-      setEditingCommentId(null);
-      setEditDraft('');
-    } catch (e) {
-      setEditError(formatTaskMutationError(e));
-    }
+
+    updateCommentMutation.mutate(
+      { taskId, commentId, content: trimmed },
+      {
+        onSuccess: () => {
+          setEditingCommentId(null);
+          setEditDraft('');
+        },
+        onError: (e) => {
+          setEditError(formatTaskMutationError(e));
+        },
+      },
+    );
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = () => {
     if (!deleteTargetId) return;
     setDeleteError(null);
-    try {
-      await deleteCommentMutation.mutateAsync({ taskId, commentId: deleteTargetId });
-      setDeleteTargetId(null);
-    } catch (e) {
-      setDeleteError(formatTaskMutationError(e));
-    }
+
+    deleteCommentMutation.mutate(
+      { taskId, commentId: deleteTargetId },
+      {
+        onSuccess: () => {
+          setDeleteTargetId(null);
+        },
+        onError: (e) => {
+          setDeleteError(formatTaskMutationError(e));
+        },
+      },
+    );
   };
 
   const composerLen = newComment.length;
@@ -213,7 +227,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                             </button>
                             <button
                               type="button"
-                              onClick={() => void handleSaveEdit(comment.id)}
+                              onClick={() => handleSaveEdit(comment.id)}
                               disabled={
                                 !editDraft.trim() ||
                                 editDraft.length > COMMENT_MAX_LENGTH ||
@@ -288,7 +302,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
               </span>
               <button
                 type="button"
-                onClick={() => void handleAddComment()}
+                onClick={() => handleAddComment()}
                 disabled={!canSend}
                 className="bg-terracotta text-white text-xs font-bold px-5 py-2 rounded-xl shadow-lg shadow-terracotta/20 hover:bg-terracotta/90 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none"
               >

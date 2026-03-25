@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
+import { SignInButton, useAuth } from '@clerk/nextjs';
+import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { formatRole, isNavItemVisible } from '@/lib/auth';
@@ -181,22 +182,7 @@ export default function Navigation() {
                   {community?.name && <span className="normal-case">{community.name}</span>}
                 </span>
               )}
-              <UserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label="My Profile"
-                    labelIcon={
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                    }
-                    href="/profile"
-                  />
-                  <UserButton.Action label="manageAccount" />
-                  <UserButton.Action label="signOut" />
-                </UserButton.MenuItems>
-              </UserButton>
+              <ClerkAppUserButton />
             </div>
           ) : (
             <SignInButton mode="redirect">

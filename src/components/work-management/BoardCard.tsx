@@ -1,8 +1,28 @@
 'use client';
 
 import Link from 'next/link';
+import type { LucideIcon } from 'lucide-react';
+import { Trash2, Wrench } from 'lucide-react';
 import { Board, BoardColor } from '@/types/work-management';
 import { cn } from '@/lib/utils';
+
+/** Maps API/board icon keys (short strings) to Lucide components; emoji and other values render as text. */
+const BOARD_ICON_BY_KEY: Record<string, LucideIcon> = {
+  wrench: Wrench,
+};
+
+function BoardIcon({ icon, className }: { icon: string; className?: string }) {
+  const key = icon.trim().toLowerCase();
+  const Icon = BOARD_ICON_BY_KEY[key];
+  if (Icon) {
+    return <Icon className={cn('size-9 shrink-0', className)} strokeWidth={1.5} aria-hidden />;
+  }
+  return (
+    <span className={cn('text-4xl leading-none shrink-0', className)} aria-hidden>
+      {icon}
+    </span>
+  );
+}
 
 const colorStyles: Record<BoardColor, { bg: string; border: string; hover: string; text: string }> = {
   sage: {
@@ -46,32 +66,37 @@ function formatRelativeTime(dateString: string): string {
 
 interface BoardCardProps {
   board: Board;
+  onDelete?: (boardId: string) => void;
+  isDeleting?: boolean;
 }
 
-export default function BoardCard({ board }: BoardCardProps) {
+export default function BoardCard({ board, onDelete, isDeleting }: BoardCardProps) {
   const styles = colorStyles[board.color];
+  const deleteBoard = !board.is_system ? onDelete : undefined;
+  const showDelete = deleteBoard != null;
 
   return (
-    <Link href={`/work-management/boards/${board.id}`}>
-      <div
-        className={cn(
-          'relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group',
-          styles.bg,
-          styles.border,
-          styles.hover,
-          'hover:border-sage'
-        )}
-      >
-        <div className="flex items-start justify-between mb-4">
-          <span className="text-4xl">{board.icon}</span>
+    <div
+      className={cn(
+        'relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group',
+        styles.bg,
+        styles.border,
+        styles.hover,
+        'hover:border-sage'
+      )}
+    >
+      <Link href={`/work-management/boards/${board.id}`} className="block">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <BoardIcon icon={board.icon} className={styles.text} />
           <span
             className={cn(
-              'px-3 py-1 rounded-full text-sm font-medium',
+              'px-3 py-1 rounded-full text-sm font-medium shrink-0',
               styles.bg,
-              styles.text
+              styles.text,
+              showDelete && 'mr-11'
             )}
           >
-            {board.taskCount} {board.taskCount === 1 ? 'task' : 'tasks'}
+            {board.task_count} {board.task_count === 1 ? 'task' : 'tasks'}
           </span>
         </div>
 
@@ -90,9 +115,28 @@ export default function BoardCard({ board }: BoardCardProps) {
         </p>
 
         <div className="flex items-center text-xs text-forest/50">
-          <span>Updated {formatRelativeTime(board.updatedAt)}</span>
+          <span>Updated {formatRelativeTime(board.updated_at)}</span>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {showDelete && deleteBoard && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteBoard(board.id);
+          }}
+          disabled={isDeleting}
+          className={cn(
+            'absolute top-2 right-2 p-2 rounded-lg text-forest/40 hover:text-red-600 hover:bg-red-50 transition-all z-10',
+            isDeleting && 'opacity-50 cursor-not-allowed'
+          )}
+          title="Delete board"
+        >
+          <Trash2 className="size-4" strokeWidth={2} aria-hidden />
+        </button>
+      )}
+    </div>
   );
 }

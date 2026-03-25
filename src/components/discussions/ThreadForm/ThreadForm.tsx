@@ -15,7 +15,7 @@ import { PollBuilder } from './PollBuilder';
 import type { ThreadFormData } from './types';
 
 interface NewThreadFormProps {
-  onSubmit?: (data: ThreadFormData) => void;
+  onSubmit?: (data: ThreadFormData) => Promise<void> | void;
   initialData?: Partial<ThreadFormData>;
   onCancel?: () => void;
 }
@@ -31,7 +31,13 @@ export function ThreadForm({
   onCancel,
 }: NewThreadFormProps) {
   const router = useRouter();
-  const { data: categories = [] } = useCategories();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+    isSuccess: categoriesSuccess,
+    error: categoriesQueryError,
+  } = useCategories({ postable: true });
 
   const [title, setTitle] = useState(initialData?.title || '');
   const [body, setBody] = useState(initialData?.body || '');
@@ -59,7 +65,9 @@ export function ThreadForm({
       newErrors.title = 'Title must be at least 10 characters';
     }
 
-    if (!category) {
+    if (categoriesSuccess && categories.length === 0) {
+      newErrors.category = 'No categories available for new threads';
+    } else if (!category) {
       newErrors.category = 'Please select a category';
     }
 
@@ -90,10 +98,8 @@ export function ThreadForm({
         poll: poll || undefined,
       };
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       if (onSubmit) {
-        onSubmit(formData);
+        await onSubmit(formData);
       } else {
         router.push('/discussion');
       }
@@ -146,11 +152,34 @@ export function ThreadForm({
                 error={errors.body}
               />
 
+              {categoriesLoading && (
+                <p className="text-sm text-forest/60" aria-live="polite">
+                  Loading categories…
+                </p>
+              )}
+
+              {categoriesError && (
+                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded-lg text-terracotta text-sm">
+                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <span>
+                    Could not load categories.{' '}
+                    {categoriesQueryError instanceof Error ? categoriesQueryError.message : 'Please refresh or try again later.'}
+                  </span>
+                </div>
+              )}
+
+              {categoriesSuccess && categories.length === 0 && !categoriesError && (
+                <p className="text-sm text-forest/80 p-md bg-sage-light border border-sage rounded-xl">
+                  No discussion categories are set up for this community. Contact an administrator if this is unexpected.
+                </p>
+              )}
+
               <CategorySelect
                 value={category}
                 onChange={setCategory}
                 categories={categories}
                 error={errors.category}
+                disabled={categoriesLoading || categoriesError || (categoriesSuccess && categories.length === 0)}
               />
 
               <ImageUploader
@@ -180,7 +209,12 @@ export function ThreadForm({
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={isSubmitting}
+                  disabled={
+                    isSubmitting ||
+                    categoriesLoading ||
+                    categoriesError ||
+                    (categoriesSuccess && categories.length === 0)
+                  }
                   size="lg"
                 >
                   {isSubmitting ? 'Creating...' : 'Create Thread'}

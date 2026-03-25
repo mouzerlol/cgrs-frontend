@@ -5,7 +5,8 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
 interface ReplyFormProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
-  onSubmit: (body: string) => void;
+  /** May return a Promise; textarea clears only after fulfillment. */
+  onSubmit: (body: string) => void | Promise<void>;
   onCancel?: () => void;
   placeholder?: string;
   submitLabel?: string;
@@ -42,17 +43,21 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
       }
     }, [value]);
 
-    const handleSubmit = () => {
-      if (value.trim() && !isSubmitting) {
-        onSubmit(value.trim());
+    const handleSubmit = async () => {
+      const text = value.trim();
+      if (!text || isSubmitting) return;
+      try {
+        await Promise.resolve(onSubmit(text));
         setValue('');
+      } catch {
+        /* Parent handles errors; keep draft */
       }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' && !e.shiftKey && !e.altKey && !e.ctrlKey) {
         e.preventDefault();
-        handleSubmit();
+        void handleSubmit();
       }
       if (e.key === 'Escape' && onCancel) {
         onCancel();
@@ -73,8 +78,8 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
           maxLength={MAX_LENGTH}
           rows={1}
           className={cn(
-            'w-full p-3 rounded-lg border bg-bone text-forest placeholder:text-forest/40',
-            'focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:border-terracotta',
+            'w-full p-3 rounded-lg border bg-white text-forest placeholder:text-forest/40',
+            'focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage',
             'resize-none min-h-[80px] text-sm',
             isOverLimit && 'border-terracotta/50'
           )}

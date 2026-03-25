@@ -53,8 +53,8 @@ export function SidebarLayout({
         ariaLabel={ariaLabel}
       />
 
-      {/* Content area */}
-      <div className="flex-1 min-w-0">
+      {/* Content area: column flex so the panel (flex-1) fills stretched row height beside SidebarTabs */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {/* Mobile: Dropdown at top */}
         <SidebarDropdown
           categories={categories}
@@ -68,7 +68,7 @@ export function SidebarLayout({
         {/* Main content panel */}
         <div
           className={cn(
-            'flex-1 bg-sage-light p-lg min-w-0',
+            'min-h-0 min-w-0 flex-1 bg-sage-light p-lg',
             'rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
             'sm:p-lg p-sm'
           )}

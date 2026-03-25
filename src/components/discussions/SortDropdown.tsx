@@ -14,8 +14,10 @@ interface SortOption {
 
 const SORT_OPTIONS: SortOption[] = [
   { value: 'newest', label: 'Newest', icon: 'lucide:clock' },
+  { value: 'oldest', label: 'Oldest', icon: 'lucide:clock' },
   { value: 'most-upvoted', label: 'Most Upvoted', icon: 'lucide:arrow-big-up' },
   { value: 'most-discussed', label: 'Most Discussed', icon: 'lucide:message-circle' },
+  { value: 'recent-activity', label: 'Recent Activity', icon: 'lucide:activity' },
 ];
 
 interface SortDropdownProps {

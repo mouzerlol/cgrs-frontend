@@ -13,17 +13,24 @@ import {
   useSensors,
   DragStartEvent,
   DragEndEvent,
+  DragCancelEvent,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { reorderTasksInLanes, type TaskBoardMoveArgs } from '@/lib/work-management-dnd';
 import type { Task, TaskStatus } from '@/types/work-management';
 import DragOverlayCard from './DragOverlayCard';
+import { consumeTaskOpenSuppressionIfMatch, markTaskOpenSuppressionAfterDrag } from '@/lib/task-open-suppression';
 
 interface BoardDndContextValue {
   recentlyMovedTaskId: string | null;
+  /** Ignore the next task open for this id (ghost click after drag). Returns true if suppressed. */
+  consumeSuppressedTaskOpen: (taskId: string) => boolean;
 }
 
-const BoardDndContext = createContext<BoardDndContextValue>({ recentlyMovedTaskId: null });
+const BoardDndContext = createContext<BoardDndContextValue>({
+  recentlyMovedTaskId: null,
+  consumeSuppressedTaskOpen: () => false,
+});
 
 export function useBoardDndContext() {
   return useContext(BoardDndContext);
@@ -47,6 +54,11 @@ export default function BoardDndContextProvider({ children, tasks, onTaskMove }:
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [recentlyMovedTaskId, setRecentlyMovedTaskId] = useState<string | null>(null);
   const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const suppressTaskOpenRef = useRef<string | null>(null);
+
+  const consumeSuppressedTaskOpen = useCallback((taskId: string) => {
+    return consumeTaskOpenSuppressionIfMatch(suppressTaskOpenRef, taskId);
+  }, []);
 
   const triggerOptimisticPulse = useCallback((taskId: string) => {
     setRecentlyMovedTaskId(taskId);
@@ -89,6 +101,9 @@ export default function BoardDndContextProvider({ children, tasks, onTaskMove }:
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    /** After a real drag, pointerup can synthesize a click on the card — suppress opening detail once. */
+    markTaskOpenSuppressionAfterDrag(suppressTaskOpenRef, String(active.id));
+
     if (!over) {
       setActiveTask(null);
       return;
@@ -187,13 +202,19 @@ export default function BoardDndContextProvider({ children, tasks, onTaskMove }:
     setActiveTask(null);
   };
 
+  const handleDragCancel = (event: DragCancelEvent) => {
+    markTaskOpenSuppressionAfterDrag(suppressTaskOpenRef, String(event.active.id));
+    setActiveTask(null);
+  };
+
   return (
-    <BoardDndContext.Provider value={{ recentlyMovedTaskId }}>
+    <BoardDndContext.Provider value={{ recentlyMovedTaskId, consumeSuppressedTaskOpen }}>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         {children}
         <DragOverlay dropAnimation={null}>
