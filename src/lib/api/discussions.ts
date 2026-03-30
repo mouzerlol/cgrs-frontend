@@ -17,10 +17,40 @@ import type {
 } from '@/types';
 
 const API_PATH = '/api/v1/discussions';
+const ATTACHMENTS_API_PATH = `${API_PATH}/attachments`;
+
+/** Matches cgrs-api default `r2_max_upload_bytes` (10 MiB). */
+export const DISCUSSION_IMAGE_MAX_BYTES = 10_485_760;
+
+/** ADR 005: max attachments per thread opening post or reply. */
+export const DISCUSSION_ATTACHMENT_MAX_COUNT = 6;
 
 // =============================================================================
 // Types
 // =============================================================================
+
+interface ApiAttachmentMeta {
+  id: string;
+  content_type: string;
+  byte_size: number;
+}
+
+interface ApiUploadSessionResponse {
+  attachment_id: string;
+  upload_url: string;
+  expires_in_seconds: number;
+  required_headers: Record<string, string>;
+}
+
+interface ApiDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
+
+interface ApiCoverPreviewResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
 
 interface ApiPaginatedThreads {
   items: ApiThreadResponse[];
@@ -75,6 +105,9 @@ interface ApiThreadResponse {
   visibility: string;
   /** Always present from current API; optional for older responses */
   poll?: ApiPollResponse | null;
+  attachments?: ApiAttachmentMeta[];
+  /** Presigned GET for first thread image on paginated list (optional) */
+  cover_preview?: ApiCoverPreviewResponse | null;
 }
 
 interface ApiReplyResponse {
@@ -89,6 +122,7 @@ interface ApiReplyResponse {
   upvotes: number;
   is_deleted: boolean;
   is_upvoted: boolean;
+  attachments?: ApiAttachmentMeta[];
 }
 
 interface ApiForumUser {
@@ -170,6 +204,14 @@ function mapPollResponse(api: ApiPollResponse): Poll {
   };
 }
 
+function mapAttachmentMeta(api: ApiAttachmentMeta) {
+  return {
+    id: api.id,
+    contentType: api.content_type,
+    byteSize: api.byte_size,
+  };
+}
+
 function mapThreadResponse(api: ApiThreadResponse): Thread {
   return {
     id: api.id,
@@ -193,6 +235,13 @@ function mapThreadResponse(api: ApiThreadResponse): Thread {
     visibility: api.visibility as Thread['visibility'],
     isLocked: api.is_locked,
     poll: api.poll ? mapPollResponse(api.poll) : undefined,
+    attachments: api.attachments?.map(mapAttachmentMeta),
+    coverPreview: api.cover_preview
+      ? {
+          downloadUrl: api.cover_preview.download_url,
+          expiresInSeconds: api.cover_preview.expires_in_seconds,
+        }
+      : undefined,
   };
 }
 
@@ -211,6 +260,7 @@ function mapReplyResponse(api: ApiReplyResponse): Reply {
     depth: api.depth,
     isUpvoted: api.is_upvoted,
     isDeleted: api.is_deleted,
+    attachments: api.attachments?.map(mapAttachmentMeta),
   };
 }
 
@@ -365,6 +415,7 @@ export async function createThread(
     body: string;
     category: string;
     poll?: { question: string; options: string[]; allowMultiple: boolean };
+    attachmentIds?: string[];
   },
   getToken: () => Promise<string | null>,
 ): Promise<Thread> {
@@ -380,11 +431,95 @@ export async function createThread(
       allow_multiple: data.poll.allowMultiple,
     };
   }
+  if (data.attachmentIds?.length) {
+    payload.attachment_ids = data.attachmentIds;
+  }
   const response = await apiRequest<ApiThreadResponse>(API_PATH, getToken, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
   return mapThreadResponse(response);
+}
+
+/**
+ * Start an ADR 005 direct-to-R2 upload: returns presigned PUT target and attachment id.
+ */
+export async function createDiscussionUploadSession(
+  contentType: string,
+  byteSize: number,
+  getToken: () => Promise<string | null>,
+): Promise<ApiUploadSessionResponse> {
+  return apiRequest<ApiUploadSessionResponse>(`${ATTACHMENTS_API_PATH}/upload-sessions`, getToken, {
+    method: 'POST',
+    body: JSON.stringify({ content_type: contentType, byte_size: byteSize }),
+  });
+}
+
+/**
+ * Confirm the object landed in R2 after client PUT (HEAD verification on server).
+ */
+export async function completeDiscussionUpload(
+  attachmentId: string,
+  getToken: () => Promise<string | null>,
+): Promise<void> {
+  await apiRequest<void>(`${ATTACHMENTS_API_PATH}/${attachmentId}/complete`, getToken, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Short-lived presigned GET for displaying a tier-gated attachment.
+ */
+export async function getDiscussionAttachmentDownloadUrl(
+  attachmentId: string,
+  getToken: () => Promise<string | null>,
+): Promise<ApiDownloadUrlResponse> {
+  return apiRequest<ApiDownloadUrlResponse>(
+    `${ATTACHMENTS_API_PATH}/${attachmentId}/download-url`,
+    getToken,
+  );
+}
+
+/** Shown when the browser blocks the presigned PUT (CSP, CORS, offline, TLS, etc.). */
+const R2_DIRECT_UPLOAD_CORS_HINT =
+  'Check Content-Security-Policy connect-src includes https://*.r2.cloudflarestorage.com for fetch() uploads. ' +
+  'If CSP is fine, allow your app origin on the R2 bucket CORS (PUT, GET, HEAD, OPTIONS; AllowedHeaders e.g. Content-Type or *). ' +
+  'https://developers.cloudflare.com/r2/buckets/cors/';
+
+/**
+ * Full ADR 005 flow: session → PUT bytes to R2 (exact Content-Type) → complete.
+ * Cross-origin PUT fails in the browser if the bucket CORS is not configured (error often: NetworkError / Failed to fetch).
+ * @returns Attachment id to pass as `attachment_ids` on create thread / reply.
+ */
+export async function uploadDiscussionImageFile(
+  file: File,
+  getToken: () => Promise<string | null>,
+): Promise<string> {
+  if (file.size < 1 || file.size > DISCUSSION_IMAGE_MAX_BYTES) {
+    throw new RangeError(
+      `Image size must be between 1 byte and ${DISCUSSION_IMAGE_MAX_BYTES} bytes (server limit)`,
+    );
+  }
+  const session = await createDiscussionUploadSession(file.type, file.size, getToken);
+  let putRes: Response;
+  try {
+    putRes = await fetch(session.upload_url, {
+      method: 'PUT',
+      headers: session.required_headers,
+      body: file,
+    });
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new Error(`Direct upload to storage failed (${err.message}). ${R2_DIRECT_UPLOAD_CORS_HINT}`);
+    }
+    throw err;
+  }
+  if (!putRes.ok) {
+    const text = await putRes.text().catch(() => '');
+    throw new Error(`Direct upload failed (${putRes.status}): ${text || putRes.statusText}`);
+  }
+  await completeDiscussionUpload(session.attachment_id, getToken);
+  return session.attachment_id;
 }
 
 interface ApiVoteResponse {

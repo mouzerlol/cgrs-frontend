@@ -3,8 +3,7 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import ThreadCard from './ThreadCard';
-import ThreadCardCompact from './ThreadCardCompact';
+import { ThreadCardCompactWithPreview, ThreadCardWithPreview } from './ThreadCardWithPreview';
 import ThreadCardSkeleton from './skeletons/ThreadCardSkeleton';
 import type { Thread, ThreadWithLatestReply, LatestReply } from '@/types';
 
@@ -150,7 +149,7 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
           >
             {threads.map((thread) => (
               <motion.div key={thread.id} variants={itemVariants}>
-                <ThreadCard
+                <ThreadCardWithPreview
                   thread={thread}
                   hasUpvoted={upvotedThreads.has(thread.id)}
                   isBookmarked={bookmarkedThreads.has(thread.id)}
@@ -180,7 +179,7 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
             const threadWithReply = thread as ThreadWithLatestReply;
             return (
               <motion.div key={thread.id} variants={itemVariants}>
-                <ThreadCardCompact
+                <ThreadCardCompactWithPreview
                   thread={thread}
                   latestReply={threadWithReply.latestReply}
                   hasUpvoted={upvotedThreads.has(thread.id)}

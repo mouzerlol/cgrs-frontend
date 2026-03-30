@@ -20,6 +20,7 @@ export default function NewThreadPage() {
       body: data.body,
       category: data.category,
       poll: data.poll,
+      images: data.images,
     });
     router.push(`/discussion/thread/${thread.id}`);
   };

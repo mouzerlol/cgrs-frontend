@@ -48,7 +48,11 @@ export function Providers({ children }: { children: ReactNode }) {
             staleTime: 5 * 60 * 1000,
             refetchOnWindowFocus: false,
             retry: (failureCount, error) => {
-              if (error instanceof ApiError && (error.isUnauthorized || error.isForbidden)) return false;
+              if (error instanceof ApiError) {
+                if (error.isUnauthorized || error.isForbidden) return false;
+                // R2 misconfiguration etc. — retrying the same request will not help.
+                if (error.status === 503) return false;
+              }
               return failureCount < 1;
             },
           },

@@ -19,6 +19,15 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/discussion',
 }));
 
+vi.mock('@/hooks/useThreadListPreview', () => ({
+  useThreadListPreview: () => ({
+    previewUrl: null,
+    imageAttachmentCount: 0,
+    isLoading: false,
+    isError: false,
+  }),
+}));
+
 // Properly mock next/image with default export
 vi.mock('next/image', async () => {
   const actual = await vi.importActual('next/image');

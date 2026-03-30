@@ -14,8 +14,8 @@ interface ImageUploaderProps {
 export function ImageUploader({
   value,
   onChange,
-  maxFiles = 5,
-  maxSizeMB = 5,
+  maxFiles = 6,
+  maxSizeMB = 10,
 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);

@@ -5,6 +5,7 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import type { Poll, Thread } from '@/types';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useThreadAttachmentImages } from '@/hooks/useThreadAttachmentImages';
 import ImageGallery from './ImageGallery';
 import PollDisplay from './PollDisplay';
 
@@ -111,13 +112,32 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
     const effectiveVoterNames =
       voterNames || thread.poll?.voterDisplayNames || generateVoterNamesFromThread(thread);
 
+    const hasApiAttachments = Boolean(thread.attachments?.length);
+    const { images: attachmentGalleryImages, isLoading: attachmentUrlsLoading } =
+      useThreadAttachmentImages(thread.attachments);
+
     return (
       <div ref={ref} className={cn('space-y-6', className)} {...props}>
         {/* Main Body Text */}
         {thread.body && formatBody(thread.body)}
 
-        {/* Images Gallery */}
-        {thread.images && thread.images.length > 0 && (
+        {/* R2-backed opening post images (ADR 005) */}
+        {hasApiAttachments && (
+          <>
+            {attachmentUrlsLoading && (
+              <div className="flex flex-wrap gap-2 animate-pulse" aria-hidden>
+                <div className="h-32 w-32 rounded-xl bg-sage/25" />
+                <div className="h-32 w-32 rounded-xl bg-sage/25" />
+              </div>
+            )}
+            {!attachmentUrlsLoading && attachmentGalleryImages.length > 0 && (
+              <ImageGallery images={attachmentGalleryImages} />
+            )}
+          </>
+        )}
+
+        {/* Legacy / static thread.images */}
+        {!hasApiAttachments && thread.images && thread.images.length > 0 && (
           <ImageGallery images={thread.images} />
         )}
 

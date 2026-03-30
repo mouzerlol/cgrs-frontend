@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useThreads } from '@/hooks/useDiscussions';
-import ThreadCard from './ThreadCard';
+import { ThreadCardWithPreview } from './ThreadCardWithPreview';
 import type { DiscussionCategory, DiscussionCategorySlug, Thread } from '@/types';
 
 interface CategoryStats {
@@ -201,7 +201,7 @@ function CategoryItem({ category, stats, isExpanded, onToggle }: CategoryItemPro
                 ) : threads.length > 0 ? (
                   // Thread cards with white background
                   threads.map((thread) => (
-                    <ThreadCard
+                    <ThreadCardWithPreview
                       key={thread.id}
                       thread={thread}
                       hasUpvoted={upvotedThreads.has(thread.id)}

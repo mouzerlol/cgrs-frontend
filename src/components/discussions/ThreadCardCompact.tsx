@@ -1,7 +1,6 @@
 'use client';
 
 import { forwardRef, HTMLAttributes } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
@@ -11,6 +10,11 @@ import type { Thread, LatestReply } from '@/types';
 interface ThreadCardCompactProps extends HTMLAttributes<HTMLDivElement> {
   /** Thread data */
   thread: Thread;
+  /** First image presigned URL (list preview) */
+  previewUrl?: string | null;
+  previewLoading?: boolean;
+  /** Count of image/* opening-post attachments */
+  imageAttachmentCount?: number;
   /** Latest reply info (if available) */
   latestReply?: LatestReply;
   /** Whether the current user has upvoted */
@@ -37,6 +41,9 @@ interface ThreadCardCompactProps extends HTMLAttributes<HTMLDivElement> {
 const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
   ({
     thread,
+    previewUrl = null,
+    previewLoading = false,
+    imageAttachmentCount: imageAttachmentCountProp,
     latestReply,
     hasUpvoted = false,
     isBookmarked = false,
@@ -66,10 +73,14 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
       return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
     };
 
-    // Get first image thumbnail if available
-    const thumbnail = thread.images && thread.images.length > 0
-      ? thread.images[0].thumbnail
-      : null;
+    const legacyImages = thread.images ?? [];
+    const thumbnail =
+      previewUrl ??
+      (legacyImages[0]?.thumbnail || legacyImages[0]?.url || null);
+    const imageCount =
+      imageAttachmentCountProp !== undefined ? imageAttachmentCountProp : legacyImages.length;
+    const showThumbSkeleton = previewLoading && thumbnail === null && imageCount > 0;
+    const showThumbSlot = Boolean(thumbnail) || showThumbSkeleton;
 
     // Event handlers
     const handleUpvoteClick = (e: React.MouseEvent) => {
@@ -127,14 +138,14 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
         {...props}
       >
         {/* Thumbnail (64x64) */}
-        {thumbnail && (
+        {showThumbSlot && (
           <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-sage-light self-stretch">
-            <Image
-              src={thumbnail}
-              alt=""
-              fill
-              className="object-cover"
-            />
+            {showThumbSkeleton && (
+              <div className="absolute inset-0 animate-pulse bg-sage/40" aria-hidden />
+            )}
+            {thumbnail && (
+              <Image src={thumbnail} alt="" fill className="object-cover" />
+            )}
           </div>
         )}
 

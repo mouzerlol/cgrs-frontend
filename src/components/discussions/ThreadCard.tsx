@@ -1,7 +1,6 @@
 'use client';
 
 import { forwardRef, HTMLAttributes } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
@@ -14,6 +13,12 @@ import type { Thread } from '@/types';
 interface ThreadCardProps extends HTMLAttributes<HTMLDivElement> {
   /** Thread data */
   thread: Thread;
+  /** First image presigned URL (list preview); server cover or client-fetched */
+  previewUrl?: string | null;
+  /** True while resolving presigned URL for attachments */
+  previewLoading?: boolean;
+  /** Number of image/* opening-post attachments (for +N badge); falls back to legacy thread.images */
+  imageAttachmentCount?: number;
   /** Whether the current user has upvoted */
   hasUpvoted?: boolean;
   /** Whether the current user has bookmarked */
@@ -36,6 +41,9 @@ interface ThreadCardProps extends HTMLAttributes<HTMLDivElement> {
 const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
   ({
     thread,
+    previewUrl = null,
+    previewLoading = false,
+    imageAttachmentCount: imageAttachmentCountProp,
     hasUpvoted = false,
     isBookmarked = false,
     onUpvote,
@@ -70,9 +78,15 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
       onBookmark?.();
     };
 
-    // Check if thread has images for the left-side layout
-    const hasImages = thread.images && thread.images.length > 0;
-    const featuredImage = hasImages ? thread.images![0] : null;
+    const legacyImages = thread.images ?? [];
+    const resolvedSrc =
+      previewUrl ?? legacyImages[0]?.url ?? legacyImages[0]?.thumbnail ?? null;
+    const imageCount =
+      imageAttachmentCountProp !== undefined ? imageAttachmentCountProp : legacyImages.length;
+    const legacyHasRenderableImage = Boolean(legacyImages[0]?.url || legacyImages[0]?.thumbnail);
+    const showImage = resolvedSrc !== null;
+    const showSkeleton = previewLoading && !showImage && imageCount > 0;
+    const showPreviewSlot = showSkeleton || showImage || legacyHasRenderableImage;
 
     const handleCardClick = (e: React.MouseEvent) => {
       // Navigate to thread detail on card click
@@ -106,20 +120,29 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
         {...props}
       >
         <div className="flex">
-          {/* Featured Image (Left Side) - Only shown when images exist */}
-            {hasImages && featuredImage && (
-              <div className="relative w-32 md:w-40 flex-shrink-0 bg-sage-light">
-                <Image
-                  src={featuredImage.url || featuredImage.thumbnail}
-                  alt={featuredImage.alt || thread.title}
-                  fill
-                  className="object-cover"
-                />
-                {/* Image count badge if multiple images */}
-                {thread.images!.length > 1 && (
-                  <div className="absolute bottom-2 right-2 bg-forest/80 text-bone text-xs px-2 py-0.5 rounded-full">
-                    +{thread.images!.length - 1}
-                  </div>
+          {/* Featured image or loading placeholder */}
+            {showPreviewSlot && (
+              <div className="relative w-32 md:w-40 flex-shrink-0 bg-sage-light min-h-[5.5rem]">
+                {showSkeleton && (
+                  <div
+                    className="absolute inset-0 animate-pulse bg-sage/40"
+                    aria-hidden
+                  />
+                )}
+                {showImage && (
+                  <>
+                    <Image
+                      src={resolvedSrc}
+                      alt={legacyImages[0]?.alt || thread.title}
+                      fill
+                      className="object-cover"
+                    />
+                    {imageCount > 1 && (
+                      <div className="absolute bottom-2 right-2 bg-forest/80 text-bone text-xs px-2 py-0.5 rounded-full">
+                        +{imageCount - 1}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}

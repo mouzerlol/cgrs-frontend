@@ -10,7 +10,7 @@ import {
 import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import ThreadCard from '../ThreadCard';
+import { ThreadCardWithPreview } from '../ThreadCardWithPreview';
 import type { Thread } from '@/types';
 
 interface SwipeableThreadCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
@@ -274,7 +274,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
           onClick={handleCardClick}
           whileTap={{ scale: disableSwipe ? 0.98 : 1 }}
         >
-          <ThreadCard
+          <ThreadCardWithPreview
             thread={thread}
             hasUpvoted={hasUpvoted}
             isBookmarked={isBookmarked}

@@ -49,7 +49,6 @@ export default function DiscussionPage() {
     () => (threadData?.pages ?? []).flatMap((page) => page.threads) as Thread[],
     [threadData],
   );
-  const totalThreads = threadData?.pages[0]?.total ?? 0;
 
   // Calculate category stats
   const stats = useMemo(() => {
@@ -65,14 +64,10 @@ export default function DiscussionPage() {
     return statsMap;
   }, [categories, categoryStats]);
 
-  const upvotedThreads = useMemo(
-    () => new Set(allThreads.filter((thread) => thread.isUpvoted).map((thread) => thread.id)),
-    [allThreads],
-  );
-  const bookmarkedThreads = useMemo(
-    () => new Set(allThreads.filter((thread) => thread.isBookmarked).map((thread) => thread.id)),
-    [allThreads],
-  );
+  const { upvotedThreads, bookmarkedThreads } = useMemo(() => ({
+    upvotedThreads: new Set(allThreads.filter((t) => t.isUpvoted).map((t) => t.id)),
+    bookmarkedThreads: new Set(allThreads.filter((t) => t.isBookmarked).map((t) => t.id)),
+  }), [allThreads]);
 
   const handleUpvote = (threadId: string) => {
     upvoteThreadMutation.mutate(threadId);
@@ -166,7 +161,7 @@ export default function DiscussionPage() {
             {hasNextPage && (
               <div className="pt-4 flex justify-center">
                 <button
-                  onClick={() => fetchNextPage()}
+                  onClick={fetchNextPage}
                   disabled={isFetchingNextPage}
                   className={cn(
                     'inline-flex items-center gap-2 px-6 py-3',

@@ -18,6 +18,8 @@ import {
 } from '@/lib/discussion-keys';
 import { getCategoryStats, getThreads } from '@/lib/api/discussions';
 
+const DEFAULT_DISCUSSION_OPTS = normalizeThreadOptions({ sort: 'newest' });
+
 const NAV_LINK_CLASS =
   'text-sm font-medium tracking-wide uppercase relative px-2 py-1.5 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap';
 
@@ -42,12 +44,11 @@ export default function Navigation() {
   const handleDiscussionPrefetch = useCallback(() => {
     // Only prefetch when authenticated — the backend requires a valid token
     if (!isSignedIn) return;
-    const defaultOpts = normalizeThreadOptions({ sort: 'newest' });
     queryClient.prefetchInfiniteQuery({
-      queryKey: discussionKeys.threadList({ ...defaultOpts, limit: PAGE_SIZE }),
+      queryKey: discussionKeys.threadList({ ...DEFAULT_DISCUSSION_OPTS, limit: PAGE_SIZE }),
       queryFn: () =>
         getThreads(
-          { ...defaultOpts, limit: PAGE_SIZE, offset: 0 },
+          { ...DEFAULT_DISCUSSION_OPTS, limit: PAGE_SIZE, offset: 0 },
           getToken,
         ),
       initialPageParam: 0,

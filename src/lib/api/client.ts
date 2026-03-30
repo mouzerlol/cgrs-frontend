@@ -7,12 +7,34 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export const isLocalApi = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(API_URL);
 
+/** Extract FastAPI/Starlette `detail` from JSON error body for readable messages. */
+export function formatApiErrorDetail(body: unknown): string {
+  if (!body || typeof body !== 'object') {
+    return '';
+  }
+  const d = (body as { detail?: unknown }).detail;
+  if (typeof d === 'string') {
+    return d;
+  }
+  if (Array.isArray(d)) {
+    return d
+      .map((item) =>
+        typeof item === 'object' && item !== null && 'msg' in item
+          ? String((item as { msg: unknown }).msg)
+          : JSON.stringify(item),
+      )
+      .join('; ');
+  }
+  return '';
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,
     public body: unknown,
   ) {
-    super(`API error ${status}`);
+    const detail = formatApiErrorDetail(body);
+    super(detail ? `API error ${status}: ${detail}` : `API error ${status}`);
     this.name = 'ApiError';
   }
 

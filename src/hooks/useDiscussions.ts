@@ -15,6 +15,7 @@ import {
   closePoll,
   createReply,
   createThread,
+  uploadDiscussionImageFile,
   deleteReply,
   deleteThread,
   getCategories,
@@ -239,12 +240,31 @@ export function useCreateThread() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: {
+    mutationFn: async (data: {
       title: string;
       body: string;
       category: string;
       poll?: { question: string; options: string[]; allowMultiple: boolean };
-    }) => createThread(data, getToken),
+      images?: File[];
+    }) => {
+      let attachmentIds: string[] | undefined;
+      if (data.images?.length) {
+        attachmentIds = [];
+        for (const file of data.images) {
+          attachmentIds.push(await uploadDiscussionImageFile(file, getToken));
+        }
+      }
+      return createThread(
+        {
+          title: data.title,
+          body: data.body,
+          category: data.category,
+          poll: data.poll,
+          attachmentIds,
+        },
+        getToken,
+      );
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
     },

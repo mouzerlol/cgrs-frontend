@@ -244,6 +244,23 @@ export interface Poll {
 }
 
 /**
+ * R2-backed attachment metadata from API (presigned URL fetched separately).
+ */
+export interface DiscussionAttachmentMeta {
+  id: string;
+  contentType: string;
+  byteSize: number;
+}
+
+/**
+ * Presigned GET for the first thread image, embedded on paginated list responses when available.
+ */
+export interface ThreadCoverPreview {
+  downloadUrl: string;
+  expiresInSeconds?: number;
+}
+
+/**
  * Image attached to a thread or reply.
  */
 export interface ThreadImage {
@@ -277,7 +294,12 @@ export interface Thread {
   updatedAt?: string; // ISO date
 
   // Optional rich content
-  images?: ThreadImage[]; // Max 5
+  /** Legacy / demo; list cards use attachments + presigned URL (or coverPreview from list API). */
+  images?: ThreadImage[];
+  /** ADR 005: completed uploads linked to opening post */
+  attachments?: DiscussionAttachmentMeta[];
+  /** Server-embedded presigned cover on thread list; avoids per-card download-url when set. */
+  coverPreview?: ThreadCoverPreview | null;
   poll?: Poll;
   links?: ThreadLink[];
 
@@ -316,6 +338,7 @@ export interface Reply {
 
   // Optional rich content
   images?: ThreadImage[];
+  attachments?: DiscussionAttachmentMeta[];
 
   // Engagement
   upvotes: number;
