@@ -1,10 +1,10 @@
 import { apiRequest } from '@/lib/api/client';
+import { uploadWorkTaskAttachmentFile } from '@/lib/api/discussions';
 import type {
   ManagementRequest,
   ManagementRequestFormData,
   ManagementRequestWithTask,
 } from '@/types/management-request';
-import type { TaskImage } from '@/types/work-management';
 import { mapTaskResponse } from './work-tasks';
 
 const API_PATH = '/api/v1/management-requests';
@@ -49,34 +49,19 @@ function mapManagementRequestWithTask(
   };
 }
 
-async function fileToDataUrl(file: File): Promise<string> {
-  return await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error ?? new Error('Failed to read file'));
-    reader.readAsDataURL(file);
-  });
-}
+async function buildCreateBody(data: ManagementRequestFormData, getToken: () => Promise<string | null>) {
+  const photo_attachment_ids =
+    data.photos.length === 0
+      ? []
+      : await Promise.all(data.photos.map((file) => uploadWorkTaskAttachmentFile(file, getToken)));
 
-async function mapFilesToTaskImages(files: File[]): Promise<TaskImage[]> {
-  const urls = await Promise.all(files.map((file) => fileToDataUrl(file)));
-  return urls.map((url, index) => ({
-    id: `upload-${index}-${crypto.randomUUID()}`,
-    url,
-    thumbnail: url,
-    alt: files[index]?.name ?? `Upload ${index + 1}`,
-    type: 'image',
-  }));
-}
-
-async function createPayload(data: ManagementRequestFormData) {
   return {
     category: data.category,
     full_name: data.full_name.trim(),
     email: data.email.trim(),
     subject: data.subject.trim(),
     description: data.description.trim(),
-    photos: await mapFilesToTaskImages(data.photos),
+    photo_attachment_ids,
     location: data.location,
   };
 }
@@ -87,7 +72,7 @@ export async function createManagementRequest(
 ): Promise<ManagementRequestWithTask> {
   const response = await apiRequest<ApiManagementRequestWithTaskResponse>(API_PATH, getToken, {
     method: 'POST',
-    body: JSON.stringify(await createPayload(data)),
+    body: JSON.stringify(await buildCreateBody(data, getToken)),
   });
   return mapManagementRequestWithTask(response);
 }

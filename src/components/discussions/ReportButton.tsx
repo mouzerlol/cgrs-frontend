@@ -3,6 +3,7 @@
 import { forwardRef, ButtonHTMLAttributes, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface ReportButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Callback when report is submitted */
@@ -58,33 +59,35 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
 
     return (
       <div className="relative">
-        <button
-          ref={ref}
-          type="button"
-          onClick={handleReport}
-          disabled={disabled || reported}
-          className={cn(
-            'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
-            sizes.button,
-            reported
-              ? 'bg-sage-light text-forest/40 border-sage cursor-not-allowed'
-              : 'bg-transparent text-forest/40 border-transparent hover:text-terracotta hover:bg-terracotta/5',
-            disabled && 'opacity-50 cursor-not-allowed',
-            className
-          )}
-          aria-label={reported ? 'Already reported' : 'Report content'}
-          {...props}
-        >
-          <Icon
-            icon={reported ? 'lucide:flag-off' : 'lucide:flag'}
-            className={sizes.icon}
-          />
-          {showLabel && (
-            <span className={cn('font-medium', sizes.text)}>
-              {reported ? 'Reported' : 'Report'}
-            </span>
-          )}
-        </button>
+        <Tooltip content={reported ? 'Reported' : 'Report'}>
+          <button
+            ref={ref}
+            type="button"
+            onClick={handleReport}
+            disabled={disabled || reported}
+            className={cn(
+              'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
+              sizes.button,
+              reported
+                ? 'bg-sage-light text-forest/40 border-sage cursor-not-allowed'
+                : 'bg-transparent text-forest/40 border-transparent hover:text-terracotta hover:bg-terracotta/5',
+              disabled && 'opacity-50 cursor-not-allowed',
+              className
+            )}
+            aria-label={reported ? 'Already reported' : 'Report content'}
+            {...props}
+          >
+            <Icon
+              icon={reported ? 'lucide:flag-off' : 'lucide:flag'}
+              className={sizes.icon}
+            />
+            {showLabel && (
+              <span className={cn('font-medium', sizes.text)}>
+                {reported ? 'Reported' : 'Report'}
+              </span>
+            )}
+          </button>
+        </Tooltip>
 
         {/* Toast notification */}
         {showToast && (

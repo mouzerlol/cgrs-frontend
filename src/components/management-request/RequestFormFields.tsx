@@ -178,7 +178,7 @@ export function RequestFormFields({
             value={data.photos}
             onChange={handlePhotosChange}
             maxFiles={5}
-            maxSizeMB={5}
+            maxSizeMB={10}
           />
         </div>
         {errors.photos && (

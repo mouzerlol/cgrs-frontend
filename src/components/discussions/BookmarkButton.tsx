@@ -3,6 +3,7 @@
 import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface BookmarkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Whether the thread is bookmarked */
@@ -58,32 +59,34 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
     const sizes = sizeClasses[size];
 
     return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={handleBookmarkClick}
-        disabled={disabled}
-        className={cn(
-          'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
-          sizes.button,
-          isBookmarked
-            ? 'bg-forest text-bone border-forest'
-            : 'bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20',
-          disabled && 'opacity-50 cursor-not-allowed',
-          className,
-        )}
-        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
-        aria-pressed={isBookmarked}
-        {...props}
-      >
-        <Icon
-          icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
-          className={cn(sizes.icon, 'transition-transform duration-200', isBookmarked && 'fill-current')}
-        />
-        {showLabel && (
-          <span className={cn('font-medium', sizes.text)}>{isBookmarked ? 'Saved' : 'Save'}</span>
-        )}
-      </button>
+      <Tooltip content={isBookmarked ? 'Saved' : 'Save'}>
+        <button
+          ref={ref}
+          type="button"
+          onClick={handleBookmarkClick}
+          disabled={disabled}
+          className={cn(
+            'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
+            sizes.button,
+            isBookmarked
+              ? 'bg-forest text-bone border-forest'
+              : 'bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20',
+            disabled && 'opacity-50 cursor-not-allowed',
+            className,
+          )}
+          aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
+          aria-pressed={isBookmarked}
+          {...props}
+        >
+          <Icon
+            icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
+            className={cn(sizes.icon, 'transition-transform duration-200', isBookmarked && 'fill-current')}
+          />
+          {showLabel && (
+            <span className={cn('font-medium', sizes.text)}>{isBookmarked ? 'Saved' : 'Save'}</span>
+          )}
+        </button>
+      </Tooltip>
     );
   },
 );

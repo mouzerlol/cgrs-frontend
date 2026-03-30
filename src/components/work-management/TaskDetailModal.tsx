@@ -28,9 +28,18 @@ interface TaskDetailModalProps {
   task: Task | null;
   onUpdate: (updatedTask: Task) => void;
   onDelete?: (taskId: string) => void;
+  /** R2 upload failures from the asset gallery (size, MIME, network). */
+  onAssetUploadError?: (message: string) => void;
 }
 
-export default function TaskDetailModal({ isOpen, onClose, task, onUpdate, onDelete }: TaskDetailModalProps) {
+export default function TaskDetailModal({
+  isOpen,
+  onClose,
+  task,
+  onUpdate,
+  onDelete,
+  onAssetUploadError,
+}: TaskDetailModalProps) {
   const [activeTab, setActiveTab] = useState<'comments' | 'activity'>('comments');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const assigneeFieldRef = useRef<InlineEditFieldHandle>(null);
@@ -326,6 +335,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onUpdate, onDel
                   <TaskImageGallery
                     images={task.images || []}
                     onChange={v => handleChange('images', v)}
+                    onUploadError={onAssetUploadError}
                   />
                 </Card>
               </div>

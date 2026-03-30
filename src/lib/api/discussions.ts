@@ -441,6 +441,9 @@ export async function createThread(
   return mapThreadResponse(response);
 }
 
+/** Upload session context: forum assets vs work-task / management-request assets (R2 key prefix). */
+export type CommunityAttachmentUploadPurpose = 'discussion' | 'work_task';
+
 /**
  * Start an ADR 005 direct-to-R2 upload: returns presigned PUT target and attachment id.
  */
@@ -448,10 +451,17 @@ export async function createDiscussionUploadSession(
   contentType: string,
   byteSize: number,
   getToken: () => Promise<string | null>,
+  options?: { threadId?: string; uploadPurpose?: CommunityAttachmentUploadPurpose },
 ): Promise<ApiUploadSessionResponse> {
+  const body: Record<string, unknown> = {
+    content_type: contentType,
+    byte_size: byteSize,
+  };
+  if (options?.threadId) body.thread_id = options.threadId;
+  if (options?.uploadPurpose) body.upload_purpose = options.uploadPurpose;
   return apiRequest<ApiUploadSessionResponse>(`${ATTACHMENTS_API_PATH}/upload-sessions`, getToken, {
     method: 'POST',
-    body: JSON.stringify({ content_type: contentType, byte_size: byteSize }),
+    body: JSON.stringify(body),
   });
 }
 
@@ -494,13 +504,14 @@ const R2_DIRECT_UPLOAD_CORS_HINT =
 export async function uploadDiscussionImageFile(
   file: File,
   getToken: () => Promise<string | null>,
+  options?: { threadId?: string; uploadPurpose?: CommunityAttachmentUploadPurpose },
 ): Promise<string> {
   if (file.size < 1 || file.size > DISCUSSION_IMAGE_MAX_BYTES) {
     throw new RangeError(
       `Image size must be between 1 byte and ${DISCUSSION_IMAGE_MAX_BYTES} bytes (server limit)`,
     );
   }
-  const session = await createDiscussionUploadSession(file.type, file.size, getToken);
+  const session = await createDiscussionUploadSession(file.type, file.size, getToken, options);
   let putRes: Response;
   try {
     putRes = await fetch(session.upload_url, {
@@ -520,6 +531,17 @@ export async function uploadDiscussionImageFile(
   }
   await completeDiscussionUpload(session.attachment_id, getToken);
   return session.attachment_id;
+}
+
+/**
+ * Presigned R2 upload for work-board / management-request attachments (`work-tasks/{community}/...` keys).
+ * Same size limits and CORS requirements as discussion images.
+ */
+export async function uploadWorkTaskAttachmentFile(
+  file: File,
+  getToken: () => Promise<string | null>,
+): Promise<string> {
+  return uploadDiscussionImageFile(file, getToken, { uploadPurpose: 'work_task' });
 }
 
 interface ApiVoteResponse {

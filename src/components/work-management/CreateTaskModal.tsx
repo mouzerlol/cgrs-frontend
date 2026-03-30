@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
-import type { CreateTaskFormValues, TaskLocation, TaskPriority, TaskStatus } from '@/types/work-management';
+import type { CreateTaskFormValues, TaskImage, TaskLocation, TaskPriority, TaskStatus } from '@/types/work-management';
 import PrioritySelector from './PrioritySelector';
 import TagInput from './TagInput';
 import TaskLocationPicker from './TaskLocationPicker';
+import TaskImageGallery from './TaskImageGallery';
 import { useMembers } from '@/hooks/useAuthorization';
 import { memberDisplayName } from '@/lib/member-display';
 
@@ -36,6 +37,8 @@ export default function CreateTaskModal({
   const [dueDate, setDueDate] = useState('');
   const [showLocation, setShowLocation] = useState(false);
   const [location, setLocation] = useState<TaskLocation | undefined>();
+  const [taskImages, setTaskImages] = useState<TaskImage[]>([]);
+  const [assetUploadError, setAssetUploadError] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -48,6 +51,8 @@ export default function CreateTaskModal({
       setDueDate('');
       setShowLocation(false);
       setLocation(undefined);
+      setTaskImages([]);
+      setAssetUploadError(null);
       setError('');
     }
   }, [isOpen]);
@@ -68,6 +73,7 @@ export default function CreateTaskModal({
       tags,
       dueDate,
       location: showLocation ? location : undefined,
+      images: taskImages.length ? taskImages : undefined,
     });
   };
 
@@ -153,9 +159,23 @@ export default function CreateTaskModal({
           <TagInput tags={tags} onChange={setTags} />
         </div>
 
-        <p className="font-body text-xs text-forest/60 border border-sage/20 rounded-lg px-3 py-2 bg-sage/5">
-          Images can be added from the task detail view after the task is created.
-        </p>
+        <div className="space-y-1.5">
+          <label className="font-body text-sm font-medium text-forest block">Photos (optional)</label>
+          {assetUploadError && (
+            <div className="text-terracotta text-sm bg-terracotta/10 p-2 rounded flex justify-between gap-2">
+              <span>{assetUploadError}</span>
+              <button type="button" className="underline shrink-0" onClick={() => setAssetUploadError(null)}>
+                Dismiss
+              </button>
+            </div>
+          )}
+          <TaskImageGallery
+            images={taskImages}
+            onChange={setTaskImages}
+            maxImages={8}
+            onUploadError={(msg) => setAssetUploadError(msg)}
+          />
+        </div>
 
         <div>
           <button

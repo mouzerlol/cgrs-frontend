@@ -10,6 +10,7 @@ import UpvoteButton from './UpvoteButton';
 import BookmarkButton from './BookmarkButton';
 import ShareDropdown from './ShareDropdown';
 import ReportButton from './ReportButton';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface ThreadActionsProps extends HTMLAttributes<HTMLDivElement> {
   thread: Thread;
@@ -21,6 +22,7 @@ interface ThreadActionsProps extends HTMLAttributes<HTMLDivElement> {
   onShare?: (platform: string) => void;
   onReport?: () => void;
   onDelete?: () => void;
+  onReplyButtonClick?: () => void;
   replyCount?: number;
 }
 
@@ -45,6 +47,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
     onShare,
     onReport,
     onDelete,
+    onReplyButtonClick,
     replyCount = 0,
     className,
     ...props
@@ -61,13 +64,16 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
         />
 
         {/* Reply Count */}
-        <button
-          type="button"
-          className="flex items-center gap-2 px-3 py-2 text-sm text-forest/60 hover:text-forest hover:bg-sage-light rounded-lg transition-colors min-h-[44px]"
-        >
-          <Icon icon="lucide:message-circle" className="w-5 h-5" />
-          <span className="font-medium">{formatReplyCount(replyCount)}</span>
-        </button>
+        <Tooltip content="Jump to reply">
+          <button
+            type="button"
+            onClick={onReplyButtonClick}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-forest/60 hover:text-forest hover:bg-sage-light rounded-lg transition-colors min-h-[44px]"
+          >
+            <Icon icon="lucide:message-circle" className="w-5 h-5" />
+            <span className="font-medium">{formatReplyCount(replyCount)}</span>
+          </button>
+        </Tooltip>
 
         {/* Bookmark Button */}
         <BookmarkButton
@@ -81,15 +87,14 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
 
         {/* More Options Menu (Report) */}
         <Menu as="div" className="relative">
-          <Menu.Button as={Fragment}>
-            <button
-              type="button"
+          <Tooltip content="More">
+            <Menu.Button
               className="flex items-center justify-center w-11 h-11 text-forest/60 hover:text-forest hover:bg-sage-light rounded-lg transition-colors"
               aria-label="More options"
             >
               <Icon icon="lucide:more-horizontal" className="w-5 h-5" />
-            </button>
-          </Menu.Button>
+            </Menu.Button>
+          </Tooltip>
 
           <Transition
             as={Fragment}

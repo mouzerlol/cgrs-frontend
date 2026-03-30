@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, HTMLAttributes } from 'react';
+import { forwardRef, HTMLAttributes, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import type { Thread, Reply } from '@/types';
@@ -8,7 +8,7 @@ import ThreadHeader from './ThreadHeader';
 import ThreadBody from './ThreadBody';
 import ThreadActions from './ThreadActions';
 import ReplyList from './ReplyList';
-import ReplyForm from './ReplyForm';
+import ReplyForm, { type ReplyFormHandle } from './ReplyForm';
 
 interface ThreadDetailProps extends HTMLAttributes<HTMLDivElement> {
   thread: Thread;
@@ -62,6 +62,14 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
   }, ref) => {
     const isLocked = Boolean((thread as Thread & { isLocked?: boolean }).isLocked);
 
+    const replyFormRef = useRef<ReplyFormHandle>(null);
+    const replyFormSectionRef = useRef<HTMLElement>(null);
+
+    const handleReplyButtonClick = () => {
+      replyFormSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => replyFormRef.current?.focus(), 300);
+    };
+
     return (
       <div ref={ref} className={cn('space-y-8', className)} {...props}>
         {/* Thread Content */}
@@ -92,6 +100,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
               onDelete={onDeleteThread}
               canDelete={canDeleteThread}
               replyCount={thread.replyCount}
+              onReplyButtonClick={handleReplyButtonClick}
             />
           </div>
         </article>
@@ -111,12 +120,13 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
 
         {/* Reply Form */}
         {!isLocked && (
-          <section className="bg-sage-light rounded-xl border border-sage/30 p-6 md:p-8">
+          <section ref={replyFormSectionRef} className="bg-sage-light rounded-xl border border-sage/30 p-6 md:p-8">
             <div className="flex items-center gap-2 mb-4">
               <Icon icon="lucide:reply" className="w-5 h-5 text-terracotta" />
               <h3 className="font-semibold text-forest">Post a Reply</h3>
             </div>
             <ReplyForm
+              ref={replyFormRef}
               onSubmit={onReply || (() => {})}
               isSubmitting={isSubmittingReply}
               placeholder="Share your thoughts..."

@@ -4,6 +4,7 @@ import { forwardRef, useState, Fragment } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface ShareDropdownProps {
   /** Thread ID for generating share link */
@@ -69,17 +70,19 @@ const ShareDropdown = forwardRef<HTMLDivElement, ShareDropdownProps>(
 
     return (
       <Menu as="div" ref={ref} className={cn('relative', className)}>
-        <MenuButton
-          className={cn(
-            'flex items-center justify-center rounded-lg border transition-all duration-200',
-            'bg-transparent text-forest/60 border-sage',
-            'hover:bg-sage-light hover:text-forest hover:border-forest/20',
-            sizes.button
-          )}
-          aria-label="Share thread"
-        >
-          <Icon icon="lucide:share-2" className={sizes.icon} />
-        </MenuButton>
+        <Tooltip content="Share">
+          <MenuButton
+            className={cn(
+              'flex items-center justify-center rounded-lg border transition-all duration-200',
+              'bg-transparent text-forest/60 border-sage',
+              'hover:bg-sage-light hover:text-forest hover:border-forest/20',
+              sizes.button
+            )}
+            aria-label="Share thread"
+          >
+            <Icon icon="lucide:share-2" className={sizes.icon} />
+          </MenuButton>
+        </Tooltip>
 
         <Transition
           as={Fragment}

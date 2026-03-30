@@ -1,8 +1,12 @@
 'use client';
 
-import { forwardRef, HTMLAttributes, useRef, useEffect, useState } from 'react';
+import { forwardRef, HTMLAttributes, useRef, useEffect, useState, useImperativeHandle } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+
+export interface ReplyFormHandle {
+  focus: () => void;
+}
 
 interface ReplyFormProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
   /** May return a Promise; textarea clears only after fulfillment. */
@@ -19,8 +23,9 @@ const MAX_LENGTH = 2000;
 /**
  * Reply form for submitting new replies to threads or other replies.
  * Features character count, auto-resize, and validation.
+ * Exposes a `focus()` handle via ref for programmatic focus + highlight.
  */
-const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
+const ReplyForm = forwardRef<ReplyFormHandle, ReplyFormProps>(
   ({
     onSubmit,
     onCancel,
@@ -33,6 +38,21 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
   }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(initialValue);
+    const [isHighlighted, setIsHighlighted] = useState(false);
+    const highlightTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+    useImperativeHandle(ref, () => ({
+      focus() {
+        textareaRef.current?.focus();
+        setIsHighlighted(true);
+        clearTimeout(highlightTimerRef.current);
+        highlightTimerRef.current = setTimeout(() => setIsHighlighted(false), 1500);
+      },
+    }));
+
+    useEffect(() => {
+      return () => clearTimeout(highlightTimerRef.current);
+    }, []);
 
     // Auto-resize textarea
     useEffect(() => {
@@ -68,7 +88,7 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
     const isOverLimit = remainingChars < 0;
 
     return (
-      <div ref={ref} className={cn('space-y-2', className)} {...props}>
+      <div className={cn('space-y-2', className)} {...props}>
         <textarea
           ref={textareaRef}
           value={value}
@@ -81,6 +101,8 @@ const ReplyForm = forwardRef<HTMLDivElement, ReplyFormProps>(
             'w-full p-3 rounded-lg border bg-white text-forest placeholder:text-forest/40',
             'focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage',
             'resize-none min-h-[80px] text-sm',
+            'transition-[box-shadow,border-color] duration-300',
+            isHighlighted && 'ring-2 ring-terracotta/60 border-terracotta/40',
             isOverLimit && 'border-terracotta/50'
           )}
           aria-label={placeholder}

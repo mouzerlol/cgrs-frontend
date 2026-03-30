@@ -12,6 +12,7 @@ import { formatTaskMutationError } from '@/lib/api/mutation-errors';
 import { cn, formatRelativeDate } from '@/lib/utils';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { DeleteCommentDialog } from '@/components/work-management/DeleteCommentDialog';
+import { useTaskAttachmentImages } from '@/hooks/useTaskAttachmentImages';
 
 export default function ReportedIssueDetailPage() {
   const { requestId } = useParams<{ requestId: string }>();
@@ -84,6 +85,8 @@ export default function ReportedIssueDetailPage() {
 
   const canWithdraw = query.data?.request.status === 'open';
   const myUserId = currentUserPayload?.user.id;
+  const taskImages = query.data?.task.images ?? [];
+  const { displayImages, isResolving } = useTaskAttachmentImages(taskImages);
 
   if (!isLoaded || query.isLoading) {
     return (
@@ -205,8 +208,11 @@ export default function ReportedIssueDetailPage() {
         {task.images.length > 0 && (
           <div className="mt-6 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-terracotta">Images</h3>
+            {isResolving && (
+              <p className="text-sm text-forest/50">Loading images…</p>
+            )}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {task.images.map((image) => (
+              {displayImages.map((image) => (
                 <img
                   key={image.id}
                   src={image.thumbnail || image.url}

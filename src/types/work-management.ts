@@ -23,6 +23,8 @@ export interface TaskImage {
   id: string;
   url: string;
   thumbnail: string;
+  /** Set when the file is stored in R2 (`discussion_attachments` linked to the task). */
+  attachmentId?: string;
   alt?: string;
   type?: 'image' | 'video';
   duration?: number;
@@ -85,6 +87,8 @@ export interface CreateTaskFormValues {
   /** Raw value from `<input type="date">` (YYYY-MM-DD) or empty. */
   dueDate: string;
   location?: TaskLocation;
+  /** R2-backed images (upload before create); sent as `attachment_ids`. */
+  images?: TaskImage[];
 }
 
 export interface BoardColumn {

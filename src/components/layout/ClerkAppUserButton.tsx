@@ -1,9 +1,10 @@
 'use client';
 
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { SignOutButton, useUser, UserAvatar } from '@clerk/nextjs';
+import { getAfterSignOutUrl } from '@/lib/app-url';
 import { cn } from '@/lib/utils';
 
 const profileLinkIcon = (
@@ -29,6 +30,13 @@ const profileLinkIcon = (
  */
 export default function ClerkAppUserButton() {
   const { user, isLoaded } = useUser();
+  /** Browser origin (localhost vs 127.0.0.1, preview URL, etc.); SSR uses env-based URL from getAfterSignOutUrl. */
+  const [afterSignOutUrl, setAfterSignOutUrl] = useState(() => getAfterSignOutUrl());
+
+  useEffect(() => {
+    const o = window.location.origin;
+    setAfterSignOutUrl(`${o}/login/?redirect_url=${encodeURIComponent(`${o}/`)}`);
+  }, []);
 
   if (!isLoaded) {
     return <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-bone/20" aria-hidden="true" />;
@@ -93,7 +101,7 @@ export default function ClerkAppUserButton() {
             </MenuItem>
             <MenuItem>
               {({ focus }) => (
-                <SignOutButton>
+                <SignOutButton redirectUrl={afterSignOutUrl}>
                   <button
                     type="button"
                     className={cn(

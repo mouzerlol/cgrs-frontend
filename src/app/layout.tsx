@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Fraunces, Manrope, JetBrains_Mono } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import { clerkAppearance } from '@/lib/clerk-appearance';
+import { getAfterSignOutUrl } from '@/lib/app-url';
 import './globals.css';
 import Layout from '@/components/layout/Layout';
 import { Providers } from '@/lib/providers';
@@ -69,7 +70,7 @@ export default function RootLayout({
       <body>
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          afterSignOutUrl="/"
+          afterSignOutUrl={getAfterSignOutUrl()}
           appearance={clerkAppearance}
         >
           <Providers>

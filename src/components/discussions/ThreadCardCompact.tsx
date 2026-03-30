@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import type { Thread, LatestReply } from '@/types';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface ThreadCardCompactProps extends HTMLAttributes<HTMLDivElement> {
   /** Thread data */
@@ -253,49 +254,55 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Share Button */}
-            <button
-              onClick={handleBookmarkClick}
-              className={cn(
-                'p-1.5 rounded-lg transition-colors',
-                isBookmarked
-                  ? 'bg-sage/60 text-forest'
-                  : 'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
-                'hidden sm:flex items-center justify-center'
-              )}
-              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-            >
-              <Icon
-                icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
-                className="w-4 h-4"
-              />
-            </button>
+            {/* Bookmark Button */}
+            <Tooltip content={isBookmarked ? 'Saved' : 'Save'}>
+              <button
+                onClick={handleBookmarkClick}
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors',
+                  isBookmarked
+                    ? 'bg-sage/60 text-forest'
+                    : 'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
+                  'hidden sm:flex items-center justify-center'
+                )}
+                aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+              >
+                <Icon
+                  icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
+                  className="w-4 h-4"
+                />
+              </button>
+            </Tooltip>
 
             {/* Share Button */}
-            <button
-              onClick={handleShareClick}
-              className={cn(
-                'p-1.5 rounded-lg transition-colors',
-                'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
-                'hidden sm:flex items-center justify-center'
-              )}
-              aria-label="Share"
-            >
-              <Icon icon="lucide:share-2" className="w-4 h-4" />
-            </button>
+            <Tooltip content="Share">
+              <button
+                onClick={handleShareClick}
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors',
+                  'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
+                  'hidden sm:flex items-center justify-center'
+                )}
+                aria-label="Share"
+              >
+                <Icon icon="lucide:share-2" className="w-4 h-4" />
+              </button>
+            </Tooltip>
 
             {/* Report Button */}
-            <button
-              onClick={handleReportClick}
-              className={cn(
-                'p-1.5 rounded-lg transition-colors',
-                'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
-                'hidden sm:flex items-center justify-center'
-              )}
-              aria-label="Report"
-            >
-              <Icon icon="lucide:flag" className="w-4 h-4" />
-            </button>
+            <Tooltip content="Report">
+              <button
+                onClick={handleReportClick}
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors',
+                  'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
+                  'hidden sm:flex items-center justify-center'
+                )}
+                aria-label="Report"
+              >
+                <Icon icon="lucide:flag" className="w-4 h-4" />
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>

@@ -28,6 +28,16 @@ interface ApiTaskActivityResponse {
   created_at: string;
 }
 
+interface ApiTaskImage {
+  id: string;
+  url: string;
+  thumbnail: string;
+  alt?: string | null;
+  type?: TaskImage['type'];
+  duration?: number | null;
+  attachment_id?: string | null;
+}
+
 interface ApiTaskResponse {
   id: string;
   board_id?: string | null;
@@ -41,7 +51,7 @@ interface ApiTaskResponse {
   reporter_id: string;
   reporter?: ApiUserSummary | null;
   tags: string[];
-  images: TaskImage[];
+  images: ApiTaskImage[];
   comments: ApiTaskCommentResponse[];
   activity: ApiTaskActivityResponse[];
   location?: TaskLocation | null;
@@ -49,6 +59,18 @@ interface ApiTaskResponse {
   updated_at: string;
   due_date?: string | null;
   lane_position?: number;
+}
+
+function mapApiTaskImage(img: ApiTaskImage): TaskImage {
+  return {
+    id: img.id,
+    url: img.url ?? '',
+    thumbnail: img.thumbnail ?? '',
+    alt: img.alt ?? undefined,
+    type: img.type ?? 'image',
+    duration: img.duration ?? undefined,
+    attachmentId: img.attachment_id ?? undefined,
+  };
 }
 
 function mapTaskComment(comment: ApiTaskCommentResponse): TaskComment {
@@ -90,7 +112,7 @@ export function mapTaskResponse(task: ApiTaskResponse): Task {
     reporter_name: task.reporter?.name,
     reporter_avatar_url: task.reporter?.avatar_url ?? null,
     tags: task.tags,
-    images: task.images ?? [],
+    images: (task.images ?? []).map(mapApiTaskImage),
     comments: (task.comments ?? []).map(mapTaskComment),
     activity: (task.activity ?? []).map(mapTaskActivity),
     location: task.location ?? undefined,
@@ -123,6 +145,8 @@ export interface UpdateTaskRequestBody {
   location?: TaskLocation;
   due_date?: string;
   images?: TaskImage[];
+  /** When every image is R2-backed, send ordered ids (replaces linked attachments when set). */
+  attachment_ids?: string[];
   /** Full ordered task ids for the task's status column after this update (board tasks only). */
   lane_task_ids?: string[];
 }
@@ -139,6 +163,24 @@ export interface CreateTaskRequestBody {
   location?: TaskLocation;
   due_date?: string;
   images?: TaskImage[];
+  attachment_ids?: string[];
+}
+
+/**
+ * Build PATCH fields for task media: prefer `attachment_ids` when all items are R2-backed (or empty).
+ * Otherwise keep legacy inline `images` (e.g. data URLs) for older rows.
+ */
+export function taskImagesToUpdateBody(
+  images: TaskImage[],
+): Pick<UpdateTaskRequestBody, 'attachment_ids' | 'images'> {
+  if (images.length === 0) {
+    return { attachment_ids: [] };
+  }
+  const allR2 = images.every((i) => Boolean(i.attachmentId));
+  if (allR2) {
+    return { attachment_ids: images.map((i) => i.attachmentId!) };
+  }
+  return { images };
 }
 
 /**
@@ -156,6 +198,7 @@ export async function createTask(
   body: CreateTaskRequestBody,
   getToken: () => Promise<string | null>,
 ): Promise<Task> {
+  const attachmentIds = body.attachment_ids?.filter(Boolean) ?? [];
   const payload: Record<string, unknown> = {
     title: body.title.trim(),
     description: body.description.trim(),
@@ -163,8 +206,11 @@ export async function createTask(
     priority: body.priority,
     board_id: body.board_id,
     tags: body.tags,
-    images: body.images ?? [],
+    images: attachmentIds.length ? [] : body.images ?? [],
   };
+  if (attachmentIds.length) {
+    payload.attachment_ids = attachmentIds;
+  }
   if (body.assignee_id) payload.assignee_id = body.assignee_id;
   if (body.location) payload.location = body.location;
   if (body.due_date) payload.due_date = body.due_date;
@@ -191,7 +237,11 @@ export async function updateTask(
   if (body.tags !== undefined) payload.tags = body.tags;
   if (body.location !== undefined) payload.location = body.location;
   if (body.due_date !== undefined) payload.due_date = body.due_date;
-  if (body.images !== undefined) payload.images = body.images;
+  if (body.attachment_ids !== undefined) {
+    payload.attachment_ids = body.attachment_ids;
+  } else if (body.images !== undefined) {
+    payload.images = body.images;
+  }
   if (body.lane_task_ids !== undefined) payload.lane_task_ids = body.lane_task_ids;
 
   const response = await apiRequest<ApiTaskResponse>(`${API_PATH}/${taskId}`, getToken, {

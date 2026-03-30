@@ -3,6 +3,7 @@
 import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface UpvoteButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Current upvote count */
@@ -65,32 +66,34 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
     const sizes = sizeClasses[size];
 
     return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={handleUpvoteClick}
-        disabled={disabled}
-        className={cn(
-          'flex items-center justify-center rounded-lg border transition-all duration-200',
-          direction === 'vertical' ? 'flex-col' : 'flex-row',
-          sizes.button,
-          sizes.gap,
-          isUpvoted
-            ? 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark'
-            : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
-          disabled && 'opacity-50 cursor-not-allowed',
-          className,
-        )}
-        aria-label={isUpvoted ? 'Remove upvote' : 'Upvote'}
-        aria-pressed={isUpvoted}
-        {...props}
-      >
-        <Icon
-          icon={isUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
-          className={cn(sizes.icon, 'transition-transform duration-200')}
-        />
-        <span className={cn('font-semibold tabular-nums', sizes.text)}>{count}</span>
-      </button>
+      <Tooltip content={isUpvoted ? 'Remove upvote' : 'Upvote'}>
+        <button
+          ref={ref}
+          type="button"
+          onClick={handleUpvoteClick}
+          disabled={disabled}
+          className={cn(
+            'flex items-center justify-center rounded-lg border transition-all duration-200',
+            direction === 'vertical' ? 'flex-col' : 'flex-row',
+            sizes.button,
+            sizes.gap,
+            isUpvoted
+              ? 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark'
+              : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
+            disabled && 'opacity-50 cursor-not-allowed',
+            className,
+          )}
+          aria-label={isUpvoted ? 'Remove upvote' : 'Upvote'}
+          aria-pressed={isUpvoted}
+          {...props}
+        >
+          <Icon
+            icon={isUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
+            className={cn(sizes.icon, 'transition-transform duration-200')}
+          />
+          <span className={cn('font-semibold tabular-nums', sizes.text)}>{count}</span>
+        </button>
+      </Tooltip>
     );
   },
 );

@@ -14,7 +14,12 @@ import type { TaskBoardMoveArgs } from '@/lib/work-management-dnd';
 import { useBoardFilters } from '@/hooks/useBoardFilters';
 import { useBoard } from '@/hooks/useBoards';
 import { useTasks, useCreateTask, useUpdateTask, useUpdateTaskField } from '@/hooks/useTasks';
-import { dueDateInputToIso, type CreateTaskRequestBody, type UpdateTaskRequestBody } from '@/lib/api/work-tasks';
+import {
+  dueDateInputToIso,
+  taskImagesToUpdateBody,
+  type CreateTaskRequestBody,
+  type UpdateTaskRequestBody,
+} from '@/lib/api/work-tasks';
 import { formatTaskMutationError } from '@/lib/api/mutation-errors';
 import type { CreateTaskFormValues, Task, TaskStatus } from '@/types/work-management';
 
@@ -73,7 +78,7 @@ export default function BoardPage() {
         updates.location = updatedTask.location || undefined;
       }
       if (diff(JSON.stringify(original.images), JSON.stringify(updatedTask.images))) {
-        updates.images = updatedTask.images;
+        Object.assign(updates, taskImagesToUpdateBody(updatedTask.images));
       }
 
       if (Object.keys(updates).length > 0) {
@@ -123,6 +128,12 @@ export default function BoardPage() {
     ) {
       body.location = values.location;
     }
+    const attachmentIds = (values.images ?? [])
+      .map((i) => i.attachmentId)
+      .filter((id): id is string => Boolean(id));
+    if (attachmentIds.length) {
+      body.attachment_ids = attachmentIds;
+    }
     createTaskMutation.mutate(body, {
       onSuccess: () => {
         setIsCreateModalOpen(false);
@@ -146,8 +157,9 @@ export default function BoardPage() {
       ...originalTaskRef.current,
       comments: selectedTask.comments ?? [],
       activity: selectedTask.activity ?? [],
+      images: selectedTask.images ?? [],
     };
-  }, [selectedTaskId, selectedTask?.id, selectedTask?.comments, selectedTask?.activity]);
+  }, [selectedTaskId, selectedTask?.id, selectedTask?.comments, selectedTask?.activity, selectedTask?.images]);
 
   if (boardLoading || tasksLoading) {
     return (
@@ -248,6 +260,7 @@ export default function BoardPage() {
         }}
         task={selectedTask}
         onUpdate={handleTaskUpdate}
+        onAssetUploadError={(msg) => setFieldError(msg)}
       />
 
       <CreateTaskModal

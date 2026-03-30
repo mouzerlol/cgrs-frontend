@@ -7,6 +7,7 @@ import type { Reply } from '@/types';
 import UpvoteButton from './UpvoteButton';
 import ReplyForm from './ReplyForm';
 import ReportButton from './ReportButton';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface ReplyCardProps extends HTMLAttributes<HTMLDivElement> {
   reply: Reply;
@@ -140,14 +141,16 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
             direction="horizontal"
           />
 
-          <button
-            type="button"
-            onClick={() => setIsReplying(!isReplying)}
-            className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-forest transition-colors rounded"
-          >
-            <Icon icon="lucide:reply" className="w-3.5 h-3.5" />
-            <span>Reply</span>
-          </button>
+          <Tooltip content="Reply">
+            <button
+              type="button"
+              onClick={() => setIsReplying(!isReplying)}
+              className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-forest transition-colors rounded"
+            >
+              <Icon icon="lucide:reply" className="w-3.5 h-3.5" />
+              <span>Reply</span>
+            </button>
+          </Tooltip>
 
           <ReportButton
             onReport={onReport}
@@ -155,14 +158,16 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
           />
 
           {isAuthor && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-red-500 transition-colors rounded"
-            >
-              <Icon icon="lucide:trash-2" className="w-3.5 h-3.5" />
-              <span>Delete</span>
-            </button>
+            <Tooltip content="Delete">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-red-500 transition-colors rounded"
+              >
+                <Icon icon="lucide:trash-2" className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            </Tooltip>
           )}
         </div>
 

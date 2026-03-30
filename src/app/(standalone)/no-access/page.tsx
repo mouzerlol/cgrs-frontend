@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageHeader from '@/components/sections/PageHeader';
 import Button from '@/components/ui/Button';
-import { SignOutButton } from '@clerk/nextjs';
+import NoAccessSignOutButton from '@/components/auth/NoAccessSignOutButton';
 
 export const metadata: Metadata = {
   title: 'Access denied | Coronation Gardens',
@@ -46,11 +46,7 @@ export default async function NoAccessPage({
               : 'If you believe this is an error, please contact support or try signing in again.'}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {showSignOut && (
-              <SignOutButton redirectUrl="/login">
-                <Button variant="primary">Sign out and sign in again</Button>
-              </SignOutButton>
-            )}
+            {showSignOut && <NoAccessSignOutButton />}
             <Button variant={isUnauthorized ? 'outline' : 'primary'} asChild>
               <Link href="/">Go to home</Link>
             </Button>

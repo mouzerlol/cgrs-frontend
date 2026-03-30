@@ -3,6 +3,7 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 type ViewMode = 'card' | 'compact';
 
@@ -31,39 +32,43 @@ const ViewToggle = forwardRef<HTMLDivElement, ViewToggleProps>(
         aria-label="View mode"
         {...props}
       >
-        <button
-          type="button"
-          onClick={() => onChange('card')}
-          className={cn(
-            'flex items-center justify-center w-9 h-9 rounded-lg',
-            'transition-all duration-200',
-            value === 'card'
-              ? 'bg-white text-forest shadow-sm'
-              : 'text-forest/50 hover:text-forest'
-          )}
-          role="radio"
-          aria-checked={value === 'card'}
-          aria-label="Card view"
-        >
-          <Icon icon="lucide:layout-grid" className="w-5 h-5" />
-        </button>
+        <Tooltip content="Card view">
+          <button
+            type="button"
+            onClick={() => onChange('card')}
+            className={cn(
+              'flex items-center justify-center w-9 h-9 rounded-lg',
+              'transition-all duration-200',
+              value === 'card'
+                ? 'bg-white text-forest shadow-sm'
+                : 'text-forest/50 hover:text-forest'
+            )}
+            role="radio"
+            aria-checked={value === 'card'}
+            aria-label="Card view"
+          >
+            <Icon icon="lucide:layout-grid" className="w-5 h-5" />
+          </button>
+        </Tooltip>
 
-        <button
-          type="button"
-          onClick={() => onChange('compact')}
-          className={cn(
-            'flex items-center justify-center w-9 h-9 rounded-lg',
-            'transition-all duration-200',
-            value === 'compact'
-              ? 'bg-white text-forest shadow-sm'
-              : 'text-forest/50 hover:text-forest'
-          )}
-          role="radio"
-          aria-checked={value === 'compact'}
-          aria-label="Compact view"
-        >
-          <Icon icon="lucide:list" className="w-5 h-5" />
-        </button>
+        <Tooltip content="Compact view">
+          <button
+            type="button"
+            onClick={() => onChange('compact')}
+            className={cn(
+              'flex items-center justify-center w-9 h-9 rounded-lg',
+              'transition-all duration-200',
+              value === 'compact'
+                ? 'bg-white text-forest shadow-sm'
+                : 'text-forest/50 hover:text-forest'
+            )}
+            role="radio"
+            aria-checked={value === 'compact'}
+            aria-label="Compact view"
+          >
+            <Icon icon="lucide:list" className="w-5 h-5" />
+          </button>
+        </Tooltip>
       </div>
     );
   }
