@@ -3,8 +3,13 @@
  * All hooks require getToken from useAuth() for authenticated API calls.
  */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
+import {
+  discussionKeys,
+  normalizeThreadOptions,
+  PAGE_SIZE,
+} from '@/lib/discussion-keys';
 import {
   bookmarkThread,
   closePoll,
@@ -38,51 +43,8 @@ import {
 } from '@/lib/api/discussions';
 import type { DiscussionCategorySlug, Reply } from '@/types';
 
-// =============================================================================
-// Query Key Factory
-// =============================================================================
-
-export const discussionKeys = {
-  all: ['discussions'] as const,
-
-  // Thread keys
-  threads: () => [...discussionKeys.all, 'threads'] as const,
-  threadList: (options?: GetThreadsOptions) =>
-    [...discussionKeys.threads(), 'list', options] as const,
-  threadDetail: (id: string) =>
-    [...discussionKeys.threads(), 'detail', id] as const,
-  threadListWithLatestReply: (options?: GetThreadsOptions) =>
-    [...discussionKeys.threads(), 'listWithLatestReply', options] as const,
-  pinnedThreads: (category?: DiscussionCategorySlug) =>
-    [...discussionKeys.threads(), 'pinned', category] as const,
-  userThreads: (userId: string) =>
-    [...discussionKeys.threads(), 'user', userId] as const,
-
-  // Reply keys
-  replies: () => [...discussionKeys.all, 'replies'] as const,
-  threadReplies: (threadId: string) =>
-    [...discussionKeys.replies(), 'thread', threadId] as const,
-  userReplies: (userId: string) =>
-    [...discussionKeys.replies(), 'user', userId] as const,
-
-  // Category keys
-  categories: () => [...discussionKeys.all, 'categories'] as const,
-  categoryList: (postable?: boolean) =>
-    [...discussionKeys.categories(), 'list', postable ?? false] as const,
-  categoryDetail: (slug: string) =>
-    [...discussionKeys.categories(), 'detail', slug] as const,
-  categoryDefault: () =>
-    [...discussionKeys.categories(), 'default'] as const,
-  categoryStats: () => [...discussionKeys.categories(), 'stats'] as const,
-
-  // Gamification keys
-  titles: () => [...discussionKeys.all, 'titles'] as const,
-  badges: () => [...discussionKeys.all, 'badges'] as const,
-  badge: (id: string) => [...discussionKeys.badges(), id] as const,
-
-  // Stats keys
-  forumStats: () => [...discussionKeys.all, 'stats'] as const,
-};
+// Re-export so existing consumers that import from this file keep working
+export { discussionKeys, normalizeThreadOptions, PAGE_SIZE } from '@/lib/discussion-keys';
 
 // =============================================================================
 // Thread Hooks
@@ -94,6 +56,28 @@ export function useThreads(options?: GetThreadsOptions) {
   return useQuery({
     queryKey: discussionKeys.threadList(options),
     queryFn: () => getThreads(options, getToken),
+  });
+}
+
+export function useInfiniteThreads(
+  options?: Omit<GetThreadsOptions, 'offset' | 'limit'>,
+) {
+  const { getToken } = useAuth();
+  const normalizedOpts = normalizeThreadOptions(options);
+
+  return useInfiniteQuery({
+    queryKey: discussionKeys.threadList({
+      ...normalizedOpts,
+      limit: PAGE_SIZE,
+    }),
+    queryFn: ({ pageParam = 0 }) =>
+      getThreads(
+        { ...normalizedOpts, limit: PAGE_SIZE, offset: pageParam },
+        getToken,
+      ),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
   });
 }
 

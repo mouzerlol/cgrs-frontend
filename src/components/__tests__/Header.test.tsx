@@ -1,8 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Header from '@/components/layout/Header';
 import { NAVIGATION_ITEMS } from '@/lib/constants';
 import React from 'react';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/',
@@ -86,32 +96,32 @@ describe('Header', () => {
   });
 
   it('renders logo link', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const logoLink = screen.getByRole('link', { name: /coronation/i });
     expect(logoLink).toBeInTheDocument();
     expect(logoLink).toHaveTextContent('CORONATION');
   });
 
   it('renders navigation items on desktop', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const navLinks = screen.getAllByRole('link').filter((l) => l.getAttribute('href')?.startsWith('/') && l.getAttribute('href') !== '/');
     expect(navLinks.length).toBeGreaterThanOrEqual(NAVIGATION_ITEMS.length);
   });
 
   it('renders login button', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const loginButtons = screen.getAllByRole('button', { name: /resident login/i });
     expect(loginButtons.length).toBeGreaterThanOrEqual(1);
     expect(loginButtons[0]).toHaveTextContent('Resident Login');
   });
 
   it('renders hamburger menu button on mobile', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     expect(screen.getByLabelText('Toggle navigation')).toBeInTheDocument();
   });
 
   it('opens mobile menu when hamburger button is clicked', async () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
     menuButton.click();
     
@@ -121,7 +131,7 @@ describe('Header', () => {
   });
 
   it('shows navigation items in mobile menu when opened', async () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
     menuButton.click();
     
@@ -134,7 +144,7 @@ describe('Header', () => {
   });
 
   it('closes mobile menu when Escape key is pressed', async () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
     menuButton.click();
     
@@ -152,14 +162,14 @@ describe('Header', () => {
   });
 
   it('logo links to home page', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const logoLink = screen.getByRole('link', { name: /coronation/i });
     expect(logoLink).toBeInTheDocument();
     expect(logoLink).toHaveAttribute('href', '/');
   });
 
   it('mobile menu contains login button', async () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
     menuButton.click();
     
@@ -170,24 +180,24 @@ describe('Header', () => {
   });
 
   it('does not show mobile menu dialog initially', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('has correct aria attributes on menu button', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('header has correct nav class', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     const header = document.querySelector('header');
     expect(header).toBeInTheDocument();
   });
 
   it('contains CORONATION GARDENS text', () => {
-    render(<Header />);
+    render(<Header />, { wrapper: createWrapper() });
     expect(document.body).toHaveTextContent('CORONATION');
     expect(document.body).toHaveTextContent('GARDENS');
   });

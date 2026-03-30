@@ -4,12 +4,19 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SignInButton, useAuth } from '@clerk/nextjs';
+import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { formatRole, isNavItemVisible } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
+import {
+  discussionKeys,
+  PAGE_SIZE,
+  normalizeThreadOptions,
+} from '@/lib/discussion-keys';
+import { getCategoryStats, getThreads } from '@/lib/api/discussions';
 
 const NAV_LINK_CLASS =
   'text-sm font-medium tracking-wide uppercase relative px-2 py-1.5 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap';
@@ -27,9 +34,31 @@ export default function Navigation() {
   /** Width of the trailing auth cluster (signed-in label + UserButton or Resident Login) for overflow measurement. */
   const authSlotRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn, getToken } = useAuth();
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const { data: community } = useCommunity();
+  const queryClient = useQueryClient();
+
+  const handleDiscussionPrefetch = useCallback(() => {
+    // Only prefetch when authenticated — the backend requires a valid token
+    if (!isSignedIn) return;
+    const defaultOpts = normalizeThreadOptions({ sort: 'newest' });
+    queryClient.prefetchInfiniteQuery({
+      queryKey: discussionKeys.threadList({ ...defaultOpts, limit: PAGE_SIZE }),
+      queryFn: () =>
+        getThreads(
+          { ...defaultOpts, limit: PAGE_SIZE, offset: 0 },
+          getToken,
+        ),
+      initialPageParam: 0,
+      staleTime: 5 * 60 * 1000,
+    });
+    queryClient.prefetchQuery({
+      queryKey: discussionKeys.categoryStats(),
+      queryFn: () => getCategoryStats(getToken),
+      staleTime: 5 * 60 * 1000,
+    });
+  }, [queryClient, isSignedIn, getToken]);
 
   const navItems = useMemo(() => {
     const items = ALL_NAV_ITEMS.filter((item) =>
@@ -137,7 +166,14 @@ export default function Navigation() {
       {/* Actual visible navigation */}
       <div className="flex items-center gap-4 lg:gap-8 shrink-0">
         {visibleItems.map((item) => (
-          <Link key={item.name} href={item.href} className={NAV_LINK_CLASS} prefetch={true}>
+          <Link
+            key={item.name}
+            href={item.href}
+            className={NAV_LINK_CLASS}
+            prefetch={true}
+            onMouseEnter={item.href === '/discussion' ? handleDiscussionPrefetch : undefined}
+            onFocus={item.href === '/discussion' ? handleDiscussionPrefetch : undefined}
+          >
             {item.name}
           </Link>
         ))}
@@ -162,6 +198,8 @@ export default function Navigation() {
                     href={item.href}
                     className="flex items-center gap-3 px-4 py-2.5 text-[0.875rem] transition-all duration-200 text-bone/90 font-medium hover:bg-white/10 uppercase tracking-wide"
                     prefetch={true}
+                    onMouseEnter={item.href === '/discussion' ? handleDiscussionPrefetch : undefined}
+                    onFocus={item.href === '/discussion' ? handleDiscussionPrefetch : undefined}
                   >
                     <Icon name={item.icon as IconName} size="sm" />
                     {item.name}

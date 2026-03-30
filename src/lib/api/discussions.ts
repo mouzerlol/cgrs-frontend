@@ -279,6 +279,9 @@ export interface GetThreadsOptions {
 export interface GetThreadsResult {
   threads: Thread[];
   total: number;
+  hasMore: boolean;
+  offset: number;
+  limit: number;
 }
 
 export async function getThreads(
@@ -312,7 +315,13 @@ export async function getThreads(
     threads = threads.filter((t) => t.isPinned);
   }
 
-  return { threads, total: response.total };
+  return {
+    threads,
+    total: response.total,
+    hasMore: response.has_more,
+    offset: response.offset,
+    limit: response.limit,
+  };
 }
 
 function sortThreads(threads: Thread[], sort: 'newest' | 'most-upvoted' | 'most-discussed'): Thread[] {

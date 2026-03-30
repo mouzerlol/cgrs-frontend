@@ -15,8 +15,8 @@ import {
   useBookmarkThread,
   useCategories,
   useCategoryStats,
+  useInfiniteThreads,
   useReportThread,
-  useThreads,
   useUpvoteThread,
 } from '@/hooks/useDiscussions';
 
@@ -35,16 +35,21 @@ export default function DiscussionPage() {
 
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
   const { data: categoryStats = {}, isLoading: statsLoading } = useCategoryStats();
-  const { data: threadResult, isLoading: threadsLoading } = useThreads({
-    category: activeCategory ?? undefined,
-    limit: 100,
-    sort,
-  });
+  const {
+    data: threadData,
+    isLoading: threadsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteThreads({ category: activeCategory ?? undefined, sort });
   const upvoteThreadMutation = useUpvoteThread();
   const bookmarkThreadMutation = useBookmarkThread();
   const reportThreadMutation = useReportThread();
-  const allThreads = (threadResult?.threads ?? []) as Thread[];
-  const totalThreads = threadResult?.total ?? allThreads.length;
+  const allThreads = useMemo(
+    () => (threadData?.pages ?? []).flatMap((page) => page.threads) as Thread[],
+    [threadData],
+  );
+  const totalThreads = threadData?.pages[0]?.total ?? 0;
 
   // Calculate category stats
   const stats = useMemo(() => {
@@ -157,20 +162,23 @@ export default function DiscussionPage() {
               }
             />
 
-            {/* Load More (pagination placeholder) */}
-            {totalThreads > allThreads.length && (
+            {/* Load More */}
+            {hasNextPage && (
               <div className="pt-4 flex justify-center">
                 <button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
                   className={cn(
                     'inline-flex items-center gap-2 px-6 py-3',
                     'bg-sage-light text-forest rounded-xl',
                     'font-medium text-sm',
                     'transition-all duration-200',
                     'hover:bg-sage',
-                    'focus:outline-none focus:ring-2 focus:ring-sage/50'
+                    'focus:outline-none focus:ring-2 focus:ring-sage/50',
+                    isFetchingNextPage && 'opacity-60 cursor-not-allowed'
                   )}
                 >
-                  Load more discussions
+                  {isFetchingNextPage ? 'Loading...' : 'Load more discussions'}
                   <Icon icon="lucide:chevron-down" className="w-4 h-4" />
                 </button>
               </div>
