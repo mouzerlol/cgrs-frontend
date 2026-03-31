@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormTextarea } from '@/components/ui/FormTextarea';
+import { FormSelect } from '@/components/ui/FormSelect';
 import type { CreateTaskFormValues, TaskImage, TaskLocation, TaskPriority, TaskStatus } from '@/types/work-management';
 import PrioritySelector from './PrioritySelector';
 import TagInput from './TagInput';
@@ -86,35 +89,28 @@ export default function CreateTaskModal({
           </div>
         )}
 
-        <div>
-          <label htmlFor="task-title" className="font-body text-sm font-medium text-forest mb-1 block">Title *</label>
-          <input
-            id="task-title"
-            name="title"
-            autoComplete="off"
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            className="w-full border border-sage/30 rounded-lg px-3 py-2 font-body text-sm focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta outline-none transition-all"
-            placeholder="What needs to be done?"
-            autoFocus
-            disabled={isSubmitting}
-          />
-        </div>
+        <FormInput
+          label="Title *"
+          name="title"
+          autoComplete="off"
+          type="text"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="What needs to be done?"
+          autoFocus
+          disabled={isSubmitting}
+        />
 
-        <div>
-          <label htmlFor="task-description" className="font-body text-sm font-medium text-forest mb-1 block">Description</label>
-          <textarea
-            id="task-description"
-            name="description"
-            autoComplete="off"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            className="w-full border border-sage/30 rounded-lg px-3 py-2 font-body text-sm focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta outline-none min-h-[100px] resize-y transition-all"
-            placeholder="Add more details…"
-            disabled={isSubmitting}
-          />
-        </div>
+        <FormTextarea
+          label="Description"
+          name="description"
+          autoComplete="off"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          className="min-h-[100px]"
+          placeholder="Add more details..."
+          disabled={isSubmitting}
+        />
 
         <div>
           <label className="font-body text-sm font-medium text-forest mb-2 block">Priority</label>
@@ -122,36 +118,28 @@ export default function CreateTaskModal({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="task-assignee" className="font-body text-sm font-medium text-forest mb-1 block">Assignee</label>
-            <select
-              id="task-assignee"
-              name="assignee"
-              autoComplete="off"
-              value={assigneeUserId}
-              onChange={e => setAssigneeUserId(e.target.value)}
-              className="w-full border border-sage/30 rounded-lg px-3 py-2 font-body text-sm focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta outline-none transition-all"
-              disabled={isSubmitting || membersLoading}
-            >
-              <option value="">{membersLoading ? 'Loading…' : 'Unassigned'}</option>
-              {members.map(m => (
-                <option key={m.id} value={m.user_id}>{memberDisplayName(m)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="task-due-date" className="font-body text-sm font-medium text-forest mb-1 block">Due Date</label>
-            <input
-              id="task-due-date"
-              name="dueDate"
-              autoComplete="off"
-              type="date"
-              value={dueDate}
-              onChange={e => setDueDate(e.target.value)}
-              className="w-full border border-sage/30 rounded-lg px-3 py-2 font-body text-sm focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta outline-none transition-all"
-              disabled={isSubmitting}
-            />
-          </div>
+          <FormSelect
+            label="Assignee"
+            name="assignee"
+            autoComplete="off"
+            value={assigneeUserId}
+            onChange={e => setAssigneeUserId(e.target.value)}
+            disabled={isSubmitting || membersLoading}
+          >
+            <option value="">{membersLoading ? 'Loading...' : 'Unassigned'}</option>
+            {members.map(m => (
+              <option key={m.id} value={m.user_id}>{memberDisplayName(m)}</option>
+            ))}
+          </FormSelect>
+          <FormInput
+            label="Due Date"
+            name="dueDate"
+            autoComplete="off"
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+            disabled={isSubmitting}
+          />
         </div>
 
         <div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { SectionLabel } from '@/components/ui/SectionLabel';
 import { ImageUploader } from '@/components/discussions/ThreadForm/ImageUploader';
 import { LocationPicker } from './LocationPicker';
 import {
@@ -17,9 +18,9 @@ interface RequestFormFieldsProps {
     value: ManagementRequestFormData[K]
   ) => void;
   isSubmitting: boolean;
+  categoryId: string;
 }
 
-const sectionTitleCls = 'font-body text-xs font-semibold uppercase tracking-widest text-terracotta mb-xs';
 const inputCls = [
   'w-full py-3 px-4 bg-bone border border-sage rounded-[10px]',
   'font-body text-base text-forest',
@@ -40,6 +41,7 @@ export function RequestFormFields({
   errors,
   onChange,
   isSubmitting,
+  categoryId,
 }: RequestFormFieldsProps) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -60,7 +62,7 @@ export function RequestFormFields({
     <div className="flex flex-col gap-lg">
       {/* Contact Information */}
       <div className="flex flex-col gap-sm">
-        <h4 className={sectionTitleCls}>Contact Information</h4>
+        <SectionLabel as="h4" className="mb-xs">Contact Information</SectionLabel>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
           <div className="flex flex-col gap-1.5">
@@ -113,7 +115,7 @@ export function RequestFormFields({
 
       {/* Issue Details */}
       <div className="flex flex-col gap-sm">
-        <h4 className={sectionTitleCls}>Issue Details</h4>
+        <SectionLabel as="h4" className="mb-xs">Issue Details</SectionLabel>
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="subject" className={labelCls}>
@@ -172,7 +174,7 @@ export function RequestFormFields({
 
       {/* Photos */}
       <div className="flex flex-col gap-sm">
-        <h4 className={sectionTitleCls}>Photos</h4>
+        <SectionLabel as="h4" className="mb-xs">Photos</SectionLabel>
         <div id="photos">
           <ImageUploader
             value={data.photos}
@@ -186,18 +188,20 @@ export function RequestFormFields({
         )}
       </div>
 
-      {/* Location */}
-      <div className="flex flex-col gap-sm">
-        <h4 className={sectionTitleCls}>Issue Location</h4>
-        <LocationPicker
-          value={data.location}
-          onChange={handleLocationChange}
-        />
-      </div>
+      {/* Location - hidden for website category */}
+      {categoryId !== 'website' && (
+        <div className="flex flex-col gap-sm">
+          <SectionLabel as="h4" className="mb-xs">Issue Location</SectionLabel>
+          <LocationPicker
+            value={data.location}
+            onChange={handleLocationChange}
+          />
+        </div>
+      )}
 
       {/* Captcha Placeholder */}
       <div className="flex flex-col gap-sm">
-        <h4 className={sectionTitleCls}>Verification</h4>
+        <SectionLabel as="h4" className="mb-xs">Verification</SectionLabel>
         <div className="p-md bg-bone border border-dashed border-sage rounded-xl">
           <div className="flex items-center gap-md">
             <div className="flex items-center justify-center w-12 h-12 bg-sage-light rounded-[10px] text-forest shrink-0">

@@ -1,6 +1,7 @@
 'use client';
 
 import Icon from '@/components/ui/Icon';
+import { SectionLabel } from '@/components/ui/SectionLabel';
 
 /**
  * Social media tray component with outline-style social media icons.
@@ -9,7 +10,7 @@ import Icon from '@/components/ui/Icon';
 export default function SocialMediaTray() {
   return (
     <div className="pt-0">
-      <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Connect</h4>
+      <SectionLabel as="h4" className="mb-sm">Connect</SectionLabel>
       <div className="flex gap-sm items-start">
         <a
           href="https://www.facebook.com/groups/1588752135253432"

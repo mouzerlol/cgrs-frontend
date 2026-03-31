@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
-import { Trash2, Wrench } from 'lucide-react';
+import { Globe, Trash2, Wrench } from 'lucide-react';
 import { Board, BoardColor } from '@/types/work-management';
 import { cn } from '@/lib/utils';
 
 /** Maps API/board icon keys (short strings) to Lucide components; emoji and other values render as text. */
 const BOARD_ICON_BY_KEY: Record<string, LucideIcon> = {
+  globe: Globe,
   wrench: Wrench,
 };
 

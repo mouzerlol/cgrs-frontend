@@ -35,6 +35,12 @@ export const MANAGEMENT_CATEGORIES: ManagementCategory[] = [
     description: 'Submit formal complaints about noise, neighbor issues, or policy violations.',
     icon: 'lucide:alert-triangle',
   },
+  {
+    id: 'website',
+    name: 'Website',
+    description: 'Report issues with the website itself.',
+    icon: 'lucide:globe',
+  },
 ];
 
 /**
@@ -60,4 +66,5 @@ export const CATEGORY_ABBREVIATIONS: Record<string, string> = {
   parking: 'PARK',
   general: 'GEN',
   complaints: 'COMP',
+  website: 'WEB',
 };

@@ -7,11 +7,12 @@ import { PRIORITY_CONFIG } from '@/lib/work-management';
 import mockData from '@/data/work-management.json';
 import { MAP_CENTER } from '@/data/map-data';
 import { cn } from '@/lib/utils';
+import { SectionLabel } from '@/components/ui/SectionLabel';
 import { memberDisplayName } from '@/lib/member-display';
 import { useMembers } from '@/hooks/useAuthorization';
-import { Avatar } from '@/components/design-system/Avatar';
-import { Badge } from '@/components/design-system/Badge';
-import { Card } from '@/components/design-system/Card';
+import { Avatar } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
+import Card from '@/components/ui/Card';
 import InlineEditField, { type InlineEditFieldHandle } from './InlineEditField';
 import PriorityIndicator from './PriorityIndicator';
 import TagInput from './TagInput';
@@ -214,8 +215,8 @@ export default function TaskDetailModal({
             <div className="space-y-5">
               {/* Description Section */}
               <div className="space-y-1.5">
-                <h4 className="font-display text-[10px] font-bold text-forest/40 uppercase tracking-widest">Description</h4>
-                <Card hoverable className="p-4">
+                <SectionLabel as="h4" variant="muted">Description</SectionLabel>
+                <Card hover className="p-4">
                   <InlineEditField
                     type="textarea"
                     value={task.description}
@@ -230,7 +231,7 @@ export default function TaskDetailModal({
               <div className="grid grid-cols-2 gap-5">
                 <div className="space-y-5">
                   <div className="space-y-1.5">
-                    <h4 className="font-display text-[10px] font-bold text-forest/40 uppercase tracking-widest">Assignee</h4>
+                    <SectionLabel as="h4" variant="muted">Assignee</SectionLabel>
                     <div
                       className={cn(
                         'rounded-2xl outline-none',
@@ -250,7 +251,7 @@ export default function TaskDetailModal({
                       }}
                     >
                       <Card
-                        hoverable
+                        hover
                         className={cn(
                           'flex items-center gap-2.5 p-2.5',
                           !assigneeFieldEditing && 'pointer-events-none',
@@ -289,7 +290,7 @@ export default function TaskDetailModal({
                   </div>
 
                   <div className="space-y-1.5">
-                    <h4 className="font-display text-[10px] font-bold text-forest/40 uppercase tracking-widest">Labels</h4>
+                    <SectionLabel as="h4" variant="muted">Labels</SectionLabel>
                     <Card className="p-2.5 min-h-[58px] flex items-stretch">
                       <TagInput
                         tags={task.tags}
@@ -301,7 +302,7 @@ export default function TaskDetailModal({
 
                 {/* Location (right column) */}
                 <div className="space-y-1.5">
-                  <h4 className="font-display text-[10px] font-bold text-forest/40 uppercase tracking-widest">Location</h4>
+                  <SectionLabel as="h4" variant="muted">Location</SectionLabel>
                   {task.location ? (
                     <Card className="p-1.5 overflow-hidden">
                       <div className="h-[180px]">
@@ -330,7 +331,7 @@ export default function TaskDetailModal({
 
               {/* Assets - full width */}
               <div className="space-y-1.5">
-                <h4 className="font-display text-[10px] font-bold text-forest/40 uppercase tracking-widest">Assets</h4>
+                <SectionLabel as="h4" variant="muted">Assets</SectionLabel>
                 <Card className="p-3">
                   <TaskImageGallery
                     images={task.images || []}

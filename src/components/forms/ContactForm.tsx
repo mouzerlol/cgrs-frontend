@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormTextarea } from '@/components/ui/FormTextarea';
 import { ContactFormData } from '@/types';
 
 interface ContactFormProps {
@@ -78,11 +80,6 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
     }
   };
 
-  const inputClasses = (hasError: boolean) =>
-    `w-full px-4 py-3 bg-white border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta ${
-      hasError ? 'border-terracotta' : 'border-sage/30'
-    }`;
-
   if (isSubmitted) {
     return (
       <Card className="text-center p-8">
@@ -103,69 +100,49 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
       <h3 className="font-display text-xl font-medium mb-6">Send us a Message</h3>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-2">
-            Name <span className="text-terracotta">*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className={inputClasses(!!errors.name)}
-            placeholder="Your full name"
-          />
-          {errors.name && <p className="mt-1 text-sm text-terracotta">{errors.name}</p>}
-        </div>
+        <FormInput
+          label="Name *"
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Your full name"
+          error={errors.name}
+        />
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-2">
-            Email <span className="text-terracotta">*</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={inputClasses(!!errors.email)}
-            placeholder="your.email@example.com"
-          />
-          {errors.email && <p className="mt-1 text-sm text-terracotta">{errors.email}</p>}
-        </div>
+        <FormInput
+          label="Email *"
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="your.email@example.com"
+          error={errors.email}
+        />
 
-        <div>
-          <label htmlFor="subject" className="block text-sm font-medium mb-2">
-            Subject <span className="text-terracotta">*</span>
-          </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            className={inputClasses(!!errors.subject)}
-            placeholder="What is this about?"
-          />
-          {errors.subject && <p className="mt-1 text-sm text-terracotta">{errors.subject}</p>}
-        </div>
+        <FormInput
+          label="Subject *"
+          type="text"
+          id="subject"
+          name="subject"
+          value={formData.subject}
+          onChange={handleChange}
+          placeholder="What is this about?"
+          error={errors.subject}
+        />
 
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium mb-2">
-            Message <span className="text-terracotta">*</span>
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            rows={5}
-            className={inputClasses(!!errors.message)}
-            placeholder="Please describe your inquiry or concern..."
-          />
-          {errors.message && <p className="mt-1 text-sm text-terracotta">{errors.message}</p>}
-        </div>
+        <FormTextarea
+          label="Message *"
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          rows={5}
+          placeholder="Please describe your inquiry or concern..."
+          error={errors.message}
+        />
 
         {/* hCaptcha placeholder */}
         <div className="bg-sage-light border border-sage/30 rounded-lg p-6 text-center">

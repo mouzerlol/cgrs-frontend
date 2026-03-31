@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormTextarea } from '@/components/ui/FormTextarea';
 import { Icon } from '@iconify/react';
 import { Portfolio } from '@/types/portfolio';
 import { BoardColor } from '@/types/work-management';
@@ -91,34 +93,23 @@ export default function CreatePortfolioModal({ isOpen, onClose, onSubmit }: Crea
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Portfolio" size="md">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="portfolio-name" className="block text-sm font-medium text-forest mb-2">
-            Portfolio Name
-          </label>
-          <input
-            id="portfolio-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., Landscaping"
-            className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all"
-            required
-          />
-        </div>
+        <FormInput
+          label="Portfolio Name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g., Landscaping"
+          required
+        />
 
-        <div>
-          <label htmlFor="portfolio-description" className="block text-sm font-medium text-forest mb-2">
-            Description
-          </label>
-          <textarea
-            id="portfolio-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="What area of responsibility does this portfolio cover?"
-            rows={3}
-            className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all resize-none"
-          />
-        </div>
+        <FormTextarea
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What area of responsibility does this portfolio cover?"
+          rows={3}
+          className="resize-none"
+        />
 
         <div>
           <label className="block text-sm font-medium text-forest mb-2">Icon</label>
@@ -163,20 +154,18 @@ export default function CreatePortfolioModal({ isOpen, onClose, onSubmit }: Crea
         <div className="border-t border-sage/20 pt-4">
           <h4 className="text-sm font-medium text-forest mb-3">Portfolio Lead</h4>
           <div className="space-y-3">
-            <input
+            <FormInput
               type="text"
               value={leadName}
               onChange={(e) => setLeadName(e.target.value)}
               placeholder="Lead name"
-              className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all"
               required
             />
-            <input
+            <FormInput
               type="email"
               value={leadEmail}
               onChange={(e) => setLeadEmail(e.target.value)}
               placeholder="Lead email (optional)"
-              className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all"
             />
           </div>
         </div>

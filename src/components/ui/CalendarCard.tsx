@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Event, CalendarItem } from '@/types';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import DateBadge from '@/components/ui/DateBadge';
 import { cn } from '@/lib/utils';
 
 interface CalendarCardProps {
@@ -46,10 +47,7 @@ export default function CalendarCard({ event, day, month, showLocation = false, 
           className="object-cover transition-transform duration-[200ms] ease-out-custom group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div className="absolute top-4 right-4 flex flex-col items-center justify-center bg-terracotta text-bone rounded-lg w-12 h-14 shadow-md">
-          <span className="font-display text-lg font-bold leading-none">{day}</span>
-          <span className="text-[0.65rem] uppercase tracking-wider leading-none mt-0.5">{month}</span>
-        </div>
+        <DateBadge day={day} month={month} size="sm" className="absolute top-4 right-4 shadow-md" />
       </div>
 
       <div className="p-md space-y-2">

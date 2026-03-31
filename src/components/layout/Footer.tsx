@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SocialMediaTray from './SocialMediaTray';
+import { SectionLabel } from '@/components/ui/SectionLabel';
 
 const FooterMap = dynamic(() => import('./FooterMap'), {
   ssr: false,
@@ -59,7 +60,7 @@ export default function Footer() {
 
           {/* Quick Links Column */}
           <div className="pt-4 min-w-0 md:pl-5">
-            <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Quick Links</h4>
+            <SectionLabel as="h4" className="mb-sm">Quick Links</SectionLabel>
             <ul className="flex flex-col gap-2 list-none">
               {QUICK_LINKS.map((link) => (
                 <li key={link.name}>
@@ -73,7 +74,7 @@ export default function Footer() {
 
           {/* Support Column */}
           <div className="pt-4 min-w-0 md:pl-5">
-            <h4 className="font-body text-xs mb-sm text-terracotta font-semibold tracking-[0.15em] uppercase">Support</h4>
+            <SectionLabel as="h4" className="mb-sm">Support</SectionLabel>
             <ul className="flex flex-col gap-2 list-none">
               {SUPPORT_LINKS.map((link) => (
                 <li key={link.name}>

@@ -5,6 +5,9 @@ import { Resolution, ResolutionOutcome, ResolutionStatus } from "@/types/decisio
 import { PORTFOLIO_OPTIONS } from "@/lib/decisions";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
+import { FormInput } from "@/components/ui/FormInput";
+import { FormTextarea } from "@/components/ui/FormTextarea";
+import { FormSelect } from "@/components/ui/FormSelect";
 
 interface CreateResolutionModalProps {
     isOpen: boolean;
@@ -192,41 +195,21 @@ export default function CreateResolutionModal({
                         Header
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Resolution Title *
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.title}
-                                onChange={(e) => updateField("title", e.target.value)}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.title ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                                placeholder="Short descriptor"
-                            />
-                            {errors.title && (
-                                <p className="text-xs text-red-500 mt-1">{errors.title}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Meeting Date *
-                            </label>
-                            <input
-                                type="date"
-                                value={formData.meetingDate}
-                                onChange={(e) => updateField("meetingDate", e.target.value)}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.meetingDate ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                            />
-                            {errors.meetingDate && (
-                                <p className="text-xs text-red-500 mt-1">
-                                    {errors.meetingDate}
-                                </p>
-                            )}
-                        </div>
+                        <FormInput
+                            label="Resolution Title *"
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => updateField("title", e.target.value)}
+                            placeholder="Short descriptor"
+                            error={errors.title}
+                        />
+                        <FormInput
+                            label="Meeting Date *"
+                            type="date"
+                            value={formData.meetingDate}
+                            onChange={(e) => updateField("meetingDate", e.target.value)}
+                            error={errors.meetingDate}
+                        />
                     </div>
                 </div>
 
@@ -235,73 +218,42 @@ export default function CreateResolutionModal({
                         Governance
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Mover *
-                            </label>
-                            <select
-                                value={formData.mover}
-                                onChange={(e) => updateField("mover", e.target.value)}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.mover ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                            >
-                                <option value="">Select mover</option>
-                                {memberOptions.map((m) => (
-                                    <option key={m.value} value={m.value}>
-                                        {m.label}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.mover && (
-                                <p className="text-xs text-red-500 mt-1">{errors.mover}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Seconder *
-                            </label>
-                            <select
-                                value={formData.seconder}
-                                onChange={(e) => updateField("seconder", e.target.value)}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.seconder ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                            >
-                                <option value="">Select seconder</option>
-                                {memberOptions.map((m) => (
-                                    <option key={m.value} value={m.value}>
-                                        {m.label}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.seconder && (
-                                <p className="text-xs text-red-500 mt-1">{errors.seconder}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Members Present *
-                            </label>
-                            <input
-                                type="number"
-                                value={formData.membersPresent}
-                                onChange={(e) =>
-                                    updateField("membersPresent", e.target.value)
-                                }
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.membersPresent
-                                        ? "border-red-500"
-                                        : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                                min="0"
-                            />
-                            {errors.membersPresent && (
-                                <p className="text-xs text-red-500 mt-1">
-                                    {errors.membersPresent}
-                                </p>
-                            )}
-                        </div>
+                        <FormSelect
+                            label="Mover *"
+                            value={formData.mover}
+                            onChange={(e) => updateField("mover", e.target.value)}
+                            error={errors.mover}
+                        >
+                            <option value="">Select mover</option>
+                            {memberOptions.map((m) => (
+                                <option key={m.value} value={m.value}>
+                                    {m.label}
+                                </option>
+                            ))}
+                        </FormSelect>
+                        <FormSelect
+                            label="Seconder *"
+                            value={formData.seconder}
+                            onChange={(e) => updateField("seconder", e.target.value)}
+                            error={errors.seconder}
+                        >
+                            <option value="">Select seconder</option>
+                            {memberOptions.map((m) => (
+                                <option key={m.value} value={m.value}>
+                                    {m.label}
+                                </option>
+                            ))}
+                        </FormSelect>
+                        <FormInput
+                            label="Members Present *"
+                            type="number"
+                            value={formData.membersPresent}
+                            onChange={(e) =>
+                                updateField("membersPresent", e.target.value)
+                            }
+                            error={errors.membersPresent}
+                            min={0}
+                        />
                     </div>
                 </div>
 
@@ -309,23 +261,15 @@ export default function CreateResolutionModal({
                     <h3 className="font-display text-sm font-semibold text-forest mb-3">
                         The Motion
                     </h3>
-                    <div>
-                        <label className="block text-xs font-medium text-forest/70 mb-1">
-                            Motion Text *
-                        </label>
-                        <textarea
-                            value={formData.motionText}
-                            onChange={(e) => updateField("motionText", e.target.value)}
-                            className={`w-full px-3 py-2 rounded-lg border ${
-                                errors.motionText ? "border-red-500" : "border-sage/20"
-                            } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none`}
-                            rows={3}
-                            placeholder="That the committee..."
-                        />
-                        {errors.motionText && (
-                            <p className="text-xs text-red-500 mt-1">{errors.motionText}</p>
-                        )}
-                    </div>
+                    <FormTextarea
+                        label="Motion Text *"
+                        value={formData.motionText}
+                        onChange={(e) => updateField("motionText", e.target.value)}
+                        className="resize-none"
+                        rows={3}
+                        placeholder="That the committee..."
+                        error={errors.motionText}
+                    />
                 </div>
 
                 <div>
@@ -333,67 +277,45 @@ export default function CreateResolutionModal({
                         The Vote
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Votes For
-                            </label>
-                            <input
-                                type="number"
-                                value={formData.votesFor}
-                                onChange={(e) => updateField("votesFor", e.target.value)}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.votesFor ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                                min="0"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Votes Against
-                            </label>
-                            <input
-                                type="number"
-                                value={formData.votesAgainst}
-                                onChange={(e) =>
-                                    updateField("votesAgainst", e.target.value)
-                                }
-                                className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                min="0"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Votes Abstain
-                            </label>
-                            <input
-                                type="number"
-                                value={formData.votesAbstain}
-                                onChange={(e) =>
-                                    updateField("votesAbstain", e.target.value)
-                                }
-                                className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                min="0"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-forest/70 mb-1">
-                                Outcome *
-                            </label>
-                            <select
-                                value={formData.outcome}
-                                onChange={(e) => {
-                                    updateField("outcome", e.target.value);
-                                    setShowExecutionSection(e.target.value === "carried");
-                                }}
-                                className={`w-full px-3 py-2 rounded-lg border ${
-                                    errors.outcome ? "border-red-500" : "border-sage/20"
-                                } bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30`}
-                            >
-                                <option value="">Select outcome</option>
-                                <option value="carried">Carried</option>
-                                <option value="not_carried">Not Carried</option>
-                            </select>
-                        </div>
+                        <FormInput
+                            label="Votes For"
+                            type="number"
+                            value={formData.votesFor}
+                            onChange={(e) => updateField("votesFor", e.target.value)}
+                            error={errors.votesFor}
+                            min={0}
+                        />
+                        <FormInput
+                            label="Votes Against"
+                            type="number"
+                            value={formData.votesAgainst}
+                            onChange={(e) =>
+                                updateField("votesAgainst", e.target.value)
+                            }
+                            min={0}
+                        />
+                        <FormInput
+                            label="Votes Abstain"
+                            type="number"
+                            value={formData.votesAbstain}
+                            onChange={(e) =>
+                                updateField("votesAbstain", e.target.value)
+                            }
+                            min={0}
+                        />
+                        <FormSelect
+                            label="Outcome *"
+                            value={formData.outcome}
+                            onChange={(e) => {
+                                updateField("outcome", e.target.value);
+                                setShowExecutionSection(e.target.value === "carried");
+                            }}
+                            error={errors.outcome}
+                        >
+                            <option value="">Select outcome</option>
+                            <option value="carried">Carried</option>
+                            <option value="not_carried">Not Carried</option>
+                        </FormSelect>
                     </div>
                 </div>
 
@@ -403,72 +325,52 @@ export default function CreateResolutionModal({
                             Execution
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-xs font-medium text-forest/70 mb-1">
-                                    Action Owner
-                                </label>
-                                <select
-                                    value={formData.actionOwner}
-                                    onChange={(e) =>
-                                        updateField("actionOwner", e.target.value)
-                                    }
-                                    className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                >
-                                    <option value="">Select owner</option>
-                                    {memberOptions.map((m) => (
-                                        <option key={m.value} value={m.value}>
-                                            {m.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-forest/70 mb-1">
-                                    Deadline
-                                </label>
-                                <input
-                                    type="date"
-                                    value={formData.deadline}
-                                    onChange={(e) =>
-                                        updateField("deadline", e.target.value)
-                                    }
-                                    className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-forest/70 mb-1">
-                                    Financial Commitment
-                                </label>
-                                <input
-                                    type="number"
-                                    value={formData.financialCommitment}
-                                    onChange={(e) =>
-                                        updateField("financialCommitment", e.target.value)
-                                    }
-                                    className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                    placeholder="0.00"
-                                    min="0"
-                                    step="0.01"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-forest/70 mb-1">
-                                    GST
-                                </label>
-                                <select
-                                    value={formData.financialGst}
-                                    onChange={(e) =>
-                                        updateField(
-                                            "financialGst",
-                                            e.target.value as "plus_gst" | "incl_gst" | ""
-                                        )
-                                    }
-                                    className="w-full px-3 py-2 rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30"
-                                >
-                                    <option value="plus_gst">+ GST</option>
-                                    <option value="incl_gst">Incl. GST</option>
-                                </select>
-                            </div>
+                            <FormSelect
+                                label="Action Owner"
+                                value={formData.actionOwner}
+                                onChange={(e) =>
+                                    updateField("actionOwner", e.target.value)
+                                }
+                            >
+                                <option value="">Select owner</option>
+                                {memberOptions.map((m) => (
+                                    <option key={m.value} value={m.value}>
+                                        {m.label}
+                                    </option>
+                                ))}
+                            </FormSelect>
+                            <FormInput
+                                label="Deadline"
+                                type="date"
+                                value={formData.deadline}
+                                onChange={(e) =>
+                                    updateField("deadline", e.target.value)
+                                }
+                            />
+                            <FormInput
+                                label="Financial Commitment"
+                                type="number"
+                                value={formData.financialCommitment}
+                                onChange={(e) =>
+                                    updateField("financialCommitment", e.target.value)
+                                }
+                                placeholder="0.00"
+                                min={0}
+                                step={0.01}
+                            />
+                            <FormSelect
+                                label="GST"
+                                value={formData.financialGst}
+                                onChange={(e) =>
+                                    updateField(
+                                        "financialGst",
+                                        e.target.value as "plus_gst" | "incl_gst" | ""
+                                    )
+                                }
+                            >
+                                <option value="plus_gst">+ GST</option>
+                                <option value="incl_gst">Incl. GST</option>
+                            </FormSelect>
                         </div>
                         <div className="mt-4">
                             <label className="block text-xs font-medium text-forest/70 mb-2">

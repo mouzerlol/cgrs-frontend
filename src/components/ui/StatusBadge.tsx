@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { Badge, type BadgeVariant } from '@/components/ui/Badge';
 
 type Status = 'open' | 'in_progress' | 'closed' | 'withdrawn';
 
@@ -8,13 +9,6 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const STATUS_STYLES: Record<Status, string> = {
-  open: 'bg-amber/15 text-amber-700',
-  in_progress: 'bg-sage-light text-forest',
-  closed: 'bg-forest-light/15 text-forest-light',
-  withdrawn: 'bg-gray-100 text-gray-500',
-};
-
 const STATUS_LABELS: Record<Status, string> = {
   open: 'Open',
   in_progress: 'In Progress',
@@ -22,17 +16,22 @@ const STATUS_LABELS: Record<Status, string> = {
   withdrawn: 'Withdrawn',
 };
 
+const STATUS_VARIANT: Record<Status, BadgeVariant> = {
+  open: 'status-open',
+  in_progress: 'status-in-progress',
+  closed: 'status-closed',
+  withdrawn: 'status-withdrawn',
+};
+
 export default function StatusBadge({ status, label, className }: StatusBadgeProps) {
   return (
-    <span
-      role="status"
-      className={cn(
-        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide',
-        STATUS_STYLES[status],
-        className
-      )}
+    <Badge
+      variant={STATUS_VARIANT[status]}
+      shape="pill"
+      size="sm"
+      className={cn('tracking-wide', className)}
     >
       {label || STATUS_LABELS[status]}
-    </span>
+    </Badge>
   );
 }

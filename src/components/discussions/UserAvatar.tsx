@@ -1,8 +1,8 @@
 'use client';
 
 import { forwardRef, HTMLAttributes } from 'react';
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Avatar } from '@/components/ui/Avatar';
 import type { ForumUser } from '@/types';
 
 interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
@@ -32,6 +32,19 @@ const BADGE_ICONS: Record<string, string> = {
   'poll-master': '📊',
 };
 
+/** Maps UserAvatar sizes to Avatar sizes */
+const AVATAR_SIZE_MAP = {
+  sm: 'sm',
+  md: 'md',
+  lg: 'xl',
+} as const;
+
+const TEXT_SIZE_MAP = {
+  sm: { text: 'text-sm', title: 'text-xs' },
+  md: { text: 'text-sm', title: 'text-xs' },
+  lg: { text: 'text-base', title: 'text-sm' },
+};
+
 /**
  * User avatar component with name, garden-themed title, and badges.
  * Displays anonymous user identity with gamification elements.
@@ -46,21 +59,7 @@ const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
     className,
     ...props
   }, ref) => {
-    const sizeClasses = {
-      sm: { avatar: 'w-8 h-8', text: 'text-sm', title: 'text-xs' },
-      md: { avatar: 'w-10 h-10', text: 'text-sm', title: 'text-xs' },
-      lg: { avatar: 'w-14 h-14', text: 'text-base', title: 'text-sm' },
-    };
-
-    const sizes = sizeClasses[size];
-
-    // Generate initials from display name
-    const initials = user.displayName
-      .split(/(?=[A-Z])|[^a-zA-Z]/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(s => s[0]?.toUpperCase())
-      .join('');
+    const sizes = TEXT_SIZE_MAP[size];
 
     return (
       <div
@@ -68,24 +67,12 @@ const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
         className={cn('flex items-center gap-2', className)}
         {...props}
       >
-        {/* Avatar */}
-        <div
-          className={cn(
-            'relative rounded-full overflow-hidden bg-sage-light flex items-center justify-center flex-shrink-0',
-            sizes.avatar
-          )}
-        >
-          {user.avatar ? (
-            <Image
-              src={user.avatar}
-              alt={user.displayName}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <span className="font-semibold text-forest/60">{initials}</span>
-          )}
-        </div>
+        <Avatar
+          src={user.avatar}
+          alt={user.displayName}
+          name={user.displayName}
+          size={AVATAR_SIZE_MAP[size]}
+        />
 
         {/* User Info */}
         {!avatarOnly && (

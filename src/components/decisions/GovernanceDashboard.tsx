@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Resolution } from "@/types/decisions";
-import { Card } from "@/components/design-system/Card";
+import Card from "@/components/ui/Card";
 import { getDerivedStatus } from "@/lib/decisions";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { AnimatePresence, motion } from "framer-motion";
@@ -75,7 +75,7 @@ export default function GovernanceDashboard({
                 ) : (
                     <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="flex overflow-x-auto gap-2 pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-3 md:pb-0">
                         <div className="flex-shrink-0 w-64 md:w-full md:min-w-0 snap-center">
-                            <Card hoverable className="p-4 h-full">
+                            <Card hover className="p-4 h-full">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-forest/5 text-forest/70 ${openCountColor}`}>
                                         <span className={`w-2 h-2 rounded-full ${openCountColor.replace("text-", "bg-").replace("-600", "-500")}`} />
@@ -96,7 +96,7 @@ export default function GovernanceDashboard({
                         </div>
 
                         <div className="flex-shrink-0 w-64 md:w-full md:min-w-0 snap-center">
-                            <Card hoverable className="p-4 h-full">
+                            <Card hover className="p-4 h-full">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-forest/5 text-forest/70 ${complianceColor}`}>
                                         <span className={`w-2 h-2 rounded-full ${complianceColor.replace("text-", "bg-").replace("-600", "-500")}`} />
@@ -140,7 +140,7 @@ export default function GovernanceDashboard({
                         </div>
 
                         <div className="flex-shrink-0 w-64 md:w-full md:min-w-0 snap-center">
-                            <Card hoverable className="p-4 h-full">
+                            <Card hover className="p-4 h-full">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-red-500/10 text-red-700">
                                         <span className="w-2 h-2 rounded-full bg-red-500" />

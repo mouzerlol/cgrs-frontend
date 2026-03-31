@@ -7,7 +7,7 @@ import { TaskComment, BoardMember } from '@/types/work-management';
 import { cn, formatRelativeDate } from '@/lib/utils';
 import mockData from '@/data/work-management.json';
 import { Trash2 } from 'lucide-react';
-import { Avatar } from '@/components/design-system/Avatar';
+import { Avatar } from '@/components/ui/Avatar';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useAddTaskComment, useUpdateTaskComment, useDeleteTaskComment } from '@/hooks/useTasks';
 import { formatTaskMutationError } from '@/lib/api/mutation-errors';

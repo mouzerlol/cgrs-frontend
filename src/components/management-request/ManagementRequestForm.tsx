@@ -212,6 +212,7 @@ export function ManagementRequestForm() {
             errors={errors}
             onChange={handleFieldChange}
             isSubmitting={isSubmitting}
+            categoryId={formData.category}
           />
 
           {/* Submit Button */}

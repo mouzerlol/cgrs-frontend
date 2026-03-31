@@ -13,7 +13,8 @@ export type ManagementCategoryId =
   | 'waste'
   | 'parking'
   | 'general'
-  | 'complaints';
+  | 'complaints'
+  | 'website';
 
 /**
  * Management request category configuration

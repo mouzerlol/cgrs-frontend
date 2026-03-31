@@ -1,7 +1,7 @@
 "use client";
 
 import { Resolution } from "@/types/decisions";
-import { Badge } from "@/components/design-system/Badge";
+import { Badge } from "@/components/ui/Badge";
 import { formatDate, formatCurrency, getDerivedStatus, STATUS_CONFIG } from "@/lib/decisions";
 import { Link, Mail, FileText } from "lucide-react";
 

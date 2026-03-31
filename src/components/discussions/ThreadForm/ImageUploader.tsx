@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
-import { X, Upload, Image as ImageIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState, useCallback } from 'react';
+import { X } from 'lucide-react';
+import { UploadZone } from '@/components/ui/UploadZone';
 
 interface ImageUploaderProps {
   value: File[];
@@ -17,8 +17,6 @@ export function ImageUploader({
   maxFiles = 6,
   maxSizeMB = 10,
 }: ImageUploaderProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const validateFile = useCallback((file: File): string | null => {
@@ -57,28 +55,8 @@ export function ImageUploader({
     onChange(value.filter((_, i) => i !== index));
   }, [value, onChange]);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files.length > 0) {
-      addFiles(e.dataTransfer.files);
-    }
-  }, [addFiles]);
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      addFiles(e.target.files);
-    }
+  const handleDrop = useCallback((files: File[]) => {
+    addFiles(files);
   }, [addFiles]);
 
   const formatFileSize = (bytes: number): string => {
@@ -89,38 +67,13 @@ export function ImageUploader({
 
   return (
     <div className="flex flex-col gap-sm">
-      <label className="cursor-pointer block">
+      <div>
         <span className="text-sm font-medium mb-2 block">Images</span>
         <span className="text-xs opacity-60 mb-3 block">
           Up to {maxFiles} images, max {maxSizeMB}MB each
         </span>
-
-        <div
-          className={cn(
-            'border-2 border-dashed border-sage rounded-xl p-lg text-center transition-all duration-[250ms] ease-out-custom bg-white hover:border-terracotta hover:bg-terracotta/5',
-            isDragging && 'border-terracotta bg-terracotta/5'
-          )}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleInputChange}
-            className="sr-only"
-          />
-
-          <div className="pointer-events-none">
-            <Upload className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p className="text-sm opacity-60">
-              Drag & drop or <span className="text-terracotta">browse</span>
-            </p>
-          </div>
-        </div>
-      </label>
+        <UploadZone onDrop={handleDrop} accept="image/*" multiple />
+      </div>
 
       {error && (
         <p className="text-sm text-terracotta">{error}</p>

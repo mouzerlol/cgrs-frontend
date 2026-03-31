@@ -20,6 +20,22 @@ import dynamic from 'next/dynamic';
 import { MAP_VARIATIONS } from '@/components/ui/MapPreview';
 import MapMarker from '@/components/map/MapMarker';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/Badge';
+import { Avatar } from '@/components/ui/Avatar';
+import StatusBadge from '@/components/ui/StatusBadge';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { SectionLabel } from '@/components/ui/SectionLabel';
+import { DateBadge } from '@/components/ui/DateBadge';
+import { UploadZone } from '@/components/ui/UploadZone';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormTextarea } from '@/components/ui/FormTextarea';
+import { FormSelect } from '@/components/ui/FormSelect';
+import { Modal } from '@/components/ui/Modal';
+import { Switch } from '@/components/ui/Switch';
+import { Dropdown } from '@/components/ui/Dropdown';
+import { Accordion } from '@/components/ui/Accordion';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Search, FileText, MessageSquare } from 'lucide-react';
 
 const MapPreview = dynamic(() => import('@/components/ui/MapPreview'), { ssr: false });
 const BaseMap = dynamic(() => import('@/components/map/BaseMap'), { ssr: false });
@@ -79,6 +95,10 @@ function ColorSwatch({ name, hex, textClass, class: bgClass }: typeof colors[0])
 
 export default function DesignSystemPage() {
   const [copied, setCopied] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState<'center' | 'right'>('center');
+  const [switchChecked, setSwitchChecked] = useState(false);
+  const [switchDisabledChecked, setSwitchDisabledChecked] = useState(true);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -96,6 +116,8 @@ export default function DesignSystemPage() {
     { id: 'forms', label: 'Form Elements' },
     { id: 'components', label: 'Components' },
     { id: 'map-components', label: 'Map Components' },
+    { id: 'interactive', label: 'Interactive' },
+    { id: 'shared', label: 'Shared Components' },
   ];
 
   return (
@@ -926,6 +948,450 @@ background-color: #F4F1EA; /* Bone color */`}</code>
                           <p className="text-xs opacity-50 mb-2">FooterMap (160px height, Toner theme)</p>
                           <FooterMap className="border border-sage/30" />
                           <p className="text-xs mt-2 font-medium">Footer Map (Stadia Toner)</p>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            </div>
+          </Section>
+          {/* Interactive Components */}
+          <Section
+            id="interactive"
+            title="Interactive"
+            description="Components that manage their own state and provide user interaction patterns."
+          >
+            <div className="space-y-12">
+              <Tab.Group>
+                <Tab.List className="flex flex-wrap gap-2 border-b border-sage/20 pb-4 mb-6">
+                  {[
+                    { id: 'modal', label: 'Modal' },
+                    { id: 'switch', label: 'Switch' },
+                    { id: 'dropdown', label: 'Dropdown' },
+                    { id: 'accordion', label: 'Accordion' },
+                    { id: 'tooltip', label: 'Tooltip' },
+                  ].map((tab) => (
+                    <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
+                      cn(
+                        'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                        selected
+                          ? 'bg-forest text-bone'
+                          : 'text-forest/60 hover:text-forest hover:bg-sage-light'
+                      )
+                    }>
+                      {tab.label}
+                    </Tab>
+                  ))}
+                </Tab.List>
+                <Tab.Panels>
+                  {/* Modal */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Modal Dialog</h3>
+                      <p className="text-sm text-forest/60 mb-6">
+                        Headless UI Dialog with focus trapping, keyboard navigation, center/right positions, and sm–full sizes.
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        <Button onClick={() => { setModalPosition('center'); setModalOpen(true); }}>
+                          Center Modal
+                        </Button>
+                        <Button variant="outline" onClick={() => { setModalPosition('right'); setModalOpen(true); }}>
+                          Right Panel
+                        </Button>
+                      </div>
+                      <Modal
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        title="Example Modal"
+                        description="This is a modal dialog with focus trapping and keyboard navigation."
+                        position={modalPosition}
+                        size="md"
+                      >
+                        <div className="space-y-4">
+                          <p className="text-sm text-forest/70">
+                            Position: <code className="bg-sage-light px-1.5 py-0.5 rounded text-xs text-terracotta">{modalPosition}</code>
+                          </p>
+                          <p className="text-sm text-forest/70">Press Escape or click outside to close.</p>
+                          <Button variant="outline" onClick={() => setModalOpen(false)}>Close</Button>
+                        </div>
+                      </Modal>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Switch */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Toggle Switch</h3>
+                      <div className="space-y-6 max-w-md">
+                        <Switch
+                          label="Email notifications"
+                          description="Receive email updates when new events are posted"
+                          checked={switchChecked}
+                          onChange={setSwitchChecked}
+                        />
+                        <Switch
+                          label="Disabled switch"
+                          description="This switch cannot be toggled"
+                          checked={switchDisabledChecked}
+                          onChange={setSwitchDisabledChecked}
+                          disabled
+                        />
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Dropdown */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Dropdown Menu</h3>
+                      <div className="flex flex-wrap gap-6">
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">With icons (right-aligned)</p>
+                          <Dropdown
+                            trigger={<Button variant="outline">Actions</Button>}
+                            items={[
+                              { label: 'View details', icon: <Search className="w-4 h-4" />, onClick: () => {} },
+                              { label: 'Download', icon: <FileText className="w-4 h-4" />, onClick: () => {} },
+                              { label: 'Comment', icon: <MessageSquare className="w-4 h-4" />, onClick: () => {} },
+                            ]}
+                            align="right"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">Without icons (left-aligned)</p>
+                          <Dropdown
+                            trigger={<Button>Options</Button>}
+                            items={[
+                              { label: 'Edit', onClick: () => {} },
+                              { label: 'Duplicate', onClick: () => {} },
+                              { label: 'Delete', onClick: () => {} },
+                            ]}
+                            align="left"
+                          />
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Accordion */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Accordion</h3>
+                      <div className="max-w-xl">
+                        <Accordion
+                          items={[
+                            {
+                              title: 'How do I report a maintenance issue?',
+                              content: (
+                                <p className="text-sm">Navigate to the Issues section and click &quot;Report Issue&quot;. Fill out the form with a description, category, and any photos of the problem.</p>
+                              ),
+                            },
+                            {
+                              title: 'When are committee meetings held?',
+                              content: (
+                                <div className="text-sm space-y-2">
+                                  <p>Committee meetings are held on the first Tuesday of every month at 7:00 PM.</p>
+                                  <ul className="list-disc pl-5 space-y-1 text-forest/70">
+                                    <li>Annual General Meeting — March</li>
+                                    <li>Special General Meeting — as needed</li>
+                                    <li>Committee meetings — monthly</li>
+                                  </ul>
+                                </div>
+                              ),
+                            },
+                            {
+                              title: 'How are decisions recorded?',
+                              content: (
+                                <p className="text-sm">All resolutions are recorded in the Decisions section with outcome, action owner, and deadline tracking.</p>
+                              ),
+                            },
+                          ]}
+                        />
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Tooltip */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Tooltip</h3>
+                      <p className="text-sm text-forest/60 mb-6">Shows after a 300ms hover/focus delay. Positioned above the trigger.</p>
+                      <div className="flex flex-wrap items-center gap-6">
+                        <Tooltip content="Primary action button">
+                          <Button>Hover me</Button>
+                        </Tooltip>
+                        <Tooltip content="This text has additional context">
+                          <span className="text-sm text-terracotta underline underline-offset-4 decoration-dashed cursor-help">
+                            Hover this text
+                          </span>
+                        </Tooltip>
+                        <Tooltip content="Calendar view">
+                          <span className="inline-flex">
+                            <Icon name="calendar" size="lg" className="text-forest/50 cursor-help" />
+                          </span>
+                        </Tooltip>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            </div>
+          </Section>
+
+          {/* Shared Components */}
+          <Section
+            id="shared"
+            title="Shared Components"
+            description="Reusable building blocks used across the application for consistent UI patterns."
+          >
+            <div className="space-y-12">
+              <Tab.Group>
+                <Tab.List className="flex flex-wrap gap-2 border-b border-sage/20 pb-4 mb-6">
+                  {[
+                    { id: 'badge', label: 'Badge' },
+                    { id: 'status-badge', label: 'StatusBadge' },
+                    { id: 'avatar', label: 'Avatar' },
+                    { id: 'empty-state', label: 'EmptyState' },
+                    { id: 'date-badge', label: 'DateBadge' },
+                    { id: 'section-label', label: 'SectionLabel' },
+                    { id: 'upload-zone', label: 'UploadZone' },
+                    { id: 'form-controls', label: 'Form Controls' },
+                  ].map((tab) => (
+                    <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
+                      cn(
+                        'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                        selected
+                          ? 'bg-forest text-bone'
+                          : 'text-forest/60 hover:text-forest hover:bg-sage-light'
+                      )
+                    }>
+                      {tab.label}
+                    </Tab>
+                  ))}
+                </Tab.List>
+                <Tab.Panels>
+                  {/* Badge */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Badge</h3>
+                      <div className="space-y-8">
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Variants (square, xs)</p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="default">Default</Badge>
+                            <Badge variant="outline">Outline</Badge>
+                            <Badge variant="forest">Forest</Badge>
+                            <Badge variant="terracotta">Terracotta</Badge>
+                            <Badge variant="status-open">Open</Badge>
+                            <Badge variant="status-in-progress">In Progress</Badge>
+                            <Badge variant="status-closed">Closed</Badge>
+                            <Badge variant="status-withdrawn">Withdrawn</Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Pill shape (sm size)</p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="default" shape="pill" size="sm">Default</Badge>
+                            <Badge variant="forest" shape="pill" size="sm">Forest</Badge>
+                            <Badge variant="terracotta" shape="pill" size="sm">Terracotta</Badge>
+                            <Badge variant="status-open" shape="pill" size="sm">Open</Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Size comparison</p>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <Badge variant="forest" size="xs">xs (default)</Badge>
+                            <Badge variant="forest" size="sm">sm</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* StatusBadge */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">StatusBadge</h3>
+                      <p className="text-sm text-forest/60 mb-6">
+                        Composes Badge internally. Maps status values to the correct variant, shape, and label.
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        <StatusBadge status="open" />
+                        <StatusBadge status="in_progress" />
+                        <StatusBadge status="closed" />
+                        <StatusBadge status="withdrawn" />
+                      </div>
+                      <div className="mt-6">
+                        <p className="text-xs opacity-50 mb-3">Custom labels</p>
+                        <div className="flex flex-wrap gap-3">
+                          <StatusBadge status="open" label="Pending Review" />
+                          <StatusBadge status="closed" label="Resolved" />
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Avatar */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Avatar</h3>
+                      <div className="space-y-8">
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">All sizes (with initials fallback)</p>
+                          <div className="flex flex-wrap items-end gap-4">
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="xs" />
+                              <span className="text-[10px] opacity-40">xs</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="card" />
+                              <span className="text-[10px] opacity-40">card</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="sm" />
+                              <span className="text-[10px] opacity-40">sm</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="md" />
+                              <span className="text-[10px] opacity-40">md</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="lg" />
+                              <span className="text-[10px] opacity-40">lg</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Avatar name="Jane Doe" size="xl" />
+                              <span className="text-[10px] opacity-40">xl</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Single-word name (single initial)</p>
+                          <div className="flex gap-3">
+                            <Avatar name="Admin" size="md" />
+                            <Avatar name="Committee" size="md" />
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* EmptyState */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">EmptyState</h3>
+                      <div className="grid md:grid-cols-2 gap-8">
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Without title</p>
+                          <Card variant="sage" className="p-4">
+                            <EmptyState
+                              icon={<Search className="w-8 h-8 text-forest/40" />}
+                              description="No discussions found matching your search."
+                            />
+                          </Card>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">With title and action</p>
+                          <Card variant="sage" className="p-4">
+                            <EmptyState
+                              icon={<MessageSquare className="w-8 h-8 text-forest/40" />}
+                              title="No resolutions yet"
+                              description="Create your first resolution to start tracking community decisions."
+                              action={<Button>Create Resolution</Button>}
+                            />
+                          </Card>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* DateBadge */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">DateBadge</h3>
+                      <p className="text-sm text-forest/60 mb-6">
+                        Terracotta date badge used on CalendarCard (sm) and EventCard (md).
+                      </p>
+                      <div className="flex items-end gap-8">
+                        <div className="flex flex-col items-center gap-2">
+                          <DateBadge day="15" month="APR" size="sm" />
+                          <span className="text-xs opacity-40">sm</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                          <DateBadge day="15" month="APR" size="md" />
+                          <span className="text-xs opacity-40">md</span>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* SectionLabel */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">SectionLabel</h3>
+                      <div className="space-y-6">
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Default variant (terracotta)</p>
+                          <SectionLabel>Community Resources</SectionLabel>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Muted variant (forest/40)</p>
+                          <SectionLabel variant="muted">Assigned To</SectionLabel>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Custom element (h3)</p>
+                          <SectionLabel as="h3">Section Heading</SectionLabel>
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* UploadZone */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">UploadZone</h3>
+                      <p className="text-sm text-forest/60 mb-6">
+                        Drag-and-drop file upload area with click-to-browse. Supports render-prop children for custom content.
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-8">
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Default content</p>
+                          <UploadZone onDrop={() => {}} accept="image/*" />
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-3">Disabled state</p>
+                          <UploadZone onDrop={() => {}} disabled />
+                        </div>
+                      </div>
+                    </Card>
+                  </Tab.Panel>
+
+                  {/* Form Controls */}
+                  <Tab.Panel>
+                    <Card className="p-8">
+                      <h3 className="text-sm font-medium mb-6 opacity-50 uppercase tracking-wider">Form Controls</h3>
+                      <div className="grid md:grid-cols-2 gap-8 max-w-3xl">
+                        <div className="space-y-6">
+                          <FormInput label="Full name" placeholder="Jane Smith" />
+                          <FormInput label="Email" placeholder="jane@example.com" error="Please enter a valid email address" />
+                          <FormInput label="Phone" placeholder="021 123 4567" hint="Optional — for emergency contact only" />
+                          <FormInput label="Disabled" placeholder="Cannot edit" disabled />
+                        </div>
+                        <div className="space-y-6">
+                          <FormTextarea label="Description" placeholder="Describe the issue..." />
+                          <FormSelect label="Category">
+                            <option value="">Select a category</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="landscaping">Landscaping</option>
+                            <option value="security">Security</option>
+                          </FormSelect>
+                          <FormSelect label="Priority" error="Priority is required">
+                            <option value="">Select priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                          </FormSelect>
                         </div>
                       </div>
                     </Card>

@@ -2,7 +2,7 @@ import { Task, BoardMember } from '@/types/work-management';
 import { PRIORITY_CONFIG } from '@/lib/work-management';
 import { cn, formatRelativeDate } from '@/lib/utils';
 import mockData from '@/data/work-management.json';
-import { Avatar } from '@/components/design-system/Avatar';
+import { Avatar } from '@/components/ui/Avatar';
 import { MessageSquare, AlignLeft } from 'lucide-react';
 
 interface TaskCardProps {

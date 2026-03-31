@@ -3,6 +3,7 @@
 import { Event } from '@/types';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import DateBadge from '@/components/ui/DateBadge';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { formatDate } from '@/lib/utils';
 
@@ -25,10 +26,7 @@ export default function EventCard({ event, variant = 'default' }: EventCardProps
     <div ref={ref} className={`fade-up ${isVisible ? 'visible' : ''}`}>
       <Card hover className="h-full flex flex-col p-6">
         <div className="flex gap-4 mb-4">
-          <div className="flex flex-col items-center justify-center bg-terracotta text-bone rounded-lg w-14 h-16 flex-shrink-0 shadow-sm">
-            <span className="font-display text-xl font-bold leading-none">{day}</span>
-            <span className="text-[0.65rem] uppercase tracking-wider leading-none mt-0.5">{month}</span>
-          </div>
+          <DateBadge day={day} month={month} size="md" className="flex-shrink-0" />
           <div className="flex-1">
             <div className="flex items-start justify-between">
               <h3 className="font-display text-xl font-medium mb-2">{event.title}</h3>

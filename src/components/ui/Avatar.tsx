@@ -8,7 +8,7 @@ interface AvatarProps {
   alt?: string;
   /** Used for initials when `src` is missing or the image fails to load. */
   name?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'card';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'card';
   className?: string;
   title?: string;
 }
@@ -18,12 +18,14 @@ const sizeMap = {
   sm: 'w-9 h-9 text-xs',
   md: 'w-10 h-10 text-sm',
   lg: 'w-12 h-12 text-base',
+  /** UserAvatar large: 56px circle */
+  xl: 'w-14 h-14 text-lg',
   /** Task board cards: 24px circle */
   card: 'w-6 h-6 text-[10px]',
 };
 
 /** Builds up to two initials from a display name for the fallback glyph. */
-function initialsFromName(label: string): string {
+export function initialsFromName(label: string): string {
   const trimmed = label.trim();
   if (!trimmed) return '?';
   const parts = trimmed.split(/\s+/).filter(Boolean);
@@ -74,3 +76,6 @@ export const Avatar = ({ src, alt, name, size = 'sm', className, title }: Avatar
     </div>
   );
 };
+
+export type { AvatarProps };
+export default Avatar;

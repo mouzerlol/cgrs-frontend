@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ThreadCardCompactWithPreview, ThreadCardWithPreview } from './ThreadCardWithPreview';
 import ThreadCardSkeleton from './skeletons/ThreadCardSkeleton';
+import EmptyState from '@/components/ui/EmptyState';
 import type { Thread, ThreadWithLatestReply, LatestReply } from '@/types';
 
 // Animation variants for staggered entrance
@@ -111,31 +112,17 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
     // Empty state
     if (threads.length === 0) {
       return (
-        <div
+        <EmptyState
           ref={ref}
-          className={cn(
-            'flex flex-col items-center justify-center py-16 text-center',
-            className
-          )}
-          {...props}
-        >
-          <div className="w-16 h-16 rounded-full bg-sage-light flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-forest/40"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
+          className={className}
+          icon={
+            <svg className="w-8 h-8 text-forest/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-          </div>
-          <p className="text-forest/60 max-w-sm">{emptyMessage}</p>
-        </div>
+          }
+          description={emptyMessage}
+          {...props}
+        />
       );
     }
 

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormTextarea } from '@/components/ui/FormTextarea';
 import { Board, BoardColor } from '@/types/work-management';
 
 interface CreateBoardModalProps {
@@ -46,34 +48,23 @@ export default function CreateBoardModal({ isOpen, onClose, onSubmit }: CreateBo
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Board" size="md">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="board-name" className="block text-sm font-medium text-forest mb-2">
-            Board Name
-          </label>
-          <input
-            id="board-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., Maintenance Requests"
-            className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all"
-            required
-          />
-        </div>
+        <FormInput
+          label="Board Name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g., Maintenance Requests"
+          required
+        />
 
-        <div>
-          <label htmlFor="board-description" className="block text-sm font-medium text-forest mb-2">
-            Description
-          </label>
-          <textarea
-            id="board-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="What is this board for?"
-            rows={3}
-            className="w-full px-4 py-3 rounded-lg border border-sage/30 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-transparent transition-all resize-none"
-          />
-        </div>
+        <FormTextarea
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What is this board for?"
+          rows={3}
+          className="resize-none"
+        />
 
         <div>
           <label className="block text-sm font-medium text-forest mb-2">
