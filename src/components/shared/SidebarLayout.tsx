@@ -17,6 +17,8 @@ interface SidebarLayoutProps {
   ariaLabel?: string;
   children: React.ReactNode;
   className?: string;
+  /** Tighter chrome and no min-height — e.g. management request form */
+  compact?: boolean;
 }
 
 /**
@@ -34,11 +36,13 @@ export function SidebarLayout({
   ariaLabel,
   children,
   className,
+  compact = false,
 }: SidebarLayoutProps) {
   return (
     <div
       className={cn(
-        'flex flex-col lg:flex-row min-h-[600px] items-stretch',
+        'flex flex-col lg:flex-row items-stretch',
+        compact ? 'min-h-0' : 'min-h-[600px]',
         className
       )}
     >
@@ -51,6 +55,7 @@ export function SidebarLayout({
         allOptionLabel={allOptionLabel}
         allOptionIcon={allOptionIcon}
         ariaLabel={ariaLabel}
+        compact={compact}
       />
 
       {/* Content area: column flex so the panel (flex-1) fills stretched row height beside SidebarTabs */}
@@ -63,14 +68,14 @@ export function SidebarLayout({
           showAllOption={showAllOption}
           allOptionLabel={allOptionLabel}
           allOptionIcon={allOptionIcon}
+          compact={compact}
         />
 
         {/* Main content panel */}
         <div
           className={cn(
-            'min-h-0 min-w-0 flex-1 bg-sage-light p-lg',
-            'rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
-            'sm:p-lg p-sm'
+            'min-h-0 min-w-0 flex-1 bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
+            compact ? 'p-sm sm:p-md' : 'p-lg sm:p-lg p-sm'
           )}
         >
           {children}

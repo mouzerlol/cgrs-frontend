@@ -2,70 +2,90 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useClerk } from '@clerk/nextjs';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
-  { href: '/profile', label: 'Profile Details', icon: 'lucide:user' },
-  { href: '/profile/reported-issues', label: 'Reported Issues', icon: 'lucide:message-square' },
-  { href: '/profile/my-property', label: 'My Property', icon: 'lucide:house' },
+  { id: 'details', href: '/profile', label: 'Profile Details', icon: 'lucide:user' },
+  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues', icon: 'lucide:message-square' },
+  { id: 'my-property', href: '/profile/my-property', label: 'My Property', icon: 'lucide:house' },
 ] as const;
 
 interface ProfileSideNavProps {
   onNavigate?: () => void;
+  onCategoryChange?: (id: string | null) => void;
+  activeCategory?: string | null;
   className?: string;
 }
 
-export default function ProfileSideNav({ onNavigate, className }: ProfileSideNavProps) {
+export default function ProfileSideNav({ onNavigate, onCategoryChange, activeCategory: controlledActive, className }: ProfileSideNavProps) {
   const pathname = usePathname();
-  const { openUserProfile } = useClerk();
 
-  function isActive(href: string) {
-    if (href === '/profile') return pathname === '/profile';
-    return pathname.startsWith(href);
+  function isActive(id: string) {
+    if (controlledActive !== undefined) {
+      return controlledActive === id;
+    }
+    // Fallback to pathname-based active detection
+    const item = NAV_ITEMS.find((item) => item.id === id);
+    if (!item) return false;
+    if (item.href === '/profile') return pathname === '/profile';
+    return pathname.startsWith(item.href);
+  }
+
+  function handleNavClick(id: string, href: string) {
+    if (onCategoryChange) {
+      onCategoryChange(id);
+    }
+    // Use Link for navigation
+    window.location.href = href;
+    onNavigate?.();
   }
 
   return (
-    <nav aria-label="Profile navigation" className={cn('bg-bone border-r border-sage/20', className)}>
-      <ul className="py-2">
-        {NAV_ITEMS.map(({ href, label, icon }) => {
-          const active = isActive(href);
+    <nav
+      aria-label="Profile navigation"
+      className={cn('hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0 p-md', className)}
+    >
+      <ul className="flex flex-col gap-1">
+        {NAV_ITEMS.map(({ id, href, label, icon }) => {
+          const active = isActive(id);
           return (
             <li key={href}>
-              <Link
-                href={href}
-                onClick={onNavigate}
+              <button
+                type="button"
+                onClick={() => handleNavClick(id, href)}
                 aria-current={active ? 'page' : undefined}
-                prefetch={true}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 text-sm transition-colors',
-                  active
-                    ? 'border-l-4 border-terracotta bg-sage-light/50 font-semibold text-forest'
-                    : 'border-l-4 border-transparent text-forest/70 hover:bg-sage-light/30'
+                  'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-xl w-full',
+                  'gap-sm px-md py-3.5 min-h-[56px] text-[0.9375rem]',
+                  'bg-bone/[0.08]',
+                  'font-body font-medium text-bone text-left',
+                  'cursor-pointer relative',
+                  'transition-all duration-[250ms] ease-out-custom',
+                  !active && 'hover:bg-bone/[0.15] hover:translate-x-1',
+                  active && [
+                    'bg-sage-light text-forest font-semibold z-10',
+                    'after:content-[""] after:absolute after:right-[-1px] after:top-0 after:bottom-0 after:w-0.5 after:bg-sage-light',
+                  ]
                 )}
               >
-                <Icon icon={icon} className="h-5 w-5 shrink-0" aria-hidden="true" />
-                {label}
-              </Link>
+                <span
+                  className={cn(
+                    'flex items-center justify-center rounded-lg shrink-0',
+                    'transition-all duration-[250ms] ease-out-custom',
+                    'w-8 h-8',
+                    active
+                      ? 'bg-terracotta text-bone'
+                      : 'bg-bone/[0.12] text-sage-light'
+                  )}
+                >
+                  <Icon icon={icon} width={20} height={20} />
+                </span>
+                <span className="flex-1 leading-snug">{label}</span>
+              </button>
             </li>
           );
         })}
-        <li className="mt-1 border-t border-sage/20 pt-1">
-          <button
-            type="button"
-            onClick={() => {
-              openUserProfile();
-              onNavigate?.();
-            }}
-            className={cn(
-              'flex w-full items-center gap-3 border-l-4 border-transparent px-4 py-3 text-left text-sm text-forest/70 transition-colors hover:bg-sage-light/30'
-            )}
-          >
-            <Icon icon="lucide:user-cog" className="h-5 w-5 shrink-0" aria-hidden="true" />
-            Manage account
-          </button>
-        </li>
       </ul>
     </nav>
   );

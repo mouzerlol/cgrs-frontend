@@ -33,7 +33,7 @@ export default function StatusBanner({
 
     return (
         <div
-            className={`${style.bg} ${style.text} px-4 py-3 rounded-t-2xl ${className}`}
+            className={`${style.bg} ${style.text} px-4 py-3 ${className}`}
         >
             <div className="flex items-center justify-between">
                 <span className="font-bold text-sm uppercase tracking-wide">

@@ -18,6 +18,7 @@ interface SidebarTabsProps {
   allOptionLabel?: string;
   allOptionIcon?: string;
   ariaLabel?: string;
+  compact?: boolean;
 }
 
 /**
@@ -33,15 +34,20 @@ export function SidebarTabs({
   allOptionLabel = 'All Categories',
   allOptionIcon = 'lucide:layout-grid',
   ariaLabel = 'Categories',
+  compact = false,
 }: SidebarTabsProps) {
   return (
     <nav
-      className="hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl p-md pr-0"
+      className={cn(
+        'hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0',
+        compact ? 'p-sm' : 'p-md'
+      )}
       aria-label={ariaLabel}
     >
       <div className="flex flex-col gap-1" role="tablist">
         {showAllOption && (
           <TabButton
+            compact={compact}
             isActive={activeCategory === null}
             onClick={() => onCategoryChange(null)}
             icon={allOptionIcon}
@@ -55,6 +61,7 @@ export function SidebarTabs({
           return (
             <TabButton
               key={category.id}
+              compact={compact}
               isActive={isActive}
               onClick={() => onCategoryChange(category.id)}
               icon={category.icon}
@@ -74,17 +81,21 @@ interface TabButtonProps {
   icon: string;
   name: string;
   count?: number;
+  compact?: boolean;
 }
 
-function TabButton({ isActive, onClick, icon, name, count }: TabButtonProps) {
+function TabButton({ isActive, onClick, icon, name, count, compact = false }: TabButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'group flex items-center gap-sm px-md py-3.5 min-h-[56px]',
-        'bg-bone/[0.08] border border-bone/[0.12] border-r-0 rounded-l-xl',
-        'font-body text-[0.9375rem] font-medium text-bone text-left',
+        'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-xl',
+        compact
+          ? 'gap-2 px-sm py-2 min-h-[44px] text-[0.875rem]'
+          : 'gap-sm px-md py-3.5 min-h-[56px] text-[0.9375rem]',
+        'bg-bone/[0.08]',
+        'font-body font-medium text-bone text-left',
         'cursor-pointer relative',
         'transition-all duration-[250ms] ease-out-custom',
         !isActive && 'hover:bg-bone/[0.15] hover:translate-x-1',
@@ -99,14 +110,15 @@ function TabButton({ isActive, onClick, icon, name, count }: TabButtonProps) {
     >
       <span
         className={cn(
-          'flex items-center justify-center w-8 h-8 rounded-lg shrink-0',
+          'flex items-center justify-center rounded-lg shrink-0',
           'transition-all duration-[250ms] ease-out-custom',
+          compact ? 'w-7 h-7' : 'w-8 h-8',
           isActive
             ? 'bg-terracotta text-bone'
             : 'bg-bone/[0.12] text-sage-light'
         )}
       >
-        <Icon icon={icon} width={20} height={20} />
+        <Icon icon={icon} width={compact ? 18 : 20} height={compact ? 18 : 20} />
       </span>
       <span className="flex-1 leading-snug">
         {name}

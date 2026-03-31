@@ -31,7 +31,7 @@ const itemVariants = {
 };
 
 interface ThreadListProps extends HTMLAttributes<HTMLDivElement> {
-  /** List of threads (can include latestReply for compact view) */
+  /** List of threads; `latestReply` is optional (only some fetches enrich it, e.g. landing). */
   threads: Thread[] | ThreadWithLatestReply[];
   /** View mode: card (default) or compact */
   viewMode?: 'card' | 'compact';
@@ -95,9 +95,15 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
           )}
           {...props}
         >
-          {[...Array(skeletonCount)].map((_, i) => (
-            <ThreadCardSkeleton key={i} variant={viewMode} />
-          ))}
+          {[...Array(skeletonCount)].map((_, i) =>
+            viewMode === 'card' ? (
+              <div key={i} className="h-full min-h-0">
+                <ThreadCardSkeleton variant="card" className="h-full" />
+              </div>
+            ) : (
+              <ThreadCardSkeleton key={i} variant="compact" />
+            ),
+          )}
         </div>
       );
     }
@@ -148,7 +154,7 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
             animate="visible"
           >
             {threads.map((thread) => (
-              <motion.div key={thread.id} variants={itemVariants}>
+              <motion.div key={thread.id} variants={itemVariants} className="h-full min-h-0">
                 <ThreadCardWithPreview
                   thread={thread}
                   hasUpvoted={upvotedThreads.has(thread.id)}

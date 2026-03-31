@@ -42,49 +42,45 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
       );
     }
 
-    // Card variant
+    // Card variant — mirrors ThreadCard h-full grid row stretch + reserved title/body blocks
     return (
       <div
         ref={ref}
         className={cn(
-          'bg-white rounded-2xl border border-sage/30',
+          'flex h-full min-h-0 flex-col rounded-2xl border border-sage/30 bg-white',
           'animate-pulse',
           className
         )}
         {...props}
       >
-        <div className="flex">
-          {/* Upvote column skeleton */}
-          <div className="flex-shrink-0 p-4">
-            <div className="w-12 h-16 bg-sage-light rounded-lg" />
+        <div className="flex min-h-0 flex-1 items-stretch">
+          <div className="flex shrink-0 flex-col items-stretch self-stretch p-3 md:p-4">
+            <div className="h-16 w-12 rounded-lg bg-sage-light" />
           </div>
 
-          {/* Main content skeleton */}
-          <div className="flex-1 py-4 pr-4">
-            {/* Header skeleton */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-16 h-5 bg-sage-light rounded" />
-              <div className="w-12 h-5 bg-sage-light rounded" />
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col py-3 pr-3 md:py-4 md:pr-4">
+            <div className="mb-1.5 flex gap-2">
+              <div className="h-5 w-20 rounded bg-sage-light" />
+              <div className="h-5 w-14 rounded bg-sage-light" />
             </div>
 
-            {/* Title skeleton */}
-            <div className="h-6 w-3/4 bg-sage-light rounded mb-3" />
-
-            {/* Body skeleton */}
-            <div className="space-y-2 mb-4">
-              <div className="h-4 w-full bg-sage-light rounded" />
-              <div className="h-4 w-2/3 bg-sage-light rounded" />
+            <div className="mb-1.5 min-h-[2.75rem] md:min-h-[3.125rem]">
+              <div className="h-5 w-4/5 rounded bg-sage-light md:h-6" />
             </div>
 
-            {/* Footer skeleton */}
-            <div className="flex items-center justify-between pt-3 border-t border-sage/20">
+            <div className="mb-2 min-h-10 space-y-2">
+              <div className="h-4 w-full rounded bg-sage-light" />
+              <div className="h-4 w-2/3 rounded bg-sage-light" />
+            </div>
+
+            <div className="mt-auto flex items-center justify-between gap-3 border-t border-sage/20 pt-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-sage-light rounded-full" />
-                <div className="w-24 h-4 bg-sage-light rounded" />
+                <div className="h-8 w-8 rounded-full bg-sage-light" />
+                <div className="h-4 w-24 rounded bg-sage-light" />
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-4 bg-sage-light rounded" />
-                <div className="w-8 h-4 bg-sage-light rounded" />
+              <div className="flex gap-3">
+                <div className="h-4 w-8 rounded bg-sage-light" />
+                <div className="h-4 w-8 rounded bg-sage-light" />
               </div>
             </div>
           </div>

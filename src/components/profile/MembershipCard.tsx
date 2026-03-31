@@ -2,6 +2,8 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import type { MembershipResponse } from '@/hooks/useCurrentUser';
+import { profileSectionTitleSmClass } from '@/components/profile/profileSectionTitle';
+import { cn } from '@/lib/utils';
 
 function formatRole(role: string): string {
   return role.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -25,9 +27,9 @@ export default function MembershipCard({ membership }: MembershipCardProps) {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1 }}
-      className="rounded-card bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
+      className="rounded-xl bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
     >
-      <h3 className="mb-4 font-display text-lg text-forest">Community Membership</h3>
+      <h3 className={cn('mb-4', profileSectionTitleSmClass)}>Community Membership</h3>
       <div className="space-y-3">
         <div className="flex justify-between border-b border-bone pb-2">
           <span className="text-sm font-medium text-forest/70">Role</span>

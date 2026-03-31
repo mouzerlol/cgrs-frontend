@@ -23,7 +23,8 @@ export default function ManagementRequestPage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      <section className="section bg-bone">
+      {/* Match discussion: avoid global `.section` (xl/2xl vertical padding) which leaves a large gap under breadcrumbs */}
+      <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
           <ManagementRequestForm />
         </div>

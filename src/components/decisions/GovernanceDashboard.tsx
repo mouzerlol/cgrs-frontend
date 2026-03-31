@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Resolution } from "@/types/decisions";
 import { Card } from "@/components/design-system/Card";
 import { getDerivedStatus } from "@/lib/decisions";
@@ -12,11 +13,48 @@ interface GovernanceDashboardProps {
     isLoading?: boolean;
 }
 
+function thresholdTextColor(value: number, lowGood: boolean): string {
+    if (lowGood) {
+        if (value <= 5) return "text-green-600";
+        if (value <= 10) return "text-amber-600";
+        return "text-red-600";
+    }
+    if (value >= 80) return "text-green-600";
+    if (value >= 50) return "text-amber-600";
+    return "text-red-600";
+}
+
 export default function GovernanceDashboard({
     resolutions,
     className = "",
     isLoading = false,
 }: GovernanceDashboardProps) {
+    const { openCount, openCountColor, complianceRate, complianceColor, orphanCount } = useMemo(() => {
+        let open = 0;
+        let orphans = 0;
+        const carried = resolutions.filter((r) => r.outcome === "carried");
+        let carriedCompleted = 0;
+
+        for (const r of resolutions) {
+            const derived = getDerivedStatus(r.outcome, r.status, r.deadline);
+            if (r.outcome === "carried" && derived !== "completed") {
+                open += 1;
+                if (!r.actionOwner || !r.deadline) orphans += 1;
+            }
+            if (r.outcome === "carried" && derived === "completed") carriedCompleted += 1;
+        }
+
+        const rate = carried.length === 0 ? 100 : Math.round((carriedCompleted / carried.length) * 100);
+
+        return {
+            openCount: open,
+            openCountColor: thresholdTextColor(open, true),
+            complianceRate: rate,
+            complianceColor: thresholdTextColor(rate, false),
+            orphanCount: orphans,
+        };
+    }, [resolutions]);
+
     return (
         <div className={`${className}`}>
             <AnimatePresence mode="wait">

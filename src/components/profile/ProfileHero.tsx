@@ -6,7 +6,7 @@ import type { CurrentUserResponse } from '@/hooks/useCurrentUser';
 interface ProfileHeroProps {
   user: CurrentUserResponse['user'];
   membership: CurrentUserResponse['membership'];
-  clerkFallback?: { firstName?: string; lastName?: string; imageUrl?: string };
+  clerkFallback?: { firstName?: string; lastName?: string; imageUrl?: string; email?: string };
 }
 
 function formatRole(role: string): string {
@@ -19,6 +19,7 @@ export default function ProfileHero({ user, membership, clerkFallback }: Profile
   const firstName = user.first_name || clerkFallback?.firstName || '';
   const lastName = user.last_name || clerkFallback?.lastName || '';
   const avatarUrl = user.avatar_url || clerkFallback?.imageUrl || '';
+  const displayEmail = user.email || clerkFallback?.email || '';
   const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'No name set';
   const initials = fullName
     .split(' ')
@@ -32,7 +33,7 @@ export default function ProfileHero({ user, membership, clerkFallback }: Profile
       initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="rounded-card bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
+      className="bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
     >
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
         {avatarUrl ? (
@@ -48,9 +49,9 @@ export default function ProfileHero({ user, membership, clerkFallback }: Profile
         )}
         <div className="text-center sm:text-left">
           <h1 className="font-display text-2xl text-forest">{fullName}</h1>
-          <p className="text-sm text-sage">{user.email}</p>
+          {displayEmail ? <p className="text-sm text-forest/90">{displayEmail}</p> : null}
           {membership && (
-            <span className="mt-2 inline-block rounded-full bg-terracotta/10 px-3 py-1 text-xs font-semibold text-terracotta">
+            <span className="mt-2 inline-block rounded-md bg-terracotta px-1.5 py-0.5 font-body text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white">
               {formatRole(membership.role)}
             </span>
           )}

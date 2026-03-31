@@ -4,6 +4,7 @@ import { forwardRef, HTMLAttributes } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
+import { formatRelativeTimeShort } from '@/lib/format-relative-time';
 import { cn } from '@/lib/utils';
 import type { Thread, LatestReply } from '@/types';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -57,22 +58,6 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
     ...props
   }, ref) => {
     const router = useRouter();
-
-    // Format relative time for display
-    const formatRelativeTime = (dateStr: string): string => {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMs / 3600000);
-      const diffDays = Math.floor(diffMs / 86400000);
-
-      if (diffMins < 1) return 'just now';
-      if (diffMins < 60) return `${diffMins}m ago`;
-      if (diffHours < 24) return `${diffHours}h ago`;
-      if (diffDays < 7) return `${diffDays}d ago`;
-      return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
-    };
 
     const legacyImages = thread.images ?? [];
     const thumbnail =
@@ -188,7 +173,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
 
             {/* Posted Time */}
             <span className="text-xs text-forest/50 flex-shrink-0">
-              Posted {formatRelativeTime(thread.createdAt)}
+              Posted {formatRelativeTimeShort(thread.createdAt)}
             </span>
           </div>
 
@@ -215,40 +200,37 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
               <span className="tabular-nums">{thread.upvotes}</span>
             </button>
 
-            {/* Comment Count */}
-            <span className="inline-flex items-center gap-1 text-xs text-forest/60">
-              <Icon icon="lucide:message-circle" className="w-3.5 h-3.5" />
+            {/* Reply count (authoritative); latest-reply line only when enriched (e.g. landing fetch). */}
+            <span
+              className="inline-flex items-center gap-1 text-xs text-forest/60"
+              aria-label={`${thread.replyCount} ${thread.replyCount === 1 ? 'reply' : 'replies'}`}
+            >
+              <Icon icon="lucide:message-circle" className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span className="tabular-nums">{thread.replyCount}</span>
             </span>
 
-            {/* Divider */}
-            <span className="w-px h-4 bg-sage/50" />
-
-            {/* Latest Reply (if available) */}
-            {latestReply ? (
-              <div className="flex items-center gap-1.5 text-xs text-forest/50">
-                {/* Small Avatar (20px) */}
-                <div className="relative w-5 h-5 rounded-full overflow-hidden bg-sage-light flex-shrink-0">
-                  {latestReply.author.avatar ? (
-                    <Image
-                      src={latestReply.author.avatar}
-                      alt={latestReply.author.displayName}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-forest/50 text-[10px] font-medium">
-                      {latestReply.author.displayName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+            {latestReply && (
+              <>
+                <span className="w-px h-4 bg-sage/50 shrink-0" aria-hidden />
+                <div className="flex min-w-0 items-center gap-1.5 text-xs text-forest/50">
+                  <div className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full bg-sage-light">
+                    {latestReply.author.avatar ? (
+                      <Image
+                        src={latestReply.author.avatar}
+                        alt=""
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-forest/50">
+                        {latestReply.author.displayName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <span className="hidden max-w-[100px] truncate sm:inline">{latestReply.author.displayName}</span>
+                  <span className="truncate">replied {formatRelativeTimeShort(latestReply.createdAt)}</span>
                 </div>
-                <span className="hidden sm:inline truncate max-w-[100px]">
-                  {latestReply.author.displayName}
-                </span>
-                <span>replied {formatRelativeTime(latestReply.createdAt)}</span>
-              </div>
-            ) : (
-              <span className="text-xs text-forest/40">No replies yet</span>
+              </>
             )}
 
             {/* Spacer */}

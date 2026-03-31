@@ -24,7 +24,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="overflow-hidden rounded-card bg-white shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
+      className="overflow-hidden rounded-xl bg-white shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
     >
       <div className="relative h-48 bg-sage-light">
         <img

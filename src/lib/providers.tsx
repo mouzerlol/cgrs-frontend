@@ -11,6 +11,7 @@ import { addCollection } from '@iconify/react';
 import type { IconifyJSON } from '@iconify/react';
 import iconBundle from '@/lib/icon-bundle.json';
 import { ApiError } from '@/lib/api/client';
+import { useInvalidateCurrentUserOnClerkChange } from '@/hooks/useInvalidateCurrentUserOnClerkChange';
 
 // Register curated icon subset locally (CSP blocks api.iconify.design).
 // Run `node scripts/extract-icons.mjs` after adding new icon references.
@@ -62,7 +63,13 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ClerkCurrentUserSync />
       {children}
     </QueryClientProvider>
   );
+}
+
+function ClerkCurrentUserSync() {
+  useInvalidateCurrentUserOnClerkChange();
+  return null;
 }

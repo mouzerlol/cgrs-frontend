@@ -369,8 +369,8 @@ export interface ThreadFilters {
 }
 
 /**
- * Latest reply info for compact thread cards.
- * Used to show who replied most recently without loading all replies.
+ * Latest reply info for compact thread cards when the list query enriches threads (optional).
+ * Infinite scroll lists often omit this; `Thread.replyCount` remains the source of truth.
  */
 export interface LatestReply {
   author: {

@@ -180,6 +180,7 @@ export function ManagementRequestForm() {
   return (
     <div ref={formContainerRef}>
       <SidebarLayout
+        compact
         categories={sidebarCategories}
         activeCategory={formData.category}
         onCategoryChange={(id) => {
@@ -189,15 +190,15 @@ export function ManagementRequestForm() {
       >
         {/* Form Header */}
         {activeCategory && (
-          <div className="flex items-start gap-md pb-md mb-md border-b border-sage-light max-sm:flex-col max-sm:items-center max-sm:text-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-terracotta rounded-xl text-bone shrink-0">
+          <div className="flex items-start gap-sm pb-sm mb-sm border-b border-sage-light max-sm:flex-col max-sm:items-center max-sm:text-center sm:gap-md sm:pb-md sm:mb-md">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-terracotta rounded-lg sm:rounded-xl text-bone shrink-0">
               <Icon icon={activeCategory.icon} width={24} height={24} />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-display text-xl font-medium text-forest mb-1">
+              <h3 className="font-display text-lg sm:text-xl font-medium text-forest mb-0.5 sm:mb-1">
                 {activeCategory.name}
               </h3>
-              <p className="text-sm text-forest/70 leading-relaxed">
+              <p className="text-sm text-forest/70 leading-snug sm:leading-relaxed">
                 {activeCategory.description}
               </p>
             </div>

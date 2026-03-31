@@ -12,6 +12,7 @@ interface SidebarDropdownProps {
   showAllOption?: boolean;
   allOptionLabel?: string;
   allOptionIcon?: string;
+  compact?: boolean;
 }
 
 /**
@@ -26,6 +27,7 @@ export function SidebarDropdown({
   showAllOption = false,
   allOptionLabel = 'All Categories',
   allOptionIcon = 'lucide:layout-grid',
+  compact = false,
 }: SidebarDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -69,16 +71,19 @@ export function SidebarDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="lg:hidden relative bg-forest-light p-md rounded-2xl"
+      className={cn(
+        'lg:hidden relative bg-forest-light rounded-2xl',
+        compact ? 'p-sm' : 'p-md'
+      )}
     >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           'flex items-center justify-between w-full',
-          'px-md py-sm min-h-[56px]',
           'bg-bone/[0.08] border border-bone/[0.12]',
-          'rounded-xl font-body text-base font-medium text-bone',
+          'rounded-xl font-body font-medium text-bone',
+          compact ? 'px-sm py-2 min-h-[48px] text-sm' : 'px-md py-sm min-h-[56px] text-base',
           'cursor-pointer transition-all duration-[250ms] ease-out-custom',
           'hover:bg-bone/[0.12] hover:border-terracotta'
         )}

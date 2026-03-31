@@ -8,9 +8,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
-import { formatRole, isNavItemVisible } from '@/lib/auth';
+import { isNavItemVisible } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useCommunity } from '@/hooks/useCommunity';
 import {
   discussionKeys,
   PAGE_SIZE,
@@ -25,8 +24,8 @@ const NAV_LINK_CLASS =
 
 /**
  * Desktop top nav with responsive overflow: rightmost links fold into More when space is limited.
- * Hidden measure rows reserve the same width as the live auth block (role + UserButton or login CTA)
- * so overflow counting matches signed-in layouts with long labels.
+ * Hidden measure rows reserve the same width as the live auth block (UserButton or login CTA)
+ * so overflow counting matches signed-in layouts.
  */
 export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -38,7 +37,6 @@ export default function Navigation() {
   const router = useRouter();
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
-  const { data: community } = useCommunity();
   const queryClient = useQueryClient();
 
   const handleDiscussionPrefetch = useCallback(() => {
@@ -130,7 +128,7 @@ export default function Navigation() {
     const authEl = authSlotRef.current;
     if (authEl) ro.observe(authEl);
     return () => ro.disconnect();
-  }, [updateOverflow, currentUser?.membership?.role, community?.name]);
+  }, [updateOverflow, currentUser?.membership?.role]);
 
   return (
     <nav
@@ -213,16 +211,7 @@ export default function Navigation() {
 
         <div ref={authSlotRef} className="flex items-center shrink-0">
           {isLoaded && isSignedIn ? (
-            <div className="flex items-center gap-2 shrink-0">
-              {(currentUser?.membership?.role || community?.name) && (
-                <span className="text-xs font-medium uppercase tracking-wide text-bone/70 hidden sm:inline">
-                  {currentUser?.membership?.role && formatRole(currentUser.membership.role)}
-                  {currentUser?.membership?.role && community?.name && ' · '}
-                  {community?.name && <span className="normal-case">{community.name}</span>}
-                </span>
-              )}
-              <ClerkAppUserButton />
-            </div>
+            <ClerkAppUserButton />
           ) : (
             <SignInButton mode="redirect">
               <span

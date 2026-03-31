@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { SignOutButton, useUser, UserAvatar } from '@clerk/nextjs';
 import { getAfterSignOutUrl } from '@/lib/app-url';
+import Icon from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
 
 const profileLinkIcon = (
@@ -52,16 +53,19 @@ export default function ClerkAppUserButton() {
     <Menu as="div" className="relative">
       <MenuButton
         type="button"
+        aria-label={primary ? `Account menu for ${display}, ${primary}` : `Account menu for ${display}`}
         className={cn(
-          'flex max-w-full items-center gap-2 rounded-xl py-1 pl-1 pr-2 text-left transition-colors',
+          'relative flex items-center justify-center rounded-full p-0.5 transition-colors',
           'text-bone hover:bg-white/10',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-bone/40'
         )}
       >
         <UserAvatar />
-        <span className="hidden min-w-0 flex-col sm:flex">
-          <span className="max-w-[11rem] truncate font-display text-sm font-medium text-bone">{display}</span>
-          {primary ? <span className="max-w-[11rem] truncate text-xs text-bone/70">{primary}</span> : null}
+        <span
+          className="pointer-events-none absolute -bottom-px -right-px flex h-[18px] w-[18px] items-center justify-center rounded-full border border-forest/20 bg-sage text-forest shadow-sm"
+          aria-hidden="true"
+        >
+          <Icon name="chevron-down" size="sm" />
         </span>
       </MenuButton>
 

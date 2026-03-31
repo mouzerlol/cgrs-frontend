@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addTaskComment, deleteTaskComment, updateTaskComment } from '@/lib/api/work-tasks';
@@ -131,8 +132,9 @@ export default function ReportedIssueDetailPage() {
 
       <Link
         href="/profile/reported-issues"
-        className="text-sm font-semibold uppercase tracking-widest text-terracotta"
+        className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-terracotta"
       >
+        <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
         Back to Reported Issues
       </Link>
 
@@ -191,7 +193,7 @@ export default function ReportedIssueDetailPage() {
 
         <div className="mt-6 space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-widest text-terracotta">Description</h3>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-forest/80">
+          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-forest/80">
             {task.description}
           </p>
         </div>
@@ -320,7 +322,7 @@ export default function ReportedIssueDetailPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-forest/80">{item.content}</p>
+                    <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-forest/80">{item.content}</p>
                   )}
                 </div>
               );
