@@ -1,17 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { useCategories } from '@/hooks/useDiscussions';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import {
+  canConfigureThreadVisibility,
+  defaultThreadVisibilityForRole,
+  type ThreadVisibilityValue,
+} from '@/lib/discussionVisibility';
 import { TitleInput } from './TitleInput';
 import { BodyInput } from './BodyInput';
 import { CategorySelect } from './CategorySelect';
 import { ImageUploader } from './ImageUploader';
 import { LinkInput } from './LinkInput';
 import { PollBuilder } from './PollBuilder';
+import { ThreadVisibilitySelect } from './ThreadVisibilitySelect';
 import type { ThreadFormData } from './types';
 import { ApiError } from '@/lib/api/client';
 
@@ -40,6 +47,11 @@ export function ThreadForm({
     error: categoriesQueryError,
   } = useCategories({ postable: true });
 
+  const { data: currentUser } = useCurrentUser();
+  const role = currentUser?.membership?.role;
+  const isSuperadmin = currentUser?.is_superadmin ?? false;
+  const showVisibilityField = canConfigureThreadVisibility(role, isSuperadmin);
+
   const [title, setTitle] = useState(initialData?.title || '');
   const [body, setBody] = useState(initialData?.body || '');
   const [category, setCategory] = useState(initialData?.category || '');
@@ -52,6 +64,19 @@ export function ThreadForm({
     options: string[];
     allowMultiple: boolean;
   } | null>(initialData?.poll || null);
+
+  const [visibility, setVisibility] = useState<ThreadVisibilityValue | null>(
+    initialData?.visibility ?? null,
+  );
+
+  useEffect(() => {
+    if (!showVisibilityField || !currentUser) return;
+    setVisibility((prev) => {
+      if (prev !== null) return prev;
+      if (initialData?.visibility !== undefined) return initialData.visibility;
+      return defaultThreadVisibilityForRole(role, isSuperadmin);
+    });
+  }, [showVisibilityField, currentUser, role, isSuperadmin, initialData?.visibility]);
 
   const [errors, setErrors] = useState<Partial<Record<keyof ThreadFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,6 +119,7 @@ export function ThreadForm({
         title: title.trim(),
         body: body.trim(),
         category,
+        ...(showVisibilityField && visibility !== null ? { visibility } : {}),
         images,
         links,
         poll: poll || undefined,
@@ -186,6 +212,13 @@ export function ThreadForm({
                 error={errors.category}
                 disabled={categoriesLoading || categoriesError || (categoriesSuccess && categories.length === 0)}
               />
+
+              {showVisibilityField && visibility !== null && (
+                <ThreadVisibilitySelect
+                  value={visibility}
+                  onChange={setVisibility}
+                />
+              )}
 
               <ImageUploader
                 value={images}

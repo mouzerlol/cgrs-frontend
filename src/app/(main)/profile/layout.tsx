@@ -1,30 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useAuth, useUser, SignInButton } from '@clerk/nextjs';
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useCurrentUserQuery, useVerificationStatusQuery } from '@/hooks/useProfileData';
 import ProfileHero from '@/components/profile/ProfileHero';
 import ProfileSkeleton from '@/components/profile/ProfileSkeleton';
 import ProfileSideNav from '@/components/profile/ProfileSideNav';
+import ProfileDetailsSection from '@/components/profile/sections/ProfileDetailsSection';
+import VerificationSection from '@/components/profile/sections/VerificationSection';
+import ReportedIssuesSection from '@/components/profile/sections/ReportedIssuesSection';
+import MyPropertySection from '@/components/profile/sections/MyPropertySection';
 import { cn } from '@/lib/utils';
 
-const PROFILE_NAV_ITEMS = [
-  { id: 'details', href: '/profile', label: 'Profile Details', icon: 'lucide:user' },
-  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues', icon: 'lucide:message-square' },
-  { id: 'my-property', href: '/profile/my-property', label: 'My Property', icon: 'lucide:house' },
+const TAB_ITEMS = [
+  { id: 'verification', href: '/profile/verification', label: 'Verification' },
+  { id: 'details', href: '/profile', label: 'Profile Details' },
+  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues' },
+  { id: 'my-property', href: '/profile/my-property', label: 'My Property' },
 ] as const;
+
+type TabId = (typeof TAB_ITEMS)[number]['id'];
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
   const { user: clerkUser } = useUser();
-  const { data, isLoading, error } = useCurrentUser();
   const pathname = usePathname();
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isTabSwitching, setIsTabSwitching] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+
+  // Fetch all profile data at layout level (shared across all sections)
+  const { data: userData, isLoading: isUserLoading, error: userError } = useCurrentUserQuery();
+  const { data: verificationStatus } = useVerificationStatusQuery();
 
   const clerkFallback = clerkUser
     ? {
@@ -35,19 +46,30 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       }
     : undefined;
 
-  // Derive active category from pathname
-  const activeCategory = PROFILE_NAV_ITEMS.find((item) => {
+  // Derive active tab from pathname
+  const activeTab = (TAB_ITEMS.find((item) => {
     if (item.href === '/profile') return pathname === '/profile';
     return pathname.startsWith(item.href);
-  })?.id ?? null;
+  })?.id ?? 'details') as TabId;
 
-  function handleNavChange(id: string | null) {
-    const item = PROFILE_NAV_ITEMS.find((item) => item.id === id);
-    if (item) router.push(item.href);
+  // Prefetch route on hover
+  function handleTabHover(href: string) {
+    router.prefetch(href);
+  }
+
+  // Handle tab change - update URL and trigger animation
+  function handleTabChange(id: TabId) {
+    const item = TAB_ITEMS.find((item) => item.id === id);
+    if (item && item.href !== pathname) {
+      setIsTabSwitching(true);
+      router.push(item.href);
+      // Reset after animation completes
+      setTimeout(() => setIsTabSwitching(false), 300);
+    }
   }
 
   // Not loaded yet
-  if (!isLoaded || isLoading) {
+  if (!isLoaded || isUserLoading) {
     return (
       <section className="section bg-bone">
         <div className="container max-w-5xl">
@@ -77,7 +99,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   }
 
   // Error or no data
-  if (error || !data) {
+  if (userError || !userData) {
     return (
       <section className="section bg-bone">
         <div className="container max-w-3xl">
@@ -93,7 +115,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     <section className="section bg-bone">
       <div className="container max-w-5xl">
         {/* Profile Hero - no rounded corners, persistent header */}
-        <ProfileHero user={data.user} membership={data.membership} clerkFallback={clerkFallback} />
+        <ProfileHero user={userData.user} membership={userData.membership} clerkFallback={clerkFallback} />
 
         {/* Mobile hamburger */}
         <div className="mt-4 lg:hidden">
@@ -110,11 +132,13 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
         {/* Sidebar + content */}
         <div className="mt-6 lg:flex lg:gap-0 lg:items-stretch">
-          {/* Desktop: Vertical folder-tab sidebar */}
+          {/* Desktop: Vertical folder-tab sidebar with prefetch */}
           <ProfileSideNav
             className="hidden lg:flex sticky top-24 self-stretch"
-            activeCategory={activeCategory}
-            onCategoryChange={handleNavChange}
+            activeCategory={activeTab}
+            onCategoryChange={handleTabChange as (id: string) => void}
+            onTabHover={handleTabHover}
+            hasPendingVerification={verificationStatus?.has_pending_request ?? false}
           />
 
           {/* Mobile: Dropdown at top of content */}
@@ -125,7 +149,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
               className="flex items-center gap-2 rounded-xl bg-forest-light px-4 py-3 text-sm font-medium text-bone w-full"
             >
               <Icon icon="lucide:menu" className="h-5 w-5" aria-hidden="true" />
-              {PROFILE_NAV_ITEMS.find((item) => item.id === activeCategory)?.label || 'Menu'}
+              {TAB_ITEMS.find((item) => item.id === activeTab)?.label || 'Menu'}
             </button>
           </div>
 
@@ -134,13 +158,17 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
             <div className="bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl p-lg sm:p-lg p-sm">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={pathname}
-                  initial={prefersReducedMotion ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0 }}
-                  transition={{ duration: 0.15 }}
+                  key={activeTab}
+                  initial={prefersReducedMotion ? false : { opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={prefersReducedMotion ? undefined : { opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {children}
+                  {/* Render the active section - all sections are rendered but only one is visible */}
+                  {activeTab === 'verification' && <VerificationSection />}
+                  {activeTab === 'details' && <ProfileDetailsSection />}
+                  {activeTab === 'reported-issues' && <ReportedIssuesSection />}
+                  {activeTab === 'my-property' && <MyPropertySection />}
                 </motion.div>
               </AnimatePresence>
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { Icon } from '@iconify/react';
+import { BedDouble, Bath, Car } from 'lucide-react';
 import type { PropertyData } from '@/data/property';
 
 interface PropertyCardProps {
@@ -43,15 +43,15 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
         <div className="mt-4 flex gap-6">
           <div className="flex items-center gap-2 text-sm text-forest/70">
-            <Icon icon="lucide:bed-double" className="h-4 w-4" aria-hidden="true" />
+            <BedDouble className="h-4 w-4" aria-hidden="true" />
             <span>{property.bedrooms} bed</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-forest/70">
-            <Icon icon="lucide:bath" className="h-4 w-4" aria-hidden="true" />
+            <Bath className="h-4 w-4" aria-hidden="true" />
             <span>{property.bathrooms} bath</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-forest/70">
-            <Icon icon="lucide:car" className="h-4 w-4" aria-hidden="true" />
+            <Car className="h-4 w-4" aria-hidden="true" />
             <span>{property.parking_spaces} park</span>
           </div>
         </div>

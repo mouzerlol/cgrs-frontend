@@ -19,6 +19,7 @@ export default function NewThreadPage() {
       title: data.title,
       body: data.body,
       category: data.category,
+      visibility: data.visibility,
       poll: data.poll,
       images: data.images,
     });

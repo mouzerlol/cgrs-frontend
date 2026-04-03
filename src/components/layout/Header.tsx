@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Fragment, useMemo } from 'react';
+import { useState, Fragment, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
@@ -21,6 +21,10 @@ export default function Header() {
   const isManagementPage = MANAGEMENT_PATHS.some((p) => pathname === p || (pathname ?? '').startsWith(`${p}/`));
   const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth();
+  /** Remember last confirmed signed-in state to avoid flashing login button during Clerk revalidation. */
+  const lastSignedInRef = useRef(isSignedIn);
+  if (isLoaded) lastSignedInRef.current = isSignedIn;
+  const lastSignedIn = lastSignedInRef.current;
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const { data: community } = useCommunity();
 
@@ -30,6 +34,7 @@ export default function Header() {
           item.href,
           currentUser?.membership?.role,
           currentUser?.is_superadmin ?? false,
+          Boolean(isSignedIn),
           isSignedIn && (isCurrentUserLoading || currentUser === undefined),
         ),
     );
@@ -61,7 +66,7 @@ export default function Header() {
 
       {/* Mobile: Resident Login visible in header so it's discoverable without opening menu */}
       <div className="md:hidden flex items-center gap-2 shrink-0">
-        {isLoaded && isSignedIn ? (
+        {isLoaded && lastSignedIn ? (
           <ClerkAppUserButton />
         ) : (
           <SignInButton mode="redirect">
@@ -187,7 +192,7 @@ export default function Header() {
 
                   {/* Mobile: Auth */}
                   <div className="mt-auto mb-8">
-                    {isLoaded && isSignedIn ? (
+                    {isLoaded && lastSignedIn ? (
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-3">
                           <ClerkAppUserButton />

@@ -1,7 +1,11 @@
+import type { ThreadVisibilityValue } from '@/lib/discussionVisibility';
+
 export interface ThreadFormData {
   title: string;
   body: string;
   category: string;
+  /** Set when the user is owner+; omitted for others (API applies role default). */
+  visibility?: ThreadVisibilityValue;
   images: File[];
   links: { url: string; title?: string }[];
   poll?: {

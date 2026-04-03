@@ -45,6 +45,7 @@ export interface ManagementRequestFormData {
   description: string;
   photos: File[];
   location: RequestLocation | null;
+  captchaToken?: string | null;
 }
 
 export type ManagementRequestStatus = 'open' | 'closed';

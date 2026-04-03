@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { ImageUploader } from '@/components/discussions/ThreadForm/ImageUploader';
 import { LocationPicker } from './LocationPicker';
+import { TurnstileCaptcha } from './TurnstileCaptcha';
 import {
   ManagementRequestFormData,
   ManagementRequestErrors,
@@ -19,6 +20,10 @@ interface RequestFormFieldsProps {
   ) => void;
   isSubmitting: boolean;
   categoryId: string;
+  isVerifiedUser?: boolean;
+  showCaptcha?: boolean;
+  captchaToken?: string | null;
+  onCaptchaChange?: (token: string | null) => void;
 }
 
 const inputCls = [
@@ -42,6 +47,10 @@ export function RequestFormFields({
   onChange,
   isSubmitting,
   categoryId,
+  isVerifiedUser = false,
+  showCaptcha = false,
+  captchaToken,
+  onCaptchaChange,
 }: RequestFormFieldsProps) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -67,22 +76,34 @@ export function RequestFormFields({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="full_name" className={labelCls}>
-              Full Name <span className="text-terracotta">*</span>
+              Full Name {isVerifiedUser ? '' : <span className="text-terracotta">*</span>}
             </label>
-            <input
-              type="text"
-              id="full_name"
-              name="full_name"
-              value={data.full_name}
-              onChange={handleInputChange}
-              disabled={isSubmitting}
-              className={cn(
-                inputCls,
-                errors.full_name && 'border-terracotta'
-              )}
-              placeholder="Enter your full name"
-              autoComplete="name"
-            />
+            {isVerifiedUser ? (
+              <div
+                id="full_name"
+                className={cn(
+                  inputCls,
+                  'bg-sage-light/30 cursor-default'
+                )}
+              >
+                {data.full_name}
+              </div>
+            ) : (
+              <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                value={data.full_name}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+                className={cn(
+                  inputCls,
+                  errors.full_name && 'border-terracotta'
+                )}
+                placeholder="Enter your full name"
+                autoComplete="name"
+              />
+            )}
             {errors.full_name && (
               <span className={errorCls}>{errors.full_name}</span>
             )}
@@ -90,22 +111,34 @@ export function RequestFormFields({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className={labelCls}>
-              Email <span className="text-terracotta">*</span>
+              Email {isVerifiedUser ? '' : <span className="text-terracotta">*</span>}
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={data.email}
-              onChange={handleInputChange}
-              disabled={isSubmitting}
-              className={cn(
-                inputCls,
-                errors.email && 'border-terracotta'
-              )}
-              placeholder="your.email@example.com"
-              autoComplete="email"
-            />
+            {isVerifiedUser ? (
+              <div
+                id="email"
+                className={cn(
+                  inputCls,
+                  'bg-sage-light/30 cursor-default'
+                )}
+              >
+                {data.email}
+              </div>
+            ) : (
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={data.email}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+                className={cn(
+                  inputCls,
+                  errors.email && 'border-terracotta'
+                )}
+                placeholder="your.email@example.com"
+                autoComplete="email"
+              />
+            )}
             {errors.email && (
               <span className={errorCls}>{errors.email}</span>
             )}
@@ -199,23 +232,12 @@ export function RequestFormFields({
         </div>
       )}
 
-      {/* Captcha Placeholder */}
-      <div className="flex flex-col gap-sm">
-        <SectionLabel as="h4" className="mb-xs">Verification</SectionLabel>
-        <div className="p-md bg-bone border border-dashed border-sage rounded-xl">
-          <div className="flex items-center gap-md">
-            <div className="flex items-center justify-center w-12 h-12 bg-sage-light rounded-[10px] text-forest shrink-0">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="font-body text-sm font-semibold text-forest">CAPTCHA verification</span>
-              <span className="font-body text-xs text-sage">Will be integrated before launch</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* CAPTCHA - only shown for non-verified users */}
+      {showCaptcha && (
+        <TurnstileCaptcha
+          onTokenChange={onCaptchaChange}
+        />
+      )}
     </div>
   );
 }

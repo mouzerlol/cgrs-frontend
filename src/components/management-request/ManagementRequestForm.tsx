@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import {
@@ -68,10 +68,55 @@ export function ManagementRequestForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [submittedRequestHref, setSubmittedRequestHref] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [requiresCaptcha, setRequiresCaptcha] = useState<boolean>(true);
   const formContainerRef = useRef<HTMLDivElement>(null);
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, userId } = useAuth();
+  const { user } = useUser();
+
+  // Show CAPTCHA for:
+  // - Signed-out users (always)
+  // - Signed-in users who require CAPTCHA based on their role (from backend)
+  const showCaptcha = !isSignedIn || requiresCaptcha;
+  const isVerifiedUser = isSignedIn && !requiresCaptcha;
 
   const activeCategory = getCategoryById(formData.category);
+
+  // When user signs in, pre-fill their name and email from Clerk user object
+  useEffect(() => {
+    if (isSignedIn && user) {
+      const fullName = user.fullName || undefined;
+      const email = user.primaryEmailAddress?.emailAddress || undefined;
+      if (fullName || email) {
+        setFormData((prev) => ({
+          ...prev,
+          full_name: fullName || prev.full_name,
+          email: email || prev.email,
+        }));
+      }
+    }
+  }, [isSignedIn, user]);
+
+  // Fetch requires_captcha from backend API (determines if user needs CAPTCHA based on role)
+  useEffect(() => {
+    if (isSignedIn && userId) {
+      getToken({ skipCache: true }).then(async (token) => {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (res.ok) {
+            const userData = await res.json();
+            setRequiresCaptcha(userData.requires_captcha ?? true);
+          }
+        } catch {
+          // Silently fail - CAPTCHA will be shown by default
+        }
+      });
+    }
+  }, [isSignedIn, userId, getToken]);
 
   const handleCategoryChange = useCallback((categoryId: ManagementCategoryId) => {
     setFormData((prev) => ({
@@ -115,6 +160,14 @@ export function ManagementRequestForm() {
         return;
       }
 
+      // Require CAPTCHA for non-verified users (not signed in or contact role)
+      if (showCaptcha && !captchaToken) {
+        setErrors({
+          description: 'Please complete the CAPTCHA verification.',
+        });
+        return;
+      }
+
       if (!isSignedIn && !isLocalApi) {
         setErrors({
           description: 'Please sign in to submit a management request.',
@@ -125,7 +178,11 @@ export function ManagementRequestForm() {
       setIsSubmitting(true);
 
       try {
-        const created = await createManagementRequest(formData, getToken);
+        const submissionData = {
+          ...formData,
+          captchaToken: showCaptcha ? captchaToken : undefined,
+        };
+        const created = await createManagementRequest(submissionData, getToken);
 
         // Mark as submitted
         setSubmittedId(created.request.id);
@@ -145,7 +202,7 @@ export function ManagementRequestForm() {
         setIsSubmitting(false);
       }
     },
-    [formData, getToken, isSignedIn]
+    [formData, getToken, isSignedIn, showCaptcha, captchaToken]
   );
 
   const handleSubmitAnother = useCallback(() => {
@@ -154,6 +211,7 @@ export function ManagementRequestForm() {
     setIsSubmitted(false);
     setSubmittedId(null);
     setSubmittedRequestHref(null);
+    setCaptchaToken(null);
     // Scroll to top of page when starting a new request
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -213,10 +271,14 @@ export function ManagementRequestForm() {
             onChange={handleFieldChange}
             isSubmitting={isSubmitting}
             categoryId={formData.category}
+            isVerifiedUser={isVerifiedUser}
+            showCaptcha={showCaptcha}
+            captchaToken={captchaToken}
+            onCaptchaChange={setCaptchaToken}
           />
 
           {/* Submit Button */}
-          <div className="mt-lg pt-md border-t border-sage-light">
+          <div className="flex justify-end mt-lg pt-md border-t border-sage-light">
             <button
               type="submit"
               disabled={isSubmitting}

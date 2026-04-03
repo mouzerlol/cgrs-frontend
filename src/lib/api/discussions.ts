@@ -149,6 +149,16 @@ interface ApiCategoryResponse {
   is_default?: boolean;
 }
 
+interface ApiVisibilityOption {
+  value: number;
+  label: string;
+  description: string;
+}
+
+interface ApiDiscussionSettingsResponse {
+  visibility_options: ApiVisibilityOption[];
+}
+
 interface ApiUpvoteResponse {
   upvoted: boolean;
 }
@@ -314,6 +324,36 @@ export async function getDefaultCategory(
 }
 
 // =============================================================================
+// Settings API
+// =============================================================================
+
+export interface VisibilityOption {
+  value: number;
+  label: string;
+  description: string;
+}
+
+export interface DiscussionSettings {
+  visibilityOptions: VisibilityOption[];
+}
+
+export async function getDiscussionSettings(
+  getToken: () => Promise<string | null>,
+): Promise<DiscussionSettings> {
+  const response = await apiRequest<ApiDiscussionSettingsResponse>(
+    `${API_PATH}/settings`,
+    getToken,
+  );
+  return {
+    visibilityOptions: response.visibility_options.map((opt) => ({
+      value: opt.value,
+      label: opt.label,
+      description: opt.description,
+    })),
+  };
+}
+
+// =============================================================================
 // Threads API
 // =============================================================================
 
@@ -414,6 +454,8 @@ export async function createThread(
     title: string;
     body: string;
     category: string;
+    /** VisibilityEnum int (0–40); owner+ only in UI. */
+    visibility?: number;
     poll?: { question: string; options: string[]; allowMultiple: boolean };
     attachmentIds?: string[];
   },
@@ -424,6 +466,9 @@ export async function createThread(
     body: data.body,
     category: data.category,
   };
+  if (data.visibility !== undefined) {
+    payload.visibility = data.visibility;
+  }
   if (data.poll) {
     payload.poll = {
       question: data.poll.question,

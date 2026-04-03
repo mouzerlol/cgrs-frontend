@@ -63,6 +63,7 @@ async function buildCreateBody(data: ManagementRequestFormData, getToken: () => 
     description: data.description.trim(),
     photo_attachment_ids,
     location: data.location,
+    captcha_token: data.captchaToken ?? null,
   };
 }
 

@@ -22,6 +22,7 @@ import {
   getCategory,
   getCategoryStats,
   getDefaultCategory,
+  getDiscussionSettings,
   getForumStats,
   getPinnedThreads,
   getRepliesByUser,
@@ -35,6 +36,7 @@ import {
   getUserTitles,
   reportReply,
   reportThread,
+  type DiscussionSettings,
   type GetThreadsOptions,
   updateReply,
   updateThread,
@@ -190,6 +192,22 @@ export function useCategoryStats() {
 }
 
 // =============================================================================
+// Settings Hooks
+// =============================================================================
+
+export function useDiscussionSettings(): DiscussionSettings | undefined {
+  const { getToken } = useAuth();
+
+  const { data } = useQuery({
+    queryKey: ['discussion-settings'] as const,
+    queryFn: () => getDiscussionSettings(getToken),
+    staleTime: 1000 * 60 * 60, // 1 hour - settings rarely change
+  });
+
+  return data;
+}
+
+// =============================================================================
 // Gamification Hooks
 // =============================================================================
 
@@ -244,6 +262,7 @@ export function useCreateThread() {
       title: string;
       body: string;
       category: string;
+      visibility?: number;
       poll?: { question: string; options: string[]; allowMultiple: boolean };
       images?: File[];
     }) => {
@@ -259,6 +278,7 @@ export function useCreateThread() {
           title: data.title,
           body: data.body,
           category: data.category,
+          visibility: data.visibility,
           poll: data.poll,
           attachmentIds,
         },

@@ -60,25 +60,48 @@ const MANAGEMENT_ROLES = new Set([
   'committee_chairperson',
 ]);
 
+/** Roles considered verified (no CAPTCHA needed, can have pre-filled read-only fields). */
+const VERIFIED_ROLES = new Set([
+  'resident',
+  'owner',
+  'society_manager',
+  'committee_member',
+  'committee_chairperson',
+]);
+
 /** Whether the user can access the Management nav item and routes. */
 export function canAccessManagement(role: string | undefined, isSuperadmin: boolean): boolean {
   if (isSuperadmin) return true;
   return role !== undefined && MANAGEMENT_ROLES.has(role);
 }
 
+/** Check if a role is verified (no CAPTCHA needed). */
+export function isVerifiedRole(role: string | null | undefined): boolean {
+  if (!role) return false;
+  return VERIFIED_ROLES.has(role);
+}
+
 /** Nav item href that is restricted by role (Management). */
 export const MANAGEMENT_NAV_HREF = '/work-management';
+
+/** Nav item href that requires authentication (Discussion). */
+export const DISCUSSION_NAV_HREF = '/discussion';
 
 /**
  * Whether a nav item should be shown for the given role and superadmin flag.
  * When currentUser is still loading (isSignedInAndLoading), show Management so the link isn't hidden during load.
+ * Discussion requires authentication — unauthenticated users see /no-access.
  */
 export function isNavItemVisible(
   href: string,
   role: string | undefined,
   isSuperadmin: boolean,
+  isSignedIn: boolean,
   isSignedInAndLoading = false,
 ): boolean {
+  if (href === DISCUSSION_NAV_HREF) {
+    return isSignedInAndLoading || isSignedIn;
+  }
   if (href !== MANAGEMENT_NAV_HREF) return true;
   const visible = isSignedInAndLoading || canAccessManagement(role, isSuperadmin);
   return visible;

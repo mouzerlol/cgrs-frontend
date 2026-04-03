@@ -36,6 +36,10 @@ export default function Navigation() {
   const authSlotRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isLoaded, isSignedIn, getToken } = useAuth();
+  /** Remember last confirmed signed-in state to avoid flashing login button during Clerk revalidation. */
+  const lastSignedInRef = useRef(isSignedIn);
+  if (isLoaded) lastSignedInRef.current = isSignedIn;
+  const lastSignedIn = lastSignedInRef.current;
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const queryClient = useQueryClient();
 
@@ -65,6 +69,7 @@ export default function Navigation() {
           item.href,
           currentUser?.membership?.role,
           currentUser?.is_superadmin ?? false,
+          Boolean(isSignedIn),
           isSignedIn && (isCurrentUserLoading || currentUser === undefined),
         ),
     );
@@ -210,7 +215,7 @@ export default function Navigation() {
         )}
 
         <div ref={authSlotRef} className="flex items-center shrink-0">
-          {isLoaded && isSignedIn ? (
+          {isLoaded && lastSignedIn ? (
             <ClerkAppUserButton />
           ) : (
             <SignInButton mode="redirect">
