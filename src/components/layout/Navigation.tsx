@@ -10,6 +10,7 @@ import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { isNavItemVisible } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 import {
   discussionKeys,
   PAGE_SIZE,
@@ -26,6 +27,7 @@ const NAV_LINK_CLASS =
  * Desktop top nav with responsive overflow: rightmost links fold into More when space is limited.
  * Hidden measure rows reserve the same width as the live auth block (UserButton or login CTA)
  * so overflow counting matches signed-in layouts.
+ * Navigation visibility is controlled by feature flags.
  */
 export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -42,6 +44,7 @@ export default function Navigation() {
   const lastSignedIn = lastSignedInRef.current;
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const queryClient = useQueryClient();
+  const featureFlags = useAllFeatureFlags();
 
   const handleDiscussionPrefetch = useCallback(() => {
     // Only prefetch when authenticated — the backend requires a valid token
@@ -71,10 +74,11 @@ export default function Navigation() {
           currentUser?.is_superadmin ?? false,
           Boolean(isSignedIn),
           isSignedIn && (isCurrentUserLoading || currentUser === undefined),
+          featureFlags,
         ),
     );
     return items;
-  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading]);
+  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading, featureFlags]);
 
   const visibleItems = navItems.slice(0, navItems.length - overflowCount);
   const overflowItems = navItems.slice(navItems.length - overflowCount);

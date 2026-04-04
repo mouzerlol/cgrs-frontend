@@ -12,6 +12,7 @@ import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { formatRole, isNavItemVisible } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
+import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
 const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
 
@@ -27,6 +28,7 @@ export default function Header() {
   const lastSignedIn = lastSignedInRef.current;
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const { data: community } = useCommunity();
+  const featureFlags = useAllFeatureFlags();
 
   const mobileNavItems = useMemo(() => {
     const items = ALL_NAV_ITEMS.filter((item) =>
@@ -36,10 +38,11 @@ export default function Header() {
           currentUser?.is_superadmin ?? false,
           Boolean(isSignedIn),
           isSignedIn && (isCurrentUserLoading || currentUser === undefined),
+          featureFlags,
         ),
     );
     return items;
-  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading]);
+  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading, featureFlags]);
   const mobileMainNav = mobileNavItems.slice(0, 5);
   const mobileMoreNav = mobileNavItems.slice(5);
 

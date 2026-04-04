@@ -1,16 +1,17 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useMemo } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import { House, MessageSquare, ShieldCheck, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
 /** Profile nav uses Lucide SVGs directly so icons always render (no Iconify async bundle). */
 const NAV_ITEMS = [
-  { id: 'verification', href: '/profile/verification', label: 'Verification' },
-  { id: 'details', href: '/profile', label: 'Profile Details' },
-  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues' },
-  { id: 'my-property', href: '/profile/my-property', label: 'My Property' },
+  { id: 'verification', href: '/profile/verification', label: 'Verification', flagId: 'profile.verification' },
+  { id: 'details', href: '/profile', label: 'Profile Details', flagId: null },
+  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues', flagId: 'profile.reported-issues' },
+  { id: 'my-property', href: '/profile/my-property', label: 'My Property', flagId: 'profile.my-property' },
 ] as const;
 
 type NavId = (typeof NAV_ITEMS)[number]['id'];
@@ -20,6 +21,12 @@ const NAV_ITEM_ICONS: Record<NavId, LucideIcon> = {
   details: User,
   'reported-issues': MessageSquare,
   'my-property': House,
+};
+
+const DEFAULT_FLAG_IDS: Record<string, boolean> = {
+  'profile.verification': true,
+  'profile.reported-issues': true,
+  'profile.my-property': true,
 };
 
 interface ProfileSideNavProps {
@@ -40,13 +47,23 @@ export default function ProfileSideNav({
   className,
 }: ProfileSideNavProps) {
   const pathname = usePathname();
+  const featureFlags = useAllFeatureFlags();
+
+  // Filter nav items based on feature flags
+  const visibleNavItems = useMemo(() => {
+    return NAV_ITEMS.filter((item) => {
+      if (!item.flagId) return true;
+      // Use feature flag if available, otherwise default to true
+      return featureFlags[item.flagId] ?? DEFAULT_FLAG_IDS[item.flagId] ?? true;
+    });
+  }, [featureFlags]);
 
   function isActive(id: string) {
     if (controlledActive !== undefined) {
       return controlledActive === id;
     }
     // Fallback to pathname-based active detection
-    const item = NAV_ITEMS.find((item) => item.id === id);
+    const item = visibleNavItems.find((item) => item.id === id);
     if (!item) return false;
     if (item.href === '/profile') return pathname === '/profile';
     return pathname.startsWith(item.href);
@@ -73,7 +90,7 @@ export default function ProfileSideNav({
       className={cn('hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0 p-md', className)}
     >
       <ul className="flex flex-col gap-1">
-        {NAV_ITEMS.map(({ id, href, label }) => {
+        {visibleNavItems.map(({ id, href, label }) => {
           const active = isActive(id);
           const NavIcon = NAV_ITEM_ICONS[id];
           return (

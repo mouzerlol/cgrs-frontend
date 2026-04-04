@@ -74,7 +74,7 @@ export function SidebarLayout({
         {/* Main content panel */}
         <div
           className={cn(
-            'min-h-0 min-w-0 flex-1 bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
+            'flex min-h-0 min-w-0 flex-1 flex-col bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
             compact ? 'p-sm sm:p-md' : 'p-lg sm:p-lg p-sm'
           )}
         >

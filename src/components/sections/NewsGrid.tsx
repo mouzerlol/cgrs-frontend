@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 import { NewsArticle } from '@/types';
 import { formatDate } from '@/lib/utils';
 import Icon from '@/components/ui/Icon';
@@ -17,9 +19,10 @@ interface NewsGridProps {
 /**
  * News grid section with image cards.
  * Three-column layout on desktop.
- * 
+ * Hidden when the blog nav flag is off (content links to /blog).
+ *
  * SECURITY NOTE: dangerouslySetInnerHTML is safe here - title contains only hardcoded
- * strings (e.g., 'Community<br>News'). If title ever becomes user-controlled, 
+ * strings (e.g., 'Community<br>News'). If title ever becomes user-controlled,
  * use a sanitizer like DOMPurify.
  */
 export default function NewsGrid({
@@ -28,7 +31,12 @@ export default function NewsGrid({
   eyebrow = 'Latest Updates',
   showViewAll = true,
 }: NewsGridProps) {
+  const blogEnabled = useFeatureFlag(FEATURE_FLAG_IDS.NAV_BLOG);
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+
+  if (!blogEnabled) {
+    return null;
+  }
 
   return (
     <section className="section bg-bone" id="news">

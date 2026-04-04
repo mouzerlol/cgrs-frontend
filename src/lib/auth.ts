@@ -2,6 +2,8 @@
  * Shared auth helpers: role labels, role-based access, and capability constants.
  */
 
+import { NAV_ITEM_TO_FLAG, type FeatureFlagId } from '@/lib/feature-flags';
+
 /** All available capabilities exposed by the backend. */
 export const CAPABILITIES = {
   VIEW_COMMUNITY_PROFILE: 'view_community_profile',
@@ -91,6 +93,14 @@ export const DISCUSSION_NAV_HREF = '/discussion';
  * Whether a nav item should be shown for the given role and superadmin flag.
  * When currentUser is still loading (isSignedInAndLoading), show Management so the link isn't hidden during load.
  * Discussion requires authentication — unauthenticated users see /no-access.
+ * Society Manager does not have access to Discussion.
+ *
+ * @param href - The navigation item href
+ * @param role - User's community role
+ * @param isSuperadmin - Whether user is a superadmin
+ * @param isSignedIn - Whether user is signed in
+ * @param isSignedInAndLoading - Whether auth is still loading (keeps nav stable during Clerk revalidation)
+ * @param featureFlags - Optional map of feature flag IDs to enabled status
  */
 export function isNavItemVisible(
   href: string,
@@ -98,11 +108,28 @@ export function isNavItemVisible(
   isSuperadmin: boolean,
   isSignedIn: boolean,
   isSignedInAndLoading = false,
+  featureFlags?: Record<string, boolean>,
 ): boolean {
   if (href === DISCUSSION_NAV_HREF) {
-    return isSignedInAndLoading || isSignedIn;
+    // Society Manager does not have access to discussion
+    if (role === 'society_manager' && !isSuperadmin) {
+      return false;
+    }
+    if (!isSignedInAndLoading && !isSignedIn) {
+      return false;
+    }
   }
-  if (href !== MANAGEMENT_NAV_HREF) return true;
-  const visible = isSignedInAndLoading || canAccessManagement(role, isSuperadmin);
-  return visible;
+
+  if (href === MANAGEMENT_NAV_HREF) {
+    const visible = isSignedInAndLoading || canAccessManagement(role, isSuperadmin);
+    if (!visible) return false;
+  }
+
+  // Check feature flag for nav items that have one
+  const flagId = NAV_ITEM_TO_FLAG[href] as FeatureFlagId | undefined;
+  if (flagId && featureFlags) {
+    return featureFlags[flagId] ?? true;
+  }
+
+  return true;
 }

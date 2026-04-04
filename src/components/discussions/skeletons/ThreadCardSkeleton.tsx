@@ -20,7 +20,7 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
           ref={ref}
           className={cn(
             'flex items-center gap-3 px-4 py-3',
-            'bg-white rounded-xl border border-sage/30',
+            'bg-white rounded-xl border border-sage',
             'animate-pulse',
             className
           )}

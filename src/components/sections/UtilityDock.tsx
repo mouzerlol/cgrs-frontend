@@ -1,15 +1,18 @@
 'use client';
 
+import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useStaggeredReveal, useFadeUpObserver } from '@/hooks/useIntersectionObserver';
 import Icon, { IconName } from '@/components/ui/Icon';
+import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
 export interface UtilityDockItem {
   name: string;
   href: string;
   icon: string;
   label: string;
+  flagId?: string | null;
 }
 
 interface UtilityDockProps {
@@ -17,18 +20,24 @@ interface UtilityDockProps {
   useIconComponent?: boolean;
 }
 
+const DEFAULT_FLAG_IDS = {
+  'nav.report-issue': true,
+  'nav.discussion': true,
+  'nav.calendar': true,
+  'nav.blog': true,
+};
+
 /**
  * Floating utility dock with icon links.
  * Overlaps hero section with elevated shadow.
  * Pass custom items or use defaults from constants.
  * Set useIconComponent=true to use Icon component instead of images.
- * 
- * SECURITY NOTE: dangerouslySetInnerHTML is safe here - label contains only hardcoded
- * strings with <br> tags. If labels ever become user-controlled, use a sanitizer.
+ * Items can be filtered via feature flags.
  */
 export default function UtilityDock({ items, useIconComponent = false }: UtilityDockProps) {
   const setRef = useStaggeredReveal(200, 100);
   useFadeUpObserver();
+  const featureFlags = useAllFeatureFlags();
 
   const defaultItems: UtilityDockItem[] = [
     {
@@ -36,33 +45,50 @@ export default function UtilityDock({ items, useIconComponent = false }: Utility
       href: '/management-request',
       icon: '/icons/maintenance-request-icon.png',
       label: 'Management<br>Request',
+      flagId: 'nav.report-issue',
     },
     {
       name: 'Message Board',
       href: '/discussion',
       icon: '/icons/notice-board-icon.png',
       label: 'Message<br>Board',
+      flagId: 'nav.discussion',
     },
     {
       name: 'Community Calendar',
       href: '/calendar',
       icon: '/icons/community-events-icon.png',
       label: 'Community<br>Calendar',
+      flagId: 'nav.calendar',
     },
     {
       name: 'Blog',
       href: '/blog',
       icon: '/icons/community-news-icon.png',
       label: 'Blog',
+      flagId: 'nav.blog',
     },
   ];
 
   const dockItems = items || defaultItems;
 
+  // Filter items based on feature flags
+  const visibleItems = useMemo(() => {
+    return dockItems.filter((item) => {
+      if (!item.flagId) return true;
+      // Use feature flag if available, otherwise default to true
+      return featureFlags[item.flagId] ?? DEFAULT_FLAG_IDS[item.flagId as keyof typeof DEFAULT_FLAG_IDS] ?? true;
+    });
+  }, [dockItems, featureFlags]);
+
+  if (visibleItems.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative -mt-lg mx-auto py-lg px-md md:p-md bg-white rounded-dock shadow-dock w-fit max-w-full z-[100] fade-up">
       <div className="flex flex-wrap justify-center gap-md sm:gap-5 sm:flex-nowrap md:gap-md">
-        {dockItems.map((item, index) => (
+        {visibleItems.map((item, index) => (
           <Link
             key={item.name}
             href={item.href}

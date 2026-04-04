@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 import { CalendarItem } from '@/types';
 import Icon from '@/components/ui/Icon';
 import CalendarCard, { formatCalendarDate } from '@/components/ui/CalendarCard';
@@ -19,7 +21,8 @@ interface EventsSectionProps {
 /**
  * Events section with dark forest-light background.
  * Features enhanced calendar cards with date badges in terracotta.
- * 
+ * Hidden when the calendar nav flag is off (events are driven by the same calendar surface).
+ *
  * SECURITY NOTE: dangerouslySetInnerHTML is safe here - title contains only hardcoded
  * strings (e.g., 'Community<br>Events'). If title ever becomes user-controlled,
  * use a sanitizer like DOMPurify.
@@ -31,8 +34,13 @@ export default function EventsSection({
   showViewAll = true,
   maxItems = 3,
 }: EventsSectionProps) {
+  const calendarEnabled = useFeatureFlag(FEATURE_FLAG_IDS.NAV_CALENDAR);
   const router = useRouter();
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+
+  if (!calendarEnabled) {
+    return null;
+  }
 
   const handleItemClick = (item: CalendarItem) => {
     const params = new URLSearchParams();

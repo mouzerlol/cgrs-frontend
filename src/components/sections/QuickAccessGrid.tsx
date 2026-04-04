@@ -1,68 +1,114 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
 import Icon from '@/components/ui/Icon';
+import { useAllFeatureFlags, useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 
-const CARDS = [
+interface CardType {
+  title: string;
+  description: string;
+  href: string;
+  type: 'large' | 'simple' | 'accent';
+  icon?: string;
+  backgroundImage?: string;
+  flagId?: string | null;
+}
+
+const DEFAULT_FLAG_IDS: Record<string, boolean> = {
+  [FEATURE_FLAG_IDS.NAV_REPORT_ISSUE]: true,
+  [FEATURE_FLAG_IDS.NAV_DISCUSSION]: true,
+  [FEATURE_FLAG_IDS.NAV_CALENDAR]: true,
+  [FEATURE_FLAG_IDS.NAV_BLOG]: true,
+  [FEATURE_FLAG_IDS.NAV_MAP]: true,
+};
+
+const CARDS: CardType[] = [
   {
     title: 'Report an Issue',
     description: 'Report maintenance & community issues',
     href: '/management-request',
-    type: 'large' as const,
+    type: 'large',
     backgroundImage: 'https://placehold.co/800x800/2d6a4f/white?text=Report+Issue',
+    flagId: FEATURE_FLAG_IDS.NAV_REPORT_ISSUE,
   },
   {
     title: 'Message Board',
     description: 'Community notices & announcements',
     href: '/notice-board',
-    type: 'simple' as const,
-    icon: 'message'
+    type: 'simple',
+    icon: 'message',
+    flagId: FEATURE_FLAG_IDS.NAV_DISCUSSION,
   },
   {
     title: 'Committee Blog',
     description: 'Updates from your committee',
     href: '/blog',
-    type: 'simple' as const,
-    icon: 'edit'
+    type: 'simple',
+    icon: 'edit',
+    flagId: FEATURE_FLAG_IDS.NAV_BLOG,
   },
   {
     title: 'CGRS Calendar',
     description: 'Community events & activities',
     href: '/calendar',
-    type: 'simple' as const,
-    icon: 'calendar'
+    type: 'simple',
+    icon: 'calendar',
+    flagId: FEATURE_FLAG_IDS.NAV_CALENDAR,
   },
   {
     title: 'Coronation Gardens Map',
     description: 'Explore our community boundaries',
     href: '/map',
-    type: 'simple' as const,
-    icon: 'map'
+    type: 'simple',
+    icon: 'map',
+    flagId: FEATURE_FLAG_IDS.NAV_MAP,
   },
   {
     title: 'Community Guidelines',
     description: 'Rules, forms & policies',
     href: '/guidelines',
-    type: 'simple' as const,
-    icon: 'document'
+    type: 'simple',
+    icon: 'document',
   },
   {
     title: 'Connect',
     description: 'Join our Facebook & Messenger',
     href: '/contact?subject=connect',
-    type: 'accent' as const,
-    icon: 'share'
+    type: 'accent',
+    icon: 'share',
   },
 ];
 
 /**
  * Quick Access grid with mixed card layouts.
  * Features large card with background image and smaller utility cards.
+ * The block respects `home.quick-access`; individual tiles respect matching nav flags.
  */
 export default function QuickAccessGrid() {
+  const quickAccessSectionEnabled = useFeatureFlag(FEATURE_FLAG_IDS.HOME_QUICK_ACCESS);
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+  const featureFlags = useAllFeatureFlags();
+
+  if (!quickAccessSectionEnabled) {
+    return null;
+  }
+
+  // Filter cards based on feature flags
+  const visibleCards = useMemo(() => {
+    return CARDS.filter((card) => {
+      if (!card.flagId) return true;
+      // Use feature flag if available, otherwise default to true
+      return featureFlags[card.flagId] ?? DEFAULT_FLAG_IDS[card.flagId] ?? true;
+    });
+  }, [featureFlags]);
+
+  if (visibleCards.length === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -90,7 +136,7 @@ export default function QuickAccessGrid() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10">
-          {CARDS.map((card, index) => (
+          {visibleCards.map((card, index) => (
             <QuickAccessCard key={card.title} card={card} index={index} />
           ))}
         </div>
@@ -98,15 +144,6 @@ export default function QuickAccessGrid() {
       </div>
     </section>
   );
-}
-
-interface CardType {
-  title: string;
-  description: string;
-  href: string;
-  type: 'large' | 'simple' | 'accent';
-  icon?: string;
-  backgroundImage?: string;
 }
 
 function QuickAccessCard({ card, index }: { card: CardType; index: number }) {
@@ -159,4 +196,3 @@ function QuickAccessCard({ card, index }: { card: CardType; index: number }) {
     </Link>
   );
 }
-

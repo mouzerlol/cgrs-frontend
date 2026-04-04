@@ -11,6 +11,7 @@ import { EventCardSkeleton } from '@/components/ui/EventCardSkeleton';
 import { NewsCardSkeleton } from '@/components/ui/NewsCardSkeleton';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import Hero from '@/components/sections/Hero';
+import { HeroHeadingCard, HeroPageHeader } from '@/components/sections/HeroHeadingCard';
 import PageHeader from '@/components/sections/PageHeader';
 import { BreadcrumbBar, BreadcrumbTrail, SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import Header from '@/components/layout/Header';
@@ -753,6 +754,43 @@ export default function DesignSystemPage() {
                               useIconComponent
                             />
                           </div>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">Hero Heading Card (lg) - Standalone</p>
+                          <div className="border border-sage/20 overflow-hidden bg-bone p-6">
+                            <HeroHeadingCard
+                              title="After the Undercurrents"
+                              eyebrow="Visual Arts"
+                              description="This exhibition brings together the practices of two senior Indigenous painters from Aotearoa and Australia."
+                              size="lg"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs opacity-50 mb-2">Hero Heading Card (sm) - Standalone</p>
+                          <div className="border border-sage/20 overflow-hidden bg-bone p-6">
+                            <HeroHeadingCard
+                              title="Heart Tāmaki"
+                              eyebrow="Performance"
+                              description="A stunning visual arts showcase."
+                              size="sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="md:col-span-2">
+                          <p className="text-xs opacity-50 mb-2">HeroPageHeader - Full page with bottom-left card (AAF style)</p>
+                          <div className="border border-sage/20 overflow-hidden">
+                            <HeroPageHeader
+                              title="After the Undercurrents"
+                              eyebrow="Visual Arts"
+                              description="This exhibition brings together the practices of two senior Indigenous painters from Aotearoa and Australia."
+                              backgroundImage="/images/huri-street.png"
+                              size="lg"
+                            />
+                          </div>
+                          <p className="text-xs opacity-50 mt-2">
+                            Key features: Full-height hero, dark gradient overlay, sharp-cornered card at bottom-left bridging hero and content
+                          </p>
                         </div>
                       </div>
                     </Card>

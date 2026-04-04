@@ -4,6 +4,8 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SocialMediaTray from './SocialMediaTray';
 import { SectionLabel } from '@/components/ui/SectionLabel';
+import { useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 
 const FooterMap = dynamic(() => import('./FooterMap'), {
   ssr: false,
@@ -39,8 +41,12 @@ const SUPPORT_LINKS = [
 /**
  * Footer component with forest background and signal texture.
  * Four-column grid with brand, quick links, support, and social media.
+ * Quick Links and Support sections can be hidden via feature flags.
  */
 export default function Footer() {
+  const showQuickLinks = useFeatureFlag(FEATURE_FLAG_IDS.FOOTER_QUICK_LINKS);
+  const showSupport = useFeatureFlag(FEATURE_FLAG_IDS.FOOTER_SUPPORT);
+
   return (
     <footer className="bg-forest text-bone py-[3.75rem] bg-[image:var(--texture-grain)] texture-signal" id="contact">
       <div className="container px-0">
@@ -59,32 +65,36 @@ export default function Footer() {
           </div>
 
           {/* Quick Links Column */}
-          <div className="pt-4 min-w-0 md:pl-5">
-            <SectionLabel as="h4" className="mb-sm">Quick Links</SectionLabel>
-            <ul className="flex flex-col gap-2 list-none">
-              {QUICK_LINKS.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-sm opacity-70 transition-opacity duration-300 inline-block py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-300 hover:opacity-100 hover:after:w-full">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {showQuickLinks && (
+            <div className="pt-4 min-w-0 md:pl-5">
+              <SectionLabel as="h4" className="mb-sm">Quick Links</SectionLabel>
+              <ul className="flex flex-col gap-2 list-none">
+                {QUICK_LINKS.map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.href} className="text-sm opacity-70 transition-opacity duration-300 inline-block py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-300 hover:opacity-100 hover:after:w-full">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Support Column */}
-          <div className="pt-4 min-w-0 md:pl-5">
-            <SectionLabel as="h4" className="mb-sm">Support</SectionLabel>
-            <ul className="flex flex-col gap-2 list-none">
-              {SUPPORT_LINKS.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-sm opacity-70 transition-opacity duration-300 inline-block py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-300 hover:opacity-100 hover:after:w-full">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {showSupport && (
+            <div className="pt-4 min-w-0 md:pl-5">
+              <SectionLabel as="h4" className="mb-sm">Support</SectionLabel>
+              <ul className="flex flex-col gap-2 list-none">
+                {SUPPORT_LINKS.map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.href} className="text-sm opacity-70 transition-opacity duration-300 inline-block py-0.5 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-300 hover:opacity-100 hover:after:w-full">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Social Media Column */}
           <div className="pt-4 min-w-0 md:pl-5">

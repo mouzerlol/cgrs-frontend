@@ -63,6 +63,12 @@ vi.mock('@/hooks/useCommunity', () => ({
   }),
 }));
 
+vi.mock('@/hooks/useFeatureFlag', () => ({
+  useFeatureFlag: () => true,
+  useAllFeatureFlags: () => ({}),
+  useFeatureFlagsLoading: () => false,
+}));
+
 // Mock Headless UI Dialog - avoids use-is-touch-device addEventListener error in jsdom
 vi.mock('@headlessui/react', async (importOriginal) => {
   const React = await import('react');

@@ -4,10 +4,13 @@ import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { SignOutButton, useAuth, useUser, UserAvatar } from '@clerk/nextjs';
+import { Settings } from 'lucide-react';
 import { getAfterSignOutUrl } from '@/lib/app-url';
 import Icon from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
 import { getNotificationCount } from '@/lib/api/verification';
+import { canAccessManagement } from '@/lib/auth';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 const profileLinkIcon = (
   <svg
@@ -29,12 +32,14 @@ const profileLinkIcon = (
 
 /**
  * App-controlled account menu with notification badge for verification requests.
+ * System Settings shown only for committee members, chairperson, and superadmin.
  */
 export default function ClerkAppUserButton() {
   const { user, isLoaded } = useUser();
   const { getToken } = useAuth();
   const [afterSignOutUrl, setAfterSignOutUrl] = useState(() => getAfterSignOutUrl());
   const [notificationCount, setNotificationCount] = useState(0);
+  const { data: currentUser } = useCurrentUser();
 
   useEffect(() => {
     const o = window.location.origin;
@@ -64,6 +69,10 @@ export default function ClerkAppUserButton() {
   const primary = user.primaryEmailAddress?.emailAddress ?? '';
   const display =
     [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username || primary || 'Account';
+
+  const role = currentUser?.membership?.role;
+  const isSuperadmin = currentUser?.is_superadmin ?? false;
+  const canSeeSystemSettings = canAccessManagement(role, isSuperadmin);
 
   return (
     <Menu as="div" className="relative">
@@ -129,6 +138,26 @@ export default function ClerkAppUserButton() {
                 </Link>
               )}
             </MenuItem>
+
+            {canSeeSystemSettings && (
+              <MenuItem>
+                {({ focus }) => (
+                  <Link
+                    href="/settings/system"
+                    className={cn(
+                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium',
+                      focus ? 'bg-sage/30 text-forest' : 'text-forest'
+                    )}
+                  >
+                    <Settings className="h-4 w-4 shrink-0 text-forest/70" aria-hidden="true" />
+                    System Settings
+                  </Link>
+                )}
+              </MenuItem>
+            )}
+
+            <div className="my-1 border-t border-sage/20" />
+
             <MenuItem>
               {({ focus }) => (
                 <SignOutButton redirectUrl={afterSignOutUrl}>

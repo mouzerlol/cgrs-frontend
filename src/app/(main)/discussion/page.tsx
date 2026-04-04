@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import PageHeader from '@/components/sections/PageHeader';
+import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import { SidebarLayout } from '@/components/shared/SidebarLayout';
 import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { cn } from '@/lib/utils';
@@ -10,6 +11,7 @@ import { Icon } from '@iconify/react';
 import ThreadList from '@/components/discussions/ThreadList';
 import SortDropdown from '@/components/discussions/SortDropdown';
 import ViewToggle from '@/components/discussions/ViewToggle';
+import { CategoryCTA } from '@/components/discussions/CategoryCTA';
 import type { ThreadSortOption, Thread } from '@/types';
 import {
   useBookmarkThread,
@@ -95,9 +97,12 @@ export default function DiscussionPage() {
         title="Community Discussion"
         description="Connect with your neighbors, share ideas, and stay informed."
         eyebrow="Forum"
-        backgroundImage="/images/mangere-mountain.jpg"
         variant="compact"
+        backgroundImage="/images/mangere-mountain.jpg"
+        showBreadcrumbs={false}
       />
+
+      <SiteBreadcrumbs variant="belowHero" removeHairline />
 
       <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
@@ -106,7 +111,7 @@ export default function DiscussionPage() {
               <SortDropdown value={sort} onChange={setSort} />
               <ViewToggle value={viewMode} onChange={setViewMode} />
               <Link
-                href="/discussion/new"
+                href={activeCategory ? `/discussion/new?category=${activeCategory}` : '/discussion/new'}
                 className={cn(
                   'inline-flex items-center gap-2 px-4 py-2.5',
                   'bg-terracotta text-bone rounded-xl',
@@ -137,47 +142,58 @@ export default function DiscussionPage() {
             allOptionIcon="lucide:layout-grid"
             ariaLabel="Discussion categories"
           >
-            {/* Thread List */}
-            <ThreadList
-              threads={allThreads}
-              viewMode={viewMode}
-              isLoading={categoriesLoading || statsLoading || threadsLoading}
-              skeletonCount={6}
-              upvotedThreads={upvotedThreads}
-              bookmarkedThreads={bookmarkedThreads}
-              onUpvote={handleUpvote}
-              onBookmark={handleBookmark}
-              onReport={handleReport}
-              onShare={handleShare}
-              showCategory={activeCategory === null}
-              emptyMessage={
-                activeCategory
-                  ? "No discussions in this category yet. Be the first to start one!"
-                  : "No discussions yet. Be the first to start one!"
-              }
-            />
+            <div className="flex min-h-0 flex-1 flex-col">
+              {/* Thread List */}
+              <ThreadList
+                threads={allThreads}
+                viewMode={viewMode}
+                isLoading={categoriesLoading || statsLoading || threadsLoading}
+                skeletonCount={6}
+                upvotedThreads={upvotedThreads}
+                bookmarkedThreads={bookmarkedThreads}
+                onUpvote={handleUpvote}
+                onBookmark={handleBookmark}
+                onReport={handleReport}
+                onShare={handleShare}
+                showCategory={activeCategory === null}
+                emptyMessage={
+                  activeCategory
+                    ? "No discussions in this category yet. Be the first to start one!"
+                    : "No discussions yet. Be the first to start one!"
+                }
+              />
 
-            {/* Load More */}
-            {hasNextPage && (
-              <div className="pt-4 flex justify-center">
-                <button
-                  onClick={fetchNextPage}
-                  disabled={isFetchingNextPage}
-                  className={cn(
-                    'inline-flex items-center gap-2 px-6 py-3',
-                    'bg-sage-light text-forest rounded-xl',
-                    'font-medium text-sm',
-                    'transition-all duration-200',
-                    'hover:bg-sage',
-                    'focus:outline-none focus:ring-2 focus:ring-sage/50',
-                    isFetchingNextPage && 'opacity-60 cursor-not-allowed'
-                  )}
-                >
-                  {isFetchingNextPage ? 'Loading...' : 'Load more discussions'}
-                  <Icon icon="lucide:chevron-down" className="w-4 h-4" />
-                </button>
-              </div>
-            )}
+              {/* Load More */}
+              {hasNextPage && (
+                <div className="pt-4 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    className={cn(
+                      'inline-flex items-center gap-2 px-6 py-3',
+                      'bg-sage-light text-forest rounded-xl',
+                      'font-medium text-sm',
+                      'transition-all duration-200',
+                      'hover:bg-sage',
+                      'focus:outline-none focus:ring-2 focus:ring-sage/50',
+                      isFetchingNextPage && 'opacity-60 cursor-not-allowed'
+                    )}
+                  >
+                    {isFetchingNextPage ? 'Loading...' : 'Load more discussions'}
+                    <Icon icon="lucide:chevron-down" className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Category CTA — pinned to bottom of panel; panel padding matches inset above first thread */}
+              {activeCategory && (() => {
+                const cat = categories.find((c) => c.slug === activeCategory);
+                return cat ? (
+                  <CategoryCTA key={cat.slug} category={cat} threadCount={allThreads.length} className="mt-auto" />
+                ) : null;
+              })()}
+            </div>
           </SidebarLayout>
         </div>
       </section>

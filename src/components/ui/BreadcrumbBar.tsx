@@ -10,26 +10,30 @@ export interface BreadcrumbBarProps {
    * on work-management routes.
    */
   outerClassName?: string;
+  /** Hide the top border (used when directly below hero card to blend seamlessly). */
+  hideBorder?: boolean;
 }
 
 /**
  * Shared CGRS breadcrumb strip: sage top edge, bone/sage-light gradient, terracotta hairline.
  * Wrap {@link BreadcrumbTrail} or compose manually.
  */
-export function BreadcrumbBar({ children, className, outerClassName }: BreadcrumbBarProps) {
+export function BreadcrumbBar({ children, className, outerClassName, hideBorder }: BreadcrumbBarProps) {
   const surface = (
     <div
       className={cn(
-        'relative border-t border-sage/40',
-        'bg-gradient-to-b from-sage-light/95 via-bone to-bone',
-        'shadow-[inset_0_1px_0_rgba(217,93,57,0.08)]',
+        'relative',
+        hideBorder ? 'border-t-0' : 'border-t border-sage/40',
+        'bg-bone',
         className
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-terracotta/20 to-transparent"
-        aria-hidden
-      />
+      {!hideBorder && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-terracotta/20 to-transparent"
+          aria-hidden
+        />
+      )}
       <div className="container mx-auto px-4 py-3 md:px-6">{children}</div>
     </div>
   );
