@@ -21,6 +21,7 @@ import {
   getCategories,
   getCategory,
   getCategoryStats,
+  getCategoryStatsAggregated,
   getDefaultCategory,
   getDiscussionSettings,
   getForumStats,
@@ -59,6 +60,7 @@ export function useThreads(options?: GetThreadsOptions) {
   return useQuery({
     queryKey: discussionKeys.threadList(options),
     queryFn: () => getThreads(options, getToken),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -79,6 +81,7 @@ export function useInfiniteThreads(
         getToken,
       ),
     initialPageParam: 0,
+    staleTime: 5 * 60 * 1000,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
   });
@@ -91,6 +94,7 @@ export function useThread(id: string) {
     queryKey: discussionKeys.threadDetail(id),
     queryFn: () => getThread(id, getToken),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -100,6 +104,7 @@ export function usePinnedThreads(category?: DiscussionCategorySlug) {
   return useQuery({
     queryKey: discussionKeys.pinnedThreads(category),
     queryFn: () => getPinnedThreads(category, getToken),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -110,6 +115,7 @@ export function useUserThreads(userId: string) {
     queryKey: discussionKeys.userThreads(userId),
     queryFn: () => getThreadsByUser(userId, getToken),
     enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -119,6 +125,7 @@ export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
   return useQuery({
     queryKey: discussionKeys.threadListWithLatestReply(options),
     queryFn: () => getThreadsWithLatestReply(options, getToken),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -133,6 +140,7 @@ export function useReplies(threadId: string) {
     queryKey: discussionKeys.threadReplies(threadId),
     queryFn: () => getRepliesForThread(threadId, getToken),
     enabled: !!threadId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -143,6 +151,7 @@ export function useUserReplies(userId: string) {
     queryKey: discussionKeys.userReplies(userId),
     queryFn: () => getRepliesByUser(userId, getToken),
     enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -187,7 +196,8 @@ export function useCategoryStats() {
 
   return useQuery({
     queryKey: discussionKeys.categoryStats(),
-    queryFn: () => getCategoryStats(getToken),
+    queryFn: () => getCategoryStatsAggregated(getToken),
+    staleTime: 15 * 60 * 1000,
   });
 }
 
@@ -246,6 +256,7 @@ export function useForumStats() {
   return useQuery({
     queryKey: discussionKeys.forumStats(),
     queryFn: () => getForumStats(getToken),
+    staleTime: 15 * 60 * 1000,
   });
 }
 

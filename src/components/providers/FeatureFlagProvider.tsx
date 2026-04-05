@@ -32,9 +32,9 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, isError } = useQuery<FeatureFlagsResponse, Error>({
     queryKey: ['featureFlags'],
     queryFn: getFeatureFlags,
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     retry: 1,
   });
 

@@ -1,6 +1,7 @@
 'use client';
 
-import { usePathname, useMemo } from 'next/navigation';
+import { useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import { House, MessageSquare, ShieldCheck, User } from 'lucide-react';
 import { cn } from '@/lib/utils';

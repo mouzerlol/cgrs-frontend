@@ -16,7 +16,7 @@ import {
   PAGE_SIZE,
   normalizeThreadOptions,
 } from '@/lib/discussion-keys';
-import { getCategoryStats, getThreads } from '@/lib/api/discussions';
+import { getCategoryStatsAggregated, getThreads } from '@/lib/api/discussions';
 
 const DEFAULT_DISCUSSION_OPTS = normalizeThreadOptions({ sort: 'newest' });
 
@@ -61,7 +61,7 @@ export default function Navigation() {
     });
     queryClient.prefetchQuery({
       queryKey: discussionKeys.categoryStats(),
-      queryFn: () => getCategoryStats(getToken),
+      queryFn: () => getCategoryStatsAggregated(getToken),
       staleTime: 5 * 60 * 1000,
     });
   }, [queryClient, isSignedIn, getToken]);

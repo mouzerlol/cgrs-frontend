@@ -35,11 +35,14 @@ export interface CurrentUserResponse {
   capabilities: string[];
 }
 
+/** Shared query key for current user - exported for reuse across hooks */
+export const CURRENT_USER_QUERY_KEY = ['currentUser'] as const;
+
 export function useCurrentUser() {
   const { getToken, isSignedIn } = useAuth();
 
   return useQuery<CurrentUserResponse>({
-    queryKey: ['currentUser'],
+    queryKey: CURRENT_USER_QUERY_KEY,
     queryFn: () => apiRequest<CurrentUserResponse>('/api/v1/users/me', getToken),
     enabled: !!isSignedIn,
     staleTime: 5 * 60 * 1000,

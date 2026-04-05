@@ -939,6 +939,28 @@ export interface CategoryStats {
   latestThread?: Thread;
 }
 
+/**
+ * Fetch category stats from the dedicated aggregate endpoint (single request).
+ * Replaces the sequential getThreads-per-category loop in getCategoryStats.
+ */
+export async function getCategoryStatsAggregated(
+  getToken: () => Promise<string | null>,
+): Promise<Record<string, CategoryStats>> {
+  const data = await apiRequest<{ stats: Record<string, { thread_count: number; reply_count: number }> }>(
+    `${API_PATH}/categories/stats`,
+    getToken,
+  );
+  // Normalise snake_case from API into camelCase to match existing CategoryStats interface.
+  const stats: Record<string, CategoryStats> = {};
+  for (const [slug, val] of Object.entries(data.stats)) {
+    stats[slug] = {
+      threadCount: val.thread_count,
+      replyCount: val.reply_count,
+    };
+  }
+  return stats;
+}
+
 export async function getCategoryStats(
   getToken: () => Promise<string | null>,
 ): Promise<Record<string, CategoryStats>> {

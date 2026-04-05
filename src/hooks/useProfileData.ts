@@ -23,11 +23,12 @@ import {
   type ManagementRequestWithTask,
 } from '@/lib/api/management-requests';
 import type { CurrentUserResponse } from './useCurrentUser';
+import { CURRENT_USER_QUERY_KEY } from './useCurrentUser';
 
 // Query keys factory to ensure consistency
 export const profileKeys = {
   all: ['profile'] as const,
-  currentUser: () => [...profileKeys.all, 'currentUser'] as const,
+  currentUser: () => CURRENT_USER_QUERY_KEY,
   verificationStatus: () => [...profileKeys.all, 'verificationStatus'] as const,
   streets: () => [...profileKeys.all, 'streets'] as const,
   pendingVerifications: () => [...profileKeys.all, 'pendingVerifications'] as const,
@@ -45,7 +46,7 @@ export function useCurrentUserQuery() {
   const { getToken, isSignedIn } = useAuth();
 
   return useQuery<CurrentUserResponse, Error>({
-    queryKey: profileKeys.currentUser(),
+    queryKey: CURRENT_USER_QUERY_KEY,
     queryFn: () => fetchCurrentUser(getToken),
     enabled: !!isSignedIn,
     staleTime: 5 * 60 * 1000,

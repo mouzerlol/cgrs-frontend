@@ -7,7 +7,7 @@ import {
 import { auth } from '@clerk/nextjs/server';
 import {
   getCategories,
-  getCategoryStats,
+  getCategoryStatsAggregated,
   getThreads,
 } from '@/lib/api/discussions';
 import {
@@ -50,7 +50,7 @@ export default async function DiscussionLayout({
     }),
     queryClient.prefetchQuery({
       queryKey: discussionKeys.categoryStats(),
-      queryFn: () => getCategoryStats(serverGetToken),
+      queryFn: () => getCategoryStatsAggregated(serverGetToken),
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: discussionKeys.threadList({
