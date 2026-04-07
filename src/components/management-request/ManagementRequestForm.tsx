@@ -102,7 +102,7 @@ export function ManagementRequestForm() {
     if (isSignedIn && userId) {
       getToken({ skipCache: true }).then(async (token) => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -184,12 +184,16 @@ export function ManagementRequestForm() {
         };
         const created = await createManagementRequest(submissionData, getToken);
 
+        // Release focus from the submit button before it unmounts. Without this the browser's
+        // focus-restoration algorithm picks the next focusable element (often a footer button)
+        // and scrolls to it, overriding the scroll-to-top logic in SuccessConfirmation.
+        (document.activeElement as HTMLElement)?.blur();
+        window.scrollTo(0, 0);
+
         // Mark as submitted
         setSubmittedId(created.request.id);
         setSubmittedRequestHref(`/profile/reported-issues/${created.request.id}`);
         setIsSubmitted(true);
-        // Do not scroll here: the form is replaced by a shorter success view, so smooth scroll races
-        // with layout; SuccessConfirmation handles scroll + focus to avoid focus jumping to footer buttons.
       } catch (error) {
         console.error('Submission error:', error);
         setErrors({

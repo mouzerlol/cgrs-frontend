@@ -11,14 +11,7 @@ import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { isNavItemVisible } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
-import {
-  discussionKeys,
-  PAGE_SIZE,
-  normalizeThreadOptions,
-} from '@/lib/discussion-keys';
-import { getCategoryStatsAggregated, getThreads } from '@/lib/api/discussions';
-
-const DEFAULT_DISCUSSION_OPTS = normalizeThreadOptions({ sort: 'newest' });
+import { prefetchDiscussionCore } from '@/lib/discussion-prefetch';
 
 const NAV_LINK_CLASS =
   'text-sm font-medium tracking-wide uppercase relative px-2 py-1.5 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap';
@@ -47,23 +40,8 @@ export default function Navigation() {
   const featureFlags = useAllFeatureFlags();
 
   const handleDiscussionPrefetch = useCallback(() => {
-    // Only prefetch when authenticated — the backend requires a valid token
     if (!isSignedIn) return;
-    queryClient.prefetchInfiniteQuery({
-      queryKey: discussionKeys.threadList({ ...DEFAULT_DISCUSSION_OPTS, limit: PAGE_SIZE }),
-      queryFn: () =>
-        getThreads(
-          { ...DEFAULT_DISCUSSION_OPTS, limit: PAGE_SIZE, offset: 0 },
-          getToken,
-        ),
-      initialPageParam: 0,
-      staleTime: 5 * 60 * 1000,
-    });
-    queryClient.prefetchQuery({
-      queryKey: discussionKeys.categoryStats(),
-      queryFn: () => getCategoryStatsAggregated(getToken),
-      staleTime: 5 * 60 * 1000,
-    });
+    prefetchDiscussionCore(queryClient, getToken);
   }, [queryClient, isSignedIn, getToken]);
 
   const navItems = useMemo(() => {

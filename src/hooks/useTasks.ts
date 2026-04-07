@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
+import { STALE_TIMES } from '@/lib/cache-config';
 import {
   listTasks,
   getTask,
@@ -28,13 +29,13 @@ interface TaskFilters {
 
 /** Fetch tasks with optional filtering. */
 export function useTasks(filters: TaskFilters = {}) {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<Task[]>({
     queryKey: ['tasks', filters],
     queryFn: () => listTasks(filters, getToken),
-    enabled: !!isSignedIn,
-    staleTime: 30 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.REALTIME,
   });
 }
 
@@ -110,12 +111,12 @@ export function useUpdateTask() {
 
 /** Fetch a single task by ID. */
 export function useTask(taskId: string) {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<Task>({
     queryKey: ['tasks', taskId],
     queryFn: () => getTask(taskId, getToken),
-    enabled: !!isSignedIn && !!taskId,
+    enabled: isLoaded && !!isSignedIn && !!taskId,
   });
 }
 

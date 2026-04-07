@@ -132,7 +132,7 @@ export default function TaskDetailModal({
         size="2xl"
         className="p-0 border-l border-sage/20 shadow-2xl"
       >
-        <div className="flex flex-col h-full bg-sage-light/50 relative">
+        <div className="flex flex-col h-full bg-sage-light/50 relative" data-testid="task-detail-modal">
           {/* Header Section */}
           <div className="p-5 pb-4 bg-forest-light border-b border-sage/10 shrink-0 relative">
             {/* Header actions: task menu (left) + close (right), same row */}

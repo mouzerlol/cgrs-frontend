@@ -40,9 +40,7 @@ describe('Root Layout Metadata', () => {
   it('includes metadataBase with correct URL', () => {
     expect(metadata.metadataBase).toBeDefined();
     expect(metadata.metadataBase).toBeInstanceOf(URL);
-    expect((metadata.metadataBase as URL).href).toBe(
-      'https://coronationgardens.co.nz/'
-    );
+    expect((metadata.metadataBase as URL).href).toBe('https://www.cgrs.co.nz/');
   });
 
   it('includes alternates.canonical for auto-generated canonical URLs', () => {

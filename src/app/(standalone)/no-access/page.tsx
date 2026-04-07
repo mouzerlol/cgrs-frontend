@@ -13,7 +13,7 @@ export const metadata: Metadata = {
  * Shown when the backend returns 401 or 403.
  * Uses standalone layout to prevent infinite loops from auth error handling.
  * - 401 (reason=unauthorized): Session/token invalid; sign out and sign in again.
- * - 403: No organization context or tenant not found.
+ * - 403: Tenant could not be resolved (e.g. site domain not linked in API) or membership denied.
  */
 export default async function NoAccessPage({
   searchParams,
@@ -31,8 +31,8 @@ export default async function NoAccessPage({
         title={isUnauthorized ? 'Session could not be verified' : 'Access denied'}
         description={
           isUnauthorized
-            ? 'The API could not verify your session. This can happen if you need to join an organization, or if there is a configuration mismatch.'
-            : "You don't have access to this resource. You may need to sign in or join an organization."
+            ? 'The API could not verify your session. Try signing out and signing in again, or contact support if this persists.'
+            : "You don't have access to this resource. You may need to sign in, or the site may not be configured for your account yet."
         }
         eyebrow={isUnauthorized ? '401' : '403'}
         variant="compact"
@@ -42,7 +42,7 @@ export default async function NoAccessPage({
         <div className="container text-center">
           <p className="text-forest/80 mb-6 max-w-md mx-auto">
             {isUnauthorized
-              ? 'Please sign out and sign in again. If you recently joined an organization, ensure it is linked to this community.'
+              ? 'Please sign out and sign in again. If the problem continues, contact support so we can check your account and site configuration.'
               : 'If you believe this is an error, please contact support or try signing in again.'}
           </p>
           <div className="flex flex-wrap justify-center gap-4">

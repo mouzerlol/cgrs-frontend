@@ -1,5 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
+
+/** Footer uses feature flags; avoid requiring full app Providers in this smoke test. */
+vi.mock('@/hooks/useFeatureFlag', () => ({
+  useFeatureFlag: () => true,
+}));
 
 // Mock next/dynamic to test loading states
 vi.mock('next/dynamic', () => ({
@@ -16,8 +21,9 @@ vi.mock('next/dynamic', () => ({
   },
 }));
 
-// Mock next/navigation for CalendarContent
+// Mock next/navigation (PageHeader / SiteBreadcrumbs need usePathname)
 vi.mock('next/navigation', () => ({
+  usePathname: () => '/',
   useSearchParams: () => ({
     get: () => null,
   }),

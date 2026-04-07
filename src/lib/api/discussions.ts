@@ -414,26 +414,6 @@ export async function getThreads(
   };
 }
 
-function sortThreads(threads: Thread[], sort: 'newest' | 'most-upvoted' | 'most-discussed'): Thread[] {
-  const pinned = threads.filter((t) => t.isPinned);
-  const unpinned = threads.filter((t) => !t.isPinned);
-
-  const sortFn = (a: Thread, b: Thread): number => {
-    switch (sort) {
-      case 'newest':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'most-upvoted':
-        return b.upvotes - a.upvotes;
-      case 'most-discussed':
-        return b.replyCount - a.replyCount;
-      default:
-        return 0;
-    }
-  };
-
-  return [...pinned.sort(sortFn), ...unpinned.sort(sortFn)];
-}
-
 export async function getThread(
   id: string,
   getToken: () => Promise<string | null>,
@@ -593,6 +573,13 @@ interface ApiVoteResponse {
   success: boolean;
   option_id: string;
   total_votes: number;
+  options: { id: string; votes: number }[];
+}
+
+export interface PollVoteResult {
+  optionId: string;
+  totalVotes: number;
+  options: { id: string; votes: number }[];
 }
 
 /**
@@ -602,12 +589,16 @@ export async function voteOnPoll(
   threadId: string,
   optionId: string,
   getToken: () => Promise<string | null>,
-): Promise<{ optionId: string; totalVotes: number }> {
+): Promise<PollVoteResult> {
   const response = await apiRequest<ApiVoteResponse>(`${API_PATH}/${threadId}/poll/vote`, getToken, {
     method: 'POST',
     body: JSON.stringify({ option_id: optionId }),
   });
-  return { optionId: response.option_id, totalVotes: response.total_votes };
+  return {
+    optionId: response.option_id,
+    totalVotes: response.total_votes,
+    options: response.options ?? [],
+  };
 }
 
 /**
@@ -677,8 +668,8 @@ export async function reportThread(
 }
 
 export async function getPinnedThreads(
-  category?: DiscussionCategorySlug,
   getToken: () => Promise<string | null>,
+  category?: DiscussionCategorySlug,
 ): Promise<Thread[]> {
   const result = await getThreads({ pinnedOnly: true, category, limit: 100 }, getToken);
   return result.threads;
@@ -804,8 +795,8 @@ export async function getReply(
 export async function createReply(
   threadId: string,
   body: string,
-  parentReplyId?: string,
   getToken: () => Promise<string | null>,
+  parentReplyId?: string,
 ): Promise<Reply> {
   const payload: Record<string, unknown> = { body };
   if (parentReplyId) payload.parent_reply_id = parentReplyId;
@@ -907,28 +898,6 @@ export async function getUserBadge(id: string): Promise<{ id: string; name: stri
   return badges.find((b) => b.id === id) || null;
 }
 
-export function calculateUserTitle(
-  stats: ForumUserStats,
-  titles: { id: string; name: string; minUpvotes: number; minReplies: number; minThreads: number }[],
-): { id: string; name: string; minUpvotes: number; minReplies: number; minThreads: number } {
-  const sorted = [...titles].sort(
-    (a, b) =>
-      b.minUpvotes + b.minReplies + b.minThreads - (a.minUpvotes + a.minReplies + a.minThreads),
-  );
-
-  for (const title of sorted) {
-    if (
-      stats.upvotesReceived >= title.minUpvotes &&
-      stats.repliesCount >= title.minReplies &&
-      stats.threadsCreated >= title.minThreads
-    ) {
-      return title;
-    }
-  }
-
-  return titles[0];
-}
-
 // =============================================================================
 // Statistics API
 // =============================================================================
@@ -939,10 +908,6 @@ export interface CategoryStats {
   latestThread?: Thread;
 }
 
-/**
- * Fetch category stats from the dedicated aggregate endpoint (single request).
- * Replaces the sequential getThreads-per-category loop in getCategoryStats.
- */
 export async function getCategoryStatsAggregated(
   getToken: () => Promise<string | null>,
 ): Promise<Record<string, CategoryStats>> {
@@ -958,23 +923,6 @@ export async function getCategoryStatsAggregated(
       replyCount: val.reply_count,
     };
   }
-  return stats;
-}
-
-export async function getCategoryStats(
-  getToken: () => Promise<string | null>,
-): Promise<Record<string, CategoryStats>> {
-  const categories = await getCategories(getToken);
-  const stats: Record<string, CategoryStats> = {};
-
-  for (const category of categories) {
-    const result = await getThreads({ category: category.slug, limit: 1 }, getToken);
-    stats[category.slug] = {
-      threadCount: result.total,
-      replyCount: 0, // Would need backend support
-    };
-  }
-
   return stats;
 }
 

@@ -2,29 +2,30 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
+import { STALE_TIMES } from '@/lib/cache-config';
 import { listBoards, getBoard, createBoard, updateBoard, deleteBoard } from '@/lib/api/boards';
 import type { Board } from '@/types/work-management';
 
 /** Fetch all boards for the current community. */
 export function useBoards() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<Board[]>({
     queryKey: ['boards'],
     queryFn: () => listBoards(getToken),
-    enabled: !!isSignedIn,
-    staleTime: 5 * 60 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 /** Fetch a single board by ID. */
 export function useBoard(boardId: string) {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<Board>({
     queryKey: ['boards', boardId],
     queryFn: () => getBoard(boardId, getToken),
-    enabled: !!isSignedIn && !!boardId,
+    enabled: isLoaded && !!isSignedIn && !!boardId,
   });
 }
 

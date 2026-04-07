@@ -3,24 +3,24 @@
 import { Fragment, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
-import { Icon } from '@iconify/react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { ThreadImage } from '@/types';
+import type { LightboxImage } from '@/types';
 
 interface ImageLightboxProps {
-  /** Array of images */
-  images: ThreadImage[];
-  /** Initial image index */
+  /** Images to navigate (full-size `url`, thumbnail strip uses `thumbnail`). */
+  images: LightboxImage[];
+  /** Initial slide index when opening. */
   initialIndex?: number;
-  /** Whether lightbox is open */
+  /** Whether the modal is open. */
   isOpen: boolean;
-  /** Close callback */
+  /** Called when the dialog should close (backdrop click, Escape, close control). */
   onClose: () => void;
 }
 
 /**
- * Full-screen image lightbox modal.
- * Supports navigation between multiple images.
+ * Full-screen image lightbox with prev/next, keyboard navigation, and an optional thumbnail strip.
+ * Use with `LightboxImage` (or compatible shapes such as `ThreadImage` / resolved task images).
  */
 export default function ImageLightbox({
   images,
@@ -30,7 +30,6 @@ export default function ImageLightbox({
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-  // Reset index when opened
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
@@ -45,7 +44,6 @@ export default function ImageLightbox({
     setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   }, [images.length]);
 
-  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
 
@@ -73,8 +71,7 @@ export default function ImageLightbox({
 
   return (
     <Transition show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-[100]" onClose={onClose}>
-        {/* Backdrop */}
+      <Dialog as="div" className="relative z-[1100]" onClose={onClose}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
@@ -87,7 +84,6 @@ export default function ImageLightbox({
           <div className="fixed inset-0 bg-black/90" />
         </TransitionChild>
 
-        {/* Content */}
         <div className="fixed inset-0 overflow-hidden">
           <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
@@ -100,7 +96,6 @@ export default function ImageLightbox({
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel className="relative w-full max-w-5xl">
-                {/* Close Button */}
                 <button
                   onClick={onClose}
                   className={cn(
@@ -111,14 +106,15 @@ export default function ImageLightbox({
                     'transition-colors duration-200'
                   )}
                   aria-label="Close lightbox"
+                  type="button"
                 >
-                  <Icon icon="lucide:x" className="w-6 h-6" />
+                  <X className="w-6 h-6" aria-hidden />
                 </button>
 
-                {/* Navigation Buttons */}
                 {images.length > 1 && (
                   <>
                     <button
+                      type="button"
                       onClick={goToPrevious}
                       className={cn(
                         'absolute left-4 top-1/2 -translate-y-1/2 z-10',
@@ -129,10 +125,11 @@ export default function ImageLightbox({
                       )}
                       aria-label="Previous image"
                     >
-                      <Icon icon="lucide:chevron-left" className="w-8 h-8" />
+                      <ChevronLeft className="w-8 h-8" aria-hidden />
                     </button>
 
                     <button
+                      type="button"
                       onClick={goToNext}
                       className={cn(
                         'absolute right-4 top-1/2 -translate-y-1/2 z-10',
@@ -143,12 +140,11 @@ export default function ImageLightbox({
                       )}
                       aria-label="Next image"
                     >
-                      <Icon icon="lucide:chevron-right" className="w-8 h-8" />
+                      <ChevronRight className="w-8 h-8" aria-hidden />
                     </button>
                   </>
                 )}
 
-                {/* Image */}
                 <div className="relative aspect-[4/3] w-full">
                   <Image
                     src={currentImage.url}
@@ -159,7 +155,6 @@ export default function ImageLightbox({
                   />
                 </div>
 
-                {/* Image Counter & Caption */}
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
                   {images.length > 1 && (
                     <p className="text-white/80 text-sm mb-1">
@@ -171,12 +166,12 @@ export default function ImageLightbox({
                   )}
                 </div>
 
-                {/* Thumbnail Strip (for multiple images) */}
                 {images.length > 1 && (
                   <div className="flex justify-center gap-2 mt-4">
                     {images.map((img, idx) => (
                       <button
                         key={img.id}
+                        type="button"
                         onClick={() => setCurrentIndex(idx)}
                         className={cn(
                           'relative w-12 h-12 rounded-lg overflow-hidden',
@@ -185,9 +180,10 @@ export default function ImageLightbox({
                             ? 'ring-white opacity-100'
                             : 'ring-transparent opacity-50 hover:opacity-75'
                         )}
+                        aria-label={`Show image ${idx + 1}`}
                       >
                         <Image
-                          src={img.thumbnail}
+                          src={img.thumbnail || img.url}
                           alt=""
                           fill
                           className="object-cover"

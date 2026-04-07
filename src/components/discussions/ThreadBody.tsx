@@ -29,6 +29,8 @@ interface ThreadBodyProps extends HTMLAttributes<HTMLDivElement> {
   onPollVote?: (optionId: string) => void;
   /** Callback when creator closes poll */
   onPollClose?: () => void;
+  /** Whether a vote mutation is currently in-flight */
+  isPollVotePending?: boolean;
 }
 
 const formatLinks = (links?: { url: string; title?: string; isInternal: boolean }[]) => {
@@ -82,6 +84,7 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
       currentUserId,
       onPollVote,
       onPollClose,
+      isPollVotePending = false,
       className,
       ...props
     },
@@ -152,6 +155,7 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
             isCreator={isCreator}
             onVote={handleVote}
             onClose={onPollClose}
+            isPending={isPollVotePending}
           />
         )}
 

@@ -12,6 +12,7 @@ import { createContext, useCallback, useContext, ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { getFeatureFlags, updateFeatureFlag, type FeatureFlagsResponse } from '@/lib/api/feature-flags';
+import { STALE_TIMES } from '@/lib/cache-config';
 
 interface FeatureFlagContextValue {
   flags: Record<string, boolean>;
@@ -32,7 +33,7 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, isError } = useQuery<FeatureFlagsResponse, Error>({
     queryKey: ['featureFlags'],
     queryFn: getFeatureFlags,
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.CONTENT,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: 1,

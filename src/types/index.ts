@@ -261,14 +261,19 @@ export interface ThreadCoverPreview {
 }
 
 /**
- * Image attached to a thread or reply.
+ * Minimal shape for fullscreen image lightbox (discussions, tasks, reported issues).
  */
-export interface ThreadImage {
+export interface LightboxImage {
   id: string;
   url: string;
   thumbnail: string;
   alt?: string;
 }
+
+/**
+ * Image attached to a thread or reply.
+ */
+export type ThreadImage = LightboxImage;
 
 /**
  * Link attached to a thread.

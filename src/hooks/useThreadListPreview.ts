@@ -4,11 +4,9 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { ApiError } from '@/lib/api/client';
+import { STALE_TIMES } from '@/lib/cache-config';
 import { getDiscussionAttachmentDownloadUrl } from '@/lib/api/discussions';
 import type { DiscussionAttachmentMeta, ThreadCoverPreview } from '@/types';
-
-/** Stay below typical presigned GET TTL (API default 300s); refetch before expiry. */
-const DEFAULT_STALE_MS = 120_000;
 
 /**
  * Returns thread-level image attachments (opening post) for preview metadata.
@@ -36,7 +34,7 @@ export function useThreadListPreview(
     queryKey: ['discussion-thread-list-preview', firstImageId] as const,
     queryFn: () => getDiscussionAttachmentDownloadUrl(firstImageId!, getToken),
     enabled: Boolean(firstImageId) && !serverUrl,
-    staleTime: DEFAULT_STALE_MS,
+    staleTime: STALE_TIMES.SHORT,
     retry: (failureCount: number, err: unknown) => {
       if (err instanceof ApiError && (err.status === 503 || err.status === 502)) {
         return false;

@@ -7,18 +7,19 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
+import { STALE_TIMES } from '@/lib/cache-config';
 import { getMyCapabilities, getMembers, getMember, promoteMember } from '@/lib/api/authorization';
 import type { CapabilityResponse, MemberSummaryResponse, RoleEnum } from '@/types/authorization';
 
 /** Fetch current user's capabilities from authorization service. */
 export function useCapabilities() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<CapabilityResponse>({
     queryKey: ['capabilities'],
     queryFn: () => getMyCapabilities(getToken),
-    enabled: !!isSignedIn,
-    staleTime: 5 * 60 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
@@ -30,24 +31,24 @@ export function useHasCapability(requiredCapability: string) {
 
 /** Fetch all members of the current community. */
 export function useMembers() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<MemberSummaryResponse[]>({
     queryKey: ['members'],
     queryFn: () => getMembers(getToken),
-    enabled: !!isSignedIn,
-    staleTime: 5 * 60 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 /** Fetch a single member by ID. */
 export function useMember(memberId: string) {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<MemberSummaryResponse>({
     queryKey: ['members', memberId],
     queryFn: () => getMember(memberId, getToken),
-    enabled: !!isSignedIn && !!memberId,
+    enabled: isLoaded && !!isSignedIn && !!memberId,
   });
 }
 

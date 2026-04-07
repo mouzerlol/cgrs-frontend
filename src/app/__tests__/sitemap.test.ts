@@ -4,7 +4,8 @@ import newsData from '@/data/news.json'
 import eventsData from '@/data/events.json'
 import discussionsData from '@/data/discussions.json'
 
-const BASE_URL = 'https://coronationgardens.co.nz'
+/** Canonical site origin (must match `src/app/sitemap.ts` and layout `metadataBase`). */
+const BASE_URL = 'https://www.cgrs.co.nz'
 
 describe('sitemap', () => {
   const entries = sitemap()
@@ -70,7 +71,7 @@ describe('sitemap', () => {
   it('has required fields on every entry', () => {
     for (const entry of entries) {
       expect(entry.url).toBeDefined()
-      expect(entry.url).toMatch(/^https:\/\/coronationgardens\.co\.nz\//)
+      expect(entry.url).toMatch(/^https:\/\/www\.cgrs\.co\.nz\//)
       expect(entry.lastModified).toBeInstanceOf(Date)
       expect(entry.changeFrequency).toBeDefined()
       expect(

@@ -11,6 +11,7 @@ import { addCollection } from '@iconify/react';
 import type { IconifyJSON } from '@iconify/react';
 import iconBundle from '@/lib/icon-bundle.json';
 import { ApiError } from '@/lib/api/client';
+import { STALE_TIMES } from '@/lib/cache-config';
 import { useInvalidateCurrentUserOnClerkChange } from '@/hooks/useInvalidateCurrentUserOnClerkChange';
 import { FeatureFlagProvider } from '@/components/providers/FeatureFlagProvider';
 
@@ -47,7 +48,7 @@ export function Providers({ children }: { children: ReactNode }) {
         }),
         defaultOptions: {
           queries: {
-            staleTime: 5 * 60 * 1000,
+            staleTime: STALE_TIMES.CONTENT,
             refetchOnWindowFocus: false,
             retry: (failureCount, error) => {
               if (error instanceof ApiError) {

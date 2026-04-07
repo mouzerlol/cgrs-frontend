@@ -18,8 +18,8 @@ import mockTaskData from '@/data/work-management.json';
 import { Portfolio, DashboardSection } from '@/types/portfolio';
 import { Board, Task } from '@/types/work-management';
 
-const allBoards = boardsData.boards as Board[];
-const allTasks = mockTaskData.tasks as Task[];
+const allBoards = boardsData.boards as unknown as Board[];
+const allTasks = mockTaskData.tasks as unknown as Task[];
 
 const lucideIconMap: Record<string, string> = {
   wallet: 'lucide:wallet',

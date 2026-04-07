@@ -8,6 +8,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { apiRequest } from '@/lib/api/client';
+import { STALE_TIMES } from '@/lib/cache-config';
 
 /** Backend community response (snake_case). */
 export interface CommunityResponse {
@@ -19,13 +20,13 @@ export interface CommunityResponse {
 }
 
 export function useCommunity() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<CommunityResponse>({
     queryKey: ['community'],
     queryFn: () => apiRequest<CommunityResponse>('/api/v1/users/community', getToken),
-    enabled: !!isSignedIn,
-    staleTime: 5 * 60 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.CONTENT,
     retry: 1,
   });
 }

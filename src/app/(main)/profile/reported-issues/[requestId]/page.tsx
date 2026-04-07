@@ -14,6 +14,7 @@ import { cn, formatRelativeDate } from '@/lib/utils';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { DeleteCommentDialog } from '@/components/work-management/DeleteCommentDialog';
 import { useTaskAttachmentImages } from '@/hooks/useTaskAttachmentImages';
+import ReadonlyTaskImageGallery from '@/components/work-management/ReadonlyTaskImageGallery';
 
 export default function ReportedIssueDetailPage() {
   const { requestId } = useParams<{ requestId: string }>();
@@ -210,19 +211,11 @@ export default function ReportedIssueDetailPage() {
         {task.images.length > 0 && (
           <div className="mt-6 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-terracotta">Images</h3>
-            {isResolving && (
-              <p className="text-sm text-forest/50">Loading images…</p>
-            )}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {displayImages.map((image) => (
-                <img
-                  key={image.id}
-                  src={image.thumbnail || image.url}
-                  alt={image.alt || task.title}
-                  className="h-40 w-full rounded-xl object-cover"
-                />
-              ))}
-            </div>
+            <ReadonlyTaskImageGallery
+              displayImages={displayImages}
+              isResolving={isResolving}
+              titleFallback={task.title}
+            />
           </div>
         )}
 

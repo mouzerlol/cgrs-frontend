@@ -5,16 +5,7 @@ import {
   HydrationBoundary,
 } from '@tanstack/react-query';
 import { auth } from '@clerk/nextjs/server';
-import {
-  getCategories,
-  getCategoryStatsAggregated,
-  getThreads,
-} from '@/lib/api/discussions';
-import {
-  discussionKeys,
-  PAGE_SIZE,
-  normalizeThreadOptions,
-} from '@/lib/discussion-keys';
+import { prefetchDiscussionCore } from '@/lib/discussion-prefetch';
 
 export const metadata: Metadata = {
   title: 'Community Discussion | Coronation Gardens',
@@ -40,31 +31,8 @@ export default async function DiscussionLayout({
 
   const queryClient = new QueryClient();
   const serverGetToken = async () => token;
-  const defaultOpts = normalizeThreadOptions({ sort: 'newest' });
 
-  // Use allSettled so a single failing prefetch doesn't crash the layout
-  await Promise.allSettled([
-    queryClient.prefetchQuery({
-      queryKey: discussionKeys.categoryList(false),
-      queryFn: () => getCategories(serverGetToken),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: discussionKeys.categoryStats(),
-      queryFn: () => getCategoryStatsAggregated(serverGetToken),
-    }),
-    queryClient.prefetchInfiniteQuery({
-      queryKey: discussionKeys.threadList({
-        ...defaultOpts,
-        limit: PAGE_SIZE,
-      }),
-      queryFn: () =>
-        getThreads(
-          { ...defaultOpts, limit: PAGE_SIZE, offset: 0 },
-          serverGetToken,
-        ),
-      initialPageParam: 0,
-    }),
-  ]);
+  await prefetchDiscussionCore(queryClient, serverGetToken);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

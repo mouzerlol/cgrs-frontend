@@ -8,6 +8,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { apiRequest } from '@/lib/api/client';
+import { STALE_TIMES } from '@/lib/cache-config';
 
 /** Backend returns snake_case via Pydantic. */
 export interface UserResponse {
@@ -39,13 +40,13 @@ export interface CurrentUserResponse {
 export const CURRENT_USER_QUERY_KEY = ['currentUser'] as const;
 
 export function useCurrentUser() {
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   return useQuery<CurrentUserResponse>({
     queryKey: CURRENT_USER_QUERY_KEY,
     queryFn: () => apiRequest<CurrentUserResponse>('/api/v1/users/me', getToken),
-    enabled: !!isSignedIn,
-    staleTime: 5 * 60 * 1000,
+    enabled: isLoaded && !!isSignedIn,
+    staleTime: STALE_TIMES.CONTENT,
     retry: 1,
   });
 }

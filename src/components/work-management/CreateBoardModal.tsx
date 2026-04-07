@@ -10,7 +10,7 @@ import { Board, BoardColor } from '@/types/work-management';
 interface CreateBoardModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (board: Omit<Board, 'id' | 'taskCount' | 'createdAt' | 'updatedAt'>) => void;
+  onSubmit: (board: Omit<Board, 'id' | 'is_system' | 'task_count' | 'created_at' | 'updated_at'>) => void;
 }
 
 const colorOptions: { value: BoardColor; label: string; bg: string }[] = [

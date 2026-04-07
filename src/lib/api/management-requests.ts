@@ -5,6 +5,7 @@ import type {
   ManagementRequestFormData,
   ManagementRequestWithTask,
 } from '@/types/management-request';
+export type { ManagementRequest, ManagementRequestFormData, ManagementRequestWithTask } from '@/types/management-request';
 import { mapTaskResponse } from './work-tasks';
 
 const API_PATH = '/api/v1/management-requests';

@@ -233,6 +233,24 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
               </>
             )}
 
+            {/* Poll Indicator */}
+            {thread.poll && (
+              <>
+                <span className="w-px h-4 bg-sage/50 shrink-0" aria-hidden />
+                {thread.poll.isClosed ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sage-light/50 text-forest/60">
+                    <Icon icon="lucide:lock" className="h-3 w-3" />
+                    Closed
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sage-light/50 text-forest animate-poll-pulse">
+                    <Icon icon="lucide:bar-chart-2" className="h-3 w-3" />
+                    Poll
+                  </span>
+                )}
+              </>
+            )}
+
             {/* Spacer */}
             <div className="flex-1" />
 

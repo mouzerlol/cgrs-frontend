@@ -4,7 +4,11 @@
  */
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
+import { toast } from '@/lib/sonner';
+import { CURRENT_USER_QUERY_KEY } from '@/hooks/useCurrentUser';
+import { STALE_TIMES } from '@/lib/cache-config';
+import { invalidateThread, invalidateReplies, invalidateAllDiscussions } from '@/lib/discussion-invalidation';
 import {
   discussionKeys,
   normalizeThreadOptions,
@@ -20,7 +24,6 @@ import {
   deleteThread,
   getCategories,
   getCategory,
-  getCategoryStats,
   getCategoryStatsAggregated,
   getDefaultCategory,
   getDiscussionSettings,
@@ -50,17 +53,25 @@ import type { DiscussionCategorySlug, Reply } from '@/types';
 // Re-export so existing consumers that import from this file keep working
 export { discussionKeys, normalizeThreadOptions, PAGE_SIZE } from '@/lib/discussion-keys';
 
+/** Clerk session must be loaded before getToken() works; otherwise API requests go out without Authorization (401). */
+function useClerkReadyForDiscussionApi() {
+  const { isLoaded, isSignedIn } = useAuth();
+  return isLoaded && !!isSignedIn;
+}
+
 // =============================================================================
 // Thread Hooks
 // =============================================================================
 
 export function useThreads(options?: GetThreadsOptions) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadList(options),
     queryFn: () => getThreads(options, getToken),
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
@@ -68,6 +79,7 @@ export function useInfiniteThreads(
   options?: Omit<GetThreadsOptions, 'offset' | 'limit'>,
 ) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
   const normalizedOpts = normalizeThreadOptions(options);
 
   return useInfiniteQuery({
@@ -81,7 +93,8 @@ export function useInfiniteThreads(
         getToken,
       ),
     initialPageParam: 0,
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady,
+    staleTime: STALE_TIMES.CONTENT,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
   });
@@ -89,43 +102,49 @@ export function useInfiniteThreads(
 
 export function useThread(id: string) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadDetail(id),
     queryFn: () => getThread(id, getToken),
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady && !!id,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 export function usePinnedThreads(category?: DiscussionCategorySlug) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.pinnedThreads(category),
-    queryFn: () => getPinnedThreads(category, getToken),
-    staleTime: 5 * 60 * 1000,
+    queryFn: () => getPinnedThreads(getToken, category),
+    enabled: authReady,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 export function useUserThreads(userId: string) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.userThreads(userId),
     queryFn: () => getThreadsByUser(userId, getToken),
-    enabled: !!userId,
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady && !!userId,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadListWithLatestReply(options),
     queryFn: () => getThreadsWithLatestReply(options, getToken),
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
@@ -135,23 +154,25 @@ export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
 
 export function useReplies(threadId: string) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadReplies(threadId),
     queryFn: () => getRepliesForThread(threadId, getToken),
-    enabled: !!threadId,
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady && !!threadId,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 export function useUserReplies(userId: string) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.userReplies(userId),
     queryFn: () => getRepliesByUser(userId, getToken),
-    enabled: !!userId,
-    staleTime: 5 * 60 * 1000,
+    enabled: authReady && !!userId,
+    staleTime: STALE_TIMES.CONTENT,
   });
 }
 
@@ -162,42 +183,49 @@ export function useUserReplies(userId: string) {
 export function useCategories(options?: { postable?: boolean }) {
   const { getToken } = useAuth();
   const postable = options?.postable ?? false;
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryList(postable),
     queryFn: () => getCategories(getToken, { postable }),
-    staleTime: 1000 * 60 * 60, // 1 hour
+    enabled: authReady,
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useCategory(slug: string) {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryDetail(slug),
     queryFn: () => getCategory(slug, getToken),
-    enabled: !!slug,
-    staleTime: 1000 * 60 * 60, // 1 hour
+    enabled: authReady && !!slug,
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useDefaultCategory() {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryDefault(),
     queryFn: () => getDefaultCategory(getToken),
-    staleTime: 1000 * 60 * 60, // 1 hour
+    enabled: authReady,
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useCategoryStats() {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryStats(),
     queryFn: () => getCategoryStatsAggregated(getToken),
-    staleTime: 15 * 60 * 1000,
+    enabled: authReady,
+    staleTime: STALE_TIMES.STATS,
   });
 }
 
@@ -207,11 +235,13 @@ export function useCategoryStats() {
 
 export function useDiscussionSettings(): DiscussionSettings | undefined {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   const { data } = useQuery({
     queryKey: ['discussion-settings'] as const,
     queryFn: () => getDiscussionSettings(getToken),
-    staleTime: 1000 * 60 * 60, // 1 hour - settings rarely change
+    enabled: authReady,
+    staleTime: STALE_TIMES.REFERENCE,
   });
 
   return data;
@@ -225,7 +255,7 @@ export function useUserTitles() {
   return useQuery({
     queryKey: discussionKeys.titles(),
     queryFn: () => getUserTitles(),
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
@@ -233,7 +263,7 @@ export function useUserBadges() {
   return useQuery({
     queryKey: discussionKeys.badges(),
     queryFn: () => getUserBadges(),
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
@@ -242,7 +272,7 @@ export function useUserBadge(id: string) {
     queryKey: discussionKeys.badge(id),
     queryFn: () => getUserBadge(id),
     enabled: !!id,
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
@@ -252,11 +282,13 @@ export function useUserBadge(id: string) {
 
 export function useForumStats() {
   const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.forumStats(),
     queryFn: () => getForumStats(getToken),
-    staleTime: 15 * 60 * 1000,
+    enabled: authReady,
+    staleTime: STALE_TIMES.STATS,
   });
 }
 
@@ -310,7 +342,7 @@ export function useUpdateThread() {
     mutationFn: ({ id, data }: { id: string; data: { title?: string; body?: string } }) =>
       updateThread(id, data, getToken),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(id) });
+      invalidateThread(queryClient, id);
     },
   });
 }
@@ -344,7 +376,7 @@ export function useDeleteThread() {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
+      invalidateAllDiscussions(queryClient);
     },
   });
 }
@@ -384,8 +416,7 @@ export function useUpvoteThread() {
       }
     },
     onSettled: (_, __, id) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(id) });
+      invalidateThread(queryClient, id);
     },
   });
 }
@@ -417,8 +448,7 @@ export function useBookmarkThread() {
       }
     },
     onSettled: (_, __, id) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(id) });
+      invalidateThread(queryClient, id);
     },
   });
 }
@@ -433,12 +463,13 @@ export function useReportThread() {
 }
 
 export function useCreateReply() {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
+  const { user } = useUser();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ threadId, body, parentReplyId }: { threadId: string; body: string; parentReplyId?: string }) =>
-      createReply(threadId, body, parentReplyId, getToken),
+      createReply(threadId, body, getToken, parentReplyId),
     onMutate: async ({ threadId, body, parentReplyId }) => {
       await queryClient.cancelQueries({ queryKey: discussionKeys.threadReplies(threadId) });
 
@@ -450,9 +481,9 @@ export function useCreateReply() {
         parentReplyId,
         body,
         author: {
-          id: 'currentUser',
-          displayName: 'You',
-          avatar: undefined,
+          id: userId ?? 'unknown',
+          displayName: user?.fullName ?? user?.firstName ?? 'You',
+          avatar: user?.imageUrl,
           title: 'Seedling',
           badges: [],
           stats: {
@@ -492,9 +523,7 @@ export function useCreateReply() {
       }
     },
     onSettled: (_, __, { threadId }) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadReplies(threadId) });
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(threadId) });
+      invalidateReplies(queryClient, threadId);
     },
   });
 }
@@ -504,11 +533,10 @@ export function useUpdateReply() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: string }) =>
+    mutationFn: ({ id, body }: { id: string; threadId: string; body: string }) =>
       updateReply(id, body, getToken),
-    onSuccess: () => {
-      // Reply is cached by thread, but we don't know which thread without fetching
-      queryClient.invalidateQueries({ queryKey: discussionKeys.replies() });
+    onSuccess: (_, { threadId }) => {
+      invalidateReplies(queryClient, threadId);
     },
   });
 }
@@ -543,14 +571,13 @@ export function useDeleteReply() {
       }
     },
     onSettled: (_, __, { threadId }) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadReplies(threadId) });
+      invalidateReplies(queryClient, threadId);
     },
   });
 }
 
 export function useUpvoteReply() {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -566,14 +593,15 @@ export function useUpvoteReply() {
           if (!old) return old;
           return old.map((reply) => {
             if (reply.id !== id) return reply;
-            const isCurrentlyUpvoted = reply.upvotedBy?.includes('currentUser') || reply.isUpvoted;
+            const memberId = userId ?? 'unknown';
+            const isCurrentlyUpvoted = reply.upvotedBy?.includes(memberId) || reply.isUpvoted;
             return {
               ...reply,
               upvotes: isCurrentlyUpvoted ? reply.upvotes - 1 : reply.upvotes + 1,
               isUpvoted: !isCurrentlyUpvoted,
               upvotedBy: isCurrentlyUpvoted
-                ? (reply.upvotedBy || []).filter((uid) => uid !== 'currentUser')
-                : [...(reply.upvotedBy || []), 'currentUser'],
+                ? (reply.upvotedBy || []).filter((uid) => uid !== memberId)
+                : [...(reply.upvotedBy || []), memberId],
             };
           });
         },
@@ -590,7 +618,7 @@ export function useUpvoteReply() {
       }
     },
     onSettled: (_, __, { threadId }) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadReplies(threadId) });
+      invalidateReplies(queryClient, threadId);
     },
   });
 }
@@ -616,68 +644,66 @@ export function useVoteOnPoll() {
 
       const previousThread = queryClient.getQueryData(discussionKeys.threadDetail(threadId));
 
+      // Get forum membership ID (not Clerk user ID) — voters arrays use membership UUIDs
+      const currentUser = queryClient.getQueryData<{ membership?: { id: string } }>(CURRENT_USER_QUERY_KEY);
+      const currentMemberId = currentUser?.membership?.id;
+
+      if (!currentMemberId) {
+        return { previousThread, threadId };
+      }
+
       queryClient.setQueryData(
         discussionKeys.threadDetail(threadId),
         (old: { poll?: { options: { id: string; votes: number; voters: string[] }[] } } | undefined) => {
           if (!old?.poll) return old;
 
-          const currentMemberId = 'currentUser'; // Will be replaced with actual member ID
-          const newOptions = old.poll.options.map((opt) => {
-            const hasVoted = opt.voters.includes(currentMemberId);
+          const updatedOptions = old.poll.options.map((opt) => {
+            const hadVoted = opt.voters.includes(currentMemberId);
+            const isTarget = opt.id === optionId;
 
-            if (hasVoted) {
-              // Remove vote
-              return {
-                ...opt,
-                votes: opt.votes - 1,
-                voters: opt.voters.filter((v) => v !== currentMemberId),
-              };
-            } else {
-              // Add vote
-              if (allowMultiple) {
-                return {
-                  ...opt,
-                  votes: opt.votes + 1,
-                  voters: [...opt.voters, currentMemberId],
-                };
-              } else {
-                // For single choice, first remove from all options, then add to this one
-                return {
-                  ...opt,
-                  votes: opt.votes + 1,
-                  voters: [...opt.voters, currentMemberId],
-                };
-              }
+            if (isTarget) {
+              // Toggle the clicked option on or off
+              return hadVoted
+                ? { ...opt, votes: opt.votes - 1, voters: opt.voters.filter((v) => v !== currentMemberId) }
+                : { ...opt, votes: opt.votes + 1, voters: [...opt.voters, currentMemberId] };
+            } else if (!allowMultiple && hadVoted) {
+              // Single-choice: deselect whichever option the user previously voted on
+              return { ...opt, votes: opt.votes - 1, voters: opt.voters.filter((v) => v !== currentMemberId) };
             }
+            return opt;
           });
-
-          // If single choice, remove votes from other options
-          const finalOptions = allowMultiple
-            ? newOptions
-            : newOptions.map((opt, idx) => {
-                const originalHasVoted = old.poll!.options[idx].voters.includes(currentMemberId);
-                if (opt.id === optionId) return opt;
-                if (originalHasVoted) {
-                  return {
-                    ...opt,
-                    votes: opt.votes - 1,
-                    voters: opt.voters.filter((v) => v !== currentMemberId),
-                  };
-                }
-                return opt;
-              });
 
           return {
             ...old,
-            poll: {
-              ...old.poll,
-              options: finalOptions,
-            },
+            poll: { ...old.poll, options: updatedOptions },
           };
         },
       );
 
       return { previousThread, threadId };
+    },
+    onSuccess: (data, { threadId }) => {
+      // Reconcile cache with server-authoritative vote counts
+      if (data.options.length > 0) {
+        const countById = new Map(data.options.map((o) => [o.id, o.votes]));
+        queryClient.setQueryData(
+          discussionKeys.threadDetail(threadId),
+          (old: { poll?: { options: { id: string; votes: number }[] } } | undefined) => {
+            if (!old?.poll) return old;
+            return {
+              ...old,
+              poll: {
+                ...old.poll,
+                options: old.poll.options.map((opt) => {
+                  const serverVotes = countById.get(opt.id);
+                  return serverVotes !== undefined ? { ...opt, votes: serverVotes } : opt;
+                }),
+              },
+            };
+          },
+        );
+      }
+      toast.success('Vote recorded');
     },
     onError: (_, __, context) => {
       if (context?.previousThread && context?.threadId) {
@@ -686,9 +712,10 @@ export function useVoteOnPoll() {
           context.previousThread,
         );
       }
+      toast.error('Failed to record vote');
     },
     onSettled: (_, __, { threadId }) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(threadId) });
+      invalidateThread(queryClient, threadId);
     },
   });
 }
@@ -721,6 +748,9 @@ export function useClosePoll() {
 
       return { previousThread, threadId };
     },
+    onSuccess: () => {
+      toast.success('Poll closed');
+    },
     onError: (_, threadId, context) => {
       if (context?.previousThread) {
         queryClient.setQueryData(
@@ -728,9 +758,10 @@ export function useClosePoll() {
           context.previousThread,
         );
       }
+      toast.error('Failed to close poll');
     },
     onSettled: (_, __, threadId) => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threadDetail(threadId) });
+      invalidateThread(queryClient, threadId);
     },
   });
 }

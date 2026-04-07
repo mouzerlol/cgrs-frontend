@@ -1,5 +1,45 @@
 /** @type {import('next').NextConfig} */
 
+/** Optional extra origins for connect-src (e.g. production API on Cloud Run). */
+function cspApiConnectOrigins() {
+  const raw = process.env.NEXT_PUBLIC_API_URL;
+  if (!raw) return '';
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return '';
+  }
+}
+
+/** Production custom Clerk Frontend API (Dashboard → Domains). clerk.browser.js loads from this origin — must be in script-src. */
+const CLERK_CUSTOM_FRONTEND_ORIGIN = 'https://clerk.cgrs.co.nz';
+
+/**
+ * Clerk script/connect/frame sources for CSP. Dev uses *.clerk.accounts.dev; production uses
+ * *.clerk.com, optional custom Frontend API host, and CLERK_CUSTOM_FRONTEND_ORIGIN so builds
+ * still allow clerk-js if NEXT_PUBLIC_CLERK_FRONTEND_API_ORIGIN was missing at build time.
+ */
+function cspClerkOrigins() {
+  const parts = [
+    'https://*.clerk.accounts.dev',
+    'https://*.clerk.com',
+    'https://clerk-telemetry.com',
+    CLERK_CUSTOM_FRONTEND_ORIGIN,
+  ];
+  const custom = process.env.NEXT_PUBLIC_CLERK_FRONTEND_API_ORIGIN?.trim();
+  if (custom) {
+    try {
+      const origin = new URL(custom).origin;
+      if (!parts.includes(origin)) {
+        parts.push(origin);
+      }
+    } catch {
+      // ignore invalid URL
+    }
+  }
+  return parts.join(' ');
+}
+
 const nextConfig = {
   // Rendering Strategy:
   // - Static export is disabled to enable SSR and ISR features
@@ -17,6 +57,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '*.clerk.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'clerk.cgrs.co.nz',
       },
       {
         protocol: 'https',
@@ -81,13 +125,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.cloudflare.com",
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${cspClerkOrigins()} https://*.cloudflare.com`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
               "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://img.clerk.com https://*.r2.cloudflarestorage.com",
-              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://*.clerk.accounts.dev https://clerk-telemetry.com https://*.cloudflare.com http://localhost:8000 http://api:8000`,
+              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://localhost:8000 http://api:8000`.replace(/\s+/g, ' ').trim(),
               "worker-src 'self' blob:",
-              "frame-src 'self' https://*.clerk.accounts.dev https://challenges.cloudflare.com",
+              `frame-src 'self' ${cspClerkOrigins()} https://challenges.cloudflare.com`,
               "frame-ancestors 'none'",
             ].join('; '),
           },

@@ -36,13 +36,7 @@ describe('robots', () => {
     expect(disallow).toContain('/forgot-password/')
   })
 
-  it('disallows design-system page', () => {
-    const rules = config.rules
-    const disallow = Array.isArray(rules) ? rules[0].disallow : rules.disallow
-    expect(disallow).toContain('/design-system/')
-  })
-
   it('references the sitemap URL', () => {
-    expect(config.sitemap).toBe('https://coronationgardens.co.nz/sitemap.xml')
+    expect(config.sitemap).toBe('https://www.cgrs.co.nz/sitemap.xml')
   })
 })

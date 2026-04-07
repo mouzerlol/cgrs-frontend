@@ -35,7 +35,7 @@ export default function LinkedBoardsSection({ linkedBoardIds, boards, portfolioT
                 <span className="text-sm font-medium text-forest group-hover:text-terracotta transition-colors block truncate">
                   {board.name}
                 </span>
-                <span className="text-xs text-forest/40">{board.taskCount} tasks</span>
+                <span className="text-xs text-forest/40">{board.task_count} tasks</span>
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-forest/20 group-hover:text-terracotta transition-colors" />
             </Link>

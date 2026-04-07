@@ -173,12 +173,10 @@ export default function ThreadPage() {
       optionId,
       allowMultiple: thread.poll.allowMultiple,
     });
-    toast.success('Vote recorded');
   };
 
   const handlePollClose = () => {
     closePollMutation.mutate(threadId);
-    toast.success('Poll closed');
   };
 
   const handleShare = (platform: string) => {
@@ -251,6 +249,7 @@ export default function ThreadPage() {
             isSubmittingReply={isSubmittingReply}
             onPollVote={handlePollVote}
             onPollClose={handlePollClose}
+            isPollVotePending={voteOnPollMutation.isPending}
           />
         ) : null}
       </div>

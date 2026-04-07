@@ -30,6 +30,7 @@ interface ThreadDetailProps extends HTMLAttributes<HTMLDivElement> {
   isSubmittingReply?: boolean;
   onPollVote?: (optionId: string) => void | Promise<void>;
   onPollClose?: () => void | Promise<void>;
+  isPollVotePending?: boolean;
 }
 
 /**
@@ -57,6 +58,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
     isSubmittingReply = false,
     onPollVote,
     onPollClose,
+    isPollVotePending = false,
     className,
     ...props
   }, ref) => {
@@ -84,6 +86,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
               currentUserId={currentUserId}
               onPollVote={onPollVote}
               onPollClose={onPollClose}
+              isPollVotePending={isPollVotePending}
             />
           </div>
 

@@ -163,10 +163,18 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
             </div>
 
             {thread.poll && (
-              <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-terracotta">
-                <Icon icon="lucide:bar-chart-2" className="h-4 w-4" />
-                <span>Poll: {thread.poll.question}</span>
-                {thread.poll.isClosed && <span className="text-forest/50">(Closed)</span>}
+              <div className="mb-2">
+                {thread.poll.isClosed ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sage-light/50 text-forest/60">
+                    <Icon icon="lucide:lock" className="h-3.5 w-3.5" />
+                    Closed
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sage-light/50 text-forest animate-poll-pulse">
+                    <Icon icon="lucide:bar-chart-2" className="h-3.5 w-3.5" />
+                    Poll
+                  </span>
+                )}
               </div>
             )}
 

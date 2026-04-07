@@ -4,11 +4,9 @@ import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { ApiError } from '@/lib/api/client';
+import { STALE_TIMES } from '@/lib/cache-config';
 import { getDiscussionAttachmentDownloadUrl } from '@/lib/api/discussions';
 import type { DiscussionAttachmentMeta, ThreadImage } from '@/types';
-
-/** Stay below typical presigned GET TTL (API default 300s); refetch before expiry. */
-const STALE_TIME_MS = 120_000;
 
 /**
  * Resolves presigned GET URLs for thread-level ADR 005 attachments for use in ImageGallery.
@@ -21,7 +19,7 @@ export function useThreadAttachmentImages(attachments: DiscussionAttachmentMeta[
     queries: list.map((att) => ({
       queryKey: ['discussion-attachment-download', att.id] as const,
       queryFn: () => getDiscussionAttachmentDownloadUrl(att.id, getToken),
-      staleTime: STALE_TIME_MS,
+      staleTime: STALE_TIMES.SHORT,
       enabled: !!att.id,
       // Presigned GET + R2: avoid retrying 503/502; reduces noisy duplicate failures in console.
       retry: (failureCount: number, err: unknown) => {

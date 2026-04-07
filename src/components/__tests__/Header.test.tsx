@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Header from '@/components/layout/Header';
@@ -127,20 +128,22 @@ describe('Header', () => {
   });
 
   it('opens mobile menu when hamburger button is clicked', async () => {
+    const user = userEvent.setup();
     render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
-    menuButton.click();
-    
+    await user.click(menuButton);
+
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
   });
 
   it('shows navigation items in mobile menu when opened', async () => {
+    const user = userEvent.setup();
     render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
-    menuButton.click();
-    
+    await user.click(menuButton);
+
     await waitFor(() => {
       // Check for dialog with nav links inside
       const dialog = screen.getByRole('dialog');
@@ -150,18 +153,17 @@ describe('Header', () => {
   });
 
   it('closes mobile menu when Escape key is pressed', async () => {
+    const user = userEvent.setup();
     render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
-    menuButton.click();
-    
+    await user.click(menuButton);
+
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
-    
-    // Simulate Escape key press
-    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
-    document.dispatchEvent(event);
-    
+
+    await user.keyboard('{Escape}');
+
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
@@ -175,10 +177,11 @@ describe('Header', () => {
   });
 
   it('mobile menu contains login button', async () => {
+    const user = userEvent.setup();
     render(<Header />, { wrapper: createWrapper() });
     const menuButton = screen.getByLabelText('Toggle navigation');
-    menuButton.click();
-    
+    await user.click(menuButton);
+
     await waitFor(() => {
       const dialog = screen.getByRole('dialog');
       expect(dialog).toHaveTextContent('Resident Login');

@@ -3,10 +3,12 @@
 import { useRef, useState, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { TaskImage } from '@/types/work-management';
+import type { LightboxImage } from '@/types';
 import { cn } from '@/lib/utils';
 import { uploadWorkTaskAttachmentFile, DISCUSSION_IMAGE_MAX_BYTES } from '@/lib/api/discussions';
 import { useTaskAttachmentImages } from '@/hooks/useTaskAttachmentImages';
 import VideoPlayerModal from './VideoPlayerModal';
+import ImageLightbox from '@/components/ui/ImageLightbox';
 
 interface TaskImageGalleryProps {
   images: TaskImage[];
@@ -31,6 +33,7 @@ export default function TaskImageGallery({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<TaskImage | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [uploadingCount, setUploadingCount] = useState(0);
   const { getToken } = useAuth();
   const { displayImages, isResolving } = useTaskAttachmentImages(images);
@@ -121,7 +124,7 @@ export default function TaskImageGallery({
 
       {images.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {displayImages.map((img) => {
+          {displayImages.map((img, index) => {
             const displaySrc = (img.thumbnail || img.url || '').trim();
             return (
             <div
@@ -130,7 +133,13 @@ export default function TaskImageGallery({
                 'relative group aspect-square rounded-xl overflow-hidden border border-sage/20',
                 img.type === 'video' && 'cursor-pointer',
               )}
-              onClick={() => img.type === 'video' && setSelectedVideo(img)}
+              onClick={() => {
+                if (img.type === 'video') {
+                  setSelectedVideo(img);
+                } else {
+                  setLightboxIndex(index);
+                }
+              }}
             >
               {displaySrc ? (
                 <img
@@ -234,6 +243,15 @@ export default function TaskImageGallery({
 
       {selectedVideo && (
         <VideoPlayerModal video={selectedVideo} onClose={() => setSelectedVideo(null)} />
+      )}
+
+      {lightboxIndex !== null && (
+        <ImageLightbox
+          images={displayImages as LightboxImage[]}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxIndex !== null}
+          onClose={() => setLightboxIndex(null)}
+        />
       )}
     </div>
   );

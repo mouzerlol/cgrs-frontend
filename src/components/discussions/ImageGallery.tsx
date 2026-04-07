@@ -4,7 +4,7 @@ import { forwardRef, HTMLAttributes, useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import type { ThreadImage } from '@/types';
-import ImageLightbox from './ImageLightbox';
+import ImageLightbox from '@/components/ui/ImageLightbox';
 
 interface ImageGalleryProps extends HTMLAttributes<HTMLDivElement> {
   /** Array of images to display */

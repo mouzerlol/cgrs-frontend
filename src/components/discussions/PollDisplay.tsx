@@ -22,6 +22,8 @@ interface PollDisplayProps extends HTMLAttributes<HTMLDivElement> {
   currentMemberId?: string;
   /** Whether the current user is the poll creator (can close poll) */
   isCreator?: boolean;
+  /** Whether a vote mutation is currently in-flight */
+  isPending?: boolean;
 }
 
 const formatVoteCount = (count: number): string => {
@@ -141,6 +143,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
     voterNames,
     currentMemberId,
     isCreator = false,
+    isPending = false,
     className,
     ...props
   }, ref) => {
@@ -149,8 +152,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
     const [isClosing, setIsClosing] = useState(false);
 
     const handleOptionClick = (optionId: string) => {
-      if (poll.isClosed) return;
-      if (!poll.allowMultiple && hasVoted) return;
+      if (poll.isClosed || isPending) return;
       onVote?.(optionId);
     };
 
@@ -253,17 +255,18 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                 <button
                   type="button"
                   onClick={() => handleOptionClick(option.id)}
-                  disabled={(!poll.allowMultiple && hasVoted) || poll.isClosed}
+                  disabled={poll.isClosed || isPending}
                   className={cn(
                     'relative w-full p-md rounded-xl border-2 border-sage bg-bone text-left cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[56px] overflow-hidden',
                     'max-sm:py-sm max-sm:px-md',
                     hasVoted || poll.isClosed
                       ? isSelected
                         ? 'bg-terracotta/[0.08] border-terracotta'
-                        : 'bg-sage-light border-sage cursor-default'
+                        : 'bg-sage-light border-sage'
                       : 'hover:border-forest hover:bg-sage-light hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(26,34,24,0.08)]',
                     isWinning && 'border-terracotta shadow-[0_0_0_1px_theme(colors.terracotta)]',
-                    poll.isClosed && 'cursor-default'
+                    (poll.isClosed || isPending) && 'cursor-default',
+                    isPending && 'opacity-70'
                   )}
                   aria-pressed={isSelected}
                   aria-describedby={`option-stats-${option.id}`}

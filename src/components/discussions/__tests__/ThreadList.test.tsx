@@ -31,16 +31,16 @@ vi.mock('@/hooks/useThreadListPreview', () => ({
 // Properly mock next/image with default export
 vi.mock('next/image', async () => {
   const actual = await vi.importActual('next/image');
+  /** Next/Image passes layout props (e.g. fill) that are invalid on plain <img>. */
+  function ImgStub(props: Record<string, unknown>) {
+    const { src, alt, fill: _fill, priority: _p, placeholder: _ph, blurDataURL: _b, onLoadingComplete: _l, ...rest } =
+      props;
+    return <img data-testid="next-image" src={src as string} alt={alt as string} {...rest} />;
+  }
   return {
     ...actual,
-    __default__: (props: any) => {
-      const { src, alt, ...rest } = props;
-      return <img data-testid="next-image" src={src} alt={alt} {...rest} />;
-    },
-    default: (props: any) => {
-      const { src, alt, ...rest } = props;
-      return <img data-testid="next-image" src={src} alt={alt} {...rest} />;
-    },
+    __default__: ImgStub,
+    default: ImgStub,
   };
 });
 

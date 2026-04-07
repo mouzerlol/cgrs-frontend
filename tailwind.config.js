@@ -78,7 +78,7 @@ module.exports = {
         },
         'poll-pulse': {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
-          '50%': { transform: 'scale(1.1)', opacity: '0.8' },
+          '50%': { transform: 'scale(1.02)', opacity: '0.9' },
         },
         'poll-voter-appear': {
           from: { opacity: '0', transform: 'translateY(8px)' },

@@ -13,7 +13,7 @@ import ProfileDetailsSection from '@/components/profile/sections/ProfileDetailsS
 import VerificationSection from '@/components/profile/sections/VerificationSection';
 import ReportedIssuesSection from '@/components/profile/sections/ReportedIssuesSection';
 import MyPropertySection from '@/components/profile/sections/MyPropertySection';
-import { cn } from '@/lib/utils';
+import { isReportedIssueDetailPath } from '@/lib/profile-routes';
 
 const TAB_ITEMS = [
   { id: 'verification', href: '/profile/verification', label: 'Verification' },
@@ -167,7 +167,8 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                   {/* Render the active section - all sections are rendered but only one is visible */}
                   {activeTab === 'verification' && <VerificationSection />}
                   {activeTab === 'details' && <ProfileDetailsSection />}
-                  {activeTab === 'reported-issues' && <ReportedIssuesSection />}
+                  {activeTab === 'reported-issues' &&
+                    (isReportedIssueDetailPath(pathname) ? children : <ReportedIssuesSection />)}
                   {activeTab === 'my-property' && <MyPropertySection />}
                 </motion.div>
               </AnimatePresence>
