@@ -1,0 +1,14 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#4A6B7C"/>
+  <circle cx="300" cy="180" r="45" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="400" cy="180" r="45" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="500" cy="180" r="45" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="290" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <circle cx="310" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <circle cx="390" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <circle cx="410" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <circle cx="490" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <circle cx="510" cy="175" r="4" fill="#000000" opacity="0.7"/>
+  <text x="400" y="305" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="600" fill="#FFFFFF">Community Meeting</text>
+  <text x="400" y="350" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#FFFFFF" opacity="0.9">Join Us for Updates &amp; Discussion</text>
+</svg>
