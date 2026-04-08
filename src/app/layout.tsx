@@ -35,11 +35,6 @@ export const metadata: Metadata = {
   },
   keywords: ['Coronation Gardens', 'Residents Society', 'Mangere Bridge', 'Auckland', 'Community'],
   authors: [{ name: 'CGRS Development Team' }],
-  icons: {
-    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
-  },
   openGraph: {
     title: 'CGRS - Coronation Gardens Residents Society',
     description: 'Official website for the Coronation Gardens Residents Society in Mangere Bridge, Auckland',
