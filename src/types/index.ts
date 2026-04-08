@@ -297,6 +297,7 @@ export interface Thread {
   author: ForumUser;
   createdAt: string; // ISO date
   updatedAt?: string; // ISO date
+  isEdited?: boolean; // True if thread content was edited (not just visibility changes)
 
   // Optional rich content
   /** Legacy / demo; list cards use attachments + presigned URL (or coverPreview from list API). */
@@ -340,6 +341,7 @@ export interface Reply {
   author: ForumUser;
   createdAt: string; // ISO date
   updatedAt?: string; // ISO date
+  isEdited?: boolean; // True if reply content was edited
 
   // Optional rich content
   images?: ThreadImage[];

@@ -1,26 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-  <!-- Daytime sky background -->
-  <rect width="32" height="32" fill="#87CEEB"/>
-  
-  <!-- Sun -->
-  <circle cx="24" cy="8" r="3" fill="#FFD700" stroke="#FFA500" stroke-width="0.5"/>
-  
-  <!-- Mountain silhouette -->
-  <path d="M2 20 L8 12 L14 16 L20 8 L26 12 L30 20 L30 30 L2 30 Z" fill="#228B22" stroke="#006400" stroke-width="1"/>
-  
-  <!-- Chalet house body -->
-  <path d="M10 20 L16 12 L22 20 L22 30 L10 30 Z" fill="#D2B48C" stroke="#BC9A6A" stroke-width="1"/>
-  
-  <!-- Roof -->
-  <path d="M10 20 L16 12 L22 20 Z" fill="#8B4513" stroke="#654321" stroke-width="1"/>
-  
-  <!-- Door -->
-  <rect x="14" y="24" width="4" height="6" fill="#8B4513" stroke="#654321" stroke-width="0.5"/>
-  
-  <!-- Windows -->
-  <rect x="11" y="22" width="2" height="2" fill="#FFD700" stroke="#FFA500" stroke-width="0.5"/>
-  <rect x="19" y="22" width="2" height="2" fill="#FFD700" stroke="#FFA500" stroke-width="0.5"/>
-  
-  <!-- Chimney -->
-  <rect x="18" y="16" width="2" height="4" fill="#696969" stroke="#2F4F4F" stroke-width="0.5"/>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="10" fill="#2C3E2D"/>
+  <text x="50%" y="52%" dominant-baseline="central" text-anchor="middle" fill="#E8EDE6" font-family="Verdana, sans-serif" font-weight="bold" font-size="14" letter-spacing="-0.5">CG</text>
 </svg>

@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { House, MessageSquare, ShieldCheck, User } from 'lucide-react';
+import { House, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { id: 'details', href: '/profile', label: 'Profile Details', flagId: null },
   { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues', flagId: 'profile.reported-issues' },
   { id: 'my-property', href: '/profile/my-property', label: 'My Property', flagId: 'profile.my-property' },
+  { id: 'bookmarks', href: '/profile/bookmarks', label: 'Bookmarks', flagId: null },
 ] as const;
 
 type NavId = (typeof NAV_ITEMS)[number]['id'];
@@ -22,6 +23,7 @@ const NAV_ITEM_ICONS: Record<NavId, LucideIcon> = {
   details: User,
   'reported-issues': MessageSquare,
   'my-property': House,
+  bookmarks: Bookmark,
 };
 
 const DEFAULT_FLAG_IDS: Record<string, boolean> = {

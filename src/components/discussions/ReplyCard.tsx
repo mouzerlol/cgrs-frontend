@@ -16,6 +16,8 @@ interface ReplyCardProps extends HTMLAttributes<HTMLDivElement> {
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: () => void;
   onDelete?: () => void;
+  onEdit?: (body: string) => void | Promise<void>;
+  isSavingEdit?: boolean;
   showReplyForm?: boolean;
   isAuthor?: boolean;
 }
@@ -57,12 +59,15 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
     onReply,
     onReport,
     onDelete,
+    onEdit,
+    isSavingEdit = false,
     showReplyForm = false,
     isAuthor = false,
     className,
     ...props
   }, ref) => {
     const [isReplying, setIsReplying] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleSubmitReply = async (body: string) => {
       if (!onReply) return;
@@ -77,6 +82,16 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
     const handleDelete = () => {
       if (onDelete) {
         onDelete();
+      }
+    };
+
+    const handleEditSubmit = async (body: string) => {
+      if (!onEdit) return;
+      try {
+        await Promise.resolve(onEdit(body));
+        setIsEditing(false);
+      } catch {
+        /* Parent rethrows on failure; keep form open */
       }
     };
 
@@ -121,14 +136,34 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
           </span>
           <span className="text-[11px] text-forest/40 ml-auto">
             {formatRelativeTime(reply.createdAt)}
+            {reply.isEdited && (
+              <span className="ml-2 flex items-center gap-1">
+                <Icon icon="lucide:pencil" className="w-3 h-3" />
+                <span>Edited</span>
+              </span>
+            )}
           </span>
         </div>
 
         {/* Body */}
         <div className="mt-1">
-          <p className="text-forest/80 text-sm leading-relaxed whitespace-pre-wrap">
-            {reply.body}
-          </p>
+          {isEditing ? (
+            <div className="mt-2">
+              <ReplyForm
+                key={`${reply.id}-edit`}
+                initialValue={reply.body ?? ''}
+                onSubmit={handleEditSubmit}
+                onCancel={() => setIsEditing(false)}
+                placeholder="Edit your comment..."
+                submitLabel="Save"
+                isSubmitting={isSavingEdit}
+              />
+            </div>
+          ) : (
+            <p className="text-forest/80 text-sm leading-relaxed whitespace-pre-wrap">
+              {reply.body}
+            </p>
+          )}
         </div>
 
         {/* Actions */}
@@ -156,6 +191,19 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
             onReport={onReport}
             className="text-xs text-forest/60 hover:text-terracotta"
           />
+
+          {isAuthor && (
+            <Tooltip content="Edit">
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-1.5 px-2 py-1 text-xs text-forest/60 hover:text-forest transition-colors rounded"
+              >
+                <Icon icon="lucide:pencil" className="w-3.5 h-3.5" />
+                <span>Edit</span>
+              </button>
+            </Tooltip>
+          )}
 
           {isAuthor && (
             <Tooltip content="Delete">

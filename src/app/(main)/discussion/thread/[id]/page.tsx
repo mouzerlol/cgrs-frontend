@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useUser } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { toast } from '@/lib/sonner';
 import { cn } from '@/lib/utils';
 import PageHeader from '@/components/sections/PageHeader';
@@ -21,7 +21,10 @@ import {
   useReportReply,
   useVoteOnPoll,
   useClosePoll,
+  useUpdateThread,
+  useUpdateReply,
 } from '@/hooks/useDiscussions';
+import ThreadEditModal from '@/components/discussions/ThreadEditModal';
 import type { Reply } from '@/types';
 
 interface LoadingSkeletonProps {
@@ -66,12 +69,14 @@ export default function ThreadPage() {
   const router = useRouter();
   const threadId = params.id as string;
 
+  const { isLoaded: authLoaded } = useAuth();
   const { user } = useUser();
   const currentUserId = user?.id;
 
   const { data: thread, isLoading: threadLoading, error: threadError } = useThread(threadId);
   const { data: replies = [], isLoading: repliesLoading } = useReplies(threadId);
-  const isLoading = threadLoading || repliesLoading;
+  /** Avoid empty/error flash before Clerk is ready; public thread fetch runs once loaded (signed out OK). */
+  const isLoading = !authLoaded || threadLoading || repliesLoading;
 
   // Mutations
   const upvoteThreadMutation = useUpvoteThread();
@@ -84,8 +89,11 @@ export default function ThreadPage() {
   const reportReplyMutation = useReportReply();
   const voteOnPollMutation = useVoteOnPoll();
   const closePollMutation = useClosePoll();
+  const updateThreadMutation = useUpdateThread();
+  const updateReplyMutation = useUpdateReply();
 
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Handlers
   const handleUpvoteThread = () => {
@@ -94,6 +102,25 @@ export default function ThreadPage() {
 
   const handleBookmark = () => {
     bookmarkThreadMutation.mutate(threadId);
+  };
+
+  const handleEditThread = async (data: {
+    title: string;
+    body: string;
+    imageIds?: string[];
+    pollOptions?: string[];
+    allowMultiple?: boolean;
+    removePoll?: boolean;
+  }) => {
+    try {
+      await updateThreadMutation.mutateAsync({ id: threadId, data });
+      toast.success('Thread updated');
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Update thread error:', error);
+      toast.error('Failed to update thread');
+      throw error;
+    }
   };
 
   const handleReply = async (body: string, parentReplyId?: string) => {
@@ -151,6 +178,17 @@ export default function ThreadPage() {
         console.error('Delete error:', error);
         toast.error('Failed to delete reply');
       }
+    }
+  };
+
+  const handleEditReply = async (replyId: string, body: string) => {
+    try {
+      await updateReplyMutation.mutateAsync({ id: replyId, threadId, body });
+      toast.success('Comment updated');
+    } catch (error) {
+      console.error('Edit reply error:', error);
+      toast.error('Failed to update comment');
+      throw error;
     }
   };
 
@@ -237,13 +275,17 @@ export default function ThreadPage() {
             replies={replies as Reply[]}
             currentUserId={currentUserId}
             canDeleteThread={thread.author.clerkUserId === currentUserId}
+            canEditThread={thread.author.clerkUserId === currentUserId}
             onUpvote={handleUpvoteThread}
             onBookmark={handleBookmark}
+            isBookmarked={thread.isBookmarked}
             onReply={handleReply}
             onReport={handleReportThread}
             onShare={handleShare}
             onDeleteThread={handleDeleteThread}
+            onEditThread={() => setIsEditModalOpen(true)}
             onDeleteReply={handleDeleteReply}
+            onEditReply={handleEditReply}
             onUpvoteReply={handleUpvoteReply}
             onReportReply={handleReportReply}
             isSubmittingReply={isSubmittingReply}
@@ -252,6 +294,18 @@ export default function ThreadPage() {
             isPollVotePending={voteOnPollMutation.isPending}
           />
         ) : null}
+
+        {/* Edit Modal */}
+        {thread && (
+          <ThreadEditModal
+            thread={thread}
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onSave={handleEditThread}
+            isSaving={updateThreadMutation.isPending}
+            currentUserId={currentUserId}
+          />
+        )}
       </div>
     </div>
   );

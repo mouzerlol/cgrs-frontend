@@ -13,6 +13,7 @@ import ProfileDetailsSection from '@/components/profile/sections/ProfileDetailsS
 import VerificationSection from '@/components/profile/sections/VerificationSection';
 import ReportedIssuesSection from '@/components/profile/sections/ReportedIssuesSection';
 import MyPropertySection from '@/components/profile/sections/MyPropertySection';
+import BookmarksSection from '@/components/profile/sections/BookmarksSection';
 import { isReportedIssueDetailPath } from '@/lib/profile-routes';
 
 const TAB_ITEMS = [
@@ -20,6 +21,7 @@ const TAB_ITEMS = [
   { id: 'details', href: '/profile', label: 'Profile Details' },
   { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues' },
   { id: 'my-property', href: '/profile/my-property', label: 'My Property' },
+  { id: 'bookmarks', href: '/profile/bookmarks', label: 'Bookmarks' },
 ] as const;
 
 type TabId = (typeof TAB_ITEMS)[number]['id'];
@@ -170,6 +172,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                   {activeTab === 'reported-issues' &&
                     (isReportedIssueDetailPath(pathname) ? children : <ReportedIssuesSection />)}
                   {activeTab === 'my-property' && <MyPropertySection />}
+                  {activeTab === 'bookmarks' && <BookmarksSection />}
                 </motion.div>
               </AnimatePresence>
             </div>

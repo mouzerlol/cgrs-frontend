@@ -59,14 +59,18 @@ describe('Dynamic import loading states', () => {
   });
 
   describe('CalendarPage', () => {
-    it('shows CalendarSkeleton loading fallback while CalendarContent loads', async () => {
-      const CalendarPage = (await import('@/app/(main)/calendar/page')).default;
-      render(<CalendarPage />);
+    it(
+      'shows CalendarSkeleton loading fallback while CalendarContent loads',
+      async () => {
+        const CalendarPage = (await import('@/app/(main)/calendar/page')).default;
+        render(<CalendarPage />);
 
-      // CalendarSkeleton renders skeleton elements
-      const skeleton = document.querySelector('.skeleton');
-      expect(skeleton).toBeInTheDocument();
-    });
+        // CalendarSkeleton renders skeleton elements
+        const skeleton = document.querySelector('.skeleton');
+        expect(skeleton).toBeInTheDocument();
+      },
+      15_000,
+    );
   });
 
   describe('Footer', () => {

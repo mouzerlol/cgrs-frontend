@@ -1,6 +1,6 @@
 /**
  * React Query hooks for discussions.
- * All hooks require getToken from useAuth() for authenticated API calls.
+ * Uses getToken from useAuth(); public GET endpoints run once Clerk is loaded (signed out is OK — local API uses dev-token).
  */
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -47,13 +47,20 @@ import {
   upvoteReply,
   upvoteThread,
   voteOnPoll,
+  getBookmarkedThreads,
 } from '@/lib/api/discussions';
 import type { DiscussionCategorySlug, Reply } from '@/types';
 
 // Re-export so existing consumers that import from this file keep working
 export { discussionKeys, normalizeThreadOptions, PAGE_SIZE } from '@/lib/discussion-keys';
 
-/** Clerk session must be loaded before getToken() works; otherwise API requests go out without Authorization (401). */
+/** Clerk finished booting; safe to call getToken() (may return null when signed out). */
+function useClerkLoadedForDiscussionApi() {
+  const { isLoaded } = useAuth();
+  return isLoaded;
+}
+
+/** Signed-in session required (bookmarks, per-user lists, etc.). */
 function useClerkReadyForDiscussionApi() {
   const { isLoaded, isSignedIn } = useAuth();
   return isLoaded && !!isSignedIn;
@@ -65,12 +72,12 @@ function useClerkReadyForDiscussionApi() {
 
 export function useThreads(options?: GetThreadsOptions) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadList(options),
     queryFn: () => getThreads(options, getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.CONTENT,
   });
 }
@@ -79,7 +86,7 @@ export function useInfiniteThreads(
   options?: Omit<GetThreadsOptions, 'offset' | 'limit'>,
 ) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
   const normalizedOpts = normalizeThreadOptions(options);
 
   return useInfiniteQuery({
@@ -93,7 +100,7 @@ export function useInfiniteThreads(
         getToken,
       ),
     initialPageParam: 0,
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.CONTENT,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
@@ -102,24 +109,24 @@ export function useInfiniteThreads(
 
 export function useThread(id: string) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadDetail(id),
     queryFn: () => getThread(id, getToken),
-    enabled: authReady && !!id,
+    enabled: clerkLoaded && !!id,
     staleTime: STALE_TIMES.CONTENT,
   });
 }
 
 export function usePinnedThreads(category?: DiscussionCategorySlug) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.pinnedThreads(category),
     queryFn: () => getPinnedThreads(getToken, category),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.CONTENT,
   });
 }
@@ -136,14 +143,26 @@ export function useUserThreads(userId: string) {
   });
 }
 
-export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
+export function useBookmarkedThreads() {
   const { getToken } = useAuth();
   const authReady = useClerkReadyForDiscussionApi();
 
   return useQuery({
+    queryKey: discussionKeys.bookmarkedThreads(),
+    queryFn: () => getBookmarkedThreads({}, getToken),
+    enabled: authReady,
+    staleTime: STALE_TIMES.CONTENT,
+  });
+}
+
+export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
+  const { getToken } = useAuth();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
+
+  return useQuery({
     queryKey: discussionKeys.threadListWithLatestReply(options),
     queryFn: () => getThreadsWithLatestReply(options, getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.CONTENT,
   });
 }
@@ -154,12 +173,12 @@ export function useThreadsWithLatestReply(options?: GetThreadsOptions) {
 
 export function useReplies(threadId: string) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.threadReplies(threadId),
     queryFn: () => getRepliesForThread(threadId, getToken),
-    enabled: authReady && !!threadId,
+    enabled: clerkLoaded && !!threadId,
     staleTime: STALE_TIMES.CONTENT,
   });
 }
@@ -183,48 +202,48 @@ export function useUserReplies(userId: string) {
 export function useCategories(options?: { postable?: boolean }) {
   const { getToken } = useAuth();
   const postable = options?.postable ?? false;
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryList(postable),
     queryFn: () => getCategories(getToken, { postable }),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useCategory(slug: string) {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryDetail(slug),
     queryFn: () => getCategory(slug, getToken),
-    enabled: authReady && !!slug,
+    enabled: clerkLoaded && !!slug,
     staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useDefaultCategory() {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryDefault(),
     queryFn: () => getDefaultCategory(getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.REFERENCE,
   });
 }
 
 export function useCategoryStats() {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.categoryStats(),
     queryFn: () => getCategoryStatsAggregated(getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.STATS,
   });
 }
@@ -235,12 +254,12 @@ export function useCategoryStats() {
 
 export function useDiscussionSettings(): DiscussionSettings | undefined {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   const { data } = useQuery({
     queryKey: ['discussion-settings'] as const,
     queryFn: () => getDiscussionSettings(getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.REFERENCE,
   });
 
@@ -282,12 +301,12 @@ export function useUserBadge(id: string) {
 
 export function useForumStats() {
   const { getToken } = useAuth();
-  const authReady = useClerkReadyForDiscussionApi();
+  const clerkLoaded = useClerkLoadedForDiscussionApi();
 
   return useQuery({
     queryKey: discussionKeys.forumStats(),
     queryFn: () => getForumStats(getToken),
-    enabled: authReady,
+    enabled: clerkLoaded,
     staleTime: STALE_TIMES.STATS,
   });
 }
@@ -449,6 +468,7 @@ export function useBookmarkThread() {
     },
     onSettled: (_, __, id) => {
       invalidateThread(queryClient, id);
+      queryClient.invalidateQueries({ queryKey: discussionKeys.bookmarkedThreads() });
     },
   });
 }

@@ -17,11 +17,13 @@ interface ThreadActionsProps extends HTMLAttributes<HTMLDivElement> {
   isUpvoted?: boolean;
   isBookmarked?: boolean;
   canDelete?: boolean;
+  canEdit?: boolean;
   onUpvote?: () => void;
   onBookmark?: () => void;
   onShare?: (platform: string) => void;
   onReport?: () => void;
   onDelete?: () => void;
+  onEdit?: () => void;
   onReplyButtonClick?: () => void;
   replyCount?: number;
 }
@@ -31,6 +33,10 @@ const formatReplyCount = (count: number): string => {
   if (count === 1) return '1 reply';
   return `${count} replies`;
 };
+
+/** Matches ShareDropdown trigger: bordered 44×44 icon control. */
+const threadActionIconButtonClass =
+  'flex items-center justify-center rounded-lg border transition-all duration-200 bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20 min-w-[44px] min-h-[44px] p-2';
 
 /**
  * Thread actions bar - upvote, bookmark, share, report.
@@ -42,11 +48,13 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
     isUpvoted = false,
     isBookmarked = false,
     canDelete = false,
+    canEdit = false,
     onUpvote,
     onBookmark,
     onShare,
     onReport,
     onDelete,
+    onEdit,
     onReplyButtonClick,
     replyCount = 0,
     className,
@@ -85,13 +93,24 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
         {/* Share Dropdown */}
         <ShareDropdown threadId={thread.id} threadTitle={thread.title} />
 
+        {/* Edit Button (author only) */}
+        {canEdit && onEdit && (
+          <Tooltip content="Edit thread">
+            <button
+              type="button"
+              onClick={onEdit}
+              className={threadActionIconButtonClass}
+              aria-label="Edit thread"
+            >
+              <Icon icon="lucide:pencil" className="w-5 h-5" />
+            </button>
+          </Tooltip>
+        )}
+
         {/* More Options Menu (Report) */}
         <Menu as="div" className="relative">
           <Tooltip content="More">
-            <Menu.Button
-              className="flex items-center justify-center w-11 h-11 text-forest/60 hover:text-forest hover:bg-sage-light rounded-lg transition-colors"
-              aria-label="More options"
-            >
+            <Menu.Button className={threadActionIconButtonClass} aria-label="More options">
               <Icon icon="lucide:more-horizontal" className="w-5 h-5" />
             </Menu.Button>
           </Tooltip>
@@ -110,9 +129,11 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
                 <Menu.Item>
                   {({ active }) => (
                     <ReportButton
+                      variant="menu"
+                      menuLabel="Report thread"
                       onReport={onReport}
                       className={cn(
-                        'w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md',
+                        'w-full px-3 py-2 rounded-md',
                         active ? 'bg-sage-light text-forest' : 'text-forest/70'
                       )}
                     />

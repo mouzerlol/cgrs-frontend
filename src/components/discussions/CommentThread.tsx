@@ -73,6 +73,7 @@ interface CommentThreadProps {
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: (replyId: string) => void;
   onDelete?: (replyId: string) => void;
+  onEdit?: (replyId: string, body: string) => void | Promise<void>;
   upvotedReplies?: Set<string>;
   currentUserId?: string;
 }
@@ -85,6 +86,7 @@ const CommentThread = memo(function CommentThread({
   onReply,
   onReport,
   onDelete,
+  onEdit,
   upvotedReplies = new Set(),
   currentUserId,
 }: CommentThreadProps) {
@@ -184,6 +186,7 @@ const CommentThread = memo(function CommentThread({
               onReply={onReply}
               onReport={onReport ? () => onReport(reply.id) : undefined}
               onDelete={onDelete ? () => onDelete(reply.id) : undefined}
+              onEdit={onEdit ? (body: string) => onEdit(reply.id, body) : undefined}
               showReplyForm
               isAuthor={isAuthor}
             />
@@ -209,6 +212,7 @@ const CommentThread = memo(function CommentThread({
               onReply={onReply}
               onReport={onReport}
               onDelete={onDelete}
+              onEdit={onEdit}
               upvotedReplies={upvotedReplies}
               currentUserId={currentUserId}
             />

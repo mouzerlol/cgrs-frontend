@@ -74,11 +74,9 @@ describe('Root Layout Metadata', () => {
   });
 
   it('includes favicon icons', () => {
-    expect(metadata.icons).toBeDefined();
-    const icons = metadata.icons as Record<string, unknown>;
-    expect(icons.icon).toBeTruthy();
-    expect(icons.shortcut).toBeTruthy();
-    expect(icons.apple).toBeTruthy();
+    // Icons come from app/icon.svg (and public/favicon.svg for /favicon.svg), not from metadata.icons.
+    // Next.js injects the tab favicon from the app directory automatically.
+    expect(metadata.icons).toBeUndefined();
   });
 
   it('does not include Font Awesome CDN reference', () => {

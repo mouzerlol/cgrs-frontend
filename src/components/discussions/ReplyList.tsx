@@ -12,6 +12,7 @@ interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: (replyId: string) => void;
   onDelete?: (replyId: string) => void;
+  onEdit?: (replyId: string, body: string) => void | Promise<void>;
   upvotedReplies?: Set<string>;
   currentUserId?: string;
 }
@@ -27,6 +28,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     onReply,
     onReport,
     onDelete,
+    onEdit,
     upvotedReplies = new Set(),
     currentUserId,
     className,
@@ -66,6 +68,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
               onReply={onReply}
               onReport={onReport}
               onDelete={onDelete}
+              onEdit={onEdit}
               upvotedReplies={upvotedReplies}
               currentUserId={currentUserId}
             />

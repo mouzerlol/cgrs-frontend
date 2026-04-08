@@ -18,13 +18,16 @@ interface ThreadDetailProps extends HTMLAttributes<HTMLDivElement> {
   upvotedReplies?: Set<string>;
   currentUserId?: string;
   canDeleteThread?: boolean;
+  canEditThread?: boolean;
   onUpvote?: () => void;
   onBookmark?: () => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
   onReport?: () => void;
   onShare?: (platform: string) => void;
   onDeleteThread?: () => void;
+  onEditThread?: () => void;
   onDeleteReply?: (replyId: string) => void;
+  onEditReply?: (replyId: string, body: string) => void | Promise<void>;
   onUpvoteReply?: (replyId: string) => void;
   onReportReply?: (replyId: string) => void;
   isSubmittingReply?: boolean;
@@ -46,13 +49,16 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
     upvotedReplies = new Set(),
     currentUserId,
     canDeleteThread = false,
+    canEditThread = false,
     onUpvote,
     onBookmark,
     onReply,
     onReport,
     onShare,
     onDeleteThread,
+    onEditThread,
     onDeleteReply,
+    onEditReply,
     onUpvoteReply,
     onReportReply,
     isSubmittingReply = false,
@@ -102,6 +108,8 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
               onReport={onReport}
               onDelete={onDeleteThread}
               canDelete={canDeleteThread}
+              canEdit={canEditThread}
+              onEdit={onEditThread}
               replyCount={thread.replyCount}
               onReplyButtonClick={handleReplyButtonClick}
             />
@@ -117,6 +125,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
             onReply={onReply}
             onReport={onReportReply}
             onDelete={onDeleteReply}
+            onEdit={onEditReply}
             upvotedReplies={upvotedReplies}
           />
         </section>

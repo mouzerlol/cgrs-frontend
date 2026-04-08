@@ -12,6 +12,10 @@ interface ReportButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md';
   /** Show label text */
   showLabel?: boolean;
+  /** Toolbar icon button vs full-width menu row (icon + label, matches other menu items). */
+  variant?: 'toolbar' | 'menu';
+  /** Label when `variant` is menu (e.g. "Report thread" to match "Delete thread"). */
+  menuLabel?: string;
 }
 
 /**
@@ -24,6 +28,8 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
     onReport,
     size = 'md',
     showLabel = false,
+    variant = 'toolbar',
+    menuLabel = 'Report',
     className,
     disabled,
     ...props
@@ -45,6 +51,8 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
     };
 
     const sizes = sizeClasses[size];
+    const isMenu = variant === 'menu';
+    const showToolbarLabel = showLabel || isMenu;
 
     const handleReport = () => {
       if (reported) return;
@@ -57,37 +65,43 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
       setTimeout(() => setShowToast(false), 3000);
     };
 
+    const button = (
+      <button
+        ref={ref}
+        type="button"
+        onClick={handleReport}
+        disabled={disabled || reported}
+        className={cn(
+          isMenu
+            ? 'flex w-full items-center gap-3 text-left font-normal text-sm'
+            : 'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
+          !isMenu && sizes.button,
+          isMenu && reported && 'text-forest/40 cursor-not-allowed',
+          !isMenu &&
+            (reported
+              ? 'bg-sage-light text-forest/40 border-sage cursor-not-allowed'
+              : 'bg-transparent text-forest/40 border-transparent hover:text-terracotta hover:bg-terracotta/5'),
+          disabled && 'opacity-50 cursor-not-allowed',
+          className
+        )}
+        aria-label={reported ? 'Already reported' : 'Report content'}
+        {...props}
+      >
+        <Icon
+          icon={reported ? 'lucide:flag-off' : 'lucide:flag'}
+          className={isMenu ? 'w-4 h-4 shrink-0' : sizes.icon}
+        />
+        {showToolbarLabel && (
+          <span className={cn(!isMenu && 'font-medium', !isMenu && sizes.text)}>
+            {reported ? 'Reported' : isMenu ? menuLabel : 'Report'}
+          </span>
+        )}
+      </button>
+    );
+
     return (
       <div className="relative">
-        <Tooltip content={reported ? 'Reported' : 'Report'}>
-          <button
-            ref={ref}
-            type="button"
-            onClick={handleReport}
-            disabled={disabled || reported}
-            className={cn(
-              'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
-              sizes.button,
-              reported
-                ? 'bg-sage-light text-forest/40 border-sage cursor-not-allowed'
-                : 'bg-transparent text-forest/40 border-transparent hover:text-terracotta hover:bg-terracotta/5',
-              disabled && 'opacity-50 cursor-not-allowed',
-              className
-            )}
-            aria-label={reported ? 'Already reported' : 'Report content'}
-            {...props}
-          >
-            <Icon
-              icon={reported ? 'lucide:flag-off' : 'lucide:flag'}
-              className={sizes.icon}
-            />
-            {showLabel && (
-              <span className={cn('font-medium', sizes.text)}>
-                {reported ? 'Reported' : 'Report'}
-              </span>
-            )}
-          </button>
-        </Tooltip>
+        {isMenu ? button : <Tooltip content={reported ? 'Reported' : 'Report'}>{button}</Tooltip>}
 
         {/* Toast notification */}
         {showToast && (

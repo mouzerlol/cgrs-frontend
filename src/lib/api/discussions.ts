@@ -95,6 +95,7 @@ interface ApiThreadResponse {
   author: ApiForumUser;
   created_at: string;
   updated_at: string | null;
+  is_edited: boolean;
   upvotes: number;
   reply_count: number;
   is_pinned: boolean;
@@ -118,6 +119,7 @@ interface ApiReplyResponse {
   author: ApiForumUser;
   created_at: string;
   updated_at: string | null;
+  is_edited: boolean;
   depth: number;
   upvotes: number;
   is_deleted: boolean;
@@ -231,6 +233,7 @@ function mapThreadResponse(api: ApiThreadResponse): Thread {
     author: mapForumUser(api.author),
     createdAt: api.created_at,
     updatedAt: api.updated_at ?? undefined,
+    isEdited: api.is_edited,
     upvotes: api.upvotes,
     upvotedBy: [],
     replyCount: api.reply_count,
@@ -264,6 +267,7 @@ function mapReplyResponse(api: ApiReplyResponse): Reply {
     author: mapForumUser(api.author),
     createdAt: api.created_at,
     updatedAt: api.updated_at ?? undefined,
+    isEdited: api.is_edited,
     upvotes: api.upvotes,
     upvotedBy: [],
     reportedBy: [],
@@ -613,12 +617,23 @@ export async function closePoll(threadId: string, getToken: () => Promise<string
 
 export async function updateThread(
   id: string,
-  data: { title?: string; body?: string },
+  data: {
+    title?: string;
+    body?: string;
+    imageIds?: string[];
+    pollOptions?: string[];
+    allowMultiple?: boolean;
+    removePoll?: boolean;
+  },
   getToken: () => Promise<string | null>,
 ): Promise<Thread> {
   const payload: Record<string, unknown> = {};
   if (data.title !== undefined) payload.title = data.title;
   if (data.body !== undefined) payload.body = data.body;
+  if (data.imageIds !== undefined) payload.image_ids = data.imageIds;
+  if (data.pollOptions !== undefined) payload.poll_options = data.pollOptions;
+  if (data.allowMultiple !== undefined) payload.allow_multiple = data.allowMultiple;
+  if (data.removePoll !== undefined) payload.remove_poll = data.removePoll;
 
   const response = await apiRequest<ApiThreadResponse>(`${API_PATH}/${id}`, getToken, {
     method: 'PATCH',
@@ -654,6 +669,28 @@ export async function bookmarkThread(
     method: 'POST',
   });
   return response.bookmarked;
+}
+
+export async function getBookmarkedThreads(
+  options: { limit?: number; offset?: number } = {},
+  getToken: () => Promise<string | null>,
+): Promise<GetThreadsResult> {
+  const params = new URLSearchParams();
+  if (options.offset !== undefined) params.set('offset', String(options.offset));
+  if (options.limit !== undefined) params.set('limit', String(options.limit));
+
+  const queryString = params.toString();
+  const path = `${API_PATH}/bookmarks${queryString ? `?${queryString}` : ''}`;
+
+  const response = await apiRequest<ApiPaginatedThreads>(path, getToken);
+
+  return {
+    threads: response.items.map(mapThreadResponse),
+    total: response.total,
+    hasMore: response.has_more,
+    offset: response.offset,
+    limit: response.limit,
+  };
 }
 
 export async function reportThread(

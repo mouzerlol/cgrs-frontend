@@ -31,6 +31,8 @@ export const discussionKeys = {
     [...discussionKeys.threads(), 'pinned', category] as const,
   userThreads: (userId: string) =>
     [...discussionKeys.threads(), 'user', userId] as const,
+  bookmarkedThreads: () =>
+    [...discussionKeys.threads(), 'bookmarked'] as const,
 
   replies: () => [...discussionKeys.all, 'replies'] as const,
   threadReplies: (threadId: string) =>

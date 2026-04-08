@@ -89,7 +89,7 @@ const ThreadHeader = forwardRef<HTMLDivElement, ThreadHeaderProps>(
               </time>
             </span>
 
-            {thread.updatedAt && thread.updatedAt !== thread.createdAt && (
+            {thread.isEdited && (
               <span className="flex items-center gap-1.5">
                 <Icon icon="lucide:pencil" className="w-4 h-4" />
                 <span>Edited</span>
