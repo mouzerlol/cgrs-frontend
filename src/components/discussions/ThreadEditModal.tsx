@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import { Modal } from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
-import type { Thread, Poll } from '@/types';
+import type { Thread } from '@/types';
 import PollEditor from './PollEditor';
 
 interface ThreadEditModalProps {
@@ -197,7 +197,6 @@ export function ThreadEditModal({
             </div>
             <PollEditor
               poll={{
-                id: '',
                 question: '',
                 options: pollOptions.length >= 2 ? pollOptions.map((t, i) => ({ id: String(i), text: t, votes: 0, voters: [] })) : [
                   { id: '1', text: '', votes: 0, voters: [] },
@@ -223,7 +222,7 @@ export function ThreadEditModal({
           </Button>
           <Button
             type="button"
-            variant="default"
+            variant="primary"
             onClick={handleSave}
             disabled={!canSave || isSaving}
           >

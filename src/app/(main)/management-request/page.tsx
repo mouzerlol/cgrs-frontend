@@ -1,18 +1,24 @@
-import { Metadata } from 'next';
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/sections/PageHeader';
 import { ManagementRequestForm } from '@/components/management-request/ManagementRequestForm';
+import { getInitialFormData, getPrefilledFormData, type PrefilledSource } from '@/lib/management-request';
+import type { ManagementCategoryId } from '@/types/management-request';
 
-export const metadata: Metadata = {
-  title: 'Management Request | Coronation Gardens',
-  description:
-    'Submit maintenance requests, report issues, or contact Coronation Gardens society management about parking, waste management, and more.',
-};
+function ManagementRequestPageContent() {
+  const searchParams = useSearchParams();
 
-/**
- * Management Request Portal page.
- * Allows residents to submit various types of requests to the body corporate committee.
- */
-export default function ManagementRequestPage() {
+  const category = (searchParams.get('category') ?? 'maintenance') as ManagementCategoryId;
+  const prefill = searchParams.get('prefill') as PrefilledSource | null;
+
+  const initialData = {
+    ...getInitialFormData(),
+    ...getPrefilledFormData(prefill ?? undefined),
+    category,
+  };
+
   return (
     <div>
       <PageHeader
@@ -22,13 +28,24 @@ export default function ManagementRequestPage() {
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
       />
-
-      {/* Match discussion: avoid global `.section` (xl/2xl vertical padding) which leaves a large gap under breadcrumbs */}
       <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
-          <ManagementRequestForm />
+          <ManagementRequestForm initialData={initialData} />
         </div>
       </section>
     </div>
+  );
+}
+
+/**
+ * Management Request Portal page.
+ * Allows residents to submit various types of requests to the body corporate committee.
+ * Supports URL params: ?category=<id>&prefill=<source>
+ */
+export default function ManagementRequestPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-bone" />}>
+      <ManagementRequestPageContent />
+    </Suspense>
   );
 }

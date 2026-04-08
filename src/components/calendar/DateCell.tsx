@@ -59,7 +59,7 @@ export function DateCell({
         !isInMonth && 'opacity-35 pointer-events-none',
         isToday && 'border-2 border-terracotta bg-terracotta/5',
         isSelected && 'border-2 border-sage bg-sage/15',
-        items.length > 0 && isInMonth && 'cursor-pointer hover:border-forest hover:shadow-[0_4px_12px_rgba(26,34,24,0.1)] focus:outline-none focus:shadow-[0_0_0_2px_theme(colors.terracotta)]'
+        items.length > 0 && isInMonth && 'cursor-pointer hover:border-forest hover:shadow-[0_4px_12px_rgba(26,34,24,0.1)] focus:outline-none focus:shadow-[0_0_0_2px_theme(colors.terracotta.DEFAULT)]'
       )}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

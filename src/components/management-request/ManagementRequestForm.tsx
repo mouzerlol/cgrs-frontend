@@ -54,14 +54,19 @@ function scrollToFirstError(errors: ManagementRequestErrors) {
   }
 }
 
+interface ManagementRequestFormProps {
+  /** Initial form data, e.g. from URL params. Defaults are merged with getInitialFormData(). */
+  initialData?: Partial<ManagementRequestFormData>;
+}
+
 /**
  * Main management request form container.
  * Handles form state, validation, and submission.
  * Uses folder-tab navigation on desktop, dropdown on mobile.
  */
-export function ManagementRequestForm() {
+export function ManagementRequestForm({ initialData }: ManagementRequestFormProps = {}) {
   const [formData, setFormData] = useState<ManagementRequestFormData>(
-    getInitialFormData()
+    { ...getInitialFormData(), ...initialData }
   );
   const [errors, setErrors] = useState<ManagementRequestErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

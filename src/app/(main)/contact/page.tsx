@@ -11,10 +11,39 @@ import committeeData from '@/data/committee.json';
 import siteConfig from '@/data/site-config.json';
 
 const QUICK_CONTACT_OPTIONS = [
-  { title: 'Report Issues', desc: 'Maintenance, parking, or other concerns', action: 'Report' },
-  { title: 'General Inquiry', desc: 'Questions about the community or services', action: 'Ask' },
-  { title: 'Committee Meeting', desc: 'Request to attend or speak at meetings', action: 'Request' },
+  {
+    title: 'Report Issues',
+    desc: 'Maintenance, parking, or other concerns',
+    action: 'Report',
+    category: 'complaints' as const,
+  },
+  {
+    title: 'General Inquiry',
+    desc: 'Questions about the community or services',
+    action: 'Ask',
+    category: 'general' as const,
+  },
+  {
+    title: 'Committee Meeting',
+    desc: 'Request to attend or speak at meetings',
+    action: 'Request',
+    category: 'general' as const,
+    prefill: 'committee-meeting' as const,
+  },
 ];
+
+/**
+ * Build the management request URL with category and optional prefill params.
+ */
+function getManagementRequestHref(
+  option: (typeof QUICK_CONTACT_OPTIONS)[number]
+): string {
+  const params = new URLSearchParams({ category: option.category });
+  if ('prefill' in option && option.prefill) {
+    params.set('prefill', option.prefill);
+  }
+  return `/management-request?${params.toString()}`;
+}
 
 const FAQ_ITEMS = [
   { q: 'How do I report maintenance issues?', a: `Use the contact form or email us directly at ${siteConfig.contact.email}. Please include details about the issue and its location.` },
@@ -93,7 +122,7 @@ export default function ContactPage() {
                         <p className="text-sm opacity-60">{option.desc}</p>
                       </div>
                       <Button variant="outline" size="sm" asChild>
-                        <Link href="#form">{option.action}</Link>
+                        <Link href={getManagementRequestHref(option)}>{option.action}</Link>
                       </Button>
                     </div>
                   ))}

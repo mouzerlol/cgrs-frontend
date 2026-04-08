@@ -118,3 +118,25 @@ export function getInitialFormData(): ManagementRequestFormData {
 export function formatCoordinates(lat: number, lng: number): string {
   return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 }
+
+/**
+ * Prefilled source types for management request forms
+ */
+export type PrefilledSource = 'committee-meeting';
+
+/**
+ * Get prefilled form data for specific sources.
+ * Used when linking from external pages (e.g., contact page quick options).
+ */
+export function getPrefilledFormData(
+  source?: PrefilledSource
+): Partial<ManagementRequestFormData> {
+  if (source === 'committee-meeting') {
+    return {
+      subject: 'Request to Attend Committee Meeting',
+      description:
+        'I would like to attend the upcoming committee meeting to:\n\n- Receive updates on community matters\n- Voice my opinion on agenda items\n\nPlease advise on the date, time, and location of the next meeting.\n\nThank you.',
+    };
+  }
+  return {};
+}

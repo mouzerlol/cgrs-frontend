@@ -1,20 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { FormInput } from '@/components/ui/FormInput';
 import { FormTextarea } from '@/components/ui/FormTextarea';
+import { TurnstileCaptcha } from '@/components/management-request/TurnstileCaptcha';
 import { ContactFormData } from '@/types';
+import { submitContactForm } from '@/lib/api/contact';
 
 interface ContactFormProps {
   onSubmit?: (data: ContactFormData) => void;
 }
 
 /**
- * Contact form with new design system styling.
+ * Contact form with new design system styling and Cloudflare Turnstile CAPTCHA.
  */
 export default function ContactForm({ onSubmit }: ContactFormProps) {
+  const { getToken } = useAuth();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -24,6 +28,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<ContactFormData>>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<ContactFormData> = {};
@@ -57,15 +62,33 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 
     if (!validateForm()) return;
 
+    // Require CAPTCHA for anonymous users
+    if (!captchaToken) {
+      setErrors({ message: 'Please complete the CAPTCHA verification.' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await submitContactForm(
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          captchaToken,
+        },
+        getToken,
+      );
+
       onSubmit?.(formData);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setCaptchaToken(null);
     } catch (error) {
       console.error('Form submission error:', error);
+      setErrors({ message: 'Failed to send message. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -80,13 +103,20 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
     }
   };
 
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+    if (errors.message && token) {
+      setErrors(prev => ({ ...prev, message: undefined }));
+    }
+  };
+
   if (isSubmitted) {
     return (
       <Card className="text-center p-8">
         <div className="text-5xl mb-4">✅</div>
         <h3 className="font-display text-2xl font-medium mb-4">Thank You!</h3>
         <p className="opacity-70 mb-6">
-          Your message has been sent successfully. We'll get back to you as soon as possible.
+          Your message has been sent successfully. We&apos;ll get back to you as soon as possible.
         </p>
         <Button variant="primary" onClick={() => setIsSubmitted(false)}>
           Send Another Message
@@ -144,11 +174,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
           error={errors.message}
         />
 
-        {/* hCaptcha placeholder */}
-        <div className="bg-sage-light border border-sage/30 rounded-lg p-6 text-center">
-          <p className="text-sm opacity-60 mb-1">hCaptcha will be integrated here</p>
-          <p className="text-xs opacity-40">Prevents spam and ensures legitimate submissions</p>
-        </div>
+        <TurnstileCaptcha onTokenChange={handleCaptchaChange} />
 
         <Button
           type="submit"

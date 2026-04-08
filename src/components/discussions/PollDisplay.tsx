@@ -264,7 +264,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                         ? 'bg-terracotta/[0.08] border-terracotta'
                         : 'bg-sage-light border-sage'
                       : 'hover:border-forest hover:bg-sage-light hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(26,34,24,0.08)]',
-                    isWinning && 'border-terracotta shadow-[0_0_0_1px_theme(colors.terracotta)]',
+                    isWinning && 'border-terracotta shadow-[0_0_0_1px_theme(colors.terracotta.DEFAULT)]',
                     (poll.isClosed || isPending) && 'cursor-default',
                     isPending && 'opacity-70'
                   )}
