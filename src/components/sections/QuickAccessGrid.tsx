@@ -1,22 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import Link from 'next/link';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { cn } from '@/lib/utils';
-import Icon from '@/components/ui/Icon';
 import { useAllFeatureFlags, useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
-
-interface CardType {
-  title: string;
-  description: string;
-  href: string;
-  type: 'large' | 'simple' | 'accent';
-  icon?: string;
-  backgroundImage?: string;
-  flagId?: string | null;
-}
+import { QuickAccessCardType } from '@/components/ui/QuickAccessCard';
+import BrutallyMinimalCard from '@/components/ui/experimental-cards/BrutallyMinimalCard';
 
 const DEFAULT_FLAG_IDS: Record<string, boolean> = {
   [FEATURE_FLAG_IDS.NAV_REPORT_ISSUE]: true,
@@ -26,7 +15,7 @@ const DEFAULT_FLAG_IDS: Record<string, boolean> = {
   [FEATURE_FLAG_IDS.NAV_MAP]: true,
 };
 
-const CARDS: CardType[] = [
+const CARDS: QuickAccessCardType[] = [
   {
     title: 'Report an Issue',
     description: 'Report maintenance & community issues',
@@ -141,10 +130,20 @@ export default function QuickAccessGrid() {
           <p className="mt-4 opacity-70">Access all resident services and community features instantly</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10">
-          {visibleCards.map((card, index) => (
-            <QuickAccessCard key={card.title} card={card} index={index} />
-          ))}
+        <div className="p-4 sm:p-8 bg-sage-light border border-black mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {visibleCards.map((card) => (
+              <BrutallyMinimalCard 
+                key={card.title}
+                title={card.title}
+                description={card.description}
+                href={card.href}
+                variant={card.type === 'large' ? 'large' : 'standard'}
+                icon={card.icon}
+                image={card.backgroundImage}
+              />
+            ))}
+          </div>
         </div>
 
       </div>
@@ -152,84 +151,3 @@ export default function QuickAccessGrid() {
   );
 }
 
-function QuickAccessCard({ card, index }: { card: CardType; index: number }) {
-  const [ref, isVisible] = useIntersectionObserver<HTMLAnchorElement>({ threshold: 0.1 });
-
-  const isLarge = card.type === 'large';
-  const isAccent = card.type === 'accent';
-  const hasPhotoBg = Boolean(card.backgroundImage);
-
-  return (
-    <Link
-      ref={ref}
-      href={card.href}
-      className={cn(
-        'group relative block p-lg bg-white rounded-card border border-forest/[0.08] transition-all duration-400 ease-out-custom overflow-hidden text-forest hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
-        isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
-        isAccent && 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark hover:border-terracotta-dark',
-        hasPhotoBg && !isAccent && 'text-white border-forest/20',
-        'fade-up',
-        isVisible && 'visible',
-      )}
-      style={{ transitionDelay: `${index * 0.08}s` }}
-    >
-      {hasPhotoBg && card.backgroundImage && (
-        <>
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-            style={{ backgroundImage: `url('${card.backgroundImage}')` }}
-          />
-          <div
-            className={cn(
-              'absolute inset-0',
-              isLarge
-                ? 'bg-gradient-to-t from-forest/[0.88] via-forest/45 to-forest/20'
-                : 'bg-gradient-to-br from-forest/80 to-forest/55',
-            )}
-          />
-        </>
-      )}
-
-      <div className={`relative z-10 h-full flex flex-col ${isLarge ? 'justify-end' : ''}`}>
-        {!isLarge && (
-          <div
-            className={cn(
-              'w-12 h-12 flex items-center justify-center rounded-xl mb-md transition-all duration-400 ease-out-custom group-hover:scale-105',
-              isAccent && '!bg-white/20',
-              !isAccent && hasPhotoBg && 'bg-terracotta group-hover:bg-terracotta-dark',
-              !isAccent && !hasPhotoBg && 'bg-sage-light group-hover:bg-sage',
-            )}
-          >
-            <Icon
-              name={card.icon as import('@/components/ui/Icon').IconName}
-              size="md"
-              className={cn(isAccent ? 'stroke-bone' : hasPhotoBg ? 'stroke-white' : 'stroke-forest')}
-            />
-          </div>
-        )}
-        {isLarge && (
-          <div className="w-14 h-14 flex items-center justify-center bg-terracotta rounded-2xl mb-4 transition-all duration-400 hover:scale-110 hover:rotate-[5deg]">
-            <Icon name="amenities" size="lg" className="stroke-white" />
-          </div>
-        )}
-        <h3
-          className={cn(
-            'font-display font-medium',
-            isLarge ? 'text-3xl md:text-[2.5rem] mb-2' : 'text-2xl mb-1',
-            hasPhotoBg && 'text-white',
-          )}
-        >
-          {card.title}
-        </h3>
-        <p
-          className={cn(
-            isLarge ? 'text-base' : 'text-sm',
-            hasPhotoBg ? 'text-white/90' : isLarge ? 'opacity-90' : 'opacity-70',
-          )}
-        >
-          {card.description}
-        </p>
-      </div>
-    </Link>
-  );
-}

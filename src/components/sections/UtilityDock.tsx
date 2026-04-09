@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useStaggeredReveal, useFadeUpObserver } from '@/hooks/useIntersectionObserver';
 import Icon, { IconName } from '@/components/ui/Icon';
-import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
+import { useAllFeatureFlags, useFeatureFlag } from '@/hooks/useFeatureFlag';
+import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 import { cn } from '@/lib/utils';
 
 export interface UtilityDockItem {
@@ -35,9 +36,10 @@ const DEFAULT_FLAG_IDS = {
  * Overlaps hero section with elevated shadow.
  * Pass custom items or use defaults from constants.
  * Set useIconComponent=true to use Icon component instead of images.
- * Items can be filtered via feature flags.
+ * The section respects `home.utility-dock`; individual tiles respect matching nav flags.
  */
 export default function UtilityDock({ items, useIconComponent = false, overlapHero = true }: UtilityDockProps) {
+  const utilityDockSectionEnabled = useFeatureFlag(FEATURE_FLAG_IDS.HOME_UTILITY_DOCK);
   const setRef = useStaggeredReveal(200, 100);
   useFadeUpObserver();
   const featureFlags = useAllFeatureFlags();
@@ -83,6 +85,10 @@ export default function UtilityDock({ items, useIconComponent = false, overlapHe
       return featureFlags[item.flagId] ?? DEFAULT_FLAG_IDS[item.flagId as keyof typeof DEFAULT_FLAG_IDS] ?? true;
     });
   }, [dockItems, featureFlags]);
+
+  if (!utilityDockSectionEnabled) {
+    return null;
+  }
 
   if (visibleItems.length === 0) {
     return null;

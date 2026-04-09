@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { LayoutGrid, ClipboardList, Scale } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
+import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
 import portfoliosData from '@/data/portfolios.json';
 import boardsData from '@/data/boards.json';
 import decisionsData from '@/data/decisions.json';
@@ -90,41 +91,23 @@ export default function WorkManagementHub() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((feature, index) => {
-                const styles = colorMap[feature.color];
-                const Icon = feature.icon;
-                return (
+              {features.map((feature, index) => (
                   <motion.div
                     key={feature.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <Link href={feature.href} prefetch={true}>
-                      <div
-                        className={`relative rounded-[20px] p-6 border transition-all duration-400 cursor-pointer group ${styles.bg} ${styles.border} ${styles.hover}`}
-                      >
-                        <div className="flex items-start justify-between mb-5">
-                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${styles.iconBg}`}>
-                            <Icon className={`w-6 h-6 ${styles.iconColor}`} />
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles.badge}`}>
-                            {feature.count} {feature.countLabel}
-                          </span>
-                        </div>
-
-                        <h3 className="font-display text-xl font-semibold text-forest mb-2 group-hover:text-terracotta transition-colors">
-                          {feature.name}
-                        </h3>
-
-                        <p className="text-forest/70 text-sm leading-relaxed">
-                          {feature.description}
-                        </p>
-                      </div>
-                    </Link>
+                    <BrutallyMinimalHubCard
+                      name={feature.name}
+                      description={feature.description}
+                      icon={feature.icon}
+                      href={feature.href}
+                      count={feature.count}
+                      countLabel={feature.countLabel}
+                    />
                   </motion.div>
-                );
-              })}
+                ))}
             </div>
           </motion.div>
         </div>

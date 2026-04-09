@@ -68,12 +68,12 @@ describe('Page Metadata - SEO Requirements', () => {
       });
     }
 
-    const managementPage = await import('../(main)/management-request/page');
-    if (managementPage.metadata) {
+    const managementLayout = await import('../(main)/management-request/layout');
+    if (managementLayout.metadata) {
       pages.push({
         route: '/management-request',
-        title: extractTitle(managementPage.metadata),
-        description: (managementPage.metadata as Metadata).description as string,
+        title: extractTitle(managementLayout.metadata),
+        description: (managementLayout.metadata as Metadata).description as string,
       });
     }
 

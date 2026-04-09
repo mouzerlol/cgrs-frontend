@@ -12,16 +12,16 @@ vi.mock('@/hooks/useIntersectionObserver', () => ({
 }));
 
 describe('QuickAccessGrid', () => {
-  it('renders CGRS Calendar tile with photo background and white title text', () => {
+  it('renders CGRS Calendar tile with photo and link to calendar', () => {
     render(<QuickAccessGrid />);
 
     const link = screen.getByRole('link', { name: /CGRS Calendar/i });
     expect(link).toHaveAttribute('href', '/calendar');
 
-    const bgLayer = link.querySelector('[style*="cgrs-calendar.png"]');
-    expect(bgLayer).toBeTruthy();
+    const img = screen.getByRole('img', { name: /CGRS Calendar/i });
+    expect(img).toHaveAttribute('src', expect.stringContaining('cgrs-calendar'));
 
     const title = link.querySelector('h3');
-    expect(title).toHaveClass('text-white');
+    expect(title).toHaveTextContent('CGRS Calendar');
   });
 });

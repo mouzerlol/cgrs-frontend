@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
+import { BrutallyMinimalHeroHeadingCard } from '@/components/sections/BrutallyMinimalHeroHeadingCard';
 
 interface PageHeaderProps {
   title: string;
@@ -44,14 +45,10 @@ export default function PageHeader({
   const sectionClasses = isFlush
     ? 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden'
     : isCompact
-      ? 'page-header pt-20 pb-5 md:pt-24 md:pb-6 relative overflow-hidden'
-      : 'page-header pt-20 pb-6 md:pt-24 md:pb-8 relative overflow-hidden';
+      ? 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden'
+      : 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden';
 
   const containerMinHeight = isCompact ? 'min-h-[100px]' : 'min-h-[200px]';
-  const cardPadding = isCompact ? 'p-3 md:p-4' : 'p-4 md:p-6';
-  const titleSize = isCompact
-    ? 'clamp(1.25rem, 3vw, 1.5rem)'
-    : 'clamp(1.5rem, 4vw, 2rem)';
 
   return (
     <>
@@ -71,36 +68,19 @@ export default function PageHeader({
         </div>
       )}
 
-      {/* Floating Glassmorphism Card */}
-      <div className={`container relative z-10 flex items-center ${containerMinHeight}`}>
+      {/* Floating Card */}
+      <div className={`container relative z-10 flex items-end ${containerMinHeight}`}>
         <div
           ref={ref}
-          className={`fade-up ${isVisible ? 'visible' : ''}`}
+          className={`fade-up w-full ${isVisible ? 'visible' : ''}`}
         >
-          <div className="max-w-xl">
-            {/* Card header - glassmorphism */}
-            <div className={`bg-bone/50 backdrop-blur-md rounded-t-xl ${cardPadding}`}>
-              {eyebrow && (
-                <span className="text-eyebrow !text-bone inline-block px-2 py-0.5 mb-2 bg-terracotta rounded-md">
-                  {eyebrow}
-                </span>
-              )}
-              <h1
-                className="font-semibold text-forest leading-tight truncate whitespace-nowrap"
-                style={{ fontSize: titleSize }}
-              >
-                {title}
-              </h1>
-            </div>
-            {/* Card body - solid sage-light */}
-            {description && (
-              <div className={`bg-sage-light rounded-b-xl ${cardPadding} -mt-1`}>
-                <p className="text-sm leading-normal opacity-80 text-forest/90 truncate whitespace-nowrap">
-                  {description}
-                </p>
-              </div>
-            )}
-          </div>
+          <BrutallyMinimalHeroHeadingCard
+            title={title}
+            eyebrow={eyebrow}
+            description={description}
+            size={isCompact ? 'sm' : 'md'}
+            className="max-w-xl"
+          />
         </div>
       </div>
     </section>
