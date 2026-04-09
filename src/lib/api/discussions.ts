@@ -522,7 +522,8 @@ export async function getDiscussionAttachmentDownloadUrl(
 /** Shown when the browser blocks the presigned PUT (CSP, CORS, offline, TLS, etc.). */
 const R2_DIRECT_UPLOAD_CORS_HINT =
   'Check Content-Security-Policy connect-src includes https://*.r2.cloudflarestorage.com for fetch() uploads. ' +
-  'If CSP is fine, allow your app origin on the R2 bucket CORS (PUT, GET, HEAD, OPTIONS; AllowedHeaders e.g. Content-Type or *). ' +
+  'If CSP is fine, allow every browser origin you use (e.g. https://www.example.com and https://example.com) on the R2 bucket CORS ' +
+  '(PUT, GET, HEAD, OPTIONS; AllowedHeaders e.g. Content-Type or *). ' +
   'https://developers.cloudflare.com/r2/buckets/cors/';
 
 /**

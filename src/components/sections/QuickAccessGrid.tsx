@@ -50,6 +50,7 @@ const CARDS: CardType[] = [
     href: '/blog',
     type: 'simple',
     icon: 'edit',
+    backgroundImage: '/images/quick-access/committee-blog.png',
     flagId: FEATURE_FLAG_IDS.NAV_BLOG,
   },
   {
@@ -58,6 +59,7 @@ const CARDS: CardType[] = [
     href: '/calendar',
     type: 'simple',
     icon: 'calendar',
+    backgroundImage: '/images/quick-access/cgrs-calendar.png',
     flagId: FEATURE_FLAG_IDS.NAV_CALENDAR,
   },
   {

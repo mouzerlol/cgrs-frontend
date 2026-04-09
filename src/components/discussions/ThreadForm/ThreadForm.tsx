@@ -20,7 +20,7 @@ import { LinkInput } from './LinkInput';
 import { PollBuilder } from './PollBuilder';
 import { ThreadVisibilitySelect } from './ThreadVisibilitySelect';
 import type { ThreadFormData } from './types';
-import { ApiError } from '@/lib/api/client';
+import { threadSubmissionErrorMessage } from '@/lib/api/client';
 
 interface NewThreadFormProps {
   onSubmit?: (data: ThreadFormData) => Promise<void> | void;
@@ -131,11 +131,7 @@ export function ThreadForm({
         router.push('/discussion');
       }
     } catch (error) {
-      const message =
-        error instanceof ApiError
-          ? error.message
-          : 'Failed to create thread. Please try again.';
-      setSubmitError(message);
+      setSubmitError(threadSubmissionErrorMessage(error));
       console.error('Thread submission error:', error);
     } finally {
       setIsSubmitting(false);

@@ -47,6 +47,22 @@ export class ApiError extends Error {
   }
 }
 
+const THREAD_SUBMISSION_FALLBACK = 'Failed to create thread. Please try again.';
+
+/**
+ * Maps mutation errors to a user-visible string. Plain Errors (e.g. R2 direct-upload
+ * failures, CORS) must surface {@link Error.message}; only API HTTP errors use {@link ApiError}.
+ */
+export function threadSubmissionErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return THREAD_SUBMISSION_FALLBACK;
+}
+
 /**
  * Make an authenticated request to the backend API.
  * Must be called from a component/hook that has access to a getToken function.
