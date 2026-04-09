@@ -26,7 +26,7 @@ const ABOUT_DESCRIPTION = `Coronation Gardens is a resident community in the hea
 
 /**
  * Homepage with new design system.
- * Sections: Hero, UtilityDock, About, Events, News, QuickAccess.
+ * Sections: Hero, About, QuickAccess, Events, News, UtilityDock.
  */
 export default function HomePage() {
   const latestNews = getLatestArticles(newsData.articles as NewsArticle[], 3);
@@ -45,9 +45,6 @@ export default function HomePage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      {/* Floating Utility Dock */}
-      <UtilityDock />
-
       {/* About Section */}
       <About
         title="Welcome to Coronation Gardens Resident Society"
@@ -62,6 +59,9 @@ export default function HomePage() {
 
       {/* News Grid Section */}
       <NewsGrid articles={latestNews} />
+
+      {/* Utility dock below community news */}
+      <UtilityDock overlapHero={false} />
     </div>
   );
 }

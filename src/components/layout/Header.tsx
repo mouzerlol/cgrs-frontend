@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, Fragment, useMemo, useRef } from 'react';
+import { useState, useEffect, Fragment, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
-import { SignInButton, useAuth } from '@clerk/nextjs';
-import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
+import { SignInButton, useAuth, useUser, UserAvatar } from '@clerk/nextjs';
+import { SignOutButton } from '@clerk/nextjs';
+import { Settings, LogOut } from 'lucide-react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
-import { formatRole, isNavItemVisible } from '@/lib/auth';
+import { formatRole, isNavItemVisible, canAccessManagement } from '@/lib/auth';
+import { getNotificationCount } from '@/lib/api/verification';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
@@ -29,6 +31,34 @@ export default function Header() {
   const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const { data: community } = useCommunity();
   const featureFlags = useAllFeatureFlags();
+  const { getToken } = useAuth();
+
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    async function loadNotificationCount() {
+      if (!isLoaded || !isSignedIn) return;
+      try {
+        const token = await getToken();
+        const data = await getNotificationCount(async () => token);
+        setNotificationCount(data.count);
+      } catch {
+        // Silently fail
+      }
+    }
+    loadNotificationCount();
+  }, [isLoaded, isSignedIn, getToken]);
+
+  const role = currentUser?.membership?.role;
+  const isSuperadmin = currentUser?.is_superadmin ?? false;
+  const canSeeSystemSettings = canAccessManagement(role, isSuperadmin);
+
+  const [afterSignOutUrl, setAfterSignOutUrl] = useState('/');
+
+  useEffect(() => {
+    const o = window.location.origin;
+    setAfterSignOutUrl(`${o}/login/?redirect_url=${encodeURIComponent(`${o}/`)}`);
+  }, []);
 
   const mobileNavItems = useMemo(() => {
     const items = ALL_NAV_ITEMS.filter((item) =>
@@ -69,9 +99,7 @@ export default function Header() {
 
       {/* Mobile: Resident Login visible in header so it's discoverable without opening menu */}
       <div className="md:hidden flex items-center gap-2 shrink-0">
-        {isLoaded && lastSignedIn ? (
-          <ClerkAppUserButton />
-        ) : (
+        {isLoaded && lastSignedIn ? null : (
           <SignInButton mode="redirect">
             <span
               role="button"
@@ -196,17 +224,51 @@ export default function Header() {
                   {/* Mobile: Auth */}
                   <div className="mt-auto mb-8">
                     {isLoaded && lastSignedIn ? (
-                      <div className="flex flex-col gap-0.5">
-                        <div className="flex items-center gap-3">
-                          <ClerkAppUserButton />
-                          <span className="text-sm text-bone/70">
-                            {currentUser?.membership?.role ? formatRole(currentUser.membership.role) : 'My Account'}
-                          </span>
-                        </div>
-                        {community?.name && (
-                          <span className="text-xs text-bone/50 pl-1">{community.name}</span>
-                        )}
-                      </div>
+                      <>
+                        {/* Flattened menu items - no nested dropdown */}
+                        <nav className="space-y-1">
+                          <Link
+                            href="/profile"
+                            onClick={closeMenu}
+                            className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                          >
+                            <div className="w-6 h-6 shrink-0 flex items-center justify-center rounded-full overflow-hidden">
+                              <UserAvatar />
+                            </div>
+                            <span className="font-medium">My Profile</span>
+                            {notificationCount > 0 && (
+                              <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-bone">
+                                {notificationCount > 9 ? '9+' : notificationCount}
+                              </span>
+                            )}
+                          </Link>
+
+                          {canSeeSystemSettings && (
+                            <Link
+                              href="/settings/system"
+                              onClick={closeMenu}
+                              className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                            >
+                              <div className="w-6 h-6 shrink-0 flex items-center justify-center">
+                                <Settings className="h-5 w-5 text-current" aria-hidden="true" />
+                              </div>
+                              <span className="font-medium">System Settings</span>
+                            </Link>
+                          )}
+
+                          <SignOutButton redirectUrl={afterSignOutUrl}>
+                            <button
+                              type="button"
+                              className="flex w-full items-center gap-3 px-5 py-4 rounded-lg text-left text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                            >
+                              <div className="w-6 h-6 shrink-0 flex items-center justify-center">
+                                <LogOut className="h-5 w-5 text-current" aria-hidden="true" />
+                              </div>
+                              <span className="font-medium">Sign out</span>
+                            </button>
+                          </SignOutButton>
+                        </nav>
+                      </>
                     ) : (
                       <SignInButton mode="redirect">
                         <span

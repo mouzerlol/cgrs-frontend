@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useStaggeredReveal, useFadeUpObserver } from '@/hooks/useIntersectionObserver';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
+import { cn } from '@/lib/utils';
 
 export interface UtilityDockItem {
   name: string;
@@ -18,6 +19,8 @@ export interface UtilityDockItem {
 interface UtilityDockProps {
   items?: UtilityDockItem[];
   useIconComponent?: boolean;
+  /** When true (default), negative top margin overlaps the hero. When false, dock sits in normal flow (e.g. below news). */
+  overlapHero?: boolean;
 }
 
 const DEFAULT_FLAG_IDS = {
@@ -34,7 +37,7 @@ const DEFAULT_FLAG_IDS = {
  * Set useIconComponent=true to use Icon component instead of images.
  * Items can be filtered via feature flags.
  */
-export default function UtilityDock({ items, useIconComponent = false }: UtilityDockProps) {
+export default function UtilityDock({ items, useIconComponent = false, overlapHero = true }: UtilityDockProps) {
   const setRef = useStaggeredReveal(200, 100);
   useFadeUpObserver();
   const featureFlags = useAllFeatureFlags();
@@ -86,13 +89,18 @@ export default function UtilityDock({ items, useIconComponent = false }: Utility
   }
 
   return (
-    <section className="relative -mt-lg mx-auto py-lg px-md md:p-md bg-white rounded-dock shadow-dock w-fit max-w-full z-[100] fade-up">
-      <div className="flex flex-wrap justify-center gap-md sm:gap-5 sm:flex-nowrap md:gap-md">
+    <section
+      className={cn(
+        'utility-dock relative mx-auto py-lg px-md md:p-md bg-white rounded-dock shadow-dock w-fit max-w-full z-[100] fade-up',
+        overlapHero ? '-mt-lg' : 'mt-lg',
+      )}
+    >
+      <div className="utility-grid flex flex-wrap justify-center gap-md sm:gap-5 sm:flex-nowrap md:gap-md">
         {visibleItems.map((item, index) => (
           <Link
             key={item.name}
             href={item.href}
-            className="group flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl bg-transparent transition-all duration-300 ease-out-custom cursor-pointer w-[140px] sm:w-[160px] md:w-[180px] shrink-0 hover:-translate-y-1 hover:bg-sage-light"
+            className="utility-item group flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl bg-transparent transition-all duration-300 ease-out-custom cursor-pointer w-[140px] sm:w-[160px] md:w-[180px] shrink-0 hover:-translate-y-1 hover:bg-sage-light"
             aria-label={item.name}
             ref={setRef(index)}
           >
