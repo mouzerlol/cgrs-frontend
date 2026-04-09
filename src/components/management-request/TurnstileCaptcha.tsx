@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { normalizeTurnstileSiteKey } from '@/lib/turnstile';
 import { cn } from '@/lib/utils';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
@@ -95,7 +96,7 @@ export const TurnstileCaptcha = forwardRef<TurnstileCaptchaRef, TurnstileCaptcha
     }));
 
     useEffect(() => {
-      const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+      const sitekey = normalizeTurnstileSiteKey(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
       if (!sitekey) {
         setError('CAPTCHA not configured');
         return;
