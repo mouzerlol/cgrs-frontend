@@ -52,7 +52,7 @@ export function BrutallyMinimalHeroHeadingCard({
   return (
     <div 
       className={cn(
-        'bg-bone border-x border-t border-b-0 border-black text-black inline-flex flex-col rounded-t-2xl', 
+        'bg-bone text-black inline-flex flex-col rounded-t-2xl', 
         s.padding, 
         className
       )}

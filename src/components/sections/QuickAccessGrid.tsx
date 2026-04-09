@@ -130,7 +130,7 @@ export default function QuickAccessGrid() {
           <p className="mt-4 opacity-70">Access all resident services and community features instantly</p>
         </div>
 
-        <div className="p-4 sm:p-8 bg-sage-light border border-black mb-10">
+        <div className="p-4 sm:p-8 bg-black border border-black mb-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {visibleCards.map((card, index) => (
               <BrutallyMinimalCard 
