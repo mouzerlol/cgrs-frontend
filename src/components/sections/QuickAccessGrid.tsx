@@ -132,7 +132,7 @@ export default function QuickAccessGrid() {
 
         <div className="p-4 sm:p-8 bg-sage-light border border-black mb-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {visibleCards.map((card) => (
+            {visibleCards.map((card, index) => (
               <BrutallyMinimalCard 
                 key={card.title}
                 title={card.title}
@@ -141,6 +141,7 @@ export default function QuickAccessGrid() {
                 variant={card.type === 'large' ? 'large' : 'standard'}
                 icon={card.icon}
                 image={card.backgroundImage}
+                index={index}
               />
             ))}
           </div>

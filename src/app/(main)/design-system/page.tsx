@@ -550,8 +550,18 @@ export default function DesignSystemPage() {
                             description: 'Management of society funds, budgeting, and financial reporting.',
                             icon: 'wallet',
                             color: 'sage',
-                            lead: { id: 'user1', name: 'John Doe' },
-                            linkedBoardIds: ['b1', 'b2']
+                            tag: 'finance',
+                            lead: {
+                              id: 'user1',
+                              name: 'John Doe',
+                              avatar: '',
+                              role: 'Committee member',
+                            },
+                            members: [],
+                            sections: [],
+                            linkedBoardIds: ['b1', 'b2'],
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
                           }}
                         />
                       </div>
@@ -568,7 +578,6 @@ export default function DesignSystemPage() {
                             description: 'Tasks and activities related to annual spring cleaning.',
                             icon: 'M',
                             color: 'terracotta',
-                            portfolio_id: '1',
                             task_count: 12,
                             is_system: false,
                             created_at: new Date().toISOString(),
