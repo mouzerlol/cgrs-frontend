@@ -171,8 +171,8 @@ function CTASection() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-bone mb-4">Get in Touch</h2>
           <p className="text-lg opacity-80 mb-8">
-            Have questions about our community or want to learn more?
-            We'd love to hear from you.
+            Have questions about our community or want to learn more?{" "}
+            {"We'd love to hear from you."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="primary" size="lg" asChild>

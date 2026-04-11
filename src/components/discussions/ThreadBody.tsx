@@ -59,7 +59,7 @@ const formatBody = (body?: string) => {
   if (!body) return null;
 
   return (
-    <div className="prose prose-forest prose-sm max-w-none">
+    <div className="prose prose-forest prose-sm max-w-none mb-6">
       {body.split('\n').map((paragraph, index) => (
         <p key={index} className="text-forest/80 leading-relaxed">
           {paragraph}

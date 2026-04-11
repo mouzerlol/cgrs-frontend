@@ -64,7 +64,7 @@ export default function FooterNewsletter() {
                 Thank You!
               </h3>
               <p className="text-forest/70 mb-6">
-                You've been successfully subscribed to our newsletter.
+                {"You've been successfully subscribed to our newsletter."}
               </p>
               <Button
                 variant="outline"

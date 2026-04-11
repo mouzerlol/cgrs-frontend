@@ -10,9 +10,11 @@ function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  function QueryClientTestWrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  }
+  QueryClientTestWrapper.displayName = 'QueryClientTestWrapper';
+  return QueryClientTestWrapper;
 }
 
 vi.mock('next/navigation', () => ({

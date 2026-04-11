@@ -17,6 +17,7 @@ export default function RegisterPage() {
         title="Create Account"
         description="Create a new resident account to access community resources and stay connected with your neighbors."
         eyebrow="Resident Portal"
+        eyebrowIconKey="building2"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

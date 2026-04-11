@@ -10,7 +10,9 @@ export default function NotFound() {
           Page Not Found
         </h1>
         <p className="text-lg text-gray-600 mb-8">
-          Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.
+          {
+            "Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist."
+          }
         </p>
         <div className="space-y-4">
           <Button variant="primary" size="lg" asChild>

@@ -25,6 +25,7 @@ export default function MapPage() {
         title="Explore Coronation Gardens"
         description="Community boundaries, amenities, and points of interest in Māngere Bridge."
         eyebrow="Community Map"
+        eyebrowIconKey="map"
         backgroundImage="/images/mangere-mountain.jpg"
       />
       <Suspense fallback={<MapSkeleton />}>

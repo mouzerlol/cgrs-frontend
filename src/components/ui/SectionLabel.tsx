@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface SectionLabelProps {
@@ -16,8 +16,7 @@ const variantStyles = {
 const SectionLabel = forwardRef<HTMLElement, SectionLabelProps>(
   ({ children, variant = 'default', as: Tag = 'p', className, ...props }, ref) => (
     <Tag
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ref={ref as any}
+      ref={ref as never}
       className={cn(variantStyles[variant], className)}
       {...props}
     >

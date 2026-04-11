@@ -183,7 +183,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                                 setDeleteTargetId(comment.id);
                                 setDeleteError(null);
                               }}
-                              className="p-1.5 rounded-lg text-forest/50 hover:text-red-700 hover:bg-red-50 transition-colors"
+                              className="p-1.5 rounded-none text-forest/50 hover:text-red-700 hover:bg-red-50 transition-colors"
                               aria-label="Delete comment"
                             >
                               <Trash2 className="w-4 h-4" strokeWidth={2} aria-hidden />
@@ -194,13 +194,13 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                     </div>
 
                     {isEditing ? (
-                      <div className="space-y-2 rounded-2xl border border-sage/20 bg-white p-3.5 shadow-sm">
+                      <div className="space-y-2 rounded-none border border-sage/20 bg-white p-3.5 shadow-sm">
                         <textarea
                           value={editDraft}
                           onChange={(e) => setEditDraft(e.target.value)}
                           maxLength={COMMENT_MAX_LENGTH}
                           autoFocus
-                          className="w-full min-h-[100px] text-sm text-forest/80 bg-transparent border border-sage/30 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:border-terracotta/40 resize-y"
+                          className="w-full min-h-[100px] text-sm text-forest/80 bg-transparent border border-sage/30 rounded-none p-3 focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:border-terracotta/40 resize-y"
                           aria-label="Edit comment"
                         />
                         <div className="flex justify-between items-center gap-2 flex-wrap">
@@ -221,7 +221,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                                 setEditError(null);
                               }}
                               disabled={updateCommentMutation.isPending}
-                              className="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl border border-sage/30 text-forest/70 hover:bg-sage-light/30 transition-colors disabled:opacity-50"
+                              className="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-none border border-sage/30 text-forest/70 hover:bg-sage-light/30 transition-colors disabled:opacity-50"
                             >
                               Cancel
                             </button>
@@ -233,7 +233,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                                 editDraft.length > COMMENT_MAX_LENGTH ||
                                 updateCommentMutation.isPending
                               }
-                              className="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-forest text-bone hover:bg-forest-light transition-colors disabled:opacity-40"
+                              className="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-none bg-forest text-bone hover:bg-forest-light transition-colors disabled:opacity-40"
                             >
                               {updateCommentMutation.isPending ? 'Saving…' : 'Save'}
                             </button>
@@ -254,7 +254,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                           setEditError(null);
                         }}
                         className={cn(
-                          'w-full text-left text-sm text-forest/80 bg-white p-3.5 rounded-2xl rounded-tl-none border border-sage/20 shadow-sm',
+                          'w-full text-left text-sm text-forest/80 bg-white p-3.5 rounded-none border border-sage/20 shadow-sm',
                           'group-hover/comment:border-sage/40 transition-colors whitespace-pre-wrap leading-relaxed',
                           'cursor-text hover:border-sage/50 focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:ring-offset-0',
                         )}
@@ -263,7 +263,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                         {comment.content}
                       </button>
                     ) : (
-                      <div className="text-sm text-forest/80 bg-white p-3.5 rounded-2xl rounded-tl-none border border-sage/20 shadow-sm group-hover/comment:border-sage/40 transition-colors whitespace-pre-wrap leading-relaxed">
+                      <div className="text-sm text-forest/80 bg-white p-3.5 rounded-none border border-sage/20 shadow-sm group-hover/comment:border-sage/40 transition-colors whitespace-pre-wrap leading-relaxed">
                         {comment.content}
                       </div>
                     )}
@@ -274,7 +274,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
           })}
         </AnimatePresence>
       ) : (
-        <div className="py-8 text-center bg-sage-light/20 rounded-2xl border border-dashed border-sage/30">
+        <div className="py-8 text-center bg-sage-light/20 rounded-none border border-dashed border-sage/30">
           <p className="text-sm text-forest/40 font-medium italic">No comments yet. Start the conversation!</p>
         </div>
       )}
@@ -288,7 +288,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
               onChange={(e) => setNewComment(e.target.value)}
               maxLength={COMMENT_MAX_LENGTH}
               placeholder="Add a comment…"
-              className="w-full bg-white text-sm text-forest/80 rounded-2xl border border-sage/30 p-4 pb-14 focus:outline-none focus:ring-4 focus:ring-terracotta/5 focus:border-terracotta/30 transition-all resize-none min-h-[110px]"
+              className="w-full bg-white text-sm text-forest/80 rounded-none border border-sage/30 p-4 pb-14 focus:outline-none focus:ring-4 focus:ring-terracotta/5 focus:border-terracotta/30 transition-all resize-none min-h-[110px]"
               aria-label="New comment"
             />
             <div className="absolute bottom-3 left-4 right-3 flex items-center justify-between gap-2">
@@ -304,7 +304,7 @@ export default function TaskComments({ taskId, comments, readonly = false }: Tas
                 type="button"
                 onClick={() => handleAddComment()}
                 disabled={!canSend}
-                className="bg-terracotta text-white text-xs font-bold px-5 py-2 rounded-xl shadow-lg shadow-terracotta/20 hover:bg-terracotta/90 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none"
+                className="bg-terracotta text-white text-xs font-bold px-5 py-2 rounded-none shadow-lg shadow-terracotta/20 hover:bg-terracotta/90 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none"
               >
                 {addCommentMutation.isPending ? (
                   <span className="flex items-center gap-2">

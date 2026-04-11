@@ -23,6 +23,7 @@ export default function AboutPage() {
         title="About Coronation Gardens"
         description="Our community, mission, and the committee that serves our residents."
         eyebrow="About Us"
+        eyebrowIconKey="info"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

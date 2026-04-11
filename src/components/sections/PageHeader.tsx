@@ -4,11 +4,14 @@ import Image from 'next/image';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import { BrutallyMinimalHeroHeadingCard } from '@/components/sections/BrutallyMinimalHeroHeadingCard';
+import type { EyebrowIconKey } from '@/components/sections/eyebrowIcons';
 
 interface PageHeaderProps {
   title: string;
   description?: string;
   eyebrow?: string;
+  /** Icon before eyebrow text (defaults inside the card when eyebrow is set) */
+  eyebrowIconKey?: EyebrowIconKey;
   dark?: boolean;
   backgroundImage?: string;
   /** Variant for different page types: 'default' for marketing, 'compact' for functional pages, 'flush' for no gap below */
@@ -29,6 +32,7 @@ export default function PageHeader({
   title,
   description,
   eyebrow,
+  eyebrowIconKey,
   dark = true,
   backgroundImage,
   variant = 'default',
@@ -43,10 +47,10 @@ export default function PageHeader({
   // Note: Top padding must account for fixed nav height (~64px) + margin
   // Compact reduces bottom padding; flush removes it entirely
   const sectionClasses = isFlush
-    ? 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden'
+    ? 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden'
     : isCompact
-      ? 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden'
-      : 'page-header pt-20 pb-0 md:pt-24 relative overflow-hidden';
+      ? 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden'
+      : 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden';
 
   const containerMinHeight = isCompact ? 'min-h-[100px]' : 'min-h-[200px]';
 
@@ -69,7 +73,7 @@ export default function PageHeader({
       )}
 
       {/* Floating Card */}
-      <div className={`container relative z-10 flex items-end ${containerMinHeight}`}>
+      <div className={`container relative z-10 flex items-end border-0 ${containerMinHeight}`}>
         <div
           ref={ref}
           className={`fade-up w-full ${isVisible ? 'visible' : ''}`}
@@ -77,6 +81,7 @@ export default function PageHeader({
           <BrutallyMinimalHeroHeadingCard
             title={title}
             eyebrow={eyebrow}
+            eyebrowIconKey={eyebrowIconKey}
             description={description}
             size={isCompact ? 'sm' : 'md'}
             className="max-w-xl"

@@ -49,21 +49,28 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
     const sizeClasses = {
       sm: {
         button:
-          direction === 'vertical' ? 'min-w-[40px] min-h-[44px] p-1' : 'min-h-[36px] px-2 py-1',
-        icon: 'w-4 h-4',
-        text: 'text-xs',
-        gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1',
+          direction === 'vertical'
+            ? 'min-w-[40px] min-h-[44px] p-1'
+            : /* horizontal: slightly shorter than sibling text actions for visual balance */
+              'h-6 min-h-[24px] px-1.5 py-0',
+        icon: direction === 'vertical' ? 'w-4 h-4' : 'w-3 h-3',
+        text: direction === 'vertical' ? 'text-xs' : 'text-[11px]',
+        gap: direction === 'vertical' ? 'gap-0.5' : 'gap-0.5',
       },
       md: {
         button:
-          direction === 'vertical' ? 'min-w-[48px] min-h-[48px] p-1.5' : 'min-h-[44px] px-3 py-1.5',
-        icon: 'w-5 h-5',
-        text: 'text-sm',
-        gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1.5',
+          direction === 'vertical'
+            ? 'min-w-[48px] min-h-[48px] p-1.5'
+            : 'h-9 min-h-[36px] px-2 py-1',
+        icon: direction === 'vertical' ? 'w-5 h-5' : 'w-4 h-4',
+        text: direction === 'vertical' ? 'text-sm' : 'text-xs',
+        gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1',
       },
     };
 
     const sizes = sizeClasses[size];
+    const isCompactHorizontal = size === 'sm' && direction === 'horizontal';
+    const isHorizontal = direction === 'horizontal';
 
     return (
       <Tooltip content={isUpvoted ? 'Remove upvote' : 'Upvote'}>
@@ -73,13 +80,16 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
           onClick={handleUpvoteClick}
           disabled={disabled}
           className={cn(
-            'flex items-center justify-center rounded-lg border transition-all duration-200',
+            'flex items-center justify-center border transition-all duration-200',
+            isHorizontal ? 'rounded-md' : 'rounded-lg',
             direction === 'vertical' ? 'flex-col' : 'flex-row',
             sizes.button,
             sizes.gap,
             isUpvoted
               ? 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark'
-              : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
+              : isCompactHorizontal
+                ? 'bg-sage-light/80 text-forest border-forest/10 hover:bg-sage/90 hover:border-forest/18'
+                : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
             disabled && 'opacity-50 cursor-not-allowed',
             className,
           )}

@@ -62,6 +62,7 @@ export default function ContactPage() {
         title="Contact Us"
         description="Get in touch with our committee. We're here to help."
         eyebrow="Get in Touch"
+        eyebrowIconKey="mail"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

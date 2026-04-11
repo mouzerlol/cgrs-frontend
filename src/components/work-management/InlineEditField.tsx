@@ -78,7 +78,7 @@ const InlineEditField = forwardRef<InlineEditFieldHandle, InlineEditFieldProps>(
 
     return (
       <div 
-        className={cn("group flex items-start gap-2 cursor-pointer p-1 -ml-1 rounded hover:bg-sage-light/30 transition-colors", className)}
+        className={cn("group flex items-start gap-2 cursor-pointer p-1 -ml-1 rounded-none hover:bg-sage-light/30 transition-colors", className)}
         onClick={() => setIsEditing(true)}
       >
         <div className={cn("flex-1", textClassName, !value && "text-forest/40 italic")}>
@@ -89,7 +89,7 @@ const InlineEditField = forwardRef<InlineEditFieldHandle, InlineEditFieldProps>(
     );
   }
 
-  const commonClasses = "w-full bg-white border border-sage/30 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta text-forest font-body text-sm transition-all";
+  const commonClasses = "w-full bg-white border border-sage/30 rounded-none px-3 py-2 outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta text-forest font-body text-sm transition-all";
 
   if (type === 'textarea') {
     return (

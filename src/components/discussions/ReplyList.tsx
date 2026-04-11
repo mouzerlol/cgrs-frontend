@@ -10,7 +10,6 @@ interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   replies: Reply[];
   onUpvote?: (replyId: string) => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
-  onReport?: (replyId: string) => void;
   onDelete?: (replyId: string) => void;
   onEdit?: (replyId: string, body: string) => void | Promise<void>;
   upvotedReplies?: Set<string>;
@@ -26,7 +25,6 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     replies,
     onUpvote,
     onReply,
-    onReport,
     onDelete,
     onEdit,
     upvotedReplies = new Set(),
@@ -57,7 +55,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
         </div>
 
         {/* Threaded Reply Tree */}
-        <div className="space-y-4">
+        <div className="space-y-1">
           {tree.map((rootNode, index) => (
             <CommentThread
               key={rootNode.reply.id}
@@ -66,7 +64,6 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
               hasMoreSiblingsBelow={index < tree.length - 1}
               onUpvote={onUpvote}
               onReply={onReply}
-              onReport={onReport}
               onDelete={onDelete}
               onEdit={onEdit}
               upvotedReplies={upvotedReplies}

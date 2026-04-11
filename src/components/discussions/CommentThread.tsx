@@ -71,7 +71,6 @@ interface CommentThreadProps {
   hasMoreSiblingsBelow?: boolean;
   onUpvote?: (replyId: string) => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
-  onReport?: (replyId: string) => void;
   onDelete?: (replyId: string) => void;
   onEdit?: (replyId: string, body: string) => void | Promise<void>;
   upvotedReplies?: Set<string>;
@@ -84,7 +83,6 @@ const CommentThread = memo(function CommentThread({
   hasMoreSiblingsBelow = false,
   onUpvote,
   onReply,
-  onReport,
   onDelete,
   onEdit,
   upvotedReplies = new Set(),
@@ -111,14 +109,14 @@ const CommentThread = memo(function CommentThread({
   }, []);
 
   return (
-    <article className={cn('relative', depth > 0 && 'mt-3')}>
+    <article className={cn('relative', depth > 0 && 'mt-1')}>
       {/* Thread Connector from Parent (The Curve) */}
       {depth > 0 && (
         <div
           className="absolute pointer-events-none border-sage opacity-40"
           style={{
             left: '-28.5px',
-            top: '-12px',
+            top: '-4px',
             width: '28.5px',
             height: '28px',
             borderBottomLeftRadius: '20px',
@@ -137,14 +135,14 @@ const CommentThread = memo(function CommentThread({
           style={{
             left: '-28.5px',
             top: '16px',
-            bottom: '-12px',
+            bottom: '-4px',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
           }}
         />
       )}
 
-      {/* Parent Comment Row */}
+      {/* Parent row: avatar + ReplyCard — card chrome lives only on ReplyCard */}
       <div className="flex gap-3">
         {/* Left Column: Avatar + Thread Line to bottom of ReplyCard */}
         <div className="flex flex-col items-center shrink-0 w-8">
@@ -153,7 +151,7 @@ const CommentThread = memo(function CommentThread({
             {hasChildren && (
               <button
                 onClick={toggleCollapse}
-                className="absolute -bottom-2 -right-2 bg-[#FDFCF9] border border-sage/30 rounded-full w-5 h-5 flex items-center justify-center text-[12px] text-forest/60 hover:text-forest hover:bg-sage/10 transition-colors z-10"
+                className="absolute left-[20px] top-[24px] bg-[#FDFCF9] border border-forest/45 rounded-full w-5 h-5 flex items-center justify-center text-[12px] font-medium text-forest/90 hover:text-forest hover:bg-sage/10 transition-colors z-10"
                 aria-label={isCollapsed ? 'Expand' : 'Collapse'}
               >
                 {isCollapsed ? '+' : '−'}
@@ -168,7 +166,7 @@ const CommentThread = memo(function CommentThread({
         </div>
 
         {/* Right Column: Content */}
-        <div className="flex-1 min-w-0 pb-1">
+        <div className="min-w-0 flex-1">
           {isCollapsed ? (
             <div className="flex items-center gap-2 h-8 cursor-pointer" onClick={toggleCollapse}>
               <span className="font-semibold text-forest text-sm">
@@ -184,7 +182,6 @@ const CommentThread = memo(function CommentThread({
               isUpvoted={upvotedReplies.has(reply.id)}
               onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
               onReply={onReply}
-              onReport={onReport ? () => onReport(reply.id) : undefined}
               onDelete={onDelete ? () => onDelete(reply.id) : undefined}
               onEdit={onEdit ? (body: string) => onEdit(reply.id, body) : undefined}
               showReplyForm
@@ -210,7 +207,6 @@ const CommentThread = memo(function CommentThread({
               hasMoreSiblingsBelow={index < children.length - 1}
               onUpvote={onUpvote}
               onReply={onReply}
-              onReport={onReport}
               onDelete={onDelete}
               onEdit={onEdit}
               upvotedReplies={upvotedReplies}

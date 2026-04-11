@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
  */
 export default function TaskCardSkeleton() {
   return (
-    <div className="w-full bg-white/80 rounded-[10px] shadow-sm border border-sage/20 overflow-hidden flex flex-col">
+    <div className="w-full bg-white/80 shadow-sm border border-sage/20 overflow-hidden flex flex-col">
       <div className="p-3 flex-1 flex flex-col gap-3 min-w-0 w-full">
         {/* Title lines */}
         <div className="space-y-1">

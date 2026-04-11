@@ -132,14 +132,12 @@ export default function PortfolioPegboard({
     [syncLayout]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragStart = useCallback((..._args: any[]) => {
+  const handleDragStart = useCallback((..._args: unknown[]) => {
     isDraggingRef.current = true;
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragStop = useCallback(
-    (layout: Layout, ..._args: any[]) => {
+    (layout: Layout, ..._args: unknown[]) => {
       isDraggingRef.current = false;
       syncLayout(layout);
     },
@@ -148,14 +146,12 @@ export default function PortfolioPegboard({
 
   const isResizingRef = useRef(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleResizeStart = useCallback((..._args: any[]) => {
+  const handleResizeStart = useCallback((..._args: unknown[]) => {
     isResizingRef.current = true;
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleResizeStop = useCallback(
-    (layout: Layout, ..._args: any[]) => {
+    (layout: Layout, ..._args: unknown[]) => {
       isResizingRef.current = false;
       syncLayout(layout);
     },

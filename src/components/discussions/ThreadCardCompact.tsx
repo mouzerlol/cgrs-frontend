@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { formatRelativeTimeShort } from '@/lib/format-relative-time';
+import { getDiscussionCategoryLabel, getDiscussionCategoryLucideIcon } from '@/lib/discussion-category-lucide-icons';
 import { cn } from '@/lib/utils';
 import type { Thread, LatestReply } from '@/types';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -67,6 +68,8 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
       imageAttachmentCountProp !== undefined ? imageAttachmentCountProp : legacyImages.length;
     const showThumbSkeleton = previewLoading && thumbnail === null && imageCount > 0;
     const showThumbSlot = Boolean(thumbnail) || showThumbSkeleton;
+    const showCategoryPlaceholder = !thumbnail && !showThumbSkeleton;
+    const CategoryThumbIcon = getDiscussionCategoryLucideIcon(thread.category);
 
     // Event handlers
     const handleUpvoteClick = (e: React.MouseEvent) => {
@@ -114,7 +117,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
         tabIndex={0}
         role="button"
         className={cn(
-          'flex gap-3 p-3 group/card cursor-pointer',
+          'flex items-start gap-3 p-3 group/card cursor-pointer',
           'bg-white rounded-xl border border-sage',
           'transition-all duration-200 ease-out',
           'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
@@ -123,17 +126,37 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
         )}
         {...props}
       >
-        {/* Thumbnail (64x64) */}
-        {showThumbSlot && (
-          <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-sage-light self-stretch">
-            {showThumbSkeleton && (
-              <div className="absolute inset-0 animate-pulse bg-sage/40" aria-hidden />
-            )}
-            {thumbnail && (
-              <Image src={thumbnail} alt="" fill className="object-cover" />
-            )}
-          </div>
-        )}
+        {/* Thumbnail column: fixed square — image, loading skeleton, or category icon (items-start on card avoids stretch vs square mismatch) */}
+        <div
+          className={cn(
+            'relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg',
+            'bg-sage-light transition-colors duration-200 ease-out',
+            'group-hover/card:bg-sage',
+          )}
+          data-testid="thread-card-thumb-slot"
+          aria-hidden={showThumbSlot ? true : undefined}
+          aria-label={
+            showCategoryPlaceholder ? `Category: ${getDiscussionCategoryLabel(thread.category)}` : undefined
+          }
+        >
+          {showThumbSkeleton && (
+            <div className="absolute inset-0 animate-pulse bg-sage/40" aria-hidden />
+          )}
+          {thumbnail && (
+            <Image
+              src={thumbnail}
+              alt=""
+              fill
+              sizes="80px"
+              className="object-cover object-center"
+            />
+          )}
+          {showCategoryPlaceholder && (
+            <div className="flex h-full w-full items-center justify-center" data-testid="thread-card-category-placeholder">
+              <CategoryThumbIcon className="h-12 w-12 shrink-0 text-white" aria-hidden />
+            </div>
+          )}
+        </div>
 
         {/* Content Column */}
         <div className="flex-1 min-w-0 flex flex-col gap-1">

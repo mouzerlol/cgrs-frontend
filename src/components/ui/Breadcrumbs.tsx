@@ -18,8 +18,6 @@ export interface SiteBreadcrumbsProps {
   variant?: SiteBreadcrumbsVariant;
   /** When true, never render (e.g. embedded demos). */
   forceHide?: boolean;
-  /** Remove the terracotta hairline (blends with hero card below). */
-  removeHairline?: boolean;
 }
 
 /**
@@ -28,7 +26,7 @@ export interface SiteBreadcrumbsProps {
  * - Renders nothing on `/`, `/no-access`, etc. (see `shouldShowSiteBreadcrumbs`).
  * - For manual items, use {@link BreadcrumbBar} + {@link BreadcrumbTrail}.
  */
-export function SiteBreadcrumbs({ className, variant = 'belowHero', forceHide, removeHairline }: SiteBreadcrumbsProps) {
+export function SiteBreadcrumbs({ className, variant = 'belowHero', forceHide }: SiteBreadcrumbsProps) {
   const pathname = usePathname() ?? '/';
   const items = useMemo(() => resolveBreadcrumbsSync(pathname), [pathname]);
 
@@ -39,10 +37,7 @@ export function SiteBreadcrumbs({ className, variant = 'belowHero', forceHide, r
   const underWmNav = variant === 'belowWorkManagementNav';
 
   return (
-    <BreadcrumbBar
-      className={cn(underWmNav && 'border-t-bone/15 shadow-none shrink-0', className)}
-      hideBorder={removeHairline}
-    >
+    <BreadcrumbBar className={cn(underWmNav && 'shadow-none shrink-0', className)}>
       <BreadcrumbTrail items={items} />
     </BreadcrumbBar>
   );

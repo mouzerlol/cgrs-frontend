@@ -86,8 +86,8 @@ describe('Dynamic import loading states', () => {
 
   describe('EventContent dynamic imports', () => {
     it('exports EventContent as default with dynamic EventMapStatic', async () => {
-      const module = await import('@/components/event/EventContent');
-      expect(module.default).toBeDefined();
+      const eventContent = await import('@/components/event/EventContent');
+      expect(eventContent.default).toBeDefined();
     });
   });
 });

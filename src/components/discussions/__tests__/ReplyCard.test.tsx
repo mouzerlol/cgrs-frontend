@@ -59,6 +59,52 @@ describe('ReplyCard', () => {
     expect(screen.getByText('Test User')).toBeInTheDocument();
   });
 
+  it('styles author name badge with sage/20 background matching border, corner radii, black text, no uppercase', () => {
+    const reply = makeReply();
+    render(<ReplyCard reply={reply} />);
+    const badge = screen.getByText('Test User');
+    expect(badge.className.split(/\s+/)).toContain('bg-sage/20');
+    expect(badge.className).not.toContain('bg-bone');
+    expect(badge.className).not.toContain('bg-sage-light');
+    expect(badge.className).not.toMatch(/text-shadow/);
+    expect(badge.className).toContain('border-sage/20');
+    expect(badge.className.split(/\s+/)).toContain('text-black');
+    expect(badge.className).not.toContain('italic');
+    expect(badge.className.split(/\s+/)).not.toContain('uppercase');
+    expect(badge.className).toContain('rounded-tl-md');
+    expect(badge.className).toContain('-mt-3');
+    expect(badge.className).toContain('-ml-3');
+  });
+
+  it('does not render author title badge', () => {
+    const reply = makeReply();
+    render(<ReplyCard reply={reply} />);
+    expect(screen.queryByText(reply.author.title)).not.toBeInTheDocument();
+  });
+
+  it('wraps content in a slightly lighter-than-bone panel with padding and overflow clip (name tag offset with negative margin)', () => {
+    const reply = makeReply();
+    const { container } = render(<ReplyCard reply={reply} />);
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.className).toContain('bg-bone');
+    expect(wrapper.className).toContain('p-3');
+    expect(wrapper.className).toContain('overflow-hidden');
+  });
+
+  it('uses compact toolbar controls with faint border on reply actions', () => {
+    const reply = makeReply();
+    render(<ReplyCard reply={reply} />);
+    const replyBtn = screen.getByRole('button', { name: /^Reply$/i });
+    expect(replyBtn.className).toContain('border-forest/10');
+    expect(replyBtn.className).toContain('min-h-[26px]');
+  });
+
+  it('does not show a report control', () => {
+    const reply = makeReply();
+    render(<ReplyCard reply={reply} />);
+    expect(screen.queryByRole('button', { name: /report content/i })).not.toBeInTheDocument();
+  });
+
   it('shows Edited indicator when isEdited is true', () => {
     const reply = makeReply({ isEdited: true });
     render(<ReplyCard reply={reply} />);
@@ -79,6 +125,17 @@ describe('ReplyCard', () => {
 
     expect(screen.getByRole('button', { name: /Edit/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Delete/i })).toBeInTheDocument();
+  });
+
+  it('groups author Edit and Delete in a right-aligned toolbar cluster', () => {
+    const reply = makeReply();
+    render(<ReplyCard reply={reply} isAuthor />);
+
+    const editBtn = screen.getByRole('button', { name: /Edit/i });
+    expect(editBtn.closest('.ml-auto')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Delete/i }).closest('.ml-auto')).toBe(
+      editBtn.closest('.ml-auto')
+    );
   });
 
   it('does not show Edit or Delete buttons for non-author', () => {

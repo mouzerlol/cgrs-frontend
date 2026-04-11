@@ -94,6 +94,7 @@ export default function NoticeBoardPage() {
         title="Community Notice Board"
         description="Community updates, maintenance schedules, and committee announcements."
         eyebrow="Notice Board"
+        eyebrowIconKey="megaphone"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

@@ -6,7 +6,7 @@ import { TaskLocation } from '@/types/work-management';
 
 const LocationMap = dynamic(() => import('./LocationMap'), {
   ssr: false,
-  loading: () => <div className="h-[200px] w-full bg-sage-light/30 animate-pulse rounded-lg flex items-center justify-center text-forest/40">Loading map...</div>
+  loading: () => <div className="h-[200px] w-full bg-sage-light/30 animate-pulse rounded-none flex items-center justify-center text-forest/40">Loading map...</div>
 });
 
 interface TaskLocationPickerProps {
@@ -17,7 +17,7 @@ interface TaskLocationPickerProps {
 
 export default function TaskLocationPicker({ location, onChange, readonly = false }: TaskLocationPickerProps) {
   return (
-    <div className="h-[200px] w-full rounded-lg overflow-hidden border border-sage/20 relative z-0">
+    <div className="h-[200px] w-full rounded-none overflow-hidden border border-sage/20 relative z-0">
       <LocationMap location={location} onChange={onChange} readonly={readonly} />
     </div>
   );

@@ -14,11 +14,9 @@ import {
   useUpvoteThread,
   useBookmarkThread,
   useCreateReply,
-  useReportThread,
   useDeleteThread,
   useDeleteReply,
   useUpvoteReply,
-  useReportReply,
   useVoteOnPoll,
   useClosePoll,
   useUpdateThread,
@@ -53,7 +51,9 @@ function NotFound() {
         Thread Not Found
       </h1>
       <p className="text-forest/60 max-w-md">
-        The thread you're looking for doesn't exist or may have been removed.
+        {
+          "The thread you're looking for doesn't exist or may have been removed."
+        }
       </p>
     </div>
   );
@@ -82,11 +82,9 @@ export default function ThreadPage() {
   const upvoteThreadMutation = useUpvoteThread();
   const bookmarkThreadMutation = useBookmarkThread();
   const createReplyMutation = useCreateReply();
-  const reportThreadMutation = useReportThread();
   const deleteThreadMutation = useDeleteThread();
   const deleteReplyMutation = useDeleteReply();
   const upvoteReplyMutation = useUpvoteReply();
-  const reportReplyMutation = useReportReply();
   const voteOnPollMutation = useVoteOnPoll();
   const closePollMutation = useClosePoll();
   const updateThreadMutation = useUpdateThread();
@@ -139,34 +137,8 @@ export default function ThreadPage() {
     }
   };
 
-  const handleReportThread = async () => {
-    const reason = prompt('Please provide a reason for reporting this thread:');
-    if (reason) {
-      try {
-        await reportThreadMutation.mutateAsync({ id: threadId, reason });
-        toast.success('Report submitted. Thanks for helping keep our community safe.');
-      } catch (error) {
-        console.error('Report error:', error);
-        toast.error('Failed to submit report');
-      }
-    }
-  };
-
   const handleUpvoteReply = (replyId: string) => {
     upvoteReplyMutation.mutate({ id: replyId, threadId });
-  };
-
-  const handleReportReply = async (replyId: string) => {
-    const reason = prompt('Please provide a reason for reporting this reply:');
-    if (reason) {
-      try {
-        await reportReplyMutation.mutateAsync({ id: replyId, reason });
-        toast.success('Report submitted. Thanks for helping keep our community safe.');
-      } catch (error) {
-        console.error('Report error:', error);
-        toast.error('Failed to submit report');
-      }
-    }
   };
 
   const handleDeleteReply = async (replyId: string) => {
@@ -246,6 +218,7 @@ export default function ThreadPage() {
           title="Community Discussion"
           description="Connect with your neighbors"
           eyebrow="Forum"
+          eyebrowIconKey="messageSquare"
           backgroundImage="/images/mangere-mountain.jpg"
           variant="compact"
         />
@@ -262,6 +235,7 @@ export default function ThreadPage() {
         title="Community Discussion"
         description="Connect with your neighbors"
         eyebrow="Forum"
+        eyebrowIconKey="messageSquare"
         backgroundImage="/images/mangere-mountain.jpg"
         variant="compact"
       />
@@ -280,14 +254,12 @@ export default function ThreadPage() {
             onBookmark={handleBookmark}
             isBookmarked={thread.isBookmarked}
             onReply={handleReply}
-            onReport={handleReportThread}
             onShare={handleShare}
             onDeleteThread={handleDeleteThread}
             onEditThread={() => setIsEditModalOpen(true)}
             onDeleteReply={handleDeleteReply}
             onEditReply={handleEditReply}
             onUpvoteReply={handleUpvoteReply}
-            onReportReply={handleReportReply}
             isSubmittingReply={isSubmittingReply}
             onPollVote={handlePollVote}
             onPollClose={handlePollClose}

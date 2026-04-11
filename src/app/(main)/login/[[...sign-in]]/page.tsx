@@ -17,6 +17,7 @@ export default function LoginPage() {
         title="Resident Login"
         description="Access your resident account to manage your account, view statements, and update your details."
         eyebrow="Resident Portal"
+        eyebrowIconKey="building2"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

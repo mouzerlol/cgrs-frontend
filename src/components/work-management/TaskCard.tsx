@@ -45,7 +45,7 @@ export default function TaskCard({ task, onClick, className }: TaskCardProps) {
     <button 
       type="button"
       className={cn(
-        "w-full text-left bg-white rounded-[10px] shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 active:translate-y-0 transition-[box-shadow,transform,background-color] duration-300 ease-out-custom cursor-pointer overflow-hidden flex flex-col border border-transparent focus-visible:ring-2 focus-visible:ring-forest focus-visible:outline-none",
+        "w-full text-left bg-white shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 active:translate-y-0 transition-[box-shadow,transform,background-color] duration-300 ease-out-custom cursor-pointer overflow-hidden flex flex-col border border-transparent focus-visible:ring-2 focus-visible:ring-forest focus-visible:outline-none",
         className
       )}
       onClick={() => onClick(task.id)}

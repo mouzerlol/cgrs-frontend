@@ -55,6 +55,7 @@ export default function CalendarPage() {
         title="Community Calendar"
         description="Notices, events, and news from our community."
         eyebrow="Calendar"
+        eyebrowIconKey="calendarDays"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

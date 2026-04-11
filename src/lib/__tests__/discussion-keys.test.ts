@@ -5,4 +5,8 @@ describe('discussionKeys', () => {
   it('bookmarkedThreads returns a stable key under threads', () => {
     expect(discussionKeys.bookmarkedThreads()).toEqual(['discussions', 'threads', 'bookmarked']);
   });
+
+  it('bookmarkedThreadsInfinite extends bookmarkedThreads with page size', () => {
+    expect(discussionKeys.bookmarkedThreadsInfinite()).toEqual(['discussions', 'threads', 'bookmarked', 'infinite', 20]);
+  });
 });

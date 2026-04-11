@@ -69,6 +69,7 @@ export default function GuidelinesPage() {
         title="Community Guidelines"
         description="Shared values and expectations that maintain our living environment."
         eyebrow="Guidelines"
+        eyebrowIconKey="bookOpen"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
@@ -176,7 +177,9 @@ export default function GuidelinesPage() {
                   <span className="w-6 h-6 rounded-full bg-terracotta text-bone text-sm font-medium flex items-center justify-center flex-shrink-0">3</span>
                   <div>
                     <p className="font-medium">Follow Up</p>
-                    <p className="text-sm opacity-60">We'll acknowledge receipt and provide updates</p>
+                    <p className="text-sm opacity-60">
+                      {"We'll acknowledge receipt and provide updates"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -246,7 +249,7 @@ export default function GuidelinesPage() {
             <h2 className="text-bone mb-4">Questions About Guidelines?</h2>
             <p className="text-lg opacity-80 mb-8">
               If you have questions about these guidelines or need clarification on any policies,
-              please don't hesitate to contact our committee.
+              please don&apos;t hesitate to contact our committee.
             </p>
             <Button variant="primary" size="lg" asChild>
               <Link href="/contact">Get in Touch</Link>

@@ -142,6 +142,23 @@ describe('Discussion Forum Navigation', () => {
     });
   });
 
+  describe('Bookmarked filter', () => {
+    test('shows Bookmarked toggle to the left of sort', async ({ page }) => {
+      const bookmarked = page.getByRole('button', { name: /show only bookmarked threads|sign in to filter by bookmarks/i });
+      await expect(bookmarked).toBeVisible();
+
+      const sortButton = page
+        .locator('button:has-text("Newest"), button:has-text("Most Upvoted"), button:has-text("Most Discussed")')
+        .first();
+      const bb = await bookmarked.boundingBox();
+      const sb = await sortButton.boundingBox();
+      expect(bb && sb).toBeTruthy();
+      if (bb && sb) {
+        expect(bb.x).toBeLessThan(sb.x);
+      }
+    });
+  });
+
   describe('Sort Functionality', () => {
     test('changes sort option', async ({ page }) => {
       // Click the sort dropdown button (contains the current sort label)

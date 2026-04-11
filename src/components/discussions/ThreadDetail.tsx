@@ -22,14 +22,12 @@ interface ThreadDetailProps extends HTMLAttributes<HTMLDivElement> {
   onUpvote?: () => void;
   onBookmark?: () => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
-  onReport?: () => void;
   onShare?: (platform: string) => void;
   onDeleteThread?: () => void;
   onEditThread?: () => void;
   onDeleteReply?: (replyId: string) => void;
   onEditReply?: (replyId: string, body: string) => void | Promise<void>;
   onUpvoteReply?: (replyId: string) => void;
-  onReportReply?: (replyId: string) => void;
   isSubmittingReply?: boolean;
   onPollVote?: (optionId: string) => void | Promise<void>;
   onPollClose?: () => void | Promise<void>;
@@ -53,14 +51,12 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
     onUpvote,
     onBookmark,
     onReply,
-    onReport,
     onShare,
     onDeleteThread,
     onEditThread,
     onDeleteReply,
     onEditReply,
     onUpvoteReply,
-    onReportReply,
     isSubmittingReply = false,
     onPollVote,
     onPollClose,
@@ -81,7 +77,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
     return (
       <div ref={ref} className={cn('space-y-8', className)} {...props}>
         {/* Thread Content */}
-        <article className="bg-white rounded-xl border border-sage/30 p-6 md:p-8 shadow-sm mt-6">
+        <article className="bg-white rounded-none border border-sage/30 px-8 pt-8 pb-4 shadow-sm mt-6 md:px-10 md:pt-10 md:pb-5">
           {/* Header */}
           <ThreadHeader thread={thread} showBackLink={false} />
 
@@ -97,7 +93,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
           </div>
 
           {/* Actions */}
-          <div className="mt-8 pt-6 border-t border-sage/30">
+          <div className="mt-4 md:mt-5">
             <ThreadActions
               thread={thread}
               isUpvoted={isUpvoted}
@@ -105,7 +101,6 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
               onUpvote={onUpvote}
               onBookmark={onBookmark}
               onShare={onShare}
-              onReport={onReport}
               onDelete={onDeleteThread}
               canDelete={canDeleteThread}
               canEdit={canEditThread}
@@ -123,7 +118,6 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
             currentUserId={currentUserId}
             onUpvote={onUpvoteReply}
             onReply={onReply}
-            onReport={onReportReply}
             onDelete={onDeleteReply}
             onEdit={onEditReply}
             upvotedReplies={upvotedReplies}

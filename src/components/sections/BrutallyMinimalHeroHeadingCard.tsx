@@ -1,13 +1,17 @@
 'use client';
 
 import Image from 'next/image';
+import { Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { EYEBROW_ICONS, type EyebrowIconKey } from '@/components/sections/eyebrowIcons';
 
 export interface BrutallyMinimalHeroHeadingCardProps {
   /** Main heading text */
   title: string;
   /** Optional eyebrow label below the heading */
   eyebrow?: string;
+  /** Icon shown before the eyebrow label (matches discussion category badge pattern) */
+  eyebrowIconKey?: EyebrowIconKey;
   /** Description/body text */
   description?: string;
   /** Size variant */
@@ -22,25 +26,36 @@ export interface BrutallyMinimalHeroHeadingCardProps {
 export function BrutallyMinimalHeroHeadingCard({
   title,
   eyebrow,
+  eyebrowIconKey,
   description,
   size = 'lg',
   className,
 }: BrutallyMinimalHeroHeadingCardProps) {
+  const EyebrowIcon = eyebrowIconKey ? EYEBROW_ICONS[eyebrowIconKey] : Bookmark;
   const sizeClasses = {
     sm: {
       eyebrow: 'text-[10px]',
+      eyebrowGap: 'gap-1',
+      eyebrowPadding: 'px-2 py-0.5',
+      eyebrowIconSize: 'h-3 w-3',
       title: 'text-3xl md:text-4xl',
       description: 'text-xs md:text-sm',
       padding: 'py-4 px-8 sm:py-6 sm:px-12',
     },
     md: {
       eyebrow: 'text-[10px] md:text-xs',
+      eyebrowGap: 'gap-1.5',
+      eyebrowPadding: 'px-2.5 py-1',
+      eyebrowIconSize: 'h-3.5 w-3.5',
       title: 'text-4xl md:text-5xl',
       description: 'text-sm md:text-base',
       padding: 'py-6 px-12 sm:py-8 sm:px-16',
     },
     lg: {
       eyebrow: 'text-xs md:text-sm',
+      eyebrowGap: 'gap-1.5',
+      eyebrowPadding: 'px-3 py-1',
+      eyebrowIconSize: 'h-4 w-4',
       title: 'text-5xl md:text-7xl',
       description: 'text-base md:text-lg',
       padding: 'py-6 px-12 sm:py-10 sm:px-20',
@@ -60,7 +75,15 @@ export function BrutallyMinimalHeroHeadingCard({
       <div className="flex flex-col h-full">
         {eyebrow && (
           <div className="mb-2">
-            <span className="text-eyebrow !text-bone inline-block px-2 py-0.5 bg-terracotta rounded-md">
+            <span
+              className={cn(
+                'text-eyebrow !text-bone inline-flex items-center rounded-md font-semibold uppercase tracking-wide bg-terracotta shrink-0',
+                s.eyebrow,
+                s.eyebrowGap,
+                s.eyebrowPadding
+              )}
+            >
+              <EyebrowIcon className={cn('shrink-0', s.eyebrowIconSize)} aria-hidden />
               {eyebrow}
             </span>
           </div>
@@ -76,7 +99,7 @@ export function BrutallyMinimalHeroHeadingCard({
         </h1>
 
         {description && (
-          <p className={cn('font-sans leading-snug', s.description)}>
+          <p className={cn('font-sans leading-snug text-right', s.description)}>
             {description}
           </p>
         )}
@@ -90,6 +113,8 @@ export interface BrutallyMinimalHeroPageHeaderProps {
   title: string;
   /** Optional eyebrow label below the heading */
   eyebrow?: string;
+  /** Icon before the eyebrow label */
+  eyebrowIconKey?: EyebrowIconKey;
   /** Description/body text */
   description?: string;
   /** Background image URL */
@@ -105,6 +130,7 @@ export interface BrutallyMinimalHeroPageHeaderProps {
 export function BrutallyMinimalHeroPageHeader({
   title,
   eyebrow,
+  eyebrowIconKey,
   description,
   backgroundImage,
   size = 'lg',
@@ -136,6 +162,7 @@ export function BrutallyMinimalHeroPageHeader({
         <BrutallyMinimalHeroHeadingCard
           title={title}
           eyebrow={eyebrow}
+          eyebrowIconKey={eyebrowIconKey}
           description={description}
           size={size}
           className={cardMaxWidth}

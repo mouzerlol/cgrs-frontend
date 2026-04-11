@@ -1145,6 +1145,7 @@ export default function DesignSystemPage() {
                             title="Page Header Example"
                             description="This is a page header component with an optional eyebrow label and description text."
                             eyebrow="Eyebrow Label"
+                            eyebrowIconKey="paintbrush"
                             showBreadcrumbs={false}
                           />
                         </div>
@@ -1221,6 +1222,7 @@ export default function DesignSystemPage() {
                             <BrutallyMinimalHeroPageHeader
                               title="After the Undercurrents"
                               eyebrow="Visual Arts"
+                              eyebrowIconKey="paintbrush"
                               description="This exhibition brings together the practices of two senior Indigenous painters from Aotearoa and Australia."
                               backgroundImage="/images/huri-street.png"
                               size="lg"

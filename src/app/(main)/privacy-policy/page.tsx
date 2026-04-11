@@ -61,6 +61,7 @@ export default function PrivacyPolicyPage() {
         title="Privacy Policy"
         description="How we collect, use, and protect your personal information."
         eyebrow="Legal"
+        eyebrowIconKey="scale"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

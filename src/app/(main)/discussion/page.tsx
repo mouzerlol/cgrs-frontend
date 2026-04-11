@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import PageHeader from '@/components/sections/PageHeader';
 import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import { SidebarLayout } from '@/components/shared/SidebarLayout';
@@ -9,6 +10,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import ThreadList from '@/components/discussions/ThreadList';
+import BookmarkedOnlyFilter from '@/components/discussions/BookmarkedOnlyFilter';
 import SortDropdown from '@/components/discussions/SortDropdown';
 import ViewToggle from '@/components/discussions/ViewToggle';
 import { CategoryCTA } from '@/components/discussions/CategoryCTA';
@@ -17,10 +19,12 @@ import {
   useBookmarkThread,
   useCategories,
   useCategoryStats,
+  useInfiniteBookmarkedThreads,
   useInfiniteThreads,
   useReportThread,
   useUpvoteThread,
 } from '@/hooks/useDiscussions';
+import { sortThreadsByOption } from '@/lib/discussion-sort';
 
 /**
  * Community Discussion page with sidebar navigation.
@@ -28,29 +32,64 @@ import {
  * Matches the management-request pattern with folder-tab sidebar design.
  */
 export default function DiscussionPage() {
+  const { isSignedIn } = useAuth();
+
   // Category navigation state (null = "All Categories")
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   // Filter and view state
   const [sort, setSort] = useState<ThreadSortOption>('newest');
   const [viewMode, setViewMode] = useState<'card' | 'compact'>('compact');
+  const [bookmarksOnly, setBookmarksOnly] = useState(false);
 
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
   const { data: categoryStats = {}, isLoading: statsLoading } = useCategoryStats();
   const {
     data: threadData,
-    isLoading: threadsLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteThreads({ category: activeCategory ?? undefined, sort });
+    isLoading: mainThreadsLoading,
+    fetchNextPage: fetchNextMainPage,
+    hasNextPage: hasNextMainPage,
+    isFetchingNextPage: isFetchingNextMainPage,
+  } = useInfiniteThreads(
+    { category: activeCategory ?? undefined, sort },
+    { enabled: !bookmarksOnly },
+  );
+  const {
+    data: bookmarkedPages,
+    isLoading: bookmarkedLoading,
+    fetchNextPage: fetchNextBookmarkPage,
+    hasNextPage: hasNextBookmarkPage,
+    isFetchingNextPage: isFetchingNextBookmarkPage,
+  } = useInfiniteBookmarkedThreads({ enabled: isSignedIn === true && bookmarksOnly });
+
+  useEffect(() => {
+    if (isSignedIn === false && bookmarksOnly) {
+      setBookmarksOnly(false);
+    }
+  }, [isSignedIn, bookmarksOnly]);
   const upvoteThreadMutation = useUpvoteThread();
   const bookmarkThreadMutation = useBookmarkThread();
   const reportThreadMutation = useReportThread();
-  const allThreads = useMemo(
-    () => (threadData?.pages ?? []).flatMap((page) => page.threads) as Thread[],
-    [threadData],
-  );
+  const allThreads = useMemo(() => {
+    const pages = bookmarksOnly ? bookmarkedPages?.pages : threadData?.pages;
+    return (pages ?? []).flatMap((page) => page.threads) as Thread[];
+  }, [bookmarksOnly, bookmarkedPages, threadData]);
+
+  const displayThreads = useMemo(() => {
+    let list = allThreads;
+    if (bookmarksOnly && activeCategory) {
+      list = list.filter((t) => t.category === activeCategory);
+    }
+    if (bookmarksOnly) {
+      list = sortThreadsByOption(list, sort);
+    }
+    return list;
+  }, [allThreads, bookmarksOnly, activeCategory, sort]);
+
+  const fetchNextPage = bookmarksOnly ? fetchNextBookmarkPage : fetchNextMainPage;
+  const hasNextPage = bookmarksOnly ? hasNextBookmarkPage : hasNextMainPage;
+  const isFetchingNextPage = bookmarksOnly ? isFetchingNextBookmarkPage : isFetchingNextMainPage;
+  const threadsLoading = bookmarksOnly ? bookmarkedLoading : mainThreadsLoading;
 
   // Calculate category stats
   const stats = useMemo(() => {
@@ -97,17 +136,23 @@ export default function DiscussionPage() {
         title="Community Discussion"
         description="Connect with your neighbors, share ideas, and stay informed."
         eyebrow="Forum"
+        eyebrowIconKey="messageSquare"
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
         showBreadcrumbs={false}
       />
 
-      <SiteBreadcrumbs variant="belowHero" removeHairline />
+      <SiteBreadcrumbs variant="belowHero" />
 
       <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
           <div className="mb-3 flex justify-end gap-3 sm:mb-4">
             <div className="flex items-center gap-2">
+              <BookmarkedOnlyFilter
+                pressed={bookmarksOnly}
+                onPressedChange={setBookmarksOnly}
+                disabled={isSignedIn !== true}
+              />
               <SortDropdown value={sort} onChange={setSort} />
               <ViewToggle value={viewMode} onChange={setViewMode} />
               <Link
@@ -145,7 +190,7 @@ export default function DiscussionPage() {
             <div className="flex min-h-0 flex-1 flex-col">
               {/* Thread List */}
               <ThreadList
-                threads={allThreads}
+                threads={displayThreads}
                 viewMode={viewMode}
                 isLoading={categoriesLoading || statsLoading || threadsLoading}
                 skeletonCount={6}
@@ -157,9 +202,13 @@ export default function DiscussionPage() {
                 onShare={handleShare}
                 showCategory={activeCategory === null}
                 emptyMessage={
-                  activeCategory
-                    ? "No discussions in this category yet. Be the first to start one!"
-                    : "No discussions yet. Be the first to start one!"
+                  bookmarksOnly
+                    ? activeCategory
+                      ? 'No bookmarked threads in this category.'
+                      : 'No bookmarked threads yet. Use the bookmark icon on a thread to save it here.'
+                    : activeCategory
+                      ? "No discussions in this category yet. Be the first to start one!"
+                      : "No discussions yet. Be the first to start one!"
                 }
               />
 
@@ -190,7 +239,7 @@ export default function DiscussionPage() {
               {activeCategory && (() => {
                 const cat = categories.find((c) => c.slug === activeCategory);
                 return cat ? (
-                  <CategoryCTA key={cat.slug} category={cat} threadCount={allThreads.length} className="mt-auto" />
+                  <CategoryCTA key={cat.slug} category={cat} threadCount={displayThreads.length} className="mt-auto" />
                 ) : null;
               })()}
             </div>

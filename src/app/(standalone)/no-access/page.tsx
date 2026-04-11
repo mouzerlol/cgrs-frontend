@@ -35,6 +35,7 @@ export default async function NoAccessPage({
             : "You don't have access to this resource. You may need to sign in, or the site may not be configured for your account yet."
         }
         eyebrow={isUnauthorized ? '401' : '403'}
+        eyebrowIconKey="shieldAlert"
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
       />

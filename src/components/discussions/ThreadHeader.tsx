@@ -61,21 +61,21 @@ const ThreadHeader = forwardRef<HTMLDivElement, ThreadHeaderProps>(
           </Link>
         )}
 
-        {/* Meta Row: Category + Pin */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {thread.isPinned && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-terracotta/10 text-terracotta text-sm font-semibold rounded-full">
-              <Icon icon="lucide:pin" className="w-4 h-4" />
-              Pinned
-            </span>
-          )}
-          <CategoryBadge category={thread.category} size="md" />
+        {/* Title row: heading + pinned + category (top right) */}
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="font-display text-2xl md:text-3xl font-semibold text-forest leading-tight flex-1 min-w-0">
+            {thread.title}
+          </h1>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {thread.isPinned && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-terracotta/10 text-terracotta text-sm font-semibold rounded-full">
+                <Icon icon="lucide:pin" className="w-4 h-4" />
+                Pinned
+              </span>
+            )}
+            <CategoryBadge category={thread.category} size="md" />
+          </div>
         </div>
-
-        {/* Title */}
-        <h1 className="font-display text-2xl md:text-3xl font-semibold text-forest leading-tight">
-          {thread.title}
-        </h1>
 
         {/* Author & Time Row */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">

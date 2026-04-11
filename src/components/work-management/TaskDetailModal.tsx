@@ -182,7 +182,7 @@ export default function TaskDetailModal({
             <div className="flex flex-wrap gap-6 items-center text-sm">
               <div className="flex items-center gap-2">
                 <span className="font-display text-[10px] font-bold uppercase tracking-widest text-white/60">Priority</span>
-                <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+                <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-none border border-white/10">
                   <PriorityIndicator priority={task.priority} showLabel={false} />
                   <InlineEditField
                     type="select"
@@ -216,7 +216,7 @@ export default function TaskDetailModal({
               {/* Description Section */}
               <div className="space-y-1.5">
                 <SectionLabel as="h4" variant="muted">Description</SectionLabel>
-                <Card hover className="p-4">
+                <Card hover className="rounded-none p-4">
                   <InlineEditField
                     type="textarea"
                     value={task.description}
@@ -234,7 +234,7 @@ export default function TaskDetailModal({
                     <SectionLabel as="h4" variant="muted">Assignee</SectionLabel>
                     <div
                       className={cn(
-                        'rounded-2xl outline-none',
+                        'rounded-none outline-none',
                         !assigneeFieldEditing &&
                           'cursor-pointer focus-visible:ring-2 focus-visible:ring-forest/40 focus-visible:ring-offset-2',
                       )}
@@ -253,7 +253,7 @@ export default function TaskDetailModal({
                       <Card
                         hover
                         className={cn(
-                          'flex items-center gap-2.5 p-2.5',
+                          'flex items-center gap-2.5 rounded-none p-2.5',
                           !assigneeFieldEditing && 'pointer-events-none',
                         )}
                       >
@@ -291,7 +291,7 @@ export default function TaskDetailModal({
 
                   <div className="space-y-1.5">
                     <SectionLabel as="h4" variant="muted">Labels</SectionLabel>
-                    <Card className="p-2.5 min-h-[58px] flex items-stretch">
+                    <Card className="rounded-none p-2.5 min-h-[58px] flex items-stretch">
                       <TagInput
                         tags={task.tags}
                         onChange={v => handleChange('tags', v)}
@@ -304,7 +304,7 @@ export default function TaskDetailModal({
                 <div className="space-y-1.5">
                   <SectionLabel as="h4" variant="muted">Location</SectionLabel>
                   {task.location ? (
-                    <Card className="p-1.5 overflow-hidden">
+                    <Card className="rounded-none p-1.5 overflow-hidden">
                       <div className="h-[180px]">
                         <TaskLocationPicker
                           location={task.location}
@@ -315,7 +315,7 @@ export default function TaskDetailModal({
                   ) : (
                     <button
                       onClick={() => handleChange('location', { lat: MAP_CENTER[0], lng: MAP_CENTER[1] })}
-                      className="w-full h-[180px] rounded-2xl border-2 border-dashed border-sage/20 bg-white/50 hover:bg-white hover:border-sage/40 transition-all flex flex-col items-center justify-center gap-2 group"
+                      className="w-full h-[180px] rounded-none border-2 border-dashed border-sage/20 bg-white/50 hover:bg-white hover:border-sage/40 transition-all flex flex-col items-center justify-center gap-2 group"
                     >
                       <div className="p-3 rounded-full bg-sage-light group-hover:bg-sage-light/80 transition-colors">
                         <svg className="w-6 h-6 text-forest/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -332,7 +332,7 @@ export default function TaskDetailModal({
               {/* Assets - full width */}
               <div className="space-y-1.5">
                 <SectionLabel as="h4" variant="muted">Assets</SectionLabel>
-                <Card className="p-3">
+                <Card className="rounded-none p-3">
                   <TaskImageGallery
                     images={task.images || []}
                     onChange={v => handleChange('images', v)}
@@ -342,12 +342,12 @@ export default function TaskDetailModal({
               </div>
 
               {/* Comments & Activity Section */}
-              <Card className="rounded-[24px] overflow-hidden shadow-lg">
+              <Card className="rounded-none overflow-hidden shadow-lg">
                 <div className="flex border-b border-sage/5 bg-bone/30 p-1 gap-1">
                   <button
                     onClick={() => setActiveTab('comments')}
                     className={cn(
-                      "flex-1 py-2 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                      "flex-1 py-2 px-4 text-[10px] font-bold uppercase tracking-widest transition-all",
                       activeTab === 'comments'
                         ? "bg-white text-forest shadow-sm border border-sage/10"
                         : "text-forest/40 hover:text-forest/60 hover:bg-white/50"
@@ -358,7 +358,7 @@ export default function TaskDetailModal({
                   <button
                     onClick={() => setActiveTab('activity')}
                     className={cn(
-                      "flex-1 py-2 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                      "flex-1 py-2 px-4 text-[10px] font-bold uppercase tracking-widest transition-all",
                       activeTab === 'activity'
                         ? "bg-white text-forest shadow-sm border border-sage/10"
                         : "text-forest/40 hover:text-forest/60 hover:bg-white/50"

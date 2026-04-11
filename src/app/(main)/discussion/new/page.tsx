@@ -32,6 +32,7 @@ function NewThreadPageContent() {
         title="Start a Discussion"
         description="Share your thoughts, ask a question, or start a conversation."
         eyebrow="New Thread"
+        eyebrowIconKey="messageSquarePlus"
         backgroundImage="/images/mangere-mountain.jpg"
         variant="compact"
       />

@@ -13,6 +13,7 @@ export default function BlogPage() {
         title="CGRS Committee Blog"
         description="Latest updates and announcements from the committee and website team."
         eyebrow="Blog"
+        eyebrowIconKey="newspaper"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

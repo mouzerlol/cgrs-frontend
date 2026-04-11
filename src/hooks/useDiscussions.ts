@@ -84,6 +84,7 @@ export function useThreads(options?: GetThreadsOptions) {
 
 export function useInfiniteThreads(
   options?: Omit<GetThreadsOptions, 'offset' | 'limit'>,
+  queryOptions?: { enabled?: boolean },
 ) {
   const { getToken } = useAuth();
   const clerkLoaded = useClerkLoadedForDiscussionApi();
@@ -100,7 +101,24 @@ export function useInfiniteThreads(
         getToken,
       ),
     initialPageParam: 0,
-    enabled: clerkLoaded,
+    enabled: clerkLoaded && (queryOptions?.enabled ?? true),
+    staleTime: STALE_TIMES.CONTENT,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
+  });
+}
+
+/** Paginated bookmarked threads for the signed-in member (403 when not a member). */
+export function useInfiniteBookmarkedThreads(queryOptions?: { enabled?: boolean }) {
+  const { getToken } = useAuth();
+  const authReady = useClerkReadyForDiscussionApi();
+
+  return useInfiniteQuery({
+    queryKey: discussionKeys.bookmarkedThreadsInfinite(),
+    queryFn: ({ pageParam = 0 }) =>
+      getBookmarkedThreads({ limit: PAGE_SIZE, offset: pageParam }, getToken),
+    initialPageParam: 0,
+    enabled: authReady && (queryOptions?.enabled ?? true),
     staleTime: STALE_TIMES.CONTENT,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,

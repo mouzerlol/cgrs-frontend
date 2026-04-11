@@ -148,6 +148,8 @@ const ThreadList = forwardRef<HTMLDivElement, ThreadListProps>(
                   isBookmarked={bookmarkedThreads.has(thread.id)}
                   onUpvote={onUpvote ? () => onUpvote(thread.id) : undefined}
                   onBookmark={onBookmark ? () => onBookmark(thread.id) : undefined}
+                  onShare={onShare ? () => onShare(thread.id) : undefined}
+                  onReport={onReport ? () => onReport(thread.id) : undefined}
                   showCategory={showCategory}
                 />
               </motion.div>

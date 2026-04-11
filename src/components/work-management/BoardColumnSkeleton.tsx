@@ -7,7 +7,7 @@ import TaskCardSkeleton from './TaskCardSkeleton';
  */
 export default function BoardColumnSkeleton() {
   return (
-    <div className="bg-sage-lite/60 backdrop-blur-xl border border-sage/30 shadow-sm rounded-[10px] w-[280px] min-w-[280px] flex flex-col h-full min-h-0">
+    <div className="bg-sage-lite/60 backdrop-blur-xl border border-sage/30 shadow-sm w-[280px] min-w-[280px] flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="p-3 flex items-center justify-between shrink-0 border-b border-sage/10">
         <Skeleton className="h-5 w-24" />

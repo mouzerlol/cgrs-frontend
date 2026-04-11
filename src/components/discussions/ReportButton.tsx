@@ -39,9 +39,9 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
 
     const sizeClasses = {
       sm: {
-        button: 'min-w-[36px] min-h-[36px] p-1.5',
-        icon: 'w-4 h-4',
-        text: 'text-xs',
+        button: 'min-h-[26px] min-w-[26px] p-1',
+        icon: 'w-3 h-3',
+        text: 'text-[11px]',
       },
       md: {
         button: 'min-w-[44px] min-h-[44px] p-2',
@@ -74,13 +74,13 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
         className={cn(
           isMenu
             ? 'flex w-full items-center gap-3 text-left font-normal text-sm'
-            : 'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
+            : 'flex items-center justify-center gap-1 rounded-md border transition-all duration-200',
           !isMenu && sizes.button,
           isMenu && reported && 'text-forest/40 cursor-not-allowed',
           !isMenu &&
             (reported
-              ? 'bg-sage-light text-forest/40 border-sage cursor-not-allowed'
-              : 'bg-transparent text-forest/40 border-transparent hover:text-terracotta hover:bg-terracotta/5'),
+              ? 'bg-sage-light/60 text-forest/40 border-forest/10 cursor-not-allowed'
+              : 'bg-transparent text-forest/50 border-forest/10 hover:text-terracotta hover:bg-terracotta/5 hover:border-forest/18'),
           disabled && 'opacity-50 cursor-not-allowed',
           className
         )}

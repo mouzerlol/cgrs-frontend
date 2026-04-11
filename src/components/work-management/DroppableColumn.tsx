@@ -22,7 +22,7 @@ export default function DroppableColumn({ status, children }: DroppableColumnPro
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-col flex-1 min-h-0 overflow-hidden transition-all duration-200 rounded-lg",
+        "flex flex-col flex-1 min-h-0 overflow-hidden transition-all duration-200",
         isOver && !isActive && "ring-2 ring-terracotta/30 bg-terracotta/5 animate-pulse-subtle"
       )}
     >

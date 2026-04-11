@@ -10,8 +10,8 @@ interface CategoryBadgeProps extends HTMLAttributes<HTMLSpanElement> {
   category: DiscussionCategory | DiscussionCategorySlug;
   /** Show icon alongside text */
   showIcon?: boolean;
-  /** Size variant */
-  size?: 'sm' | 'md';
+  /** Size variant (`xs` is compact for dense layouts e.g. thread cards) */
+  size?: 'xs' | 'sm' | 'md';
   /** Categories data for slug lookup */
   categories?: DiscussionCategory[];
 }
@@ -39,17 +39,25 @@ const CategoryBadge = forwardRef<HTMLSpanElement, CategoryBadgeProps>(
       ? categories?.find(c => c.slug === category) || { ...DEFAULT_CATEGORIES[category], slug: category }
       : category;
 
-    const { name, icon, color } = typeof category === 'string'
+    const { name, icon } = typeof category === 'string'
       ? DEFAULT_CATEGORIES[category] || DEFAULT_CATEGORIES.general
       : category;
 
-    const colorClasses = {
-      terracotta: 'bg-terracotta/15 text-terracotta',
-      forest: 'bg-forest/10 text-forest',
-      sage: 'bg-sage text-forest',
+    const accentColor: 'terracotta' | 'forest' | 'sage' =
+      categoryData.color ??
+      (typeof category === 'string'
+        ? DEFAULT_CATEGORIES[category]?.color
+        : DEFAULT_CATEGORIES[category.slug as DiscussionCategorySlug]?.color) ??
+      'sage';
+
+    const accentClasses: Record<'terracotta' | 'forest' | 'sage', string> = {
+      terracotta: 'bg-terracotta text-white',
+      forest: 'bg-forest text-white',
+      sage: 'bg-sage text-forest-light',
     };
 
     const sizeClasses = {
+      xs: 'px-2 py-0.5 text-[11px] leading-snug gap-0.5',
       sm: 'px-2 py-0.5 text-xs gap-1',
       md: 'px-3 py-1 text-sm gap-1.5',
     };
@@ -59,14 +67,17 @@ const CategoryBadge = forwardRef<HTMLSpanElement, CategoryBadgeProps>(
         ref={ref}
         className={cn(
           'inline-flex items-center rounded font-semibold uppercase tracking-wide',
-          colorClasses[color],
+          accentClasses[accentColor],
           sizeClasses[size],
           className
         )}
         {...props}
       >
         {showIcon && (
-          <Icon icon={icon} className={size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} />
+          <Icon
+            icon={icon}
+            className={size === 'xs' || size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}
+          />
         )}
         <span>{name}</span>
       </span>

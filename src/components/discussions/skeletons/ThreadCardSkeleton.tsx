@@ -42,45 +42,52 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
       );
     }
 
-    // Card variant — mirrors ThreadCard h-full grid row stretch + reserved title/body blocks
+    // Card variant — reserved left column + top author row + footer actions
     return (
       <div
         ref={ref}
         className={cn(
-          'flex h-full min-h-0 flex-col rounded-2xl border border-sage/30 bg-white',
+          'flex h-full min-h-0 flex-col rounded-2xl border border-sage bg-white',
           'animate-pulse',
           className
         )}
         {...props}
       >
         <div className="flex min-h-0 flex-1 items-stretch">
-          <div className="flex shrink-0 flex-col items-stretch self-stretch p-3 md:p-4">
-            <div className="h-16 w-12 rounded-lg bg-sage-light" />
+          <div className="w-32 shrink-0 self-stretch min-h-[5.5rem] bg-sage-light md:w-40">
+            <div className="h-full min-h-[5.5rem] w-full bg-sage/30" />
           </div>
 
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col py-3 pr-3 md:py-4 md:pr-4">
-            <div className="mb-1.5 flex gap-2">
-              <div className="h-5 w-20 rounded bg-sage-light" />
-              <div className="h-5 w-14 rounded bg-sage-light" />
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col px-3 py-3 md:px-4 md:py-4">
+            <div className="mb-0 flex items-start justify-between gap-3">
+              <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">
+                <div className="min-w-0 flex-1 space-y-1">
+                  <div className="h-5 w-4/5 rounded bg-sage-light md:h-6" />
+                  <div className="h-5 w-3/5 rounded bg-sage-light md:h-6" />
+                </div>
+              </div>
+              <div className="h-9 w-9 shrink-0 rounded-full bg-sage-light" />
             </div>
 
-            <div className="mb-1.5 min-h-[2.75rem] md:min-h-[3.125rem]">
-              <div className="h-5 w-4/5 rounded bg-sage-light md:h-6" />
+            <div className="mb-4 flex flex-wrap items-center gap-1.5">
+              <div className="h-4 w-24 rounded bg-sage-light" />
+              <div className="h-4 w-12 rounded bg-sage-light" />
             </div>
 
-            <div className="mb-2 min-h-10 space-y-2">
+            <div className="mb-1.5 min-h-10 space-y-2">
               <div className="h-4 w-full rounded bg-sage-light" />
               <div className="h-4 w-2/3 rounded bg-sage-light" />
             </div>
 
-            <div className="mt-auto flex items-center justify-between gap-3 border-t border-sage/20 pt-2">
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-sage/20 pt-2">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-sage-light" />
-                <div className="h-4 w-24 rounded bg-sage-light" />
+                <div className="h-9 w-16 rounded-lg bg-sage-light" />
+                <div className="h-5 w-8 rounded bg-sage-light" />
               </div>
-              <div className="flex gap-3">
-                <div className="h-4 w-8 rounded bg-sage-light" />
-                <div className="h-4 w-8 rounded bg-sage-light" />
+              <div className="flex gap-1">
+                <div className="h-8 w-8 rounded-lg bg-sage-light" />
+                <div className="h-8 w-8 rounded-lg bg-sage-light" />
+                <div className="h-8 w-8 rounded-lg bg-sage-light" />
               </div>
             </div>
           </div>

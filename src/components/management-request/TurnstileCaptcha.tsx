@@ -15,10 +15,17 @@ interface TurnstileCaptchaProps {
   className?: string;
 }
 
+/** Minimal Cloudflare Turnstile global API (script loads at runtime). */
+interface TurnstileGlobal {
+  render: (container: HTMLElement, options: Record<string, unknown>) => string;
+  remove: (widgetId: string) => void;
+  reset: (widgetId: string) => void;
+  getResponse: (widgetId: string) => string;
+}
+
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    turnstile: any;
+    turnstile?: TurnstileGlobal;
   }
 }
 

@@ -88,18 +88,16 @@ export default function QuickAccessGrid() {
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
   const featureFlags = useAllFeatureFlags();
 
-  if (!quickAccessSectionEnabled) {
-    return null;
-  }
-
-  // Filter cards based on feature flags
   const visibleCards = useMemo(() => {
     return CARDS.filter((card) => {
       if (!card.flagId) return true;
-      // Use feature flag if available, otherwise default to true
       return featureFlags[card.flagId] ?? DEFAULT_FLAG_IDS[card.flagId] ?? true;
     });
   }, [featureFlags]);
+
+  if (!quickAccessSectionEnabled) {
+    return null;
+  }
 
   if (visibleCards.length === 0) {
     return null;

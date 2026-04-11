@@ -124,6 +124,14 @@ describe('TaskImageGallery', () => {
       expect(removeButtons).toHaveLength(3);
     });
 
+    it('renders empty drop zone with square corners', () => {
+      render(
+        <TaskImageGallery images={[]} onChange={vi.fn()} />
+      );
+      const zone = screen.getByText(/Drag & drop/i).closest('div');
+      expect(zone).toHaveClass('rounded-none');
+    });
+
     it('calls onChange without the removed image when remove is clicked', async () => {
       const onChange = vi.fn();
       renderGallery({ onChange });

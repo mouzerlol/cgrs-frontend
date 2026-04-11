@@ -52,6 +52,7 @@ export default function ForgotPasswordPage() {
         title="Reset Password"
         description="Recover your account access by resetting your password securely."
         eyebrow="Account Security"
+        eyebrowIconKey="keyRound"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
@@ -64,7 +65,9 @@ export default function ForgotPasswordPage() {
                 Reset Password
               </h2>
               <p className="opacity-70 mb-8">
-                Enter your email address and we'll send you instructions to reset your password.
+                {
+                  "Enter your email address and we'll send you instructions to reset your password."
+                }
               </p>
 
               {isSubmitted ? (
@@ -75,7 +78,9 @@ export default function ForgotPasswordPage() {
                     Reset Link Sent
                   </h3>
                   <p className="opacity-70">
-                    We've sent password reset instructions to your email. Please check your inbox and follow the instructions.
+                    {
+                      "We've sent password reset instructions to your email. Please check your inbox and follow the instructions."
+                    }
                   </p>
                   <div className="space-y-4 mt-6">
                     <Button

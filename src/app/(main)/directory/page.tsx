@@ -18,6 +18,7 @@ export default function DirectoryPage() {
         title="Member Directory"
         description="View members of our community"
         eyebrow="Directory"
+        eyebrowIconKey="users"
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
       />

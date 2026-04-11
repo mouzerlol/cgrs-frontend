@@ -25,6 +25,7 @@ function ManagementRequestPageContent() {
         title="Management Request"
         description="Submit a request or report an issue to society management"
         eyebrow="Request Portal"
+        eyebrowIconKey="clipboardList"
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
       />

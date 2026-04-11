@@ -29,12 +29,14 @@ export default function Hero({ title, subtitle, backgroundImage }: HeroProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-forest/40 to-forest/60" />
       <div className="relative z-10 text-center text-bone p-md">
         <h1 className="font-display text-display tracking-tight leading-none mb-md opacity-0 animate-fade-up text-bone" dangerouslySetInnerHTML={{ __html: title }} />
-        {subtitle && <p className="text-base tracking-wide font-normal opacity-0 animate-fade-up [animation-delay:200ms]">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-lg md:text-xl tracking-wide font-normal opacity-0 animate-fade-up [animation-delay:200ms]">{subtitle}</p>
+        )}
         <div
-          className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-6 h-10 border-2 border-bone rounded-xl opacity-60"
+          className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-8 h-14 border-[3px] border-bone rounded-2xl opacity-60"
           aria-hidden="true"
         >
-          <Icon name="arrow-down" size="sm" className="absolute bottom-1.5 left-1/2 -translate-x-1/2 animate-scroll-bounce" />
+          <Icon name="arrow-down" size="md" className="absolute bottom-2 left-1/2 -translate-x-1/2 animate-scroll-bounce" />
         </div>
       </div>
     </section>

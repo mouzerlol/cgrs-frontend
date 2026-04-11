@@ -28,7 +28,7 @@ export default function MotionBlockquote({
             </div>
 
             <blockquote className="border-l-4 border-terracotta bg-bone/50 p-4 italic text-forest/80 font-body leading-relaxed rounded-r-lg">
-                "{motionText}"
+                &ldquo;{motionText}&rdquo;
             </blockquote>
         </div>
     );

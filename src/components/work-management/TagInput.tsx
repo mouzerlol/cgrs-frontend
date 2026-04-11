@@ -44,7 +44,7 @@ export default function TagInput({ tags, onChange, readonly = false }: TagInputP
       onClick={focusInput}
     >
       {tags.map(tag => (
-        <span key={tag} className="bg-sage-light text-forest/70 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+        <span key={tag} className="bg-sage-light text-forest/70 text-xs px-2 py-1 rounded-none flex items-center gap-1">
           {tag}
           {!readonly && (
             <button

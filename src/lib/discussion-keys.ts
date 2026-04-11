@@ -34,6 +34,10 @@ export const discussionKeys = {
   bookmarkedThreads: () =>
     [...discussionKeys.threads(), 'bookmarked'] as const,
 
+  /** Infinite bookmark paginated list (same API prefix as bookmarkedThreads for invalidation). */
+  bookmarkedThreadsInfinite: () =>
+    [...discussionKeys.bookmarkedThreads(), 'infinite', PAGE_SIZE] as const,
+
   replies: () => [...discussionKeys.all, 'replies'] as const,
   threadReplies: (threadId: string) =>
     [...discussionKeys.replies(), 'thread', threadId] as const,

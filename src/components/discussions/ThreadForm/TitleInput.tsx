@@ -52,9 +52,9 @@ export function TitleInput({ value, onChange, error }: TitleInputProps) {
         <div className="text-sm text-forest/70 p-sm bg-sage-light rounded-lg">
           <p>Be specific and concise. A good title helps others find your discussion.</p>
           <p className="mt-xs text-xs opacity-60">
-            <strong>Good:</strong> "Best coffee shops near Mangere Bridge?"
+            <strong>Good:</strong> &quot;Best coffee shops near Mangere Bridge?&quot;
             <br />
-            <strong>Avoid:</strong> "I have a question"
+            <strong>Avoid:</strong> &quot;I have a question&quot;
           </p>
         </div>
       )}

@@ -113,7 +113,7 @@ export default function TaskImageGallery({
   return (
     <div className="space-y-3">
       {hasLegacyImages && !readonly && (
-        <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+        <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-none px-3 py-2">
           This task uses older inline photos. Remove them to add new images stored in cloud storage.
         </p>
       )}
@@ -130,7 +130,7 @@ export default function TaskImageGallery({
             <div
               key={img.id}
               className={cn(
-                'relative group aspect-square rounded-xl overflow-hidden border border-sage/20',
+                'relative group aspect-square rounded-none overflow-hidden border border-sage/20',
                 img.type === 'video' && 'cursor-pointer',
               )}
               onClick={() => {
@@ -190,7 +190,7 @@ export default function TaskImageGallery({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="aspect-square rounded-xl border-2 border-dashed border-sage/20 hover:border-sage/40 bg-sage-light/20 hover:bg-sage-light/40 transition-all flex flex-col items-center justify-center gap-1 text-forest/40 hover:text-forest/60"
+              className="aspect-square rounded-none border-2 border-dashed border-sage/20 hover:border-sage/40 bg-sage-light/20 hover:bg-sage-light/40 transition-all flex flex-col items-center justify-center gap-1 text-forest/40 hover:text-forest/60"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -204,7 +204,7 @@ export default function TaskImageGallery({
       {images.length === 0 && canAddMore && (
         <div
           className={cn(
-            'rounded-xl border-2 border-dashed p-6 text-center transition-all cursor-pointer',
+            'rounded-none border-2 border-dashed p-6 text-center transition-all cursor-pointer',
             isDragging
               ? 'border-terracotta/40 bg-terracotta/5'
               : 'border-sage/20 bg-sage-light/10 hover:border-sage/40 hover:bg-sage-light/30',
