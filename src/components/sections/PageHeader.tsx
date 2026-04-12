@@ -18,6 +18,8 @@ interface PageHeaderProps {
   variant?: 'default' | 'compact' | 'flush';
   /** When false, skip the trail under the hero (rare; e.g. embedded demos). Default true. */
   showBreadcrumbs?: boolean;
+  /** When false, hero renders a div instead of h1. Use when the page has its own content h1 below the hero. Default true. */
+  showHeroHeading?: boolean;
 }
 
 /**
@@ -37,6 +39,7 @@ export default function PageHeader({
   backgroundImage,
   variant = 'default',
   showBreadcrumbs = true,
+  showHeroHeading = true,
 }: PageHeaderProps) {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
 
@@ -62,7 +65,7 @@ export default function PageHeader({
         <div className="absolute inset-0 z-0">
           <Image
             src={backgroundImage}
-            alt=""
+            alt={`Mangere Bridge community view at Coronation Gardens`}
             fill
             className="object-cover"
             priority
@@ -85,6 +88,7 @@ export default function PageHeader({
             description={description}
             size={isCompact ? 'sm' : 'md'}
             className="max-w-xl"
+            headingLevel={showHeroHeading ? 'h1' : 'div'}
           />
         </div>
       </div>

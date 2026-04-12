@@ -6,8 +6,10 @@
  * Only accessible to users with viewMemberDirectory capability.
  */
 
+import Image from 'next/image';
 import { useMembers, useHasCapability } from '@/hooks/useAuthorization';
 import { CAPABILITIES, formatRole as formatRoleLabel } from '@/lib/auth';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
@@ -31,9 +33,12 @@ function MemberCard({ member }: { member: import('@/types/authorization').Member
       <div className="flex items-start gap-4">
         <div className="w-12 h-12 rounded-full bg-sage-light flex items-center justify-center text-sage font-medium shrink-0">
           {member.user.avatar_url ? (
-            <img
+            <Image
               src={member.user.avatar_url}
               alt={fullName}
+              width={48}
+              height={48}
+              unoptimized={isNonOptimizableImageSrc(member.user.avatar_url)}
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (

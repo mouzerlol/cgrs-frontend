@@ -86,7 +86,7 @@ describe('ReplyCard', () => {
     const reply = makeReply();
     const { container } = render(<ReplyCard reply={reply} />);
     const wrapper = container.firstElementChild as HTMLElement;
-    expect(wrapper.className).toContain('bg-bone');
+    expect(wrapper.className).toContain('bg-bone-light');
     expect(wrapper.className).toContain('p-3');
     expect(wrapper.className).toContain('overflow-hidden');
   });

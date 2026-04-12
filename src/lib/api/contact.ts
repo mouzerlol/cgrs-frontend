@@ -4,15 +4,12 @@
  */
 
 import { ApiError, isLocalApi } from './client';
+import type { ContactFormData } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-export interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+// Re-export for consumers that import from api/contact
+export type { ContactFormData } from '@/types';
 
 export interface ContactFormResponse {
   success: boolean;

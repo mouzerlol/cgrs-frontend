@@ -1,15 +1,28 @@
-import { describe, it, expect } from 'vitest'
-import robots from '../robots'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { getPublicAppOrigin } from '@/lib/app-url'
 
 describe('robots', () => {
-  const config = robots()
+  let originalEnv: NodeJS.ProcessEnv
 
-  it('returns a robots configuration object', () => {
+  beforeEach(() => {
+    originalEnv = { ...process.env }
+    process.env.NEXT_PUBLIC_APP_URL = 'https://www.cgrs.co.nz'
+  })
+
+  afterEach(() => {
+    process.env = originalEnv
+  })
+
+  it('returns a robots configuration object', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
     expect(config).toBeDefined()
     expect(config.rules).toBeDefined()
   })
 
-  it('allows all user agents', () => {
+  it('allows all user agents', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
     const rules = config.rules
     if (Array.isArray(rules)) {
       expect(rules.some((r) => r.userAgent === '*')).toBe(true)
@@ -18,7 +31,9 @@ describe('robots', () => {
     }
   })
 
-  it('allows crawling of root path', () => {
+  it('allows crawling of root path', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
     const rules = config.rules
     if (Array.isArray(rules)) {
       const globalRule = rules.find((r) => r.userAgent === '*')
@@ -28,7 +43,9 @@ describe('robots', () => {
     }
   })
 
-  it('disallows auth pages', () => {
+  it('disallows auth pages', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
     const rules = config.rules
     const disallow = Array.isArray(rules) ? rules[0].disallow : rules.disallow
     expect(disallow).toContain('/login/')
@@ -36,7 +53,24 @@ describe('robots', () => {
     expect(disallow).toContain('/forgot-password/')
   })
 
-  it('references the sitemap URL', () => {
-    expect(config.sitemap).toBe('https://www.cgrs.co.nz/sitemap.xml')
+  it('references sitemap URL derived from app origin (not hardcoded)', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
+    expect(config.sitemap).toBe(`${getPublicAppOrigin()}/sitemap.xml`)
+  })
+
+  it('sitemap URL adapts to NEXT_PUBLIC_APP_URL env var', async () => {
+    process.env.NEXT_PUBLIC_APP_URL = 'https://staging.cgrs.co.nz'
+    const { default: robots } = await import('../robots')
+    const config = robots()
+    expect(config.sitemap).toBe('https://staging.cgrs.co.nz/sitemap.xml')
+  })
+
+  it('disallows profile routes', async () => {
+    const { default: robots } = await import('../robots')
+    const config = robots()
+    const rules = config.rules
+    const disallow = Array.isArray(rules) ? rules[0].disallow : rules.disallow
+    expect(disallow).toContain('/profile/')
   })
 })

@@ -1,7 +1,9 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@clerk/nextjs';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import { TaskImage } from '@/types/work-management';
 import type { LightboxImage } from '@/types';
 import { cn } from '@/lib/utils';
@@ -142,10 +144,13 @@ export default function TaskImageGallery({
               }}
             >
               {displaySrc ? (
-                <img
+                <Image
                   src={displaySrc}
                   alt={img.alt || 'Task asset'}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 33vw, 25vw"
+                  unoptimized={isNonOptimizableImageSrc(displaySrc)}
+                  className="object-cover"
                 />
               ) : (
                 <div

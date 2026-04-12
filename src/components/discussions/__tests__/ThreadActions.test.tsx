@@ -47,12 +47,13 @@ describe('ThreadActions', () => {
     expect(jump.className).toContain('min-h-[36px]');
   });
 
-  it('adds left padding to bookmark for spacing after reply count', () => {
+  it('adds left margin to bookmark for spacing after reply count without shifting the icon', () => {
     render(
       <ThreadActions thread={mockThread()} replyCount={6} onReplyButtonClick={() => {}} />
     );
     const bookmark = screen.getByRole('button', { name: /bookmark thread/i });
-    expect(bookmark.className).toContain('pl-3');
+    expect(bookmark.className).toContain('ml-3');
+    expect(bookmark.className).not.toContain('pl-3');
   });
 
   it('right-aligns edit and more actions when author controls are shown', () => {

@@ -9,7 +9,7 @@ interface ImageSkeletonProps extends Omit<ImageProps, 'onLoad'> {
   containerClassName?: string;
 }
 
-export function ImageSkeleton({ containerClassName, className, ...props }: ImageSkeletonProps) {
+export function ImageSkeleton({ containerClassName, className, alt = '', ...props }: ImageSkeletonProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -20,6 +20,7 @@ export function ImageSkeleton({ containerClassName, className, ...props }: Image
         </div>
       )}
       <Image
+        alt={alt}
         {...props}
         className={cn(
           'transition-opacity duration-500 ease-in-out',

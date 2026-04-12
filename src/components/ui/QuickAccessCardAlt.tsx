@@ -33,7 +33,7 @@ const QuickAccessCardAlt = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
         ref={ref}
         href={href}
         className={cn(
-          'group relative flex flex-col bg-forest rounded-card border border-sage/20 transition-all duration-400 ease-out-custom overflow-hidden text-sage-light hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
+          'group relative flex flex-col bg-forest rounded-card border border-sage/20 transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom overflow-hidden text-sage-light hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2' : '',
           className
         )}
@@ -74,7 +74,7 @@ const QuickAccessCardAlt = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
             )}
             
             {/* Floating Icon - Anchored inside the image bottom-right */}
-            <div className="absolute bottom-2 right-2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-sage-light text-forest shadow-[0_4px_12px_rgba(26,34,24,0.4)] transition-all duration-400 ease-out-custom group-hover:scale-110 group-hover:bg-terracotta group-hover:text-bone">
+            <div className="absolute bottom-2 right-2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-sage-light text-forest shadow-[0_4px_12px_rgba(26,34,24,0.4)] transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom group-hover:scale-110 group-hover:bg-terracotta group-hover:text-bone">
               <Icon 
                 name={(icon as IconName) || 'arrow-right'} 
                 size={isLarge ? "md" : "sm"} 

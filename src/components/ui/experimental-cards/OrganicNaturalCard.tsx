@@ -16,7 +16,7 @@ const OrganicNaturalCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
         href={href}
         className={cn(
           'group relative flex flex-col bg-gradient-to-br from-[#F4EBE3] to-[#E9F0E6] rounded-[32px] overflow-hidden text-[#4A5D4E]',
-          'transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(74,93,78,0.2)]',
+          'transition-colors, transition-transform, transition-opacity duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(74,93,78,0.2)]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

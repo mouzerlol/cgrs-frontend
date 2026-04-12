@@ -18,20 +18,10 @@ import { BreadcrumbBar, BreadcrumbTrail, SiteBreadcrumbs } from '@/components/ui
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UtilityDock, { UtilityDockItem } from '@/components/sections/UtilityDock';
-import QuickAccessCard from '@/components/ui/QuickAccessCard';
 import NewsCard from '@/components/ui/NewsCard';
 import CalendarCard, { formatCalendarDate } from '@/components/ui/CalendarCard';
 import BrutallyMinimalCard from '@/components/ui/experimental-cards/BrutallyMinimalCard';
 import { BrutallyMinimalHubCard, BrutallyMinimalPortfolioCard, BrutallyMinimalBoardCard, BrutallyMinimalTaskCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
-import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
-import EditorialMagazineCard from '@/components/ui/experimental-cards/EditorialMagazineCard';
-import OrganicNaturalCard from '@/components/ui/experimental-cards/OrganicNaturalCard';
-import IndustrialUtilitarianCard from '@/components/ui/experimental-cards/IndustrialUtilitarianCard';
-import RetroFuturisticCard from '@/components/ui/experimental-cards/RetroFuturisticCard';
-import PlayfulToyCard from '@/components/ui/experimental-cards/PlayfulToyCard';
-import BrutalistRawCard from '@/components/ui/experimental-cards/BrutalistRawCard';
-import MaximalistChaosCard from '@/components/ui/experimental-cards/MaximalistChaosCard';
-import ArtDecoGeometricCard from '@/components/ui/experimental-cards/ArtDecoGeometricCard';
 import dynamic from 'next/dynamic';
 import { MAP_VARIATIONS } from '@/components/ui/MapPreview';
 import MapMarker from '@/components/map/MapMarker';
@@ -408,41 +398,6 @@ export default function DesignSystemPage() {
             description="The original card components used on the home page."
           >
             <div className="space-y-8">
-              {/* Quick Access Card */}
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Quick Access Card</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <QuickAccessCard
-                    card={{
-                      title: 'Report an Issue',
-                      description: 'Report maintenance & community issues',
-                      href: '#',
-                      type: 'large',
-                      backgroundImage: '/images/quick-access/report-issue.png',
-                    }}
-                  />
-                  <QuickAccessCard
-                    card={{
-                      title: 'Message Board',
-                      description: 'Community notices & announcements',
-                      href: '#',
-                      type: 'simple',
-                      icon: 'message',
-                      backgroundImage: '/images/quick-access/message-board.png',
-                    }}
-                  />
-                  <QuickAccessCard
-                    card={{
-                      title: 'Connect',
-                      description: 'Join our Facebook & Messenger',
-                      href: '#',
-                      type: 'accent',
-                      icon: 'share',
-                    }}
-                  />
-                </div>
-              </div>
-
               {/* Community Events Card */}
               <div>
                 <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Community Events Card</h3>
@@ -491,11 +446,11 @@ export default function DesignSystemPage() {
             </div>
           </Section>
 
-          {/* Aesthetic Card Experiments */}
+          {/* Quick Access Cards */}
           <Section
-            id="aesthetic-card-experiments"
-            title="Aesthetic Card Experiments"
-            description="10 distinct experimental card components showcasing different aesthetic styles."
+            id="quick-access-cards"
+            title="Quick Access Cards"
+            description="Card components for quick access to community features and management tools."
           >
             <div className="space-y-12">
               <div>
@@ -522,7 +477,7 @@ export default function DesignSystemPage() {
 
                 <div className="mt-8 p-8 bg-bone border-[3px] border-black">
                   <h4 className="text-xs font-mono font-bold mb-6 uppercase tracking-widest border-b-[3px] border-black pb-2">Work Management Components</h4>
-                  
+
                   <div className="space-y-12">
                     {/* Hub Card */}
                     <div>
@@ -613,195 +568,6 @@ export default function DesignSystemPage() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Luxury / Refined</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <LuxuryRefinedCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <LuxuryRefinedCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Editorial / Magazine</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <EditorialMagazineCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <EditorialMagazineCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Organic / Natural</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <OrganicNaturalCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <OrganicNaturalCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Industrial / Utilitarian</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <IndustrialUtilitarianCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <IndustrialUtilitarianCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Retro-futuristic</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <RetroFuturisticCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <RetroFuturisticCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Playful / Toy-like</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <PlayfulToyCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <PlayfulToyCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Brutalist / Raw</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <BrutalistRawCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <BrutalistRawCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Maximalist Chaos</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <MaximalistChaosCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <MaximalistChaosCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Art Deco / Geometric</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <ArtDecoGeometricCard
-                    variant="large"
-                    title="Report an Issue"
-                    description="Report maintenance, landscaping, or security issues directly to the management team. Track your requests and stay updated on community improvements."
-                    href="#"
-                    icon="document"
-                    image="/images/quick-access/report-issue.png"
-                  />
-                  <ArtDecoGeometricCard
-                    title="Message Board"
-                    description="Community notices & announcements."
-                    href="#"
-                    icon="message"
-                    image="/images/quick-access/message-board.png"
-                  />
                 </div>
               </div>
             </div>

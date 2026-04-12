@@ -18,7 +18,7 @@ export default function CapabilitiesCard({ capabilities }: CapabilitiesCardProps
       initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.2 }}
-      className="rounded-xl bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
+      className="bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
     >
       <h3 className={cn('mb-4', profileSectionTitleSmClass)}>Your Capabilities</h3>
       <div className="flex flex-wrap gap-2">

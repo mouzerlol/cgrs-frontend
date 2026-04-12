@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, ButtonHTMLAttributes } from 'react';
-import { Icon } from '@iconify/react';
+import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 
@@ -78,10 +78,14 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
           aria-pressed={isBookmarked}
           {...props}
         >
-          <Icon
-            icon={isBookmarked ? 'lucide:bookmark-check' : 'lucide:bookmark'}
-            className={cn(sizes.icon, 'transition-transform duration-200', isBookmarked && 'fill-current')}
-          />
+          {isBookmarked ? (
+            <BookmarkCheck
+              className={cn(sizes.icon, 'shrink-0 transition-transform duration-200 fill-current')}
+              aria-hidden
+            />
+          ) : (
+            <Bookmark className={cn(sizes.icon, 'shrink-0 transition-transform duration-200')} aria-hidden />
+          )}
           {showLabel && (
             <span className={cn('font-medium', sizes.text)}>{isBookmarked ? 'Saved' : 'Save'}</span>
           )}

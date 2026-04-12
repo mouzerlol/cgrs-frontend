@@ -2,6 +2,15 @@ import { render, screen, within } from '@testing-library/react';
 import MapSection from '@/components/sections/MapSection';
 import { POI_TYPES } from '@/data/map-data';
 
+const baseMapPropsSpy = vi.fn();
+
+vi.mock('@/components/map/BaseMap', () => ({
+  default: (props: Record<string, unknown>) => {
+    baseMapPropsSpy(props);
+    return <div className={String(props.className ?? '')} data-testid="mock-base-map" />;
+  },
+}));
+
 // Mock Leaflet
 vi.mock('leaflet', () => ({
   default: {
@@ -33,6 +42,26 @@ vi.mock('leaflet', () => ({
 }));
 
 describe('MapSection', () => {
+  beforeEach(() => {
+    baseMapPropsSpy.mockClear();
+  });
+
+  it('uses Stadia Outdoors basemap (terrain / OSM palette), not aerial or raw OSM', () => {
+    render(<MapSection />);
+
+    expect(baseMapPropsSpy).toHaveBeenCalled();
+    const props = baseMapPropsSpy.mock.calls[baseMapPropsSpy.mock.calls.length - 1][0] as {
+      tileUrl: string;
+      maxZoom: number;
+      overlayTileUrl?: string;
+    };
+    expect(props.tileUrl).toContain('tiles.stadiamaps.com');
+    expect(props.tileUrl).toContain('/outdoors/');
+    expect(props.tileUrl).not.toContain('basemaps.linz.govt.nz');
+    expect(props.tileUrl).not.toContain('tile.openstreetmap.org');
+    expect(props.maxZoom).toBe(21);
+  });
+
   it('renders sidebar with Points of Interest header', () => {
     render(<MapSection />);
     

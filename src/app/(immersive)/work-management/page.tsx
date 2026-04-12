@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { LayoutGrid, ClipboardList, Scale } from 'lucide-react';
+import { LayoutGrid, ClipboardList, Scale, Users } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
 import portfoliosData from '@/data/portfolios.json';
@@ -10,6 +10,14 @@ import boardsData from '@/data/boards.json';
 import decisionsData from '@/data/decisions.json';
 
 const features = [
+  {
+    id: 'users',
+    name: 'Users',
+    description: 'View and manage community members, roles, and verification status',
+    icon: Users,
+    href: '/work-management/users',
+    color: 'forest' as const,
+  },
   {
     id: 'portfolios',
     name: 'Portfolios',
@@ -43,6 +51,14 @@ const features = [
 ];
 
 const colorMap = {
+  forest: {
+    bg: 'bg-forest/5',
+    iconBg: 'bg-forest/10',
+    iconColor: 'text-forest',
+    border: 'border-forest/20',
+    hover: 'hover:shadow-[0_20px_40px_rgba(26,34,24,0.15)] hover:-translate-y-1 hover:border-forest/40',
+    badge: 'bg-forest/10 text-forest',
+  },
   terracotta: {
     bg: 'bg-[#FBEBE6]',
     iconBg: 'bg-terracotta/10',

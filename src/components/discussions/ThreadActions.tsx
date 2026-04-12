@@ -97,12 +97,12 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
             </button>
           </Tooltip>
 
-          {/* Bookmark — extra left spacing from reply count cluster */}
+          {/* Bookmark — margin separates from reply cluster without offsetting the icon */}
           <BookmarkButton
             isBookmarked={isBookmarked}
             onBookmark={onBookmark}
             size="sm"
-            className="pl-3"
+            className="ml-3"
           />
 
           {/* Share Dropdown */}

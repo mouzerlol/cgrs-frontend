@@ -5,24 +5,13 @@ import { Mail, Clock } from 'lucide-react';
 interface QRInstructionsProps {
   address: string;
   expiresAt: string | null;
-  hasExistingResidents?: boolean;
-  hasExistingOwners?: boolean;
-  verificationType?: 'resident' | 'owner';
 }
 
-export default function QRInstructions({
-  address,
-  expiresAt,
-  hasExistingResidents,
-  hasExistingOwners,
-  verificationType = 'resident',
-}: QRInstructionsProps) {
+export default function QRInstructions({ address, expiresAt }: QRInstructionsProps) {
   const expiryDate = expiresAt ? new Date(expiresAt) : null;
   const formattedExpiry = expiryDate
     ? expiryDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
     : null;
-
-  const showPeerNotification = hasExistingResidents || hasExistingOwners;
 
   return (
     <div className="space-y-6">
@@ -34,9 +23,7 @@ export default function QRInstructions({
         <div>
           <h4 className="font-display text-lg text-forest">QR Code Sent!</h4>
           <p className="text-sm text-forest/70">
-            {showPeerNotification
-              ? `A QR code has been mailed to ${address}. Current residents will be notified to confirm your residency.`
-              : `A QR code has been mailed to ${address}`}
+            A QR code has been mailed to {address}
           </p>
         </div>
       </div>
@@ -63,7 +50,7 @@ export default function QRInstructions({
             <div>
               <p className="font-medium text-forest">Scan the QR code</p>
               <p className="text-sm text-forest/60">
-                When you receive the letter, scan the QR code using your phone&apos;s camera.
+                When you receive the letter, scan the QR code using your phone&apos;s camera to complete verification.
               </p>
             </div>
           </li>
@@ -72,11 +59,9 @@ export default function QRInstructions({
               3
             </span>
             <div>
-              <p className="font-medium text-forest">Verification complete</p>
+              <p className="font-medium text-forest">You&apos;re verified!</p>
               <p className="text-sm text-forest/60">
-                {showPeerNotification
-                  ? `A resident or owner will confirm who lives at the address to complete your verification.`
-                  : 'Your account will be upgraded to verified resident status automatically.'}
+                Once scanned, your account will be upgraded to verified resident status.
               </p>
             </div>
           </li>

@@ -116,7 +116,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
         role="button"
         className={cn(
           'relative flex h-full min-h-0 flex-col cursor-pointer overflow-hidden rounded-2xl border border-sage bg-white group/card',
-          'transition-all duration-200 ease-out',
+          'transition-colors, transition-transform, transition-opacity duration-200 ease-out',
           'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
           thread.isPinned && 'border-l-4 border-l-terracotta',
           className

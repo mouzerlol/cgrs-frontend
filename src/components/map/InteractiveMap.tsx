@@ -5,7 +5,13 @@ import { MAP_CENTER, MAP_ZOOM, MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
 import MapMarker from '@/components/map/MapMarker';
-import { getOSMTileUrl, getOSMTileOptions, setupBoundaryMap } from '@/lib/maps';
+import {
+  getCommunityMapBaseTileUrl,
+  getCommunityMapBaseTileOptions,
+  getLINZPropertyTitlesTileUrl,
+  getLINZPropertyTitlesTileOptions,
+  setupBoundaryMap,
+} from '@/lib/maps';
 
 interface InteractiveMapProps {
   showSidebar?: boolean;
@@ -15,7 +21,7 @@ interface InteractiveMapProps {
 /**
  * Interactive Map component for the dedicated Map page.
  * Features full Leaflet controls, boundary highlighting, and POI markers.
- * Uses Stadia Maps Alidade Smooth tiles - clean, modern light theme.
+ * Uses Stadia Outdoors (terrain + strong linework) with a darkened basemap via CSS, plus optional LINZ titles.
  * Wraps BaseMap for consistent initialization.
  */
 export default function InteractiveMap({ showSidebar = true, showLegend = true }: InteractiveMapProps) {
@@ -24,9 +30,11 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
   const [selectedPOI, setSelectedPOI] = useState<string | null>(null);
   const markerRefs = useRef<Map<string, L.Marker>>(new Map());
 
-  // Tile configuration
-  const tileUrl = getOSMTileUrl();
-  const tileOptions = getOSMTileOptions();
+  // Base: cartographic (not satellite); overlay: NZ Property Titles (LDS layer 50804)
+  const tileUrl = getCommunityMapBaseTileUrl();
+  const tileOptions = getCommunityMapBaseTileOptions();
+  const propertyTitlesUrl = getLINZPropertyTitlesTileUrl();
+  const propertyTitlesOptions = getLINZPropertyTitlesTileOptions();
 
   // Group POIs by type for sidebar display
   type POIItem = (typeof POINTS_OF_INTEREST)[number];
@@ -72,7 +80,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
 
   const handleMarkerClick = useCallback((position: [number, number]) => {
     if (mapRef.current) {
-      mapRef.current.flyTo(position, 17, {
+      mapRef.current.flyTo(position, MAP_ZOOM, {
         duration: 0.8,
         easeLinearity: 0.25,
       });
@@ -83,7 +91,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
     setSelectedPOI(poi.id);
     
     if (mapRef.current) {
-      mapRef.current.flyTo(poi.coordinates, 17, { duration: 1.5 });
+      mapRef.current.flyTo(poi.coordinates, MAP_ZOOM, { duration: 1.5 });
     }
 
     setTimeout(() => {
@@ -152,9 +160,11 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
       <div className="map-container" style={{ background: '#f5f5f5', minHeight: '500px', marginLeft: showSidebar ? '280px' : 0 }}>
         <BaseMap
           center={MAP_CENTER}
-          zoom={MAP_ZOOM + 1}
+          zoom={MAP_ZOOM}
           tileUrl={tileUrl}
           tileOptions={tileOptions}
+          overlayTileUrl={propertyTitlesUrl ?? undefined}
+          overlayTileOptions={propertyTitlesOptions}
           zoomControl={true}
           showHomeControl={true}
           homeControlPosition="topleft"
@@ -165,7 +175,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
           keyboard={true}
           attributionControl={true}
           preferCanvas={true}
-          maxZoom={18}
+          maxZoom={21}
           minZoom={12}
           onMapReady={handleMapReady}
           onHomeClick={handleHomeClick}

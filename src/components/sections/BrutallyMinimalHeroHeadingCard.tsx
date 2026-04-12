@@ -17,6 +17,8 @@ export interface BrutallyMinimalHeroHeadingCardProps {
   /** Size variant */
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  /** Heading element type - use 'div' when page has its own content h1 below the hero */
+  headingLevel?: 'h1' | 'div';
 }
 
 /**
@@ -30,7 +32,9 @@ export function BrutallyMinimalHeroHeadingCard({
   description,
   size = 'lg',
   className,
+  headingLevel = 'h1',
 }: BrutallyMinimalHeroHeadingCardProps) {
+  const HeadingTag = headingLevel === 'div' ? 'div' : 'h1';
   const EyebrowIcon = eyebrowIconKey ? EYEBROW_ICONS[eyebrowIconKey] : Bookmark;
   const sizeClasses = {
     sm: {
@@ -89,14 +93,14 @@ export function BrutallyMinimalHeroHeadingCard({
           </div>
         )}
         
-        <h1 
+        <HeadingTag
           className={cn(
-            'font-display font-medium leading-none mb-6 text-balance', 
+            'font-display font-medium leading-none mb-6 text-balance',
             s.title
           )}
         >
           {title}
-        </h1>
+        </HeadingTag>
 
         {description && (
           <p className={cn('font-sans leading-snug text-right', s.description)}>
@@ -122,6 +126,8 @@ export interface BrutallyMinimalHeroPageHeaderProps {
   /** Card size */
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  /** Heading element type - use 'div' when page has its own content h1 below the hero */
+  headingLevel?: 'h1' | 'div';
 }
 
 /**
@@ -135,6 +141,7 @@ export function BrutallyMinimalHeroPageHeader({
   backgroundImage,
   size = 'lg',
   className,
+  headingLevel = 'h1',
 }: BrutallyMinimalHeroPageHeaderProps) {
   const sizeClasses = {
     sm: { minHeight: 'min-h-[50vh]', cardMaxWidth: 'max-w-xl' },
@@ -166,6 +173,7 @@ export function BrutallyMinimalHeroPageHeader({
           description={description}
           size={size}
           className={cardMaxWidth}
+          headingLevel={headingLevel}
         />
       </div>
     </header>

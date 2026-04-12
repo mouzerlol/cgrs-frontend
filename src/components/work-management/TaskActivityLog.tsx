@@ -1,6 +1,8 @@
 import React from 'react';
+import Image from 'next/image';
 import { Task, BoardMember, TaskActivity } from '@/types/work-management';
 import { formatRelativeDate } from '@/lib/utils';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import mockData from '@/data/work-management.json';
 
 interface TaskActivityLogProps {
@@ -56,7 +58,14 @@ export default function TaskActivityLog({ task }: TaskActivityLogProps) {
                 <div key={activity.id} className="relative flex gap-4 pl-1">
                   <div className="relative z-10 w-8 h-8 rounded-full bg-white border border-sage/30 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
                     {actorAvatar ? (
-                      <img src={actorAvatar} alt={actorName} className="w-full h-full object-cover" />
+                      <Image
+                        src={actorAvatar}
+                        alt={actorName}
+                        width={32}
+                        height={32}
+                        unoptimized={isNonOptimizableImageSrc(actorAvatar)}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <div className="text-[10px] font-bold text-forest/40 uppercase">
                         {actorName.substring(0, 2) || '??'}

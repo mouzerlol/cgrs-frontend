@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useState, Suspense, useEffect, useRef } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth, useUser, SignInButton } from '@clerk/nextjs';
-import { Icon } from '@iconify/react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Menu } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useCurrentUserQuery, useVerificationStatusQuery } from '@/hooks/useProfileData';
+import { useUnreadCount, markReadWithoutHook } from '@/hooks/useNotifications';
 import ProfileHero from '@/components/profile/ProfileHero';
 import ProfileSkeleton from '@/components/profile/ProfileSkeleton';
 import ProfileSideNav from '@/components/profile/ProfileSideNav';
@@ -15,6 +18,21 @@ import ReportedIssuesSection from '@/components/profile/sections/ReportedIssuesS
 import MyPropertySection from '@/components/profile/sections/MyPropertySection';
 import BookmarksSection from '@/components/profile/sections/BookmarksSection';
 import { isReportedIssueDetailPath } from '@/lib/profile-routes';
+
+function NotificationReadHandler({ queryClient, getToken }: { queryClient: ReturnType<typeof useQueryClient>; getToken: () => Promise<string | null> }) {
+  const searchParams = useSearchParams();
+  const processedRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const notificationId = searchParams.get('notification_id');
+    if (notificationId && !processedRef.current.has(notificationId)) {
+      processedRef.current.add(notificationId);
+      markReadWithoutHook(getToken, queryClient, notificationId);
+    }
+  }, [searchParams, queryClient, getToken]);
+
+  return null;
+}
 
 const TAB_ITEMS = [
   { id: 'verification', href: '/profile/verification', label: 'Verification' },
@@ -27,10 +45,11 @@ const TAB_ITEMS = [
 type TabId = (typeof TAB_ITEMS)[number]['id'];
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isSignedIn, isLoaded, getToken } = useAuth();
   const { user: clerkUser } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTabSwitching, setIsTabSwitching] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -38,6 +57,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   // Fetch all profile data at layout level (shared across all sections)
   const { data: userData, isLoading: isUserLoading, error: userError } = useCurrentUserQuery();
   const { data: verificationStatus } = useVerificationStatusQuery();
+  const { data: unreadCountData } = useUnreadCount();
+  const unreadForVerification = unreadCountData?.by_section.find((s) => s.section === 'profile_verification')?.count ?? 0;
+  // Show dot if there are unread notifications OR if there's a pending request that hasn't been synced yet
+  const hasPendingVerification = unreadForVerification > 0 || (verificationStatus?.has_pending_request ?? false);
 
   const clerkFallback = clerkUser
     ? {
@@ -116,6 +139,11 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   return (
     <section className="section bg-bone">
       <div className="container max-w-5xl">
+        {/* Handle notification deep links - must be in Suspense for static generation */}
+        <Suspense fallback={null}>
+          <NotificationReadHandler queryClient={queryClient} getToken={getToken} />
+        </Suspense>
+
         {/* Profile Hero - no rounded corners, persistent header */}
         <ProfileHero user={userData.user} membership={userData.membership} clerkFallback={clerkFallback} />
 
@@ -127,7 +155,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
             className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-forest shadow-sm transition-colors hover:bg-sage-light/30"
             aria-label="Open navigation menu"
           >
-            <Icon icon="lucide:menu" className="h-5 w-5" aria-hidden="true" />
+            <Menu className="h-5 w-5" aria-hidden="true" />
             Menu
           </button>
         </div>
@@ -150,13 +178,13 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
               onClick={() => setDrawerOpen(true)}
               className="flex items-center gap-2 rounded-xl bg-forest-light px-4 py-3 text-sm font-medium text-bone w-full"
             >
-              <Icon icon="lucide:menu" className="h-5 w-5" aria-hidden="true" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
               {TAB_ITEMS.find((item) => item.id === activeTab)?.label || 'Menu'}
             </button>
           </div>
 
           {/* Content area with sage-light background */}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 self-stretch min-h-[500px]">
             <div className="bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl p-lg sm:p-lg p-sm">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -167,7 +195,11 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                   transition={{ duration: 0.2 }}
                 >
                   {/* Render the active section - all sections are rendered but only one is visible */}
-                  {activeTab === 'verification' && <VerificationSection />}
+                  {activeTab === 'verification' && (
+                    <Suspense fallback={<Skeleton className="h-64 w-full rounded-2xl" />}>
+                      <VerificationSection />
+                    </Suspense>
+                  )}
                   {activeTab === 'details' && <ProfileDetailsSection />}
                   {activeTab === 'reported-issues' &&
                     (isReportedIssueDetailPath(pathname) ? children : <ReportedIssuesSection />)}

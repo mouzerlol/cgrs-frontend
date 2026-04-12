@@ -16,7 +16,7 @@ const EditorialMagazineCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltPr
         href={href}
         className={cn(
           'group relative flex flex-col bg-white border-x-[12px] border-b-[24px] border-t-[12px] border-white overflow-hidden text-black',
-          'transition-all duration-300 hover:shadow-2xl',
+          'transition-colors, transition-transform, transition-opacity duration-300 hover:shadow-2xl',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

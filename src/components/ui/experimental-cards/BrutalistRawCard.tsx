@@ -16,7 +16,7 @@ const BrutalistRawCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>(
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#E6E6FA] border-[3px] border-black rounded-none overflow-hidden text-black',
-          'transition-all duration-100 hover:-translate-x-1 hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000]',
+          'transition-colors, transition-transform, transition-opacity duration-100 hover:-translate-x-1 hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}
@@ -43,7 +43,7 @@ const BrutalistRawCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>(
             </p>
 
             {hasImage && (
-              <div className={cn("relative w-full border-[3px] border-black overflow-hidden mt-auto bg-white filter grayscale contrast-125 group-hover:grayscale-0 transition-all", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
+              <div className={cn("relative w-full border-[3px] border-black overflow-hidden mt-auto bg-white filter grayscale contrast-125 group-hover:grayscale-0 transition-colors, transition-transform, transition-opacity", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
                 <Image src={image!} alt={title} fill className="object-cover" sizes={isLarge ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} />
               </div>
             )}

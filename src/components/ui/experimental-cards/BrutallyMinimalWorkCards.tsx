@@ -1,5 +1,7 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import { LucideIcon, Trash2, Link as LinkIcon, MessageSquare, AlignLeft, MoreHorizontal, Pencil } from 'lucide-react';
 import { Icon } from '@iconify/react';
 import { cn, formatRelativeDate } from '@/lib/utils';
@@ -25,11 +27,14 @@ interface BrutallyMinimalHubCardProps {
   description: string;
   icon: LucideIcon;
   href: string;
-  count: number;
-  countLabel: string;
+  /** When omitted, the count badge is hidden (e.g. hub links without a static tally). */
+  count?: number;
+  countLabel?: string;
 }
 
 export function BrutallyMinimalHubCard({ name, description, icon: IconComponent, href, count, countLabel }: BrutallyMinimalHubCardProps) {
+  const showCountBadge = count != null && countLabel != null;
+
   return (
     <Link href={href} className="block group">
       <div className="relative bg-sage-light border border-black rounded-none p-6 transition-all duration-200 hover:bg-black hover:text-sage-light min-h-[220px] flex flex-col">
@@ -37,9 +42,11 @@ export function BrutallyMinimalHubCard({ name, description, icon: IconComponent,
           <div className="w-12 h-12 border border-black group-hover:border-sage-light bg-sage-light group-hover:bg-black text-black group-hover:text-sage-light flex items-center justify-center transition-colors">
             <IconComponent className="w-6 h-6" strokeWidth={2.5} />
           </div>
-          <div className="border border-black group-hover:border-sage-light px-2 py-1 bg-black group-hover:bg-sage-light text-sage-light group-hover:text-black font-mono text-xs font-bold uppercase transition-colors">
-            {count} {countLabel}
-          </div>
+          {showCountBadge ? (
+            <div className="border border-black group-hover:border-sage-light px-2 py-1 bg-black group-hover:bg-sage-light text-sage-light group-hover:text-black font-mono text-xs font-bold uppercase transition-colors">
+              {count} {countLabel}
+            </div>
+          ) : null}
         </div>
         <div className="mt-6">
           <h3 className="font-sans font-extrabold uppercase tracking-tight text-xl mb-2">
@@ -93,7 +100,14 @@ export function BrutallyMinimalPortfolioCard({ portfolio, onDelete }: BrutallyMi
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 border border-black group-hover:border-sage-light flex items-center justify-center font-bold text-xs uppercase bg-sage-light group-hover:bg-black text-black group-hover:text-sage-light transition-colors overflow-hidden">
                 {portfolio.lead.avatar ? (
-                  <img src={portfolio.lead.avatar} alt={portfolio.lead.name} className="w-full h-full object-cover grayscale" />
+                  <Image
+                    src={portfolio.lead.avatar}
+                    alt={portfolio.lead.name}
+                    width={32}
+                    height={32}
+                    unoptimized={isNonOptimizableImageSrc(portfolio.lead.avatar)}
+                    className="w-full h-full object-cover grayscale"
+                  />
                 ) : (
                   portfolio.lead.name.split(' ').map(n => n[0]).join('')
                 )}
@@ -226,7 +240,14 @@ export function BrutallyMinimalTaskCard({ task, onClick, assigneeName, assigneeA
           {hasAssignee && (
             <div className="w-6 h-6 border border-black group-hover:border-sage-light flex items-center justify-center font-bold text-[10px] uppercase bg-sage-light group-hover:bg-black text-black group-hover:text-sage-light transition-colors overflow-hidden">
               {assigneeAvatar ? (
-                <img src={assigneeAvatar} alt={assigneeName} className="w-full h-full object-cover grayscale" />
+                <Image
+                  src={assigneeAvatar}
+                  alt={assigneeName || 'Assignee'}
+                  width={24}
+                  height={24}
+                  unoptimized={isNonOptimizableImageSrc(assigneeAvatar)}
+                  className="w-full h-full object-cover grayscale"
+                />
               ) : (
                 (assigneeName || 'A').charAt(0)
               )}

@@ -91,7 +91,7 @@ export function CalendarContent() {
 
       return () => clearTimeout(timer);
     }
-  }, [selectedDate, scrollToDate]);
+  }, [selectedDate, scrollToDate, containerRef]);
 
   // Event handlers
   const handlePrevMonth = useCallback(() => {

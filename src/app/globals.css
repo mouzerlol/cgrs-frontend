@@ -422,6 +422,14 @@
   opacity: 1;
 }
 
+/*
+ * Stadia Outdoors is light-on-screen; darken only the first raster layer (basemap) so terrain/roads stay
+ * vivid while LINZ cadastral overlays (second layer) are not colour-shifted.
+ */
+.interactive-map.leaflet-container .leaflet-tile-pane > .leaflet-layer:nth-child(1) {
+  filter: brightness(0.76) contrast(1.08) saturate(0.96);
+}
+
 /* Map legend */
 .map-legend {
   position: absolute;
@@ -707,9 +715,9 @@
   }
 }
 
-/* Ensure tiles render properly */
+/* Raster tiles: avoid -webkit-optimize-contrast — it exaggerates edges and can make tile seams look like a grid. */
 .leaflet-tile {
-  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
 }
 
 .leaflet-tile-loaded {
@@ -947,9 +955,7 @@
   top: 0;
 }
 
-.leaflet-map-pane {
-  transform: translate3d(0, 0, 0);
-}
+/* Do not force translate3d on the whole pane — it can cause subpixel gaps between tiles in some GPUs/browsers. */
 
 /* Debug: Make sure tile images are visible */
 img.leaflet-tile {

@@ -23,7 +23,12 @@ export const BOUNDARY_COORDINATES = [
 ] as const;
 
 export const MAP_CENTER: [number, number] = [-36.9497, 174.7912];
-export const MAP_ZOOM = 16;
+
+/**
+ * Default zoom for community / boundary maps. At MAP_CENTER (~37°S), z=20 is ~0.12 m/px
+ * (~12 m per 100 px)—slightly tighter than z=19 for a more zoomed-in first view.
+ */
+export const MAP_ZOOM = 20;
 
 /** Minimum marker size in pixels to meet WCAG 2.1 AA touch target requirement (44px) */
 export const MARKER_SIZE = 44;

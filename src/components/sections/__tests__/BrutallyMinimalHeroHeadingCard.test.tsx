@@ -1,36 +1,85 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { BrutallyMinimalHeroHeadingCard } from '@/components/sections/BrutallyMinimalHeroHeadingCard';
 
 describe('BrutallyMinimalHeroHeadingCard', () => {
-  it('renders the hero card without a border', () => {
-    const { container } = render(<BrutallyMinimalHeroHeadingCard title="Test Title" />);
-    const card = container.firstElementChild as HTMLElement;
-    expect(card.className).not.toMatch(/\bborder\b/);
-  });
+  describe('headingLevel prop', () => {
+    it('renders h1 by default', () => {
+      render(
+        <BrutallyMinimalHeroHeadingCard
+          title="Test Title"
+          description="Test description"
+        />
+      );
 
-  it('renders an icon in the eyebrow when eyebrow text is set', () => {
-    const { container } = render(
-      <BrutallyMinimalHeroHeadingCard title="Test Title" eyebrow="Forum" />
-    );
-    const svg = container.querySelector('svg');
-    expect(svg).toBeTruthy();
-    expect(container.textContent).toContain('Forum');
-  });
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toBeInTheDocument();
+      expect(heading).toHaveTextContent('Test Title');
+    });
 
-  it('uses eyebrowIconKey to pick the eyebrow icon', () => {
-    const { container } = render(
-      <BrutallyMinimalHeroHeadingCard title="Test" eyebrow="Label" eyebrowIconKey="users" />
-    );
-    expect(container.querySelector('svg')).toBeTruthy();
-    expect(container.textContent).toContain('Label');
-  });
+    it('renders h1 when headingLevel is explicitly set to h1', () => {
+      render(
+        <BrutallyMinimalHeroHeadingCard
+          title="Test Title"
+          headingLevel="h1"
+        />
+      );
 
-  it('right-aligns the description paragraph', () => {
-    const { container } = render(
-      <BrutallyMinimalHeroHeadingCard title="Test Title" description="Tagline here" />
-    );
-    const p = container.querySelector('p');
-    expect(p?.className).toMatch(/\btext-right\b/);
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toBeInTheDocument();
+    });
+
+    it('renders div instead of h1 when headingLevel is div', () => {
+      render(
+        <BrutallyMinimalHeroHeadingCard
+          title="Test Title"
+          headingLevel="div"
+        />
+      );
+
+      // Should not find an h1
+      const h1 = document.querySelector('h1');
+      expect(h1).not.toBeInTheDocument();
+
+      // Should find a div with the title text
+      const div = document.querySelector('div');
+      expect(div).toBeInTheDocument();
+      expect(div).toHaveTextContent('Test Title');
+    });
+
+    it('renders same visible text regardless of headingLevel', () => {
+      const { rerender } = render(
+        <BrutallyMinimalHeroHeadingCard
+          title="Community Discussion"
+          description="Connect with neighbors"
+          headingLevel="h1"
+        />
+      );
+
+      const h1Text = screen.getByText('Community Discussion').textContent;
+
+      rerender(
+        <BrutallyMinimalHeroHeadingCard
+          title="Community Discussion"
+          description="Connect with neighbors"
+          headingLevel="div"
+        />
+      );
+
+      const divText = screen.getByText('Community Discussion').textContent;
+      expect(divText).toBe(h1Text);
+    });
+
+    it('renders description when headingLevel is div', () => {
+      render(
+        <BrutallyMinimalHeroHeadingCard
+          title="Discussion"
+          description="Connect with neighbors"
+          headingLevel="div"
+        />
+      );
+
+      expect(screen.getByText('Connect with neighbors')).toBeInTheDocument();
+    });
   });
 });

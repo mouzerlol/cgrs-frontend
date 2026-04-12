@@ -29,8 +29,14 @@ export default function StatusBadge({ status, label, className }: StatusBadgePro
       variant={STATUS_VARIANT[status]}
       shape="pill"
       size="sm"
-      className={cn('tracking-wide', className)}
+      className={cn('tracking-wide flex items-center', className)}
     >
+      {status === 'open' && (
+        <span 
+          className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-current animate-[poll-pulse_2s_infinite]" 
+          aria-hidden="true" 
+        />
+      )}
       {label || STATUS_LABELS[status]}
     </Badge>
   );

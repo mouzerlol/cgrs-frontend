@@ -16,7 +16,7 @@ const ArtDecoGeometricCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltPro
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#111A15] p-1 overflow-hidden text-[#D4AF37]',
-          'transition-all duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1',
+          'transition-colors, transition-transform, transition-opacity duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] hover:-translate-y-1',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

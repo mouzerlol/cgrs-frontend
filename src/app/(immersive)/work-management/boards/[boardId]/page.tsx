@@ -159,7 +159,7 @@ export default function BoardPage() {
       activity: selectedTask.activity ?? [],
       images: selectedTask.images ?? [],
     };
-  }, [selectedTaskId, selectedTask?.id, selectedTask?.comments, selectedTask?.activity, selectedTask?.images]);
+  }, [selectedTaskId, selectedTask]);
 
   if (boardLoading || tasksLoading) {
     return (

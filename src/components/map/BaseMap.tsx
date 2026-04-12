@@ -1,17 +1,48 @@
 'use client';
 
 import 'leaflet/dist/leaflet.css';
+import type { TileLayerOptions } from 'leaflet';
 import { useRef, useEffect, useState, ReactNode } from 'react';
+
+/** Options passed to Leaflet TileLayer for base and overlay raster tiles. */
+export interface BaseMapTileLayerOptions {
+  maxZoom?: number;
+  maxNativeZoom?: number;
+  crossOrigin?: string;
+  attribution?: string;
+  /** 0–1; use on overlays (e.g. cadastral) to blend with the basemap. */
+  opacity?: number;
+  /** LDS and similar CDNs use tiles-{s}.… with subdomains (e.g. abcd). */
+  subdomains?: string | string[];
+}
+
+/**
+ * Builds the options object for `L.tileLayer`. Omits `subdomains` when unset so Leaflet keeps
+ * its default (`abc`); passing `subdomains: undefined` overrides that default and breaks
+ * `getTileUrl` (Leaflet always calls `_getSubdomain`).
+ */
+export function buildLeafletRasterTileOptions(
+  opts: BaseMapTileLayerOptions,
+  resolved: { maxZoom: number; maxNativeZoom: number },
+): TileLayerOptions {
+  return {
+    maxZoom: resolved.maxZoom,
+    maxNativeZoom: resolved.maxNativeZoom,
+    crossOrigin: opts.crossOrigin as boolean | 'anonymous' | 'use-credentials' | undefined,
+    attribution: opts.attribution,
+    ...(opts.opacity != null ? { opacity: opts.opacity } : {}),
+    ...(opts.subdomains != null ? { subdomains: opts.subdomains } : {}),
+  };
+}
 
 interface BaseMapProps {
   center?: [number, number];
   zoom?: number;
   tileUrl?: string;
-  tileOptions?: {
-    maxZoom?: number;
-    crossOrigin?: string;
-    attribution?: string;
-  };
+  tileOptions?: BaseMapTileLayerOptions;
+  /** Optional second tile layer drawn above the base (e.g. LINZ Property Titles on aerial). */
+  overlayTileUrl?: string;
+  overlayTileOptions?: BaseMapTileLayerOptions;
   zoomControl?: boolean;
   showHomeControl?: boolean;
   homeControlPosition?: 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
@@ -40,6 +71,8 @@ export default function BaseMap({
   zoom = 13,
   tileUrl,
   tileOptions = {},
+  overlayTileUrl,
+  overlayTileOptions = {},
   zoomControl = true,
   showHomeControl = true,
   homeControlPosition = 'topright',
@@ -69,12 +102,14 @@ export default function BaseMap({
   const onMapReadyRef = useRef(onMapReady);
   const onHomeClickRef = useRef(onHomeClick);
   const tileOptionsRef = useRef(tileOptions);
+  const overlayTileOptionsRef = useRef(overlayTileOptions);
   const centerRef = useRef(center);
   const maxZoomRef = useRef(maxZoom);
 
   useEffect(() => { onMapReadyRef.current = onMapReady; }, [onMapReady]);
   useEffect(() => { onHomeClickRef.current = onHomeClick; }, [onHomeClick]);
   useEffect(() => { tileOptionsRef.current = tileOptions; }, [tileOptions]);
+  useEffect(() => { overlayTileOptionsRef.current = overlayTileOptions; }, [overlayTileOptions]);
   useEffect(() => { centerRef.current = center; }, [center]);
   useEffect(() => { maxZoomRef.current = maxZoom; }, [maxZoom]);
 
@@ -109,11 +144,24 @@ export default function BaseMap({
 
         const opts = tileOptionsRef.current;
         if (tileUrl) {
-          L.tileLayer(tileUrl, {
-            maxZoom: opts.maxZoom ?? 19,
-            crossOrigin: opts.crossOrigin as boolean | 'anonymous' | 'use-credentials' | undefined,
-            attribution: opts.attribution,
-          }).addTo(map);
+          L.tileLayer(
+            tileUrl,
+            buildLeafletRasterTileOptions(opts, {
+              maxZoom: opts.maxZoom ?? 19,
+              maxNativeZoom: opts.maxNativeZoom ?? opts.maxZoom ?? 19,
+            }),
+          ).addTo(map);
+        }
+
+        if (overlayTileUrl) {
+          const o = overlayTileOptionsRef.current;
+          L.tileLayer(
+            overlayTileUrl,
+            buildLeafletRasterTileOptions(o, {
+              maxZoom: o.maxZoom ?? opts.maxZoom ?? 19,
+              maxNativeZoom: o.maxNativeZoom ?? o.maxZoom ?? opts.maxZoom ?? 19,
+            }),
+          ).addTo(map);
         }
 
         // Add home button control

@@ -20,28 +20,6 @@ export const CAPABILITIES = {
   ASSIGN_CHAIR: 'assign_chair',
 } as const;
 
-/** Role hierarchy - higher numeric values include lower role capabilities. */
-export const ROLE_HIERARCHY: Record<string, number> = {
-  contact: 10,
-  resident: 20,
-  owner: 30,
-  society_manager: 40,
-  committee_member: 50,
-  committee_chairperson: 60,
-};
-
-/**
- * Check if a role meets minimum threshold.
- * Returns true if userRole rank >= minimum rank.
- */
-export function hasMinimumRole(userRole: string | null | undefined, minimum: string): boolean {
-  if (!userRole) return false;
-  const userRank = ROLE_HIERARCHY[userRole];
-  const minimumRank = ROLE_HIERARCHY[minimum];
-  if (userRank === undefined || minimumRank === undefined) return false;
-  return userRank >= minimumRank;
-}
-
 /** Human-readable label for backend membership role. */
 export function formatRole(role: string): string {
   const labels: Record<string, string> = {
@@ -62,32 +40,17 @@ const MANAGEMENT_ROLES = new Set([
   'committee_chairperson',
 ]);
 
-/** Roles considered verified (no CAPTCHA needed, can have pre-filled read-only fields). */
-const VERIFIED_ROLES = new Set([
-  'resident',
-  'owner',
-  'society_manager',
-  'committee_member',
-  'committee_chairperson',
-]);
-
 /** Whether the user can access the Management nav item and routes. */
 export function canAccessManagement(role: string | undefined, isSuperadmin: boolean): boolean {
   if (isSuperadmin) return true;
   return role !== undefined && MANAGEMENT_ROLES.has(role);
 }
 
-/** Check if a role is verified (no CAPTCHA needed). */
-export function isVerifiedRole(role: string | null | undefined): boolean {
-  if (!role) return false;
-  return VERIFIED_ROLES.has(role);
-}
-
 /** Nav item href that is restricted by role (Management). */
-export const MANAGEMENT_NAV_HREF = '/work-management';
+const MANAGEMENT_NAV_HREF = '/work-management';
 
 /** Nav item href that requires authentication (Discussion). */
-export const DISCUSSION_NAV_HREF = '/discussion';
+const DISCUSSION_NAV_HREF = '/discussion';
 
 /**
  * Whether a nav item should be shown for the given role and superadmin flag.

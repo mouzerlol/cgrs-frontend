@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { House, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
+import { Building2, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
@@ -22,7 +22,7 @@ const NAV_ITEM_ICONS: Record<NavId, LucideIcon> = {
   verification: ShieldCheck,
   details: User,
   'reported-issues': MessageSquare,
-  'my-property': House,
+  'my-property': Building2,
   bookmarks: Bookmark,
 };
 

@@ -4,11 +4,9 @@ import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { SignOutButton, useAuth, useUser, UserAvatar } from '@clerk/nextjs';
-import { Settings } from 'lucide-react';
+import { Settings, ChevronDown } from 'lucide-react';
 import { getAfterSignOutUrl } from '@/lib/app-url';
-import Icon from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
-import { getNotificationCount } from '@/lib/api/verification';
 import { canAccessManagement } from '@/lib/auth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
@@ -31,14 +29,12 @@ const profileLinkIcon = (
 
 
 /**
- * App-controlled account menu with notification badge for verification requests.
+ * App-controlled account menu.
  * System Settings shown only for committee members, chairperson, and superadmin.
  */
 export default function ClerkAppUserButton() {
   const { user, isLoaded } = useUser();
-  const { getToken } = useAuth();
   const [afterSignOutUrl, setAfterSignOutUrl] = useState(() => getAfterSignOutUrl());
-  const [notificationCount, setNotificationCount] = useState(0);
   const { data: currentUser } = useCurrentUser();
 
   useEffect(() => {
@@ -46,22 +42,8 @@ export default function ClerkAppUserButton() {
     setAfterSignOutUrl(`${o}/login/?redirect_url=${encodeURIComponent(`${o}/`)}`);
   }, []);
 
-  useEffect(() => {
-    async function loadNotificationCount() {
-      if (!isLoaded || !user) return;
-      try {
-        const token = await getToken();
-        const data = await getNotificationCount(async () => token);
-        setNotificationCount(data.count);
-      } catch {
-        // Silently fail
-      }
-    }
-    loadNotificationCount();
-  }, [isLoaded, user, getToken]);
-
   if (!isLoaded) {
-    return <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-bone/20" aria-hidden="true" />;
+    return <div className="h-7 w-7 shrink-0 animate-pulse rounded-full bg-bone/20" aria-hidden="true" />;
   }
 
   if (!user) return null;
@@ -80,22 +62,24 @@ export default function ClerkAppUserButton() {
         type="button"
         aria-label={primary ? `Account menu for ${display}, ${primary}` : `Account menu for ${display}`}
         className={cn(
-          'relative flex items-center justify-center rounded-full p-0.5 transition-colors',
+          'relative flex items-center justify-center rounded-full p-0 transition-colors',
           'text-bone hover:bg-white/10',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-bone/40'
         )}
       >
-        <UserAvatar />
-        {notificationCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-bone shadow-sm">
-            {notificationCount > 9 ? '9+' : notificationCount}
-          </span>
-        )}
+        <div
+          className={cn(
+            'shrink-0 rounded-full ring-1 ring-sage/30',
+            '[&_.cl-avatarBox]:!size-7 [&_.cl-avatarBox]:!ring-0 [&_.cl-avatarImage]:!size-7'
+          )}
+        >
+          <UserAvatar />
+        </div>
         <span
-          className="pointer-events-none absolute -bottom-px -right-px flex h-[18px] w-[18px] items-center justify-center rounded-full border border-forest/20 bg-sage text-forest shadow-sm"
+          className="pointer-events-none absolute -bottom-px -right-px flex h-3.5 w-3.5 items-center justify-center rounded-full border border-forest/20 bg-sage text-forest shadow-sm"
           aria-hidden="true"
         >
-          <Icon name="chevron-down" size="sm" />
+          <ChevronDown className="h-2 w-2" />
         </span>
       </MenuButton>
 
@@ -130,11 +114,6 @@ export default function ClerkAppUserButton() {
                 >
                   {profileLinkIcon}
                   My Profile
-                  {notificationCount > 0 && (
-                    <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-bone">
-                      {notificationCount > 9 ? '9+' : notificationCount}
-                    </span>
-                  )}
                 </Link>
               )}
             </MenuItem>

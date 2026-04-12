@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { SignInButton, useAuth } from '@clerk/nextjs';
 import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
+import NotificationsBell from '@/components/notifications/NotificationsBell';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { isNavItemVisible } from '@/lib/auth';
@@ -56,7 +57,7 @@ export default function Navigation() {
         ),
     );
     return items;
-  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading, featureFlags]);
+  }, [currentUser, isSignedIn, isCurrentUserLoading, featureFlags]);
 
   const visibleItems = navItems.slice(0, navItems.length - overflowCount);
   const overflowItems = navItems.slice(navItems.length - overflowCount);
@@ -198,7 +199,11 @@ export default function Navigation() {
 
         <div ref={authSlotRef} className="flex items-center shrink-0">
           {isLoaded && lastSignedIn ? (
-            <ClerkAppUserButton />
+            <>
+              <NotificationsBell />
+              <span className="mx-1 shrink-0" aria-hidden />
+              <ClerkAppUserButton />
+            </>
           ) : (
             <SignInButton mode="redirect">
               <span

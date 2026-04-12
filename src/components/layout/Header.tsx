@@ -9,9 +9,9 @@ import { SignOutButton } from '@clerk/nextjs';
 import { Settings, LogOut } from 'lucide-react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
+import NotificationsBell from '@/components/notifications/NotificationsBell';
 import { ALL_NAV_ITEMS } from '@/lib/constants';
 import { formatRole, isNavItemVisible, canAccessManagement } from '@/lib/auth';
-import { getNotificationCount } from '@/lib/api/verification';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
@@ -32,22 +32,6 @@ export default function Header() {
   const { data: community } = useCommunity();
   const featureFlags = useAllFeatureFlags();
   const { getToken } = useAuth();
-
-  const [notificationCount, setNotificationCount] = useState(0);
-
-  useEffect(() => {
-    async function loadNotificationCount() {
-      if (!isLoaded || !isSignedIn) return;
-      try {
-        const token = await getToken();
-        const data = await getNotificationCount(async () => token);
-        setNotificationCount(data.count);
-      } catch {
-        // Silently fail
-      }
-    }
-    loadNotificationCount();
-  }, [isLoaded, isSignedIn, getToken]);
 
   const role = currentUser?.membership?.role;
   const isSuperadmin = currentUser?.is_superadmin ?? false;
@@ -72,7 +56,7 @@ export default function Header() {
         ),
     );
     return items;
-  }, [currentUser?.membership?.role, currentUser?.is_superadmin, isSignedIn, isCurrentUserLoading, featureFlags]);
+  }, [currentUser, isSignedIn, isCurrentUserLoading, featureFlags]);
   const mobileMainNav = mobileNavItems.slice(0, 5);
   const mobileMoreNav = mobileNavItems.slice(5);
 
@@ -99,21 +83,17 @@ export default function Header() {
 
       {/* Mobile: Resident Login visible in header so it's discoverable without opening menu */}
       <div className="md:hidden flex items-center gap-2 shrink-0">
-        {isLoaded && lastSignedIn ? null : (
+        {isLoaded && lastSignedIn ? (
+          <NotificationsBell />
+        ) : (
           <SignInButton mode="redirect">
-            <span
-              role="button"
-              tabIndex={0}
-              className="text-sm font-medium tracking-wide uppercase py-2 px-3 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest cursor-pointer inline-block"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  router.push('/login');
-                }
-              }}
+            <button
+              type="button"
+              className="text-sm font-medium tracking-wide uppercase py-2 px-3 border border-bone rounded transition-colors, transition-transform duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest cursor-pointer inline-block"
+              onClick={() => router.push('/login')}
             >
               Resident Login
-            </span>
+            </button>
           </SignInButton>
         )}
       </div>
@@ -236,11 +216,6 @@ export default function Header() {
                               <UserAvatar />
                             </div>
                             <span className="font-medium">My Profile</span>
-                            {notificationCount > 0 && (
-                              <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-bone">
-                                {notificationCount > 9 ? '9+' : notificationCount}
-                              </span>
-                            )}
                           </Link>
 
                           {canSeeSystemSettings && (
@@ -271,19 +246,13 @@ export default function Header() {
                       </>
                     ) : (
                       <SignInButton mode="redirect">
-                        <span
-                          role="button"
-                          tabIndex={0}
-                          className="block w-full text-center text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-all duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px] cursor-pointer"
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              router.push('/login');
-                            }
-                          }}
+                        <button
+                          type="button"
+                          className="block w-full text-center text-sm font-medium tracking-wide uppercase py-2 px-4 border border-bone rounded transition-colors, transition-transform duration-[250ms] ease-out-custom hover:bg-bone hover:text-forest max-md:py-3 max-md:min-h-[44px] cursor-pointer"
+                          onClick={() => router.push('/login')}
                         >
                           Resident Login
-                        </span>
+                        </button>
                       </SignInButton>
                     )}
                   </div>

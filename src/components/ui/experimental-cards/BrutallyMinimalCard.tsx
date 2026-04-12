@@ -20,9 +20,10 @@ const BrutallyMinimalCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProp
           else if (ref) (ref as any).current = node;
         }}
         href={href}
+        aria-label={title}
         className={cn(
           'group relative flex flex-col bg-white border border-black rounded-none text-black',
-          'transition-all duration-400 ease-out-custom hover:bg-black hover:-translate-y-1.5',
+          'transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom hover:bg-black hover:-translate-y-1.5',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[464px] md:min-h-[504px]' : 'min-h-[220px] md:min-h-[240px]',
           'fade-up',
           isVisible && 'visible',

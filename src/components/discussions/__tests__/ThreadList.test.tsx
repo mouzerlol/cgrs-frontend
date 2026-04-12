@@ -33,8 +33,18 @@ vi.mock('next/image', async () => {
   const actual = await vi.importActual('next/image');
   /** Next/Image passes layout props (e.g. fill) that are invalid on plain <img>. */
   function ImgStub(props: Record<string, unknown>) {
-    const { src, alt, fill: _fill, priority: _p, placeholder: _ph, blurDataURL: _b, onLoadingComplete: _l, ...rest } =
-      props;
+    const {
+      src,
+      alt,
+      fill: _fill,
+      priority: _p,
+      placeholder: _ph,
+      blurDataURL: _b,
+      onLoadingComplete: _l,
+      sizes: _sizes,
+      unoptimized: _unoptimized,
+      ...rest
+    } = props;
     return <img data-testid="next-image" src={src as string} alt={alt as string} {...rest} />;
   }
   return {

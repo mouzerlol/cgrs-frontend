@@ -16,7 +16,7 @@ const MaximalistChaosCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProp
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#FF007F] rounded-2xl overflow-hidden text-white',
-          'transition-all duration-300 hover:rotate-1 hover:scale-105 shadow-[8px_8px_0_rgba(0,255,255,0.8)]',
+          'transition-colors, transition-transform, transition-opacity duration-300 hover:rotate-1 hover:scale-105 shadow-[8px_8px_0_rgba(0,255,255,0.8)]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

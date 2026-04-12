@@ -72,6 +72,18 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'basemaps.linz.govt.nz',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.data-cdn.linz.govt.nz',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tiles.stadiamaps.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'i.pravatar.cc',
       },
       {
@@ -124,8 +136,8 @@ const nextConfig = {
               `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${cspClerkOrigins()} https://*.cloudflare.com`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://img.clerk.com https://*.r2.cloudflarestorage.com",
-              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://localhost:8000 http://api:8000`.replace(/\s+/g, ' ').trim(),
+              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com https://img.clerk.com https://*.r2.cloudflarestorage.com",
+              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000`.replace(/\s+/g, ' ').trim(),
               "worker-src 'self' blob:",
               `frame-src 'self' ${cspClerkOrigins()} https://challenges.cloudflare.com`,
               "frame-ancestors 'none'",

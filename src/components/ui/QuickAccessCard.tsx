@@ -30,7 +30,7 @@ export default function QuickAccessCard({ card, index = 0 }: QuickAccessCardProp
       ref={ref}
       href={card.href}
       className={cn(
-        'group relative block p-lg bg-white rounded-card border border-forest/[0.08] transition-all duration-400 ease-out-custom overflow-hidden text-forest hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
+        'group relative block p-lg bg-white rounded-card border border-forest/[0.08] transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom overflow-hidden text-forest hover:-translate-y-1.5 hover:shadow-card-hover hover:border-sage',
         isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
         isAccent && 'bg-terracotta text-bone border-terracotta hover:bg-terracotta-dark hover:border-terracotta-dark',
         hasPhotoBg && !isAccent && 'text-white border-forest/20',
@@ -60,7 +60,7 @@ export default function QuickAccessCard({ card, index = 0 }: QuickAccessCardProp
         {!isLarge && (
           <div
             className={cn(
-              'w-12 h-12 flex items-center justify-center rounded-xl mb-md transition-all duration-400 ease-out-custom group-hover:scale-105',
+              'w-12 h-12 flex items-center justify-center rounded-xl mb-md transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom group-hover:scale-105',
               isAccent && '!bg-white/20',
               !isAccent && hasPhotoBg && 'bg-terracotta group-hover:bg-terracotta-dark',
               !isAccent && !hasPhotoBg && 'bg-sage-light group-hover:bg-sage',
@@ -74,7 +74,7 @@ export default function QuickAccessCard({ card, index = 0 }: QuickAccessCardProp
           </div>
         )}
         {isLarge && (
-          <div className="w-14 h-14 flex items-center justify-center bg-terracotta rounded-2xl mb-4 transition-all duration-400 hover:scale-110 hover:rotate-[5deg]">
+          <div className="w-14 h-14 flex items-center justify-center bg-terracotta rounded-2xl mb-4 transition-colors, transition-transform, transition-opacity duration-400 hover:scale-110 hover:rotate-[5deg]">
             <Icon name="amenities" size="lg" className="stroke-white" />
           </div>
         )}

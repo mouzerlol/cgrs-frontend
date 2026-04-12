@@ -46,9 +46,18 @@ export interface QRScanResponse {
   role_assigned: string;
 }
 
+export interface CoMemberItem {
+  user_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
+}
+
 export interface PendingRequestItem {
   id: string;
   property_id: string;
+  street_name: string;
+  street_number: string;
   verification_type: string;
   status: string;
   created_at: string;
@@ -91,6 +100,7 @@ export interface VerificationStatusResponse {
   has_pending_request: boolean;
   pending_address: string | null;
   pending_type: string | null;
+  pending_verification_method: 'peer' | 'qr_mail' | 'role_management' | null;
 }
 
 export interface VerifiedPropertyItem {
@@ -107,6 +117,7 @@ export interface VerifiedPropertyItem {
   lat: number | null;
   lng: number | null;
   image_url: string | null;
+  co_members: CoMemberItem[];
 }
 
 export interface MyPropertiesResponse {

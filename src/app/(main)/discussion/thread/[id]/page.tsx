@@ -221,6 +221,7 @@ export default function ThreadPage() {
           eyebrowIconKey="messageSquare"
           backgroundImage="/images/mangere-mountain.jpg"
           variant="compact"
+          showHeroHeading={false}
         />
         <div className="container mx-auto px-4 py-8">
           <NotFound />
@@ -238,6 +239,7 @@ export default function ThreadPage() {
         eyebrowIconKey="messageSquare"
         backgroundImage="/images/mangere-mountain.jpg"
         variant="compact"
+        showHeroHeading={false}
       />
 
       <div className="container mx-auto px-4 py-6 max-w-4xl">

@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('next/image', () => ({
   default: function MockImage(props: Record<string, unknown>) {
-    const { fill: _f, ...rest } = props;
+    const { fill: _f, sizes: _s, unoptimized: _u, ...rest } = props;
     return <img data-testid="next-image" alt="" {...rest} />;
   },
 }));

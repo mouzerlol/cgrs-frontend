@@ -17,7 +17,7 @@ export default function BookmarksSection() {
   const upvoteThreadMutation = useUpvoteThread();
   const reportThreadMutation = useReportThread();
 
-  const threads = (data?.threads ?? []) as Thread[];
+  const threads = useMemo(() => (data?.threads ?? []) as Thread[], [data?.threads]);
 
   const bookmarkedThreads = useMemo(
     () => new Set(threads.filter((t) => t.isBookmarked).map((t) => t.id)),

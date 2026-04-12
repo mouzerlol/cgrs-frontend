@@ -1,16 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
-import {
-  ShieldCheck,
-  Clock,
-  Home,
-  Building2,
-} from 'lucide-react';
+import { ShieldCheck, Clock, Home, Building2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useStreetsQuery, useVerificationStatusQuery, usePendingVerificationsQuery } from '@/hooks/useProfileData';
 import { lookupAddress, createVerificationRequest } from '@/lib/api/verification';
+import { useMarkRead } from '@/hooks/useNotifications';
 import AddressSelectionForm from '@/components/profile/verification/AddressSelectionForm';
 import QRInstructions from '@/components/profile/verification/QRInstructions';
 import OwnerRequestInstructions from '@/components/profile/verification/OwnerRequestInstructions';
@@ -27,7 +25,28 @@ type Step = 'select' | 'pending' | 'qr' | 'role_management' | 'verified';
 
 export default function VerificationSection() {
   const { getToken } = useAuth();
+  const searchParams = useSearchParams();
+  const markRead = useMarkRead();
+
+  const notificationId = searchParams.get('notification_id');
+
+  useEffect(() => {
+    if (notificationId) {
+      markRead.mutate(
+        { notification_ids: [notificationId] },
+        {
+          onSuccess: () => {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('notification_id');
+            window.history.replaceState({}, '', url.pathname);
+          },
+        }
+      );
+    }
+  }, [notificationId]);  // eslint-disable-line react-hooks/exhaustive-deps
+
   const [step, setStep] = useState<Step>('select');
+  const [selectedCard, setSelectedCard] = useState<'resident' | 'owner' | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<{
     streetId: string;
     streetName: string;
@@ -270,6 +289,7 @@ export default function VerificationSection() {
             type="pending"
             address={verificationStatus.pending_address || ''}
             verificationType={verificationStatus.pending_type as 'resident' | 'owner' || 'resident'}
+            verificationMethod={verificationStatus.pending_verification_method}
           />
         </motion.div>
       )}
@@ -284,9 +304,6 @@ export default function VerificationSection() {
           <QRInstructions
             address={`${selectedAddress.streetName} ${selectedAddress.streetNumber}`}
             expiresAt={verificationResult.expires_at}
-            hasExistingResidents={addressLookupResult?.has_residents}
-            hasExistingOwners={addressLookupResult?.has_owners}
-            verificationType={selectedVerificationType || 'resident'}
           />
         </motion.div>
       )}
@@ -314,34 +331,89 @@ export default function VerificationSection() {
         >
           {/* Process explanation cards */}
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+            <motion.button
+              type="button"
+              onClick={() => setSelectedCard('resident')}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className={cn(
+                'rounded-2xl bg-white p-6 shadow-sm border border-sage text-left transition-all',
+                selectedCard === 'resident'
+                  ? 'border-terracotta ring-2 ring-terracotta/20'
+                  : 'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
+              )}
+            >
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-terracotta/10">
                   <Home className="h-5 w-5 text-terracotta" />
                 </div>
-                <h4 className="font-display text-lg text-forest">Become a Resident</h4>
+                <div className="flex-1">
+                  <h4 className="font-display text-lg text-forest">Become a Resident</h4>
+                </div>
+                {selectedCard === 'resident' && (
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-terracotta text-bone">
+                    <ShieldCheck className="h-4 w-4" />
+                  </div>
+                )}
               </div>
               <p className="text-sm text-forest/70">
                 Select your street and property number. If other residents live there, they can verify your residency.
                 Otherwise, a QR code will be mailed to your address.
               </p>
-            </div>
+            </motion.button>
 
-            <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+            <motion.button
+              type="button"
+              onClick={() => setSelectedCard('owner')}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className={cn(
+                'rounded-2xl bg-white p-6 shadow-sm border border-sage text-left transition-all',
+                selectedCard === 'owner'
+                  ? 'border-forest ring-2 ring-forest/20'
+                  : 'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
+              )}
+            >
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-forest/10">
                   <Building2 className="h-5 w-5 text-forest" />
                 </div>
-                <h4 className="font-display text-lg text-forest">Become an Owner</h4>
+                <div className="flex-1">
+                  <h4 className="font-display text-lg text-forest">Become an Owner</h4>
+                </div>
+                {selectedCard === 'owner' && (
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-forest text-bone">
+                    <ShieldCheck className="h-4 w-4" />
+                  </div>
+                )}
               </div>
               <p className="text-sm text-forest/70">
                 Property owners can verify co-ownership. If no owner exists in the system yet, you&apos;ll receive
                 instructions on how to verify.
               </p>
-            </div>
+            </motion.button>
           </div>
 
-          <AddressSelectionForm streets={streets} onSubmit={handleAddressSubmit} />
+          {selectedCard ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <AddressSelectionForm
+                streets={streets}
+                onSubmit={handleAddressSubmit}
+                initialVerificationType={selectedCard}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="rounded-2xl bg-sage-light/30 p-8 text-center text-forest/60 text-sm"
+            >
+              Select an option above to continue
+            </motion.div>
+          )}
         </motion.div>
       )}
 

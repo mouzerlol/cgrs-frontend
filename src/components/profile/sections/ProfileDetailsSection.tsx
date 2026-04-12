@@ -57,7 +57,7 @@ export default function ProfileDetailsSection() {
 
       {/* Account & Security Card */}
       <div className="ml-14">
-        <div className="flex flex-col gap-3 rounded-xl border border-sage/25 bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.06)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border border-sage/25 bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.06)] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sage/10">
               <Key className="h-5 w-5 text-forest" />

@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next'
 import newsData from '@/data/news.json'
 import eventsData from '@/data/events.json'
 import discussionsData from '@/data/discussions.json'
-
-const BASE_URL = 'https://www.cgrs.co.nz'
+import { getPublicAppOrigin } from '@/lib/app-url'
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const BASE_URL = getPublicAppOrigin()
   // Static routes with their change frequencies and priorities
   const staticRoutes: MetadataRoute.Sitemap = [
     {

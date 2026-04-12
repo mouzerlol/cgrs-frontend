@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import type { CurrentUserResponse } from '@/hooks/useCurrentUser';
 
 interface ProfileHeroProps {
@@ -37,9 +39,12 @@ export default function ProfileHero({ user, membership, clerkFallback }: Profile
     >
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
         {avatarUrl ? (
-          <img
+          <Image
             src={avatarUrl}
             alt={fullName}
+            width={96}
+            height={96}
+            unoptimized={isNonOptimizableImageSrc(avatarUrl)}
             className="h-24 w-24 rounded-full object-cover ring-4 ring-sage-light"
           />
         ) : (

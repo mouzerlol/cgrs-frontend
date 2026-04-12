@@ -1,5 +1,21 @@
-import { describe, it, expect } from 'vitest';
-import { formatDate, cn, slugify } from '@/lib/utils';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { formatDate, formatRelativeDate, cn, slugify } from '@/lib/utils';
+
+describe('formatRelativeDate', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('compact mode uses short day/week/month labels', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-04-12T12:00:00Z'));
+
+    expect(formatRelativeDate('2026-04-12T10:00:00Z', true)).toBe('Today');
+    expect(formatRelativeDate('2026-04-11T10:00:00Z', true)).toBe('1d');
+    expect(formatRelativeDate('2026-04-09T10:00:00Z', true)).toBe('3d');
+    expect(formatRelativeDate('2026-03-15T10:00:00Z', true)).toBe('4w');
+  });
+});
 
 describe('formatDate', () => {
   it('formats ISO date strings correctly', () => {

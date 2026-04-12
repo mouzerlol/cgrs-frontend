@@ -70,7 +70,7 @@ const formatBody = (body?: string) => {
 };
 
 /**
- * Thread body content - displays the main post, images, poll, and links.
+ * Thread body content - displays images, main post text, poll, and links (in that order).
  * Used in the thread detail page.
  *
  * Enhanced with poll voting functionality and voter name display.
@@ -121,10 +121,7 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
 
     return (
       <div ref={ref} className={cn('space-y-6', className)} {...props}>
-        {/* Main Body Text */}
-        {thread.body && formatBody(thread.body)}
-
-        {/* R2-backed opening post images (ADR 005) */}
+        {/* R2-backed opening post images (ADR 005) — lead with media, then narrative */}
         {hasApiAttachments && (
           <>
             {attachmentUrlsLoading && (
@@ -143,6 +140,9 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
         {!hasApiAttachments && thread.images && thread.images.length > 0 && (
           <ImageGallery images={thread.images} />
         )}
+
+        {/* Main Body Text */}
+        {thread.body && formatBody(thread.body)}
 
         {/* Poll */}
         {thread.poll && (

@@ -28,7 +28,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'CGRS - Coronation Gardens Residents Society',
-  description: 'Official website for the Coronation Gardens Residents Society in Mangere Bridge, Auckland',
+  description:
+    'Official website for the Coronation Gardens Residents Society in Mangere Bridge, Auckland. Find community news, event updates, and committee information.',
   metadataBase: new URL('https://www.cgrs.co.nz'),
   alternates: {
     canonical: './',

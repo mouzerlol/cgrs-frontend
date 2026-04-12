@@ -36,7 +36,7 @@ const ImageGallery = forwardRef<HTMLDivElement, ImageGalleryProps>(
       <>
         <div
           ref={ref}
-          className={cn('flex flex-wrap gap-2', className)}
+          className={cn('flex flex-wrap justify-center gap-2', className)}
           {...props}
         >
           {visibleImages.map((image, index) => (
@@ -59,7 +59,7 @@ const ImageGallery = forwardRef<HTMLDivElement, ImageGalleryProps>(
                 src={image.thumbnail}
                 alt={image.alt || `Image ${index + 1}`}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
               />
 
               {/* Show remaining count on last visible image */}

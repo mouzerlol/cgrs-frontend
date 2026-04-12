@@ -9,7 +9,11 @@ module.exports = {
     extend: {
       colors: {
         // New Design System
-        bone: '#F4F1EA',
+        bone: {
+          DEFAULT: '#F4F1EA',
+          /** Slightly lighter surface than default bone (e.g. nested cards on bone pages). */
+          light: '#FAF8F3',
+        },
         forest: {
           DEFAULT: '#1A2218',
           light: '#2C3E2D',

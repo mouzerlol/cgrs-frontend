@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 
 interface AvatarProps {
   src?: string | null;
@@ -23,6 +25,16 @@ const sizeMap = {
   /** Task board cards: 24px circle */
   card: 'w-6 h-6 text-[10px]',
 };
+
+/** Pixel dimensions matching `sizeMap` for `next/image` width/height. */
+const sizePixels = {
+  xs: 20,
+  sm: 36,
+  md: 40,
+  lg: 48,
+  xl: 56,
+  card: 24,
+} as const;
 
 /** Builds up to two initials from a display name for the fallback glyph. */
 export function initialsFromName(label: string): string {
@@ -51,12 +63,14 @@ export const Avatar = ({ src, alt, name, size = 'sm', className, title }: Avatar
   return (
     <div className={cn('relative shrink-0', className)} title={title}>
       {showImage ? (
-        <img
+        <Image
           src={src!}
           alt={alt || 'User'}
+          width={sizePixels[size]}
+          height={sizePixels[size]}
+          unoptimized={isNonOptimizableImageSrc(src!)}
           onError={() => setImageFailed(true)}
           className={cn(
-            dimensionClass,
             'rounded-full object-cover border-2 border-white shadow-sm ring-1 ring-sage/10',
           )}
         />

@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { Mail, Phone } from 'lucide-react';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import { PortfolioMember } from '@/types/portfolio';
 import SectionWrapper from './SectionWrapper';
 
@@ -19,7 +21,14 @@ function MemberRow({ member, badge }: { member: PortfolioMember; badge?: string 
     <div className="flex items-center gap-3 py-2">
       <div className="w-9 h-9 rounded-full bg-forest/10 flex items-center justify-center text-xs font-semibold text-forest shrink-0 overflow-hidden">
         {member.avatar ? (
-          <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+          <Image
+            src={member.avatar}
+            alt={member.name}
+            width={36}
+            height={36}
+            unoptimized={isNonOptimizableImageSrc(member.avatar)}
+            className="w-full h-full object-cover"
+          />
         ) : (
           initials
         )}

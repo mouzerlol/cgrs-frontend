@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 const isProtectedRoute = createRouteMatcher([
   '/work-management(.*)',
   '/discussion/new(.*)',
+  '/profile(.*)',
 ]);
 
 /** Routes that should be publicly accessible (SEO-critical). */

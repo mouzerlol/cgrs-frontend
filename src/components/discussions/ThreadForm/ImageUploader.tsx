@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import Image from 'next/image';
 import { X } from 'lucide-react';
 import { UploadZone } from '@/components/ui/UploadZone';
 
@@ -9,6 +10,25 @@ interface ImageUploaderProps {
   onChange: (files: File[]) => void;
   maxFiles?: number;
   maxSizeMB?: number;
+}
+
+/** Stable object URL for a file preview; revoked on unmount or file change. */
+function LocalFilePreview({ file }: { file: File }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  if (!url) {
+    return <div className="absolute inset-0 bg-sage-light/50 animate-pulse" aria-hidden />;
+  }
+
+  return (
+    <Image src={url} alt={file.name} fill className="object-cover" unoptimized sizes="140px" />
+  );
 }
 
 export function ImageUploader({
@@ -83,12 +103,8 @@ export function ImageUploader({
         <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-sm">
           {value.map((file, index) => (
             <div key={index} className="relative rounded-lg overflow-hidden bg-sage-light">
-              <div className="aspect-square overflow-hidden">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="relative aspect-square overflow-hidden">
+                <LocalFilePreview file={file} />
               </div>
               <div className="p-xs flex flex-col gap-0.5">
                 <span className="text-xs text-forest overflow-hidden text-ellipsis whitespace-nowrap">{file.name}</span>

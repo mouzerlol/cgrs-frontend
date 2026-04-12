@@ -1,21 +1,33 @@
-import { describe, it, expect } from 'vitest'
-import sitemap from '../sitemap'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import newsData from '@/data/news.json'
 import eventsData from '@/data/events.json'
 import discussionsData from '@/data/discussions.json'
-
-/** Canonical site origin (must match `src/app/sitemap.ts` and layout `metadataBase`). */
-const BASE_URL = 'https://www.cgrs.co.nz'
+import { getPublicAppOrigin } from '@/lib/app-url'
 
 describe('sitemap', () => {
-  const entries = sitemap()
+  let originalEnv: NodeJS.ProcessEnv
+  let BASE_URL: string
 
-  it('returns an array of sitemap entries', () => {
+  beforeEach(() => {
+    originalEnv = { ...process.env }
+    process.env.NEXT_PUBLIC_APP_URL = 'https://www.cgrs.co.nz'
+    BASE_URL = getPublicAppOrigin()
+  })
+
+  afterEach(() => {
+    process.env = originalEnv
+  })
+
+  it('returns an array of sitemap entries', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     expect(Array.isArray(entries)).toBe(true)
     expect(entries.length).toBeGreaterThan(0)
   })
 
-  it('includes all static routes', () => {
+  it('includes all static routes', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     const expectedStaticRoutes = [
       `${BASE_URL}/`,
@@ -34,26 +46,34 @@ describe('sitemap', () => {
     }
   })
 
-  it('does not include auth pages', () => {
+  it('does not include auth pages', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     expect(urls).not.toContain(`${BASE_URL}/login/`)
     expect(urls).not.toContain(`${BASE_URL}/register/`)
     expect(urls).not.toContain(`${BASE_URL}/forgot-password/`)
   })
 
-  it('does not include design-system page', () => {
+  it('does not include design-system page', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     expect(urls).not.toContain(`${BASE_URL}/design-system/`)
   })
 
-  it('includes all blog post routes', () => {
+  it('includes all blog post routes', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     for (const article of newsData.articles) {
       expect(urls).toContain(`${BASE_URL}/blog/${article.slug}/`)
     }
   })
 
-  it('includes all calendar event routes with slugs', () => {
+  it('includes all calendar event routes with slugs', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     const eventsWithSlugs = eventsData.events.filter((e) => e.slug)
     for (const event of eventsWithSlugs) {
@@ -61,17 +81,21 @@ describe('sitemap', () => {
     }
   })
 
-  it('includes all discussion thread routes', () => {
+  it('includes all discussion thread routes', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const urls = entries.map((e) => e.url)
     for (const thread of discussionsData.threads) {
       expect(urls).toContain(`${BASE_URL}/discussion/thread/${thread.id}/`)
     }
   })
 
-  it('has required fields on every entry', () => {
+  it('has required fields on every entry', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     for (const entry of entries) {
       expect(entry.url).toBeDefined()
-      expect(entry.url).toMatch(/^https:\/\/www\.cgrs\.co\.nz\//)
+      expect(entry.url).toMatch(/^https:\/\//)
       expect(entry.lastModified).toBeInstanceOf(Date)
       expect(entry.changeFrequency).toBeDefined()
       expect(
@@ -85,18 +109,24 @@ describe('sitemap', () => {
     }
   })
 
-  it('gives homepage highest priority', () => {
+  it('gives homepage highest priority', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const homepage = entries.find((e) => e.url === `${BASE_URL}/`)
     expect(homepage?.priority).toBe(1)
   })
 
-  it('uses trailing slashes on all URLs', () => {
+  it('uses trailing slashes on all URLs', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     for (const entry of entries) {
       expect(entry.url).toMatch(/\/$/)
     }
   })
 
-  it('has the expected total number of entries', () => {
+  it('has the expected total number of entries', async () => {
+    const { default: sitemap } = await import('../sitemap')
+    const entries = sitemap()
     const eventsWithSlugs = eventsData.events.filter((e) => e.slug)
     const expectedCount =
       10 + // static routes

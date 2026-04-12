@@ -7,13 +7,14 @@ interface TooltipProps {
   content: string;
   children: ReactNode;
   className?: string;
+  position?: 'top' | 'bottom';
 }
 
 /**
- * Lightweight tooltip wrapper. Shows a labeled tooltip above the trigger
+ * Lightweight tooltip wrapper. Shows a labeled tooltip above/below the trigger
  * after a 300ms hover/focus delay. Matches the forest/bone design system.
  */
-export function Tooltip({ content, children, className }: TooltipProps) {
+export function Tooltip({ content, children, className, position = 'top' }: TooltipProps) {
   const [visible, setVisible] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const id = useId();
@@ -45,7 +46,8 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         role="tooltip"
         aria-hidden={!visible}
         className={cn(
-          'absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50',
+          'absolute left-1/2 -translate-x-1/2 z-50',
+          position === 'top' ? 'bottom-full mb-2' : 'top-full mt-2',
           'pointer-events-none whitespace-nowrap select-none',
           'bg-forest text-bone text-xs font-medium px-2 py-1 rounded-md',
           'transition-all duration-150 ease-out',
@@ -54,7 +56,10 @@ export function Tooltip({ content, children, className }: TooltipProps) {
       >
         {content}
         <span
-          className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-forest"
+          className={cn(
+            'absolute left-1/2 -translate-x-1/2 border-[4px] border-transparent',
+            position === 'top' ? 'top-full border-t-forest' : 'bottom-full border-b-forest'
+          )}
           aria-hidden="true"
         />
       </div>

@@ -17,7 +17,10 @@ vi.mock('@/hooks/useIntersectionObserver', () => ({
 }));
 
 vi.mock('next/image', () => ({
-  default: ({ alt }: { alt: string }) => <img alt={alt} />,
+  default: ({ alt, ...props }: Record<string, unknown>) => {
+    const { fill: _f, sizes: _s, unoptimized: _u, ...rest } = props;
+    return <img alt={alt as string} {...rest} />;
+  },
 }));
 
 describe('UtilityDock', () => {

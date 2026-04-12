@@ -16,7 +16,7 @@ const RetroFuturisticCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProp
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#050B14] border border-[#00FF41]/30 rounded-lg overflow-hidden text-[#00FF41]',
-          'transition-all duration-300 hover:border-[#00FF41] hover:shadow-[0_0_15px_rgba(0,255,65,0.4)]',
+          'transition-colors, transition-transform, transition-opacity duration-300 hover:border-[#00FF41] hover:shadow-[0_0_15px_rgba(0,255,65,0.4)]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

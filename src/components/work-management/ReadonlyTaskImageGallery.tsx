@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import type { LightboxImage } from '@/types';
 import type { TaskImage } from '@/types/work-management';
 import { cn } from '@/lib/utils';
@@ -62,10 +64,13 @@ export default function ReadonlyTaskImageGallery({
               className="relative group aspect-square rounded-xl overflow-hidden border border-sage/20 cursor-pointer"
             >
               {displaySrc ? (
-                <img
+                <Image
                   src={displaySrc}
                   alt={img.alt || titleFallback}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 33vw, 25vw"
+                  unoptimized={isNonOptimizableImageSrc(displaySrc)}
+                  className="object-cover"
                 />
               ) : (
                 <div

@@ -1,4 +1,6 @@
+import Image from 'next/image';
 import type { Occupant } from '@/data/property';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 
 interface OccupantCardProps {
   occupant: Occupant;
@@ -22,9 +24,12 @@ export default function OccupantCard({ occupant }: OccupantCardProps) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-bone p-3">
       {occupant.avatar_url ? (
-        <img
+        <Image
           src={occupant.avatar_url}
           alt={occupant.name}
+          width={40}
+          height={40}
+          unoptimized={isNonOptimizableImageSrc(occupant.avatar_url)}
           className="h-10 w-10 rounded-full object-cover"
         />
       ) : (

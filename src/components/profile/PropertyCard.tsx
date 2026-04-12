@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import { BedDouble, Bath, Car } from 'lucide-react';
 import type { PropertyData } from '@/data/property';
 
@@ -10,6 +13,7 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property }: PropertyCardProps) {
   const prefersReducedMotion = useReducedMotion();
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
 
   const address = [
     property.unit_number ? `Unit ${property.unit_number},` : '',
@@ -27,14 +31,17 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       className="overflow-hidden rounded-xl bg-white shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
     >
       <div className="relative h-48 bg-sage-light">
-        <img
-          src={property.image_url}
-          alt={address}
-          className="h-full w-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
+        {!heroImageFailed && (
+          <Image
+            src={property.image_url}
+            alt={address}
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            unoptimized={isNonOptimizableImageSrc(property.image_url)}
+            className="object-cover"
+            onError={() => setHeroImageFailed(true)}
+          />
+        )}
       </div>
       <div className="p-6">
         <h3 className="font-display text-xl text-forest">{address}</h3>

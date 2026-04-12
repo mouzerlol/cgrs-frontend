@@ -15,11 +15,28 @@ export function formatDate(dateString: string): string {
   });
 }
 
-export function formatRelativeDate(dateString: string): string {
+/**
+ * Human-readable relative time from an ISO date string.
+ * @param compact When true, use short labels (e.g. `3d`, `2w`) for tight UI.
+ */
+export function formatRelativeDate(dateString: string, compact = false): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (compact) {
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return '1d';
+    if (diffDays < 7) return `${diffDays}d`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo`;
+    return date.toLocaleDateString('en-NZ', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
 
   if (diffDays === 0) return 'Today';
   if (diffDays === 1) return 'Yesterday';

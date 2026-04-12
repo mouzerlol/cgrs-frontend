@@ -27,7 +27,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseClasses = [
       'inline-flex items-center justify-center',
       'font-medium tracking-wide',
-      'transition-all duration-300',
+      'transition-colors, transition-transform, transition-opacity duration-300',
       'rounded cursor-pointer',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
       isPressed ? 'scale-95 opacity-90' : '',

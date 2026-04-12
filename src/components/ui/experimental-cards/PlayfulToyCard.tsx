@@ -16,7 +16,7 @@ const PlayfulToyCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>(
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#FFDE59] border-4 border-black rounded-3xl overflow-hidden text-black',
-          'transition-all duration-200 hover:-translate-y-2 hover:shadow-[0_8px_0_0_#000] active:translate-y-0 active:shadow-[0_0px_0_0_#000]',
+          'transition-colors, transition-transform, transition-opacity duration-200 hover:-translate-y-2 hover:shadow-[0_8px_0_0_#000] active:translate-y-0 active:shadow-[0_0px_0_0_#000]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

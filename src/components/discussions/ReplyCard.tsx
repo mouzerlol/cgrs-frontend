@@ -106,7 +106,7 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
         <div
           ref={ref}
           className={cn(
-            'min-w-0 flex-1 rounded-md border border-sage/20 bg-bone p-3 opacity-50',
+            'min-w-0 flex-1 rounded-md border border-sage/20 bg-bone-light p-3 opacity-50',
             className
           )}
           {...props}
@@ -127,7 +127,7 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
       <div
         ref={ref}
         className={cn(
-          'min-w-0 flex-1 overflow-hidden rounded-md border border-sage/20 bg-bone p-3',
+          'min-w-0 flex-1 overflow-hidden rounded-md border border-sage/20 bg-bone-light p-3',
           className
         )}
         {...props}

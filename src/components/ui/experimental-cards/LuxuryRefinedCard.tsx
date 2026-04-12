@@ -16,7 +16,7 @@ const LuxuryRefinedCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#F9F8F6] rounded-sm border border-[#E5E0D8] overflow-hidden text-[#2C3E2D]',
-          'transition-all duration-500 ease-out-custom hover:-translate-y-1 hover:shadow-xl hover:shadow-[#2C3E2D]/5',
+          'transition-colors, transition-transform, transition-opacity duration-500 ease-out-custom hover:-translate-y-1 hover:shadow-xl hover:shadow-[#2C3E2D]/5',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}

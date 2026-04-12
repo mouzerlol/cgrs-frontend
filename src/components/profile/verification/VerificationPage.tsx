@@ -252,9 +252,6 @@ export default function VerificationPage({ streets, verificationStatus }: Verifi
           <QRInstructions
             address={`${selectedAddress.streetName} ${selectedAddress.streetNumber}`}
             expiresAt={verificationResult.expires_at}
-            hasExistingResidents={addressLookupResult?.has_residents}
-            hasExistingOwners={addressLookupResult?.has_owners}
-            verificationType={selectedVerificationType || 'resident'}
           />
         </motion.div>
       )}

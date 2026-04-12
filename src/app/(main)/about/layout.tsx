@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Us | Coronation Gardens',
+  title: 'About Coronation Gardens | CGRS',
   description:
-    'Learn about the Coronation Gardens Residents Society, our mission, and the committee serving our Mangere Bridge community.',
+    'Learn about the Coronation Gardens Residents Society, our mission to serve the Mangere Bridge community, and meet the dedicated committee members.',
 };
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {

@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
-  Building2,
   AlertTriangle,
-  Home,
+  Building2,
   CheckCircle,
   Clock,
-  Hourglass,
+  Home,
   Loader2,
   X,
 } from 'lucide-react';
@@ -17,13 +16,23 @@ import { useMyPropertiesQuery, useInvalidateProfileData } from '@/hooks/useProfi
 import { withdrawVerificationRequest } from '@/lib/api/verification';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
+import PropertyMap from './PropertyMap';
+import CoMembersWidget from './CoMembersWidget';
+
+function DetailItem({ label, value }: { label: string; value: number | null }) {
+  return (
+    <div className="text-center p-3 bg-bone">
+      <p className="text-2xl font-display text-forest">{value ?? '—'}</p>
+      <p className="text-xs text-forest/60">{label}</p>
+    </div>
+  );
+}
 
 export default function MyPropertySection() {
   const { getToken } = useAuth();
   const prefersReducedMotion = useReducedMotion();
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
 
-  // Use centralized query
   const { data, isLoading, error } = useMyPropertiesQuery();
   const { invalidateMyProperties } = useInvalidateProfileData();
 
@@ -32,10 +41,9 @@ export default function MyPropertySection() {
     try {
       const token = await getToken();
       await withdrawVerificationRequest(requestId, async () => token);
-      // Invalidate to refetch
       await invalidateMyProperties();
     } catch {
-      // Error handling - could add toast notification here
+      // Error handling
     } finally {
       setWithdrawingId(null);
     }
@@ -45,18 +53,26 @@ export default function MyPropertySection() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        {/* Header skeleton */}
         <div className="flex items-center gap-3">
-          <Skeleton className="h-12 w-12 rounded-xl" />
+          <Skeleton className="h-12 w-12" />
           <div className="space-y-2">
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-4 w-64" />
           </div>
         </div>
-        {/* Content skeleton */}
-        <div className="ml-14 space-y-4">
-          <Skeleton className="h-40 rounded-xl" />
-          <Skeleton className="h-40 rounded-xl" />
+        <div className="border border-sage/30 p-md bg-white">
+          <div className="lg:flex lg:gap-gutter">
+            <div className="lg:w-1/3 space-y-4">
+              <Skeleton className="h-[200px]" />
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="lg:w-2/3 space-y-4 mt-4 lg:mt-0">
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-[100px]" />
+              <Skeleton className="h-4 w-1/3 mt-4" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -65,9 +81,8 @@ export default function MyPropertySection() {
   if (error) {
     return (
       <div className="space-y-6">
-        {/* Header with icon */}
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/10">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-forest/10">
             <Building2 className="h-6 w-6 text-forest" />
           </div>
           <div>
@@ -77,10 +92,10 @@ export default function MyPropertySection() {
             </p>
           </div>
         </div>
-        <div className="ml-14">
-          <div className="rounded-xl bg-terracotta/10 p-6 text-center">
+        <div>
+          <div className="border border-terracotta/30 bg-terracotta/10 p-6 text-center">
             <div className="flex justify-center mb-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-terracotta/10">
+              <div className="flex h-12 w-12 items-center justify-center bg-terracotta/10">
                 <AlertTriangle className="h-6 w-6 text-terracotta" />
               </div>
             </div>
@@ -97,9 +112,8 @@ export default function MyPropertySection() {
   if (!hasVerifiedProperties && !hasPendingRequests) {
     return (
       <div className="space-y-6">
-        {/* Header with icon */}
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/10">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-forest/10">
             <Building2 className="h-6 w-6 text-forest" />
           </div>
           <div>
@@ -110,10 +124,10 @@ export default function MyPropertySection() {
           </div>
         </div>
 
-        <div className="ml-14">
-          <div className="rounded-xl bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
+        <div>
+          <div className="border border-sage/30 bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sage/10">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-sage/10">
                 <Home className="h-6 w-6 text-sage" />
               </div>
               <div>
@@ -137,7 +151,7 @@ export default function MyPropertySection() {
     <div className="space-y-6">
       {/* Header with icon */}
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/10">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-forest/10">
           <Building2 className="h-6 w-6 text-forest" />
         </div>
         <div>
@@ -148,96 +162,98 @@ export default function MyPropertySection() {
         </div>
       </div>
 
-      {/* Verified Properties */}
-      {hasVerifiedProperties && (
-        <section className="ml-14 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sage/10">
-              <CheckCircle className="h-5 w-5 text-sage" />
-            </div>
-            <h3 className="font-display text-lg text-forest">Verified Properties</h3>
-          </div>
-          <div className="space-y-4 pl-[3.5rem]">
-            {data?.verified_properties.map((property) => (
-              <motion.div
-                key={property.property_id}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="overflow-hidden rounded-xl bg-white shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sage/10">
-                        {property.verification_type === 'owner' ? (
-                          <Building2 className="h-5 w-5 text-sage" />
-                        ) : (
-                          <Home className="h-5 w-5 text-sage" />
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-display text-lg text-forest">
-                          {property.street_number} {property.street_name}
-                        </h4>
-                        <p className="mt-1 text-sm text-forest/70 capitalize">
-                          Verified as: {property.verification_type}
-                        </p>
-                      </div>
+      <div className="space-y-6">
+        {hasVerifiedProperties &&
+          data?.verified_properties.map((property) => (
+            <motion.div
+              key={property.property_id}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white border border-sage/30 p-md"
+            >
+              <div className="lg:flex lg:gap-gutter">
+                {/* LEFT COLUMN: 1/3 width */}
+                <div className="lg:w-1/3 space-y-3">
+                  <PropertyMap
+                    lat={property.lat ?? null}
+                    lng={property.lng ?? null}
+                    address={`${property.street_number} ${property.street_name}`}
+                  />
+
+                  <p className="text-sm font-medium text-forest">
+                    {property.verification_type === 'owner' 
+                      ? ((property.co_members && property.co_members.length > 0) ? 'Owners' : 'Owner') 
+                      : ((property.co_members && property.co_members.length > 0) ? 'Residents' : 'Resident')} of{' '}
+                    {property.street_number} {property.street_name}
+                  </p>
+
+                  <CoMembersWidget
+                    members={property.co_members ?? []}
+                    type={property.verification_type as 'owner' | 'resident'}
+                  />
+                </div>
+
+                {/* RIGHT COLUMN: 2/3 width */}
+                <div className="lg:w-2/3 flex flex-col justify-between mt-4 lg:mt-0">
+                  <div>
+                    <h3 className="font-display text-lg text-forest mb-4">
+                      {property.street_number} {property.street_name}
+                    </h3>
+
+                    <div className="grid grid-cols-3 gap-4">
+                      <DetailItem label="Bedrooms" value={property.bedrooms} />
+                      <DetailItem label="Bathrooms" value={property.bathrooms} />
+                      <DetailItem label="Carparks" value={property.parking_spaces} />
                     </div>
                   </div>
-                  <p className="mt-3 text-xs text-forest/50 pl-[2.5rem]">
+
+                  <p className="text-xs text-forest/60 mt-4">
                     Verified on: {new Date(property.verified_at).toLocaleDateString()}
                   </p>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
+              </div>
+            </motion.div>
+          ))}
 
-      {/* Pending Requests */}
-      {hasPendingRequests && (
-        <section className="ml-14 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber/10">
-              <Clock className="h-5 w-5 text-amber" />
+        {/* Pending Requests Section */}
+        {hasPendingRequests && (
+          <section className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-amber/10">
+                <Clock className="h-5 w-5 text-amber" />
+              </div>
+              <h3 className="font-display text-lg text-forest">Pending Requests</h3>
             </div>
-            <h3 className="font-display text-lg text-forest">Pending Requests</h3>
-          </div>
-          <div className="space-y-4 pl-[3.5rem]">
+
             {data?.pending_requests.map((request) => (
               <motion.div
                 key={request.id}
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="overflow-hidden rounded-xl bg-white shadow-[0_8px_32px_rgba(26,34,24,0.08)]"
+                className="bg-white border border-sage/30 p-md flex flex-col"
               >
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber/10">
-                        <Hourglass className="h-5 w-5 text-amber" />
-                      </div>
-                      <div>
-                        <h4 className="font-display text-lg text-forest">
-                          Property ID: {request.property_id.slice(0, 8)}
-                        </h4>
-                        <p className="mt-1 text-sm text-forest/70 capitalize">
-                          Request type: {request.verification_type}
-                        </p>
-                      </div>
-                    </div>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-medium text-forest">
+                      {request.street_number} {request.street_name}
+                    </h4>
+                    <p className="text-sm text-forest/70">
+                      Requested: {new Date(request.created_at).toLocaleDateString()}
+                    </p>
                   </div>
-                  <p className="mt-3 text-xs text-forest/50 pl-[2.5rem]">
-                    Requested on: {new Date(request.created_at).toLocaleDateString()}
-                  </p>
+                  <span className="text-[11px] font-medium bg-amber/10 text-amber px-2 py-1 uppercase tracking-wider">
+                    {request.verification_type}
+                  </span>
+                </div>
+
+                <div className="mt-4 flex justify-end">
                   <button
                     type="button"
                     onClick={() => handleWithdraw(request.id)}
                     disabled={withdrawingId === request.id}
                     className={cn(
-                      'mt-4 flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all w-full sm:w-auto sm:ml-[2.5rem]',
-                      'bg-terracotta/10 text-terracotta hover:bg-terracotta/20',
+                      'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all border border-terracotta/30',
+                      'text-terracotta hover:bg-terracotta/10',
                       'disabled:opacity-50 disabled:cursor-not-allowed',
                     )}
                   >
@@ -251,9 +267,9 @@ export default function MyPropertySection() {
                 </div>
               </motion.div>
             ))}
-          </div>
-        </section>
-      )}
+          </section>
+        )}
+      </div>
     </div>
   );
 }

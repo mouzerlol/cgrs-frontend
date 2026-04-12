@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ const IndustrialUtilitarianCard = forwardRef<HTMLAnchorElement, QuickAccessCardA
   ({ title, description, href, variant = 'standard', icon, image, className }, ref) => {
     const isLarge = variant === 'large';
     const hasImage = Boolean(image);
+    const idSuffix = useId().slice(-1).replace(/[^1-9]/, '1');
 
     return (
       <Link
@@ -16,7 +17,7 @@ const IndustrialUtilitarianCard = forwardRef<HTMLAnchorElement, QuickAccessCardA
         href={href}
         className={cn(
           'group relative flex flex-col bg-[#E5E7EB] border-2 border-[#374151] rounded-none overflow-hidden text-[#111827]',
-          'transition-all duration-150 hover:bg-[#D1D5DB] hover:border-[#111827]',
+          'transition-colors, transition-transform, transition-opacity duration-150 hover:bg-[#D1D5DB] hover:border-[#111827] hover:translate-y-0',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
         )}
@@ -26,7 +27,7 @@ const IndustrialUtilitarianCard = forwardRef<HTMLAnchorElement, QuickAccessCardA
             <div className="w-3 h-3 rounded-full border-2 border-[#374151] bg-white"></div>
             <div className="w-3 h-3 rounded-full border-2 border-[#374151] bg-white"></div>
           </div>
-          <span className="font-mono text-[10px] uppercase font-bold text-[#4B5563] tracking-widest">ID-SYS-0{Math.floor(Math.random() * 9)}</span>
+          <span className="font-mono text-[10px] uppercase font-bold text-[#4B5563] tracking-widest">ID-SYS-0{idSuffix}</span>
         </div>
 
         <div className="relative z-10 flex flex-col h-full p-4 sm:p-5">

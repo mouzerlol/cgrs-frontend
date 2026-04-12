@@ -1,22 +1,23 @@
 'use client';
 
 import { useRef, useCallback, useState, useEffect } from 'react';
-import { MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
+import { MAP_CENTER, MAP_ZOOM, MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
 import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
-import { setupBoundaryMap } from '@/lib/maps';
+import {
+  getCommunityMapBaseTileUrl,
+  getCommunityMapBaseTileOptions,
+  getLINZPropertyTitlesTileUrl,
+  getLINZPropertyTitlesTileOptions,
+  setupBoundaryMap,
+} from '@/lib/maps';
 
-// Define map configuration outside component to prevent re-renders
-// CRITICAL: These must be stable references to avoid BaseMap useEffect re-running
-const MAP_CENTER: [number, number] = [-36.9497, 174.7912];
-const MAP_ZOOM = 17;
-const OSM_TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const OSM_TILE_OPTIONS = {
-  maxZoom: 19,
-  subdomains: ['a', 'b', 'c'] as ['a', 'b', 'c'],
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-};
+// Tile URLs/options outside component — stable references so BaseMap init effect does not re-run
+const COMMUNITY_BASE_TILE_URL = getCommunityMapBaseTileUrl();
+const COMMUNITY_BASE_TILE_OPTIONS = getCommunityMapBaseTileOptions();
+const PROPERTY_TITLES_TILE_URL = getLINZPropertyTitlesTileUrl();
+const PROPERTY_TITLES_TILE_OPTIONS = getLINZPropertyTitlesTileOptions();
 
 interface MapSectionProps {
   className?: string;
@@ -177,7 +178,7 @@ export default function MapSection({ className }: MapSectionProps) {
 
       // Pan map to center on marker when clicked
       marker.on('click', () => {
-        map.flyTo(poi.coordinates, 17, {
+        map.flyTo(poi.coordinates, MAP_ZOOM, {
           duration: 0.8,
           easeLinearity: 0.25,
         });
@@ -223,7 +224,7 @@ export default function MapSection({ className }: MapSectionProps) {
 
     // Navigate to POI coordinates
     // Using setView for immediate response, or flyTo for animation
-    mapInstance.flyTo(poi.coordinates, 17, {
+    mapInstance.flyTo(poi.coordinates, MAP_ZOOM, {
       duration: 1.2,
       easeLinearity: 0.25,
     });
@@ -312,8 +313,10 @@ export default function MapSection({ className }: MapSectionProps) {
         <BaseMap
           center={MAP_CENTER}
           zoom={MAP_ZOOM}
-          tileUrl={OSM_TILE_URL}
-          tileOptions={OSM_TILE_OPTIONS}
+          tileUrl={COMMUNITY_BASE_TILE_URL}
+          tileOptions={COMMUNITY_BASE_TILE_OPTIONS}
+          overlayTileUrl={PROPERTY_TITLES_TILE_URL ?? undefined}
+          overlayTileOptions={PROPERTY_TITLES_TILE_OPTIONS}
           zoomControl={true}
           showHomeControl={true}
           homeControlPosition="topleft"
@@ -324,7 +327,7 @@ export default function MapSection({ className }: MapSectionProps) {
           keyboard={true}
           attributionControl={true}
           preferCanvas={true}
-          maxZoom={18}
+          maxZoom={21}
           minZoom={12}
           onMapReady={handleMapReady}
           onHomeClick={handleHomeClick}

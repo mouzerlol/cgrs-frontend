@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Management Request | Coronation Gardens',
   description:
-    'Submit a request or report an issue to society management for Coronation Gardens residents.',
+    'Submit maintenance requests, report issues, or contact the Coronation Gardens committee for assistance with your resident concerns in Mangere Bridge.',
 };
 
 /** Server layout so client `page.tsx` can omit `metadata` export. */

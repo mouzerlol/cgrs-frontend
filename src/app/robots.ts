@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
+import { getPublicAppOrigin } from '@/lib/app-url'
 
 export default function robots(): MetadataRoute.Robots {
+  const sitemapUrl = `${getPublicAppOrigin()}/sitemap.xml`
   return {
     rules: {
       userAgent: '*',
@@ -14,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
         '/forgot-password/',
       ],
     },
-    sitemap: 'https://www.cgrs.co.nz/sitemap.xml',
+    sitemap: sitemapUrl,
   }
 }

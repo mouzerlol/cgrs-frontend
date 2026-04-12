@@ -13,7 +13,7 @@ import type { DiscussionAttachmentMeta, ThreadImage } from '@/types';
  */
 export function useThreadAttachmentImages(attachments: DiscussionAttachmentMeta[] | undefined) {
   const { getToken } = useAuth();
-  const list = attachments ?? [];
+  const list = useMemo(() => attachments ?? [], [attachments]);
 
   const results = useQueries({
     queries: list.map((att) => ({

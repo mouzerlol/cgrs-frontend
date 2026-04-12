@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { CurrentUserResponse } from '@/hooks/useCurrentUser';
 import ProfileLayout from '../layout';
+
+function renderWithQueryClient(ui: React.ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+}
 
 const mockPathname = vi.fn(() => '/profile/reported-issues');
 
@@ -23,6 +29,7 @@ const mockUserData: CurrentUserResponse = {
 vi.mock('next/navigation', () => ({
   usePathname: () => mockPathname(),
   useRouter: () => ({ prefetch: vi.fn(), push: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 vi.mock('@clerk/nextjs', () => ({
@@ -36,8 +43,9 @@ vi.mock('@/hooks/useProfileData', () => ({
   useVerificationStatusQuery: () => ({ data: { has_pending_request: false } }),
 }));
 
-vi.mock('@iconify/react', () => ({
-  Icon: () => <span data-testid="icon" />,
+vi.mock('@/hooks/useNotifications', () => ({
+  useUnreadCount: () => ({ data: { total: 0, by_section: [] } }),
+  useNotifications: () => ({ data: null, isLoading: false }),
 }));
 
 vi.mock('framer-motion', () => ({
@@ -69,6 +77,9 @@ vi.mock('@/components/profile/sections/ReportedIssuesSection', () => ({
 vi.mock('@/components/profile/sections/MyPropertySection', () => ({
   default: () => <div data-testid="my-property-section" />,
 }));
+vi.mock('@/components/profile/sections/BookmarksSection', () => ({
+  default: () => <div data-testid="bookmarks-section" />,
+}));
 
 describe('ProfileLayout', () => {
   beforeEach(() => {
@@ -76,7 +87,7 @@ describe('ProfileLayout', () => {
   });
 
   it('renders ReportedIssuesSection for /profile/reported-issues (list) and not nested route children', () => {
-    render(
+    renderWithQueryClient(
       <ProfileLayout>
         <div data-testid="nested-route-child">Issue detail</div>
       </ProfileLayout>
@@ -89,7 +100,7 @@ describe('ProfileLayout', () => {
   it('renders nested route children for /profile/reported-issues/<id> instead of the list section', () => {
     mockPathname.mockReturnValue('/profile/reported-issues/28b81a2e-1d4d-4109-981d-d5ee4bba704d');
 
-    render(
+    renderWithQueryClient(
       <ProfileLayout>
         <div data-testid="nested-route-child">Issue detail</div>
       </ProfileLayout>
@@ -102,7 +113,7 @@ describe('ProfileLayout', () => {
   it('renders ProfileDetailsSection on /profile and does not mount reported-issues list or nested children', () => {
     mockPathname.mockReturnValue('/profile');
 
-    render(
+    renderWithQueryClient(
       <ProfileLayout>
         <div data-testid="nested-route-child">Should not show</div>
       </ProfileLayout>
@@ -111,5 +122,17 @@ describe('ProfileLayout', () => {
     expect(screen.getByTestId('details-section')).toBeInTheDocument();
     expect(screen.queryByTestId('reported-issues-list')).not.toBeInTheDocument();
     expect(screen.queryByTestId('nested-route-child')).not.toBeInTheDocument();
+  });
+
+  it('renders VerificationSection on /profile/verification without throwing (Suspense fallback uses Skeleton)', () => {
+    mockPathname.mockReturnValue('/profile/verification');
+
+    renderWithQueryClient(
+      <ProfileLayout>
+        <div data-testid="nested-route-child">Unused</div>
+      </ProfileLayout>
+    );
+
+    expect(screen.getByTestId('verification-section')).toBeInTheDocument();
   });
 });

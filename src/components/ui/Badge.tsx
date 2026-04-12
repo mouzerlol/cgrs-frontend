@@ -5,6 +5,7 @@ type BadgeVariant =
   | 'outline'
   | 'forest'
   | 'terracotta'
+  | 'amber'
   | 'status-open'
   | 'status-in-progress'
   | 'status-closed'
@@ -23,6 +24,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   outline: 'bg-transparent border-sage/20 text-forest/60',
   forest: 'bg-forest/5 text-forest border-forest/10',
   terracotta: 'bg-terracotta/5 text-terracotta border-terracotta/10',
+  amber: 'bg-amber/15 text-amber-dark border-amber/20',
   'status-open': 'bg-amber/15 text-amber-700 border-transparent',
   'status-in-progress': 'bg-sage-light text-forest border-transparent',
   'status-closed': 'bg-forest-light/15 text-forest-light border-transparent',
