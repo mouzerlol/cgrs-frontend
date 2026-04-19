@@ -7,8 +7,8 @@ vi.mock('next/image', () => ({
   default: function MockImage(
     props: ComponentProps<'img'> & { fill?: boolean; sizes?: string; unoptimized?: boolean },
   ) {
-    const { fill: _f, sizes: _s, unoptimized: _u, ...rest } = props;
-    return <img {...rest} />;
+    const { fill: _f, sizes: _s, unoptimized: _u, alt, ...rest } = props;
+    return <img {...rest} alt={alt ?? ''} />;
   },
 }));
 

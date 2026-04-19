@@ -276,7 +276,15 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         setIsSubmitting(false);
       }
     },
-    [formData, getToken, isSignedIn, showCaptcha, captchaToken, handleRedirectToSignIn]
+    [
+      formData,
+      getToken,
+      isSignedIn,
+      isReturningFromSignIn,
+      showCaptcha,
+      captchaToken,
+      handleRedirectToSignIn,
+    ]
   );
 
   const handleSubmitAnother = useCallback(() => {

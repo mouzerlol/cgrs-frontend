@@ -156,8 +156,8 @@ describe('useNavItems hook', () => {
   it('useNavItems hook exports are functions', async () => {
     // Just verify the hook functions exist - they are exported from the module
     // The actual behavior is tested through Navigation component tests
-    const module = await import('@/hooks/useNavItems');
+    const useNavItemsModule = await import('@/hooks/useNavItems');
 
-    expect(typeof module.useNavItems).toBe('function');
+    expect(typeof useNavItemsModule.useNavItems).toBe('function');
   });
 });

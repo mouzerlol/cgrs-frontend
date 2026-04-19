@@ -216,6 +216,49 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: rgba(168, 181, 160, 0.5);
   }
+
+  /* Aurora/liquid light Easter Egg animation */
+  .animate-aurora-text {
+    background-image: linear-gradient(
+      115deg,
+      var(--bone) 0%,
+      var(--terracotta) 10%,
+      var(--forest) 20%,
+      var(--sage) 30%,
+      var(--terracotta) 40%,
+      var(--bone) 50%,
+      var(--forest) 60%,
+      var(--terracotta) 70%,
+      var(--sage) 80%,
+      var(--bone) 100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: auroraSweep 4s linear forwards;
+  }
+
+  @keyframes auroraSweep {
+    0% {
+      background-position: 0% 0%;
+    }
+    10% {
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+    90% {
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+    100% {
+      background-position: 100% 100%;
+      /* Return to normal text color at the end */
+      -webkit-text-fill-color: var(--bone);
+      color: var(--bone);
+    }
+  }
 }
 
 /* ==========================================================================

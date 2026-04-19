@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { flushSync } from 'react';
+import { flushSync } from 'react-dom';
 
 interface UseFormPersistenceOptions {
   /** Unique key for sessionStorage */
@@ -17,7 +17,7 @@ interface UseFormPersistenceOptions {
  * - Returns clearStoredData to manually clear when form is submitted successfully
  * - Optionally calls onRestored callback after successful restoration
  */
-export function useFormPersistence<T extends Record<string, unknown>>(
+export function useFormPersistence<T extends object>(
   data: T,
   setData: (data: T | ((prev: T) => T)) => void,
   options: UseFormPersistenceOptions,
@@ -33,7 +33,7 @@ export function useFormPersistence<T extends Record<string, unknown>>(
     try {
       const stored = sessionStorage.getItem(key);
       if (stored) {
-        const parsed = JSON.parse(stored) as T;
+        const parsed = JSON.parse(stored) as T & { photos?: unknown };
         // sessionStorage only stores strings, so File objects are lost
         // Photos must be re-attached by the user
         const { photos: _photos, ...rest } = parsed;
@@ -67,7 +67,7 @@ export function useFormPersistence<T extends Record<string, unknown>>(
     timerRef.current = setTimeout(() => {
       try {
         // Store data without File objects (they can't be serialized)
-        const { photos: _photos, ...storableData } = data;
+        const { photos: _photos, ...storableData } = data as T & { photos?: unknown };
         sessionStorage.setItem(key, JSON.stringify(storableData));
       } catch {
         // sessionStorage may be full or unavailable - fail silently

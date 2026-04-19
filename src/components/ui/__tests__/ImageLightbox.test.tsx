@@ -8,10 +8,10 @@ let capturedSrc: string | undefined;
 
 vi.mock('next/image', () => ({
   default: function MockImage(props: Record<string, unknown>) {
-    const { unoptimized, src, ...rest } = props;
+    const { unoptimized, src, alt, ...rest } = props;
     capturedUnoptimized = unoptimized as boolean | undefined;
     capturedSrc = src as string | undefined;
-    return <img {...rest} />;
+    return <img {...rest} alt={typeof alt === 'string' ? alt : ''} />;
   },
 }));
 

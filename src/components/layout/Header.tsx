@@ -14,6 +14,7 @@ import { useNavItems } from '@/hooks/useNavItems';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
 import { formatRole, canAccessManagement } from '@/lib/auth';
+import { useEasterEggContext } from './WindyTextContext';
 
 const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
 
@@ -31,6 +32,7 @@ export default function Header() {
   const { data: community } = useCommunity();
   const { data: navData } = useNavItems();
   const { getToken } = useAuth();
+  const { trigger: triggerEasterEgg } = useEasterEggContext();
 
   const role = currentUser?.membership?.role;
   const isSuperadmin = currentUser?.is_superadmin ?? false;
@@ -52,6 +54,16 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    // Trigger animation Easter egg when clicking logo on homepage
+    if (pathname === '/') {
+      e.preventDefault();
+      triggerEasterEgg();
+      // Smooth scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const headerClassName = isManagementPage
     ? 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest border-b border-white/10 text-bone'
     : 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone';
@@ -59,7 +71,14 @@ export default function Header() {
   return (
     <header className={headerClassName}>
       {/* Logo */}
-      <Link href="/" className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 lg:pr-24" onClick={closeMenu}>
+      <Link
+        href="/"
+        className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 lg:pr-24"
+        onClick={(e) => {
+          closeMenu();
+          handleLogoClick(e);
+        }}
+      >
         <span className="flex flex-col leading-tight">
           <span className="block whitespace-nowrap">CORONATION</span>
           <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>

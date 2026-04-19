@@ -14,6 +14,7 @@ import { ApiError } from '@/lib/api/client';
 import { STALE_TIMES } from '@/lib/cache-config';
 import { useInvalidateCurrentUserOnClerkChange } from '@/hooks/useInvalidateCurrentUserOnClerkChange';
 import { FeatureFlagProvider } from '@/components/providers/FeatureFlagProvider';
+import { EasterEggProvider } from '@/components/layout/WindyTextContext';
 
 // Register curated icon subset locally (CSP blocks api.iconify.design).
 // Run `node scripts/extract-icons.mjs` after adding new icon references.
@@ -66,8 +67,10 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <FeatureFlagProvider>
-        <ClerkCurrentUserSync />
-        {children}
+        <EasterEggProvider>
+          <ClerkCurrentUserSync />
+          {children}
+        </EasterEggProvider>
       </FeatureFlagProvider>
     </QueryClientProvider>
   );

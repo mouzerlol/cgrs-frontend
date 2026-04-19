@@ -36,6 +36,7 @@ export default function LoginPage() {
 
               <div className="relative z-10">
                 <SignIn
+                  path="/login"
                   routing="path"
                   fallbackRedirectUrl={redirectUrl}
                   signUpUrl="/register"
