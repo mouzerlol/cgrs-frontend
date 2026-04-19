@@ -1,23 +1,20 @@
 'use client';
 
 import { useRef, useCallback, useState, useEffect } from 'react';
-import { MAP_CENTER, MAP_ZOOM, MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
+import { POINTS_OF_INTEREST, POI_TYPES, BOUNDARY_COORDINATES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
-import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
-import {
-  getCommunityMapBaseTileUrl,
-  getCommunityMapBaseTileOptions,
-  getLINZPropertyTitlesTileUrl,
-  getLINZPropertyTitlesTileOptions,
-  setupBoundaryMap,
-} from '@/lib/maps';
 
-// Tile URLs/options outside component — stable references so BaseMap init effect does not re-run
-const COMMUNITY_BASE_TILE_URL = getCommunityMapBaseTileUrl();
-const COMMUNITY_BASE_TILE_OPTIONS = getCommunityMapBaseTileOptions();
-const PROPERTY_TITLES_TILE_URL = getLINZPropertyTitlesTileUrl();
-const PROPERTY_TITLES_TILE_OPTIONS = getLINZPropertyTitlesTileOptions();
+// Define map configuration outside component to prevent re-renders
+// CRITICAL: These must be stable references to avoid BaseMap useEffect re-running
+const MAP_CENTER: [number, number] = [-36.9497, 174.7912];
+const MAP_ZOOM = 17;
+const OSM_TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const OSM_TILE_OPTIONS = {
+  maxZoom: 19,
+  subdomains: ['a', 'b', 'c'] as ['a', 'b', 'c'],
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+};
 
 interface MapSectionProps {
   className?: string;
@@ -36,65 +33,51 @@ export default function MapSection({ className }: MapSectionProps) {
 
   // Ref for scrolling the map section into full view
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Use the immersive scroll hook for consistent behavior
-  // scrollOnMount: true ensures the page scrolls to show the map on initial load
-  const { enterImmersive: scrollToFullView } = useImmersiveScroll(sectionRef, {
-    scrollUpThreshold: 50,
-    scrollOnMount: true,
-  });
-
-  // Direct scroll on mount - ensures the map section is visible below the fixed header
-  // This is a fallback/backup to useImmersiveScroll for more reliable behavior
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const scrollToMapSection = () => {
-      const element = sectionRef.current || document.querySelector('.map-section-wrapper');
-      if (!element) return;
-
-      const rect = element.getBoundingClientRect();
-      const navHeight = 64;
-      const targetY = rect.top + (window.scrollY || document.documentElement.scrollTop) - navHeight;
-
-      window.scrollTo({
-        top: Math.max(0, targetY),
-        behavior: 'instant',
-      });
-    };
-
-    scrollToMapSection();
-    const frameId = requestAnimationFrame(scrollToMapSection);
-    const timeoutId = setTimeout(scrollToMapSection, 100);
-    const timeoutId2 = setTimeout(scrollToMapSection, 300);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      clearTimeout(timeoutId);
-      clearTimeout(timeoutId2);
-    };
-  }, []);
+  // Track if user has interacted - we scroll on first interaction
+  const hasScrolledRef = useRef(false);
 
   // Dynamic height based on viewport
   const [mapHeight, setMapHeight] = useState<number>(600);
 
   /**
    * Calculate available height for the map section.
-   * Fills the viewport minus nav height, legend space, and padding.
+   * The map should fill the viewport below the fixed nav, maximizing vertical space.
+   * We subtract only the nav height and a small bottom padding to prevent overflow.
    */
   const calculateMapHeight = useCallback(() => {
     if (typeof window === 'undefined') return 600;
 
-    // Fixed nav height (64px) + small buffer at bottom for legend
     const navHeight = 64;
-    const legendBuffer = 60; // Space for legend at bottom
-    const padding = 20; // Extra padding
-    const maxHeight = window.innerHeight - navHeight - legendBuffer - padding;
+    const bottomPadding = 40;
 
-    // Minimum height for usability
-    const minHeight = 500;
+    // Map fills the remaining viewport height
+    const availableHeight = window.innerHeight - navHeight - bottomPadding;
 
-    return Math.max(minHeight, maxHeight);
+    const minHeight = 400;
+    return Math.max(minHeight, availableHeight);
+  }, []);
+
+  /**
+   * Enter immersive map mode - scrolls to top and hides the header.
+   * Uses a CSS class on the document to hide the fixed header.
+   */
+  const scrollToFullView = useCallback(() => {
+    if (hasScrolledRef.current || !sectionRef.current) return;
+
+    hasScrolledRef.current = true;
+
+    // Add immersive mode class to hide the fixed header
+    document.documentElement.classList.add('map-immersive-mode');
+
+    // Get the section's position relative to the document
+    const rect = sectionRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
   }, []);
 
   // Handle window resize to recalculate map height
@@ -121,12 +104,32 @@ export default function MapSection({ className }: MapSectionProps) {
     }
   }, [mapHeight, mapInstance]);
 
+  // Scroll to map section on initial mount (instant, no animation)
+  useEffect(() => {
+    // Delay to ensure the component is rendered and sectionRef is set
+    const timeoutId = setTimeout(() => {
+      if (!hasScrolledRef.current && sectionRef.current) {
+        const navHeight = 64;
+        const rect = sectionRef.current.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = rect.top + scrollTop - navHeight;
+
+        window.scrollTo({
+          top: Math.max(0, targetY),
+        });
+        hasScrolledRef.current = true;
+      }
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   // Handle map initialization
   const handleMapReady = useCallback(async (map: L.Map) => {
-    console.log('MapSection: handleMapReady started');
     const L = (await import('leaflet')).default;
 
     // Add scroll trigger on any map interaction
+    // These events fire when user interacts with the map directly
     const scrollTriggerEvents = ['movestart', 'zoomstart', 'dragstart'];
     scrollTriggerEvents.forEach((eventName) => {
       map.once(eventName, scrollToFullView);
@@ -137,7 +140,7 @@ export default function MapSection({ className }: MapSectionProps) {
       const poiType = POI_TYPES[poi.type as keyof typeof POI_TYPES];
 
       const iconHtml = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="${MARKER_SIZE}" height="${MARKER_SIZE}" viewBox="0 0 24 24" style="
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" style="
           color: ${poiType.color};
           filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         ">
@@ -150,45 +153,41 @@ export default function MapSection({ className }: MapSectionProps) {
       const customIcon = L.divIcon({
         className: 'poi-marker',
         html: iconHtml,
-        iconSize: [MARKER_SIZE, MARKER_SIZE],
-        iconAnchor: [MARKER_SIZE / 2, MARKER_SIZE / 2],
-        popupAnchor: [0, -(MARKER_SIZE / 2)],
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -25],
       });
 
       const marker = L.marker(poi.coordinates, { icon: customIcon }).addTo(map);
 
-      // Build popup HTML with type indicator
-      const typeIndicator = `<div class="poi-popup-type" style="background-color: ${poiType.color};"></div>`;
-
-      const popupHtml = `
-        <div class="poi-popup-container">
-          ${typeIndicator}
-          <div class="poi-popup-content">
-            <strong>${poi.name}</strong>
-            <p>${poi.description}</p>
-          </div>
+      marker.bindPopup(`
+        <div class="poi-popup">
+          <strong>${poi.name}</strong>
+          <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${poi.description}</p>
         </div>
-      `;
-
-      marker.bindPopup(popupHtml, {
+      `, {
         className: 'custom-popup',
-        closeButton: true,
-        closeOnClick: true,
-      });
-
-      // Pan map to center on marker when clicked
-      marker.on('click', () => {
-        map.flyTo(poi.coordinates, MAP_ZOOM, {
-          duration: 0.8,
-          easeLinearity: 0.25,
-        });
       });
 
       markerRefs.current.set(poi.id, marker);
     });
 
-    // Add boundary polygon and fit to boundary
-    setupBoundaryMap(L, map);
+    // Add boundary polygon
+    L.geoJSON({
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [BOUNDARY_COORDINATES],
+      },
+    } as GeoJSON.GeoJsonObject, {
+      style: {
+        color: '#D95D39',
+        weight: 3,
+        fillColor: '#D95D39',
+        fillOpacity: 0.1,
+        dashArray: '8, 4',
+      },
+    }).addTo(map);
 
     // Add scale control
     L.control.scale({
@@ -224,7 +223,7 @@ export default function MapSection({ className }: MapSectionProps) {
 
     // Navigate to POI coordinates
     // Using setView for immediate response, or flyTo for animation
-    mapInstance.flyTo(poi.coordinates, MAP_ZOOM, {
+    mapInstance.flyTo(poi.coordinates, 17, {
       duration: 1.2,
       easeLinearity: 0.25,
     });
@@ -245,22 +244,6 @@ export default function MapSection({ className }: MapSectionProps) {
     label,
     pois: POINTS_OF_INTEREST.filter(poi => poi.type === type),
   })).filter(group => group.pois.length > 0);
-
-  const handleHomeClick = useCallback(async (map: L.Map) => {
-    // Parallel imports with Promise.all (avoids sequential waterfall)
-    const [L, { getBoundaryFeature }] = await Promise.all([
-      import('leaflet'),
-      import('@/lib/maps')
-    ]);
-
-    const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
-    // Fly to center at the map's maximum zoom level
-    const maxZoom = map.getMaxZoom() || 18;
-    map.flyTo(bounds.getCenter(), maxZoom, {
-      duration: 1.5,
-      easeLinearity: 0.25
-    });
-  }, []);
 
   return (
     <div
@@ -313,13 +296,9 @@ export default function MapSection({ className }: MapSectionProps) {
         <BaseMap
           center={MAP_CENTER}
           zoom={MAP_ZOOM}
-          tileUrl={COMMUNITY_BASE_TILE_URL}
-          tileOptions={COMMUNITY_BASE_TILE_OPTIONS}
-          overlayTileUrl={PROPERTY_TITLES_TILE_URL ?? undefined}
-          overlayTileOptions={PROPERTY_TITLES_TILE_OPTIONS}
+          tileUrl={OSM_TILE_URL}
+          tileOptions={OSM_TILE_OPTIONS}
           zoomControl={true}
-          showHomeControl={true}
-          homeControlPosition="topleft"
           scrollWheelZoom={true}
           dragging={true}
           doubleClickZoom={true}
@@ -327,10 +306,9 @@ export default function MapSection({ className }: MapSectionProps) {
           keyboard={true}
           attributionControl={true}
           preferCanvas={true}
-          maxZoom={21}
+          maxZoom={19}
           minZoom={12}
           onMapReady={handleMapReady}
-          onHomeClick={handleHomeClick}
           className="interactive-map"
           style={{ height: '100%' }}
         />

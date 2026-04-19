@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 // Make page dynamic to ensure events are filtered at request time
 export const dynamic = 'force-dynamic';
 
-const ABOUT_DESCRIPTION = `Coronation Gardens is a resident community in the heart of Māngere Bridge, Auckland. We believe that where you live shapes how you live—which is why we've created spaces designed for connection, wellness, and everyday elegance. From our rooftop sanctuary to our shared work spaces, every corner of our community has been thoughtfully crafted with you in mind.`;
+const ABOUT_DESCRIPTION = `From a handful of homes in 2014 to over 240 households, Coronation Gardens has grown into the largest residential community in all of South-Central Auckland. Nestled between the volcanic slopes of Māngere Mountain and the shimmering shores of Manukau Harbour, we're proud to have the best of both worlds: coastal serenity meets city convenience. With State Highway 20 connecting Coronation Gardens to Manukau City, Onehunga and Auckland Airport in minutes as well as being a major vein into the CBD, everything you need is always within reach.`;
 
 /**
  * Homepage with new design system.
@@ -41,7 +41,7 @@ export default function HomePage() {
       {/* Hero Section with Parallax */}
       <Hero
         title="Living at<br>the Bridge"
-        subtitle="Māngere Bridge, Auckland • Est. 2024"
+        subtitle="Māngere Bridge, Auckland • Est. 2014"
         backgroundImage="/images/mangere-mountain.jpg"
       />
 

@@ -39,7 +39,7 @@ export function SidebarTabs({
   return (
     <nav
       className={cn(
-        'hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0',
+        'hidden lg:flex flex-col w-80 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0 pt-[88px]',
         compact ? 'p-sm' : 'p-md'
       )}
       aria-label={ariaLabel}
@@ -85,6 +85,15 @@ interface TabButtonProps {
 }
 
 function TabButton({ isActive, onClick, icon, name, count, compact = false }: TabButtonProps) {
+  const showCount = count !== undefined && count > 0;
+
+  const countBadgeClass = cn(
+    'inline-flex shrink-0 items-center justify-center px-2 py-0.5',
+    'rounded-xl text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
+    'transition-all duration-[250ms] ease-out-custom',
+    isActive ? 'bg-terracotta text-bone' : 'bg-sage/20 border border-sage/30 text-sage-light'
+  );
+
   return (
     <button
       type="button"
@@ -92,8 +101,8 @@ function TabButton({ isActive, onClick, icon, name, count, compact = false }: Ta
       className={cn(
         'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-xl',
         compact
-          ? 'gap-2 px-sm py-2 min-h-[44px] text-[0.875rem]'
-          : 'gap-sm px-md py-3.5 min-h-[56px] text-[0.9375rem]',
+          ? 'gap-2 px-sm py-2 min-h-[52px] text-[0.875rem]'
+          : 'gap-sm px-md py-3 min-h-[72px] text-[0.9375rem]',
         'bg-bone/[0.08]',
         'font-body font-medium text-bone text-left',
         'cursor-pointer relative',
@@ -113,26 +122,27 @@ function TabButton({ isActive, onClick, icon, name, count, compact = false }: Ta
           'flex items-center justify-center rounded-lg shrink-0',
           'transition-all duration-[250ms] ease-out-custom',
           compact ? 'w-7 h-7' : 'w-8 h-8',
-          isActive
-            ? 'bg-terracotta text-bone'
-            : 'bg-bone/[0.12] text-sage-light'
+          isActive ? 'bg-terracotta text-bone' : 'bg-bone/[0.12] text-sage-light'
         )}
       >
         <Icon icon={icon} width={compact ? 18 : 20} height={compact ? 18 : 20} />
       </span>
-      <span className="flex-1 leading-snug">
-        {name}
-        {count !== undefined && count > 0 && (
-          <span
-            className={cn(
-              'inline-flex items-center justify-center ml-xs px-2 py-0.5',
-              'rounded-xl text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
-              'transition-all duration-[250ms] ease-out-custom',
-              isActive
-                ? 'bg-terracotta text-bone'
-                : 'bg-sage/20 border border-sage/30 text-sage-light'
-            )}
-          >
+      <span
+        className={cn(
+          'flex flex-1 min-w-0 leading-snug',
+          showCount ? 'flex-row items-end justify-between gap-x-sm' : 'items-center'
+        )}
+      >
+        <span
+          className={cn(
+            'text-left min-w-0 whitespace-normal break-normal',
+            showCount && 'min-w-0 flex-1'
+          )}
+        >
+          {name}
+        </span>
+        {showCount && (
+          <span data-tab-count className={countBadgeClass}>
             {count}
           </span>
         )}

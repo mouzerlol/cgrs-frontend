@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import type { LightboxImage } from '@/types';
 
 interface ImageLightboxProps {
@@ -152,6 +153,7 @@ export default function ImageLightbox({
                     fill
                     className="object-contain"
                     priority
+                    unoptimized={isNonOptimizableImageSrc(currentImage.url)}
                   />
                 </div>
 
@@ -187,6 +189,7 @@ export default function ImageLightbox({
                           alt=""
                           fill
                           className="object-cover"
+                          unoptimized={isNonOptimizableImageSrc(img.thumbnail || img.url)}
                         />
                       </button>
                     ))}

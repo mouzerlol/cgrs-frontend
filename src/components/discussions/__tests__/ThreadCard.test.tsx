@@ -10,9 +10,13 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush, replace: vi.fn(), back: vi.fn(), prefetch: vi.fn() }),
 }));
 
+// Shared variable to capture unoptimized prop
+let capturedUnoptimized: boolean | undefined;
+
 vi.mock('next/image', () => ({
   default: function MockImage(props: Record<string, unknown>) {
-    const { fill: _f, sizes: _s, unoptimized: _u, ...rest } = props;
+    const { fill: _f, sizes: _s, unoptimized, ...rest } = props;
+    capturedUnoptimized = unoptimized as boolean | undefined;
     return <img data-testid="next-image" alt="" {...rest} />;
   },
 }));
@@ -51,6 +55,7 @@ describe('ThreadCard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPush.mockClear();
+    capturedUnoptimized = undefined;
   });
 
   it('always reserves the left thumb column; shows image when preview exists', () => {
@@ -90,5 +95,17 @@ describe('ThreadCard', () => {
     expect(onShare).toHaveBeenCalledTimes(1);
     expect(onReport).toHaveBeenCalledTimes(1);
     expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  describe('Image unoptimized prop', () => {
+    it('sets unoptimized=true when previewUrl is a blob URL', () => {
+      render(<ThreadCard thread={mockThread()} previewUrl="blob:http://localhost/preview123" />);
+      expect(capturedUnoptimized).toBe(true);
+    });
+
+    it('sets unoptimized=false when previewUrl is a regular HTTPS URL', () => {
+      render(<ThreadCard thread={mockThread()} previewUrl="https://example.com/preview.jpg" />);
+      expect(capturedUnoptimized).toBe(false);
+    });
   });
 });

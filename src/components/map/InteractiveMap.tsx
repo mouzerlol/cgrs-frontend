@@ -1,17 +1,11 @@
 'use client';
 
-import { useRef, useState, useCallback, useMemo } from 'react';
-import { MAP_CENTER, MAP_ZOOM, MARKER_SIZE, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
+import { useRef, useState } from 'react';
+import { BOUNDARY_COORDINATES, MAP_CENTER, MAP_ZOOM, POINTS_OF_INTEREST, POI_TYPES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
 import BaseMap from '@/components/map/BaseMap';
 import MapMarker from '@/components/map/MapMarker';
-import {
-  getCommunityMapBaseTileUrl,
-  getCommunityMapBaseTileOptions,
-  getLINZPropertyTitlesTileUrl,
-  getLINZPropertyTitlesTileOptions,
-  setupBoundaryMap,
-} from '@/lib/maps';
+import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
 
 interface InteractiveMapProps {
   showSidebar?: boolean;
@@ -21,7 +15,7 @@ interface InteractiveMapProps {
 /**
  * Interactive Map component for the dedicated Map page.
  * Features full Leaflet controls, boundary highlighting, and POI markers.
- * Uses Stadia Outdoors (terrain + strong linework) with a darkened basemap via CSS, plus optional LINZ titles.
+ * Uses Stadia Maps Alidade Smooth tiles - clean, modern light theme.
  * Wraps BaseMap for consistent initialization.
  */
 export default function InteractiveMap({ showSidebar = true, showLegend = true }: InteractiveMapProps) {
@@ -30,68 +24,47 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
   const [selectedPOI, setSelectedPOI] = useState<string | null>(null);
   const markerRefs = useRef<Map<string, L.Marker>>(new Map());
 
-  // Base: cartographic (not satellite); overlay: NZ Property Titles (LDS layer 50804)
-  const tileUrl = getCommunityMapBaseTileUrl();
-  const tileOptions = getCommunityMapBaseTileOptions();
-  const propertyTitlesUrl = getLINZPropertyTitlesTileUrl();
-  const propertyTitlesOptions = getLINZPropertyTitlesTileOptions();
-
-  // Group POIs by type for sidebar display
-  type POIItem = (typeof POINTS_OF_INTEREST)[number];
-  const groupedPOIs = useMemo(() => {
-    const groups = new Map<string, { type: string; color: string; label: string; pois: POIItem[] }>();
-
-    for (const poi of POINTS_OF_INTEREST) {
-      const poiType = POI_TYPES[poi.type as keyof typeof POI_TYPES];
-      if (!groups.has(poi.type)) {
-        groups.set(poi.type, {
-          type: poi.type,
-          color: poiType.color,
-          label: poiType.label,
-          pois: [],
-        });
-      }
-      groups.get(poi.type)!.pois.push(poi);
-    }
-
-    return Array.from(groups.values());
-  }, []);
-
-  const handleMapReady = useCallback(async (map: L.Map) => {
+  const handleMapReady = (map: L.Map) => {
     mapRef.current = map;
     setMapInitialized(true);
 
-    // Single import, reuse for both operations (avoids duplicate dynamic imports)
-    const L = await import('leaflet');
-
-    // Add boundary polygon and fit to boundary
-    setupBoundaryMap(L, map);
+    // Add boundary polygon
+    import('leaflet').then((L) => {
+      L.geoJSON({
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [BOUNDARY_COORDINATES],
+        },
+      } as GeoJSON.GeoJsonObject, {
+        style: {
+          color: '#D95D39',
+          weight: 3,
+          fillColor: '#D95D39',
+          fillOpacity: 0.1,
+          dashArray: '8, 4',
+        },
+      }).addTo(map);
+    });
 
     // Add scale control
-    L.default.control.scale({
-      imperial: false,
-      position: 'bottomleft',
-    }).addTo(map);
-  }, []);
+    import('leaflet').then((L) => {
+      L.control.scale({
+        imperial: false,
+        position: 'bottomleft',
+      }).addTo(map);
+    });
+  };
 
-  const handleMarkerCreate = useCallback((id: string) => (marker: L.Marker) => {
+  const handleMarkerCreate = (id: string) => (marker: L.Marker) => {
     markerRefs.current.set(id, marker);
-  }, []);
+  };
 
-  const handleMarkerClick = useCallback((position: [number, number]) => {
-    if (mapRef.current) {
-      mapRef.current.flyTo(position, MAP_ZOOM, {
-        duration: 0.8,
-        easeLinearity: 0.25,
-      });
-    }
-  }, []);
-
-  const handlePOIClick = useCallback((poi: (typeof POINTS_OF_INTEREST)[number]) => {
+  const handlePOIClick = (poi: (typeof POINTS_OF_INTEREST)[number]) => {
     setSelectedPOI(poi.id);
-    
+
     if (mapRef.current) {
-      mapRef.current.flyTo(poi.coordinates, MAP_ZOOM, { duration: 1.5 });
+      mapRef.current.flyTo(poi.coordinates, 17, { duration: 1.5 });
     }
 
     setTimeout(() => {
@@ -100,23 +73,18 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
         marker.openPopup();
       }
     }, 1500);
-  }, []);
+  };
 
-  const handleHomeClick = useCallback(async (map: L.Map) => {
-    // Parallel imports with Promise.all (avoids sequential waterfall)
-    const [L, { getBoundaryFeature }] = await Promise.all([
-      import('leaflet'),
-      import('@/lib/maps')
-    ]);
+  // Group POIs by type for display
+  const groupedPOIs = Object.entries(POI_TYPES).map(([type, { color, label }]) => ({
+    type,
+    color,
+    label,
+    pois: POINTS_OF_INTEREST.filter(poi => poi.type === type),
+  })).filter(group => group.pois.length > 0);
 
-    const bounds = L.default.geoJSON(getBoundaryFeature() as GeoJSON.GeoJsonObject).getBounds();
-    // Fly to center at the map's maximum zoom level
-    const maxZoom = map.getMaxZoom() || 18;
-    map.flyTo(bounds.getCenter(), maxZoom, {
-      duration: 1.5,
-      easeLinearity: 0.25
-    });
-  }, []);
+  const tileUrl = getOSMTileUrl();
+  const tileOptions = getOSMTileOptions();
 
   return (
     <section className="map-section relative">
@@ -127,7 +95,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
             <h3>Points of Interest</h3>
             <p className="text-sm opacity-60">Click to navigate</p>
           </div>
-          
+
           {groupedPOIs.map(({ type, color, label, pois }) => (
             <div key={type} className="poi-group">
               <div className="poi-group-header">
@@ -157,17 +125,13 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
       )}
 
       {/* Map Container */}
-      <div className="map-container" style={{ background: '#f5f5f5', minHeight: '500px', marginLeft: showSidebar ? '280px' : 0 }}>
+      <div className="map-container" style={{ background: '#f5f5f5', minHeight: '400px', marginLeft: showSidebar ? '280px' : 0 }}>
         <BaseMap
           center={MAP_CENTER}
-          zoom={MAP_ZOOM}
+          zoom={MAP_ZOOM + 1}
           tileUrl={tileUrl}
           tileOptions={tileOptions}
-          overlayTileUrl={propertyTitlesUrl ?? undefined}
-          overlayTileOptions={propertyTitlesOptions}
           zoomControl={true}
-          showHomeControl={true}
-          homeControlPosition="topleft"
           scrollWheelZoom={true}
           dragging={true}
           doubleClickZoom={true}
@@ -175,15 +139,14 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
           keyboard={true}
           attributionControl={true}
           preferCanvas={true}
-          maxZoom={21}
+          maxZoom={19}
           minZoom={12}
           onMapReady={handleMapReady}
-          onHomeClick={handleHomeClick}
           className={`interactive-map ${mapInitialized ? 'loaded' : ''}`}
           style={{ height: '70vh', minHeight: '500px' }}
         >
-          {/* POI Markers - only render when map is ready */}
-          {mapInitialized && POINTS_OF_INTEREST.map((poi) => {
+          {/* POI Markers */}
+          {POINTS_OF_INTEREST.map((poi) => {
             const poiType = POI_TYPES[poi.type as keyof typeof POI_TYPES];
             return (
               <MapMarker
@@ -191,12 +154,9 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
                 map={mapRef.current}
                 position={poi.coordinates}
                 color={poiType.color}
-                size={MARKER_SIZE}
-                popup={poi.name}
-                popupDescription={poi.description}
-                popupType={{ label: poiType.label, color: poiType.color }}
+                size={24}
+                popup={`<strong>${poi.name}</strong><p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${poi.description}</p>`}
                 onCreate={handleMarkerCreate(poi.id)}
-                onMarkerClick={handleMarkerClick}
               />
             );
           })}

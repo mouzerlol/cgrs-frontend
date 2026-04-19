@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react';
 import { formatRelativeTimeShort } from '@/lib/format-relative-time';
 import { getDiscussionCategoryLabel, getDiscussionCategoryLucideIcon } from '@/lib/discussion-category-lucide-icons';
 import { cn } from '@/lib/utils';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import CategoryBadge from './CategoryBadge';
 import UserAvatar from './UserAvatar';
 import UpvoteButton from './UpvoteButton';
@@ -142,6 +143,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
                   fill
                   sizes="(min-width: 768px) 160px, 128px"
                   className="object-cover object-center"
+                  unoptimized={isNonOptimizableImageSrc(resolvedSrc)}
                 />
                 {imageCount > 1 && (
                   <div className="absolute bottom-2 right-2 rounded-full bg-forest/80 px-2 py-0.5 text-xs text-bone">

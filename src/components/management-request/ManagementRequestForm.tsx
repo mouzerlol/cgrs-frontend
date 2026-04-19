@@ -10,13 +10,16 @@ import {
   ManagementCategoryId,
 } from '@/types/management-request';
 import { createManagementRequest } from '@/lib/api/management-requests';
-import { ApiError, isLocalApi } from '@/lib/api/client';
+import { ApiError } from '@/lib/api/client';
 import { MANAGEMENT_CATEGORIES, getCategoryById } from '@/data/management-categories';
 import { validateFormData, getInitialFormData } from '@/lib/management-request';
 import { SidebarLayout } from '@/components/shared/SidebarLayout';
 import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { RequestFormFields } from './RequestFormFields';
 import { SuccessConfirmation } from './SuccessConfirmation';
+import { useFormPersistence } from '@/hooks/useFormPersistence';
+
+const FORM_STORAGE_KEY = 'management-request-draft';
 
 /**
  * Field IDs in order of appearance for scroll-to-error functionality.
@@ -63,8 +66,16 @@ interface ManagementRequestFormProps {
  * Main management request form container.
  * Handles form state, validation, and submission.
  * Uses folder-tab navigation on desktop, dropdown on mobile.
+ *
+ * Unauthenticated users are redirected to sign-in. After sign-in, they return
+ * to this page and their form data is restored from sessionStorage and auto-submitted.
  */
 export function ManagementRequestForm({ initialData }: ManagementRequestFormProps = {}) {
+  // Detect returning from sign-in client-side only (avoids SSR/hydration mismatch)
+  const [isReturningFromSignIn, setIsReturningFromSignIn] = useState(false);
+  // Track when sessionStorage data was restored (for auto-submit trigger)
+  const [wasRestoredFromStorage, setWasRestoredFromStorage] = useState(false);
+
   const [formData, setFormData] = useState<ManagementRequestFormData>(
     { ...getInitialFormData(), ...initialData }
   );
@@ -78,11 +89,50 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
   const formContainerRef = useRef<HTMLDivElement>(null);
   const { getToken, isSignedIn, userId } = useAuth();
   const { user } = useUser();
+  // Ref to always have the latest formData (avoids stale closure in handleRedirectToSignIn)
+  const formDataRef = useRef(formData);
+  // Keep ref in sync with state
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
 
-  // Show CAPTCHA for:
-  // - Signed-out users (always)
-  // - Signed-in users who require CAPTCHA based on their role (from backend)
-  const showCaptcha = !isSignedIn || requiresCaptcha;
+  // Check for auth=complete URL param client-side only (after hydration)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsReturningFromSignIn(params.get('auth') === 'complete');
+  }, []);
+
+  // Callback when sessionStorage data is restored
+  const handleDataRestored = useCallback(() => {
+    setWasRestoredFromStorage(true);
+  }, []);
+
+  // Persist form data to sessionStorage for sign-in redirect flow
+  // Pass handleDataRestored to be notified when data is restored
+  const { clearStoredData } = useFormPersistence(formData, setFormData, {
+    key: FORM_STORAGE_KEY,
+    debounceMs: 500,
+    onRestored: handleDataRestored,
+  });
+
+  // Auto-submit when: returning from sign-in AND data was restored
+  // Use formData.full_name as dependency to ensure effect runs AFTER data is restored
+  useEffect(() => {
+    if (isReturningFromSignIn && wasRestoredFromStorage && formData.full_name) {
+      // Reset the restoration flag
+      setWasRestoredFromStorage(false);
+      // Delay to ensure form state is settled
+      const timer = setTimeout(() => {
+        // Dispatch native submit event to trigger handleSubmit via form's onSubmit
+        const event = new Event('submit', { bubbles: true, cancelable: true });
+        document.querySelector('form')?.dispatchEvent(event);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isReturningFromSignIn, wasRestoredFromStorage, formData.full_name]);
+
+  // Show CAPTCHA only for signed-in users who require it (contact role)
+  const showCaptcha = isSignedIn && requiresCaptcha;
   const isVerifiedUser = isSignedIn && !requiresCaptcha;
 
   const activeCategory = getCategoryById(formData.category);
@@ -152,6 +202,21 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
     [errors]
   );
 
+  const handleRedirectToSignIn = useCallback(() => {
+    // Preserve form data in sessionStorage before redirect
+    // Use formDataRef to avoid stale closure issues
+    try {
+      const currentData = formDataRef.current;
+      const { photos: _photos, ...storableData } = currentData;
+      sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(storableData));
+    } catch {
+      // Fail silently if storage is unavailable
+    }
+    // Redirect to sign-in, which will redirect back here with ?auth=complete
+    const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.href = `/login?redirect_url=${redirectUrl}`;
+  }, []);
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -165,7 +230,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         return;
       }
 
-      // Require CAPTCHA for non-verified users (not signed in or contact role)
+      // Require CAPTCHA for signed-in contact-role users
       if (showCaptcha && !captchaToken) {
         setErrors({
           description: 'Please complete the CAPTCHA verification.',
@@ -173,10 +238,10 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         return;
       }
 
-      if (!isSignedIn && !isLocalApi) {
-        setErrors({
-          description: 'Please sign in to submit a management request.',
-        });
+      // Redirect unauthenticated users to sign-in, unless we're in the auto-submit flow
+      // (they were previously authenticated and we have data to submit)
+      if (!isSignedIn && !isReturningFromSignIn) {
+        handleRedirectToSignIn();
         return;
       }
 
@@ -211,7 +276,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         setIsSubmitting(false);
       }
     },
-    [formData, getToken, isSignedIn, showCaptcha, captchaToken]
+    [formData, getToken, isSignedIn, showCaptcha, captchaToken, handleRedirectToSignIn]
   );
 
   const handleSubmitAnother = useCallback(() => {
@@ -224,6 +289,17 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
     // Scroll to top of page when starting a new request
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Clear stored data and auth param after successful submission
+  useEffect(() => {
+    if (isSubmitted) {
+      clearStoredData();
+      // Remove auth=complete from URL to prevent re-triggering on refresh
+      const url = new URL(window.location.href);
+      url.searchParams.delete('auth');
+      window.history.replaceState({}, '', url.pathname + url.search);
+    }
+  }, [isSubmitted, clearStoredData]);
 
   // Show success confirmation if submitted
   if (isSubmitted && submittedId && activeCategory) {

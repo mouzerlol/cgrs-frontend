@@ -3,7 +3,7 @@
 import { useRef, useCallback } from 'react';
 import { BOUNDARY_COORDINATES } from '@/data/map-data';
 import BaseMap from '@/components/map/BaseMap';
-import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
+import { getNzWidgetLeafletBasemap } from '@/lib/maps';
 
 interface PropertyMapProps {
   lat: number | null;
@@ -86,8 +86,7 @@ export default function PropertyMap({ lat, lng, address, className }: PropertyMa
     }
   }, [lat, lng]);
 
-  const tileUrl = getOSMTileUrl();
-  const tileOptions = getOSMTileOptions();
+  const nzBasemap = getNzWidgetLeafletBasemap();
 
   return (
     <div
@@ -96,9 +95,9 @@ export default function PropertyMap({ lat, lng, address, className }: PropertyMa
       <BaseMap
         center={lat !== null && lng !== null ? [lat, lng] : [-36.9497, 174.7912]}
         zoom={lat !== null && lng !== null ? 19 : 16}
-        maxZoom={19}
-        tileUrl={tileUrl}
-        tileOptions={tileOptions}
+        tileUrl={nzBasemap.tileUrl}
+        tileOptions={nzBasemap.tileOptions}
+        maxZoom={nzBasemap.tileOptions.maxZoom}
         zoomControl={false}
         showHomeControl={false}
         scrollWheelZoom={false}
@@ -106,7 +105,7 @@ export default function PropertyMap({ lat, lng, address, className }: PropertyMa
         doubleClickZoom={false}
         boxZoom={false}
         keyboard={false}
-        attributionControl={false}
+        attributionControl={true}
         preferCanvas={true}
         onMapReady={handleMapReady}
       />

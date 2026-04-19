@@ -62,14 +62,14 @@ export default function MapPreview({
 
       // Base tile layer
       L.tileLayer(tileUrl, {
-        maxZoom: 18,
+        maxZoom: 19,
         crossOrigin: 'anonymous',
       }).addTo(map);
 
       // Overlay layer (for option C - two layer approach)
       if (overlayUrl) {
         L.tileLayer(overlayUrl, {
-          maxZoom: 18,
+          maxZoom: 19,
           crossOrigin: 'anonymous',
         }).addTo(map);
       }

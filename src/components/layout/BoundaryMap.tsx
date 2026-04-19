@@ -4,7 +4,11 @@ import { useRef } from 'react';
 import { MAP_CENTER, MAP_ZOOM } from '@/data/map-data';
 import BaseMap from '@/components/map/BaseMap';
 import MapMarker from '@/components/map/MapMarker';
-import { getOSMTileUrl, getOSMTileOptions, addBoundaryLayer, BOUNDARY_STYLE_COMPACT } from '@/lib/maps';
+import {
+  getNzWidgetLeafletBasemap,
+  addBoundaryLayer,
+  BOUNDARY_STYLE_COMPACT,
+} from '@/lib/maps';
 
 interface BoundaryMapProps {
   className?: string;
@@ -13,7 +17,7 @@ interface BoundaryMapProps {
 
 /**
  * Map component with development boundary overlay.
- * Uses Stadia Maps Alidade Smooth tiles - clean light theme.
+ * Uses LINZ topographic vector when configured, else OSM Standard.
  * Wraps BaseMap for consistent initialization.
  */
 export default function BoundaryMap({ className = '', height = '160px' }: BoundaryMapProps) {
@@ -29,8 +33,7 @@ export default function BoundaryMap({ className = '', height = '160px' }: Bounda
     })();
   };
 
-  const tileUrl = getOSMTileUrl();
-  const tileOptions = getOSMTileOptions();
+  const nzBasemap = getNzWidgetLeafletBasemap();
 
   return (
     <div
@@ -47,15 +50,16 @@ export default function BoundaryMap({ className = '', height = '160px' }: Bounda
         className={className}
         center={MAP_CENTER}
         zoom={MAP_ZOOM}
-        tileUrl={tileUrl}
-        tileOptions={tileOptions}
+        tileUrl={nzBasemap.tileUrl}
+        tileOptions={nzBasemap.tileOptions}
+        maxZoom={nzBasemap.tileOptions.maxZoom}
         zoomControl={false}
         scrollWheelZoom={false}
         dragging={false}
         doubleClickZoom={false}
         boxZoom={false}
         keyboard={false}
-        attributionControl={false}
+        attributionControl={true}
         preferCanvas={true}
         onMapReady={handleMapReady}
       >

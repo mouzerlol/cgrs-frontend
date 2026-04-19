@@ -71,9 +71,9 @@ export function validateFormData(
   }
 
   // Photos: Optional, max 5 files; size must match API R2 limit (see `DISCUSSION_IMAGE_MAX_BYTES` / app config).
-  if (data.photos.length > 5) {
+  if (data.photos && data.photos.length > 5) {
     errors.photos = 'Maximum 5 photos allowed';
-  } else {
+  } else if (data.photos) {
     const MAX_SIZE_MB = 10;
     const oversizedPhoto = data.photos.find(
       (photo) => photo.size > MAX_SIZE_MB * 1024 * 1024

@@ -52,6 +52,15 @@ describe('SidebarLayout', () => {
       expect(introTab.textContent).toContain('3');
     });
 
+    it('renders thread count badge with data-tab-count beside the label', () => {
+      render(<SidebarLayout {...defaultProps} />);
+      const introTab = screen.getByRole('tab', { name: /introductions/i });
+      const badge = introTab.querySelector('[data-tab-count]');
+      expect(badge).toBeTruthy();
+      expect(badge).toHaveTextContent('3');
+      expect(introTab.textContent).toContain('Introductions');
+    });
+
     it('marks active category with aria-selected', () => {
       render(<SidebarLayout {...defaultProps} activeCategory="introductions" />);
       const introTab = screen.getByRole('tab', { name: /introductions/i });

@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback } from 'react';
 import BaseMap from '@/components/map/BaseMap';
-import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
+import { getNzWidgetLeafletBasemap } from '@/lib/maps';
 import { BOUNDARY_COORDINATES } from '@/data/map-data';
 
 const CGRS_CENTER: [number, number] = [-36.9497, 174.7912];
@@ -23,19 +23,10 @@ export default function EventMapStatic({
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const routeRef = useRef<L.Polyline | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleMapReady = useCallback(async (map: L.Map) => {
     mapRef.current = map;
     const L = (await import('leaflet')).default;
-
-    const tileUrl = getOSMTileUrl();
-    const tileOptions = getOSMTileOptions();
-
-    L.tileLayer(tileUrl, {
-      maxZoom: tileOptions.maxZoom ?? 19,
-      attribution: tileOptions.attribution,
-    }).addTo(map);
 
     if (showBoundary) {
       L.geoJSON({
@@ -117,9 +108,9 @@ export default function EventMapStatic({
 
       map.setView(CGRS_CENTER, 16);
     }
-
-    setIsLoaded(true);
   }, [destination, showBoundary]);
+
+  const nzBasemap = getNzWidgetLeafletBasemap();
 
   if (!destination && !showBoundary) {
     return null;
@@ -132,8 +123,9 @@ export default function EventMapStatic({
       <BaseMap
         center={CGRS_CENTER}
         zoom={16}
-        tileUrl={getOSMTileUrl()}
-        tileOptions={getOSMTileOptions()}
+        tileUrl={nzBasemap.tileUrl}
+        tileOptions={nzBasemap.tileOptions}
+        maxZoom={nzBasemap.tileOptions.maxZoom}
         zoomControl={false}
         showHomeControl={false}
         scrollWheelZoom={false}
@@ -141,7 +133,7 @@ export default function EventMapStatic({
         doubleClickZoom={false}
         boxZoom={false}
         keyboard={false}
-        attributionControl={false}
+        attributionControl={true}
         preferCanvas={true}
         onMapReady={handleMapReady}
       />

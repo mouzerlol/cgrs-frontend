@@ -1,13 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
-  LINZ_CONFIG,
-  ARCGIS_CONFIG,
-  LINZ_LDS_PROPERTY_TITLES_LAYER_ID,
-  getLINZTileOptions,
-  getArcGISTileOptions,
-  getLINZPropertyTitlesTileOptions,
-  getCommunityMapBaseTileUrl,
-  getCommunityMapBaseTileOptions,
+  OSM_CONFIG,
+  getOSMTileUrl,
+  getOSMTileOptions,
+  getCommunityMapLeafletBasemap,
+  getNzWidgetLeafletBasemap,
   metersPerPixelWebMercator,
   BOUNDARY_STYLE,
   BOUNDARY_STYLE_COMPACT,
@@ -22,137 +19,77 @@ describe('metersPerPixelWebMercator', () => {
   });
 });
 
-describe('Community map basemap (cartographic)', () => {
-  it('getCommunityMapBaseTileUrl points at Stadia Outdoors', () => {
-    const url = getCommunityMapBaseTileUrl();
-    expect(url).toContain('tiles.stadiamaps.com');
-    expect(url).toContain('/outdoors/');
-  });
-
-  it('getCommunityMapBaseTileOptions allows over-zoom past native tiles', () => {
-    const options = getCommunityMapBaseTileOptions();
-    expect(options.maxNativeZoom).toBe(20);
-    expect(options.maxZoom).toBe(21);
-    expect(options.attribution).toContain('Stadia Maps');
-  });
-});
-
-describe('LINZ tile configuration', () => {
-  describe('LINZ_CONFIG', () => {
-    it('has correct URL structure for WebMercatorQuad tiles', () => {
-      expect(LINZ_CONFIG.url).toContain('basemaps.linz.govt.nz');
-      expect(LINZ_CONFIG.url).toContain('WebMercatorQuad');
-      expect(LINZ_CONFIG.url).toContain('{z}/{x}/{y}.webp');
+describe('OSM tile configuration', () => {
+  describe('OSM_CONFIG', () => {
+    it('has correct URL for OpenStreetMap Standard', () => {
+      expect(OSM_CONFIG.url).toContain('tile.openstreetmap.org');
+      expect(OSM_CONFIG.url).toContain('{z}/{x}/{y}.png');
     });
 
-    it('has maxZoom of 21 to support deep zooming', () => {
-      expect(LINZ_CONFIG.maxZoom).toBe(21);
+    it('has subdomains a, b, c', () => {
+      expect(OSM_CONFIG.subdomains).toEqual(['a', 'b', 'c']);
     });
 
-    it('has proper attribution for LINZ CC BY 4.0 license', () => {
-      expect(LINZ_CONFIG.attribution).toContain('LINZ');
-      expect(LINZ_CONFIG.attribution).toContain('CC BY 4.0');
+    it('maxZoom is 19', () => {
+      expect(OSM_CONFIG.maxZoom).toBe(19);
+    });
+
+    it('has proper attribution', () => {
+      expect(OSM_CONFIG.attribution).toContain('OpenStreetMap');
     });
   });
 
-  describe('getLINZTileOptions', () => {
-    it('returns correct maxZoom configuration', () => {
-      const options = getLINZTileOptions();
-      expect(options.maxZoom).toBe(21);
+  describe('getOSMTileUrl', () => {
+    it('returns the OSM tile URL', () => {
+      const url = getOSMTileUrl();
+      expect(url).toContain('tile.openstreetmap.org');
+    });
+  });
+
+  describe('getOSMTileOptions', () => {
+    it('returns maxZoom 20 for overzoom capability', () => {
+      const opts = getOSMTileOptions();
+      expect(opts.maxZoom).toBe(20);
     });
 
-    it('returns maxNativeZoom matching maxZoom for real tiles at full resolution', () => {
-      const options = getLINZTileOptions();
-      expect(options.maxNativeZoom).toBe(21);
+    it('returns maxNativeZoom 19 matching OSM tile availability', () => {
+      const opts = getOSMTileOptions();
+      expect(opts.maxNativeZoom).toBe(19);
     });
 
-    it('includes crossOrigin for CORS compatibility', () => {
-      const options = getLINZTileOptions();
-      expect(options.crossOrigin).toBe('anonymous');
-    });
-
-    it('includes attribution string', () => {
-      const options = getLINZTileOptions();
-      expect(options.attribution).toContain('LINZ');
+    it('includes attribution', () => {
+      const opts = getOSMTileOptions();
+      expect(opts.attribution).toContain('OpenStreetMap');
     });
   });
 });
 
-describe('LINZ Data Service — NZ Property Titles (layer 50804)', () => {
-  it('uses catalogue layer id 50804', () => {
-    expect(LINZ_LDS_PROPERTY_TITLES_LAYER_ID).toBe(50804);
-  });
-
-  it('tile options include LDS subdomain pattern and attribution link', () => {
-    const options = getLINZPropertyTitlesTileOptions();
-    expect(options.subdomains).toEqual(['a', 'b', 'c', 'd']);
-    expect(options.attribution).toContain('50804');
-    expect(options.attribution).toContain('data.linz.govt.nz');
-    expect(options.maxNativeZoom).toBe(18);
-    expect(options.opacity).toBe(0.65);
-  });
-
-  it('getLINZPropertyTitlesTileUrl builds LDS XYZ template when LDS API key is set', async () => {
-    vi.stubEnv('NEXT_PUBLIC_LINZ_LDS_API_KEY', 'lds-test-key');
-    vi.stubEnv('NEXT_PUBLIC_LINZ_API_KEY', '');
-    vi.resetModules();
-    try {
-      const { getLINZPropertyTitlesTileUrl: getUrl } = await import('@/lib/maps');
-      const url = getUrl();
-      expect(url).toContain('tiles-{s}.data-cdn.linz.govt.nz');
-      expect(url).toContain('services;key=lds-test-key');
-      expect(url).toContain('layer=50804');
-      expect(url).toContain('EPSG:3857');
-    } finally {
-      vi.unstubAllEnvs();
-      vi.resetModules();
-    }
-  });
-
-  it('getLINZPropertyTitlesTileUrl returns null when only Basemaps key is set (LDS key is separate)', async () => {
-    vi.stubEnv('NEXT_PUBLIC_LINZ_LDS_API_KEY', '');
-    vi.stubEnv('NEXT_PUBLIC_LINZ_API_KEY', 'basemap-key-only');
-    vi.resetModules();
-    try {
-      const { getLINZPropertyTitlesTileUrl: getUrl } = await import('@/lib/maps');
-      expect(getUrl()).toBeNull();
-    } finally {
-      vi.unstubAllEnvs();
-      vi.resetModules();
-    }
-  });
-});
-
-describe('ArcGIS tile configuration', () => {
-  describe('ARCGIS_CONFIG', () => {
-    it('has correct URL for World Imagery service', () => {
-      expect(ARCGIS_CONFIG.url).toContain('arcgisonline.com');
-      expect(ARCGIS_CONFIG.url).toContain('World_Imagery');
+describe('Community map basemap', () => {
+  describe('getCommunityMapLeafletBasemap', () => {
+    it('uses OSM Standard tiles', () => {
+      const b = getCommunityMapLeafletBasemap();
+      expect(b.tileUrl).toContain('tile.openstreetmap.org');
+      expect(b.maxZoom).toBe(20);
     });
 
-    it('supports high maxZoom for deep zooming', () => {
-      expect(ARCGIS_CONFIG.maxZoom).toBe(23);
-    });
-
-    it('has maxNativeZoom of 19 for real tile availability', () => {
-      expect(ARCGIS_CONFIG.maxNativeZoom).toBe(19);
+    it('returns proper tile options', () => {
+      const b = getCommunityMapLeafletBasemap();
+      expect(b.tileOptions.maxZoom).toBe(20);
+      expect(b.tileOptions.maxNativeZoom).toBe(19);
+      expect(b.tileOptions.attribution).toContain('OpenStreetMap');
     });
   });
 
-  describe('getArcGISTileOptions', () => {
-    it('returns maxZoom of 23', () => {
-      const options = getArcGISTileOptions();
-      expect(options.maxZoom).toBe(23);
+  describe('getNzWidgetLeafletBasemap', () => {
+    it('uses OSM Standard tiles', () => {
+      const b = getNzWidgetLeafletBasemap();
+      expect(b.tileUrl).toContain('tile.openstreetmap.org');
     });
 
-    it('returns maxNativeZoom of 19', () => {
-      const options = getArcGISTileOptions();
-      expect(options.maxNativeZoom).toBe(19);
-    });
-
-    it('includes proper attribution', () => {
-      const options = getArcGISTileOptions();
-      expect(options.attribution).toContain('Esri');
+    it('returns proper tile options', () => {
+      const b = getNzWidgetLeafletBasemap();
+      expect(b.tileOptions.maxZoom).toBe(20);
+      expect(b.tileOptions.maxNativeZoom).toBe(19);
     });
   });
 });
@@ -203,19 +140,5 @@ describe('getBoundaryFeature', () => {
     const feature = getBoundaryFeature();
     const coords = feature.geometry.coordinates[0] as [number, number][];
     expect(coords[0]).toEqual(coords[coords.length - 1]);
-  });
-});
-
-describe('Tile provider zoom comparison', () => {
-  it('LINZ supports higher native zoom than ArcGIS for NZ coverage', () => {
-    const linzOptions = getLINZTileOptions();
-    const arcgisOptions = getArcGISTileOptions();
-    expect(linzOptions.maxNativeZoom).toBeGreaterThan(arcgisOptions.maxNativeZoom);
-  });
-
-  it('ArcGIS allows deeper overall zoom via maxZoom', () => {
-    const linzOptions = getLINZTileOptions();
-    const arcgisOptions = getArcGISTileOptions();
-    expect(arcgisOptions.maxZoom).toBeGreaterThan(linzOptions.maxZoom);
   });
 });

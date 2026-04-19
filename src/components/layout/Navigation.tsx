@@ -8,10 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
 import NotificationsBell from '@/components/notifications/NotificationsBell';
 import Icon, { IconName } from '@/components/ui/Icon';
-import { ALL_NAV_ITEMS } from '@/lib/constants';
-import { isNavItemVisible } from '@/lib/auth';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
+import { useNavItems } from '@/hooks/useNavItems';
 import { prefetchDiscussionCore } from '@/lib/discussion-prefetch';
 
 const NAV_LINK_CLASS =
@@ -21,7 +18,9 @@ const NAV_LINK_CLASS =
  * Desktop top nav with responsive overflow: rightmost links fold into More when space is limited.
  * Hidden measure rows reserve the same width as the live auth block (UserButton or login CTA)
  * so overflow counting matches signed-in layouts.
- * Navigation visibility is controlled by feature flags.
+ *
+ * Navigation items are server-filtered based on user role and feature flags,
+ * eliminating client-side flash when items should be hidden.
  */
 export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,28 +35,16 @@ export default function Navigation() {
   const lastSignedInRef = useRef(isSignedIn);
   if (isLoaded) lastSignedInRef.current = isSignedIn;
   const lastSignedIn = lastSignedInRef.current;
-  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
   const queryClient = useQueryClient();
-  const featureFlags = useAllFeatureFlags();
+
+  // Server-filtered navigation items - no client-side filtering needed
+  const { data: navData, isLoading: isNavLoading } = useNavItems();
+  const navItems = navData?.items ?? [];
 
   const handleDiscussionPrefetch = useCallback(() => {
     if (!isSignedIn) return;
     prefetchDiscussionCore(queryClient, getToken);
   }, [queryClient, isSignedIn, getToken]);
-
-  const navItems = useMemo(() => {
-    const items = ALL_NAV_ITEMS.filter((item) =>
-        isNavItemVisible(
-          item.href,
-          currentUser?.membership?.role,
-          currentUser?.is_superadmin ?? false,
-          Boolean(isSignedIn),
-          isSignedIn && (isCurrentUserLoading || currentUser === undefined),
-          featureFlags,
-        ),
-    );
-    return items;
-  }, [currentUser, isSignedIn, isCurrentUserLoading, featureFlags]);
 
   const visibleItems = navItems.slice(0, navItems.length - overflowCount);
   const overflowItems = navItems.slice(navItems.length - overflowCount);
@@ -116,7 +103,7 @@ export default function Navigation() {
     const authEl = authSlotRef.current;
     if (authEl) ro.observe(authEl);
     return () => ro.disconnect();
-  }, [updateOverflow, currentUser?.membership?.role]);
+  }, [updateOverflow, navItems.length]);
 
   return (
     <nav

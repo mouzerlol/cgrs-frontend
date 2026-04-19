@@ -32,7 +32,7 @@ function LocalFilePreview({ file }: { file: File }) {
 }
 
 export function ImageUploader({
-  value,
+  value = [],
   onChange,
   maxFiles = 6,
   maxSizeMB = 10,

@@ -14,10 +14,10 @@ interface MapSkeletonProps {
  */
 export default function MapSkeleton({ className, showSidebar = true }: MapSkeletonProps) {
   return (
-    <section className={cn('map-section relative', className)}>
+    <div className={cn('map-section-wrapper', className)}>
       {/* Sidebar Skeleton */}
       {showSidebar && (
-        <div className="poi-sidebar animate-pulse">
+        <div className="map-sidebar">
           <div className="sidebar-header">
             <div className="h-6 w-32 bg-forest/20 rounded" />
             <div className="h-4 w-24 bg-forest/10 rounded mt-2" />
@@ -48,7 +48,6 @@ export default function MapSkeleton({ className, showSidebar = true }: MapSkelet
         style={{
           background: 'linear-gradient(135deg, #f5f5f5 0%, #e8ede6 100%)',
           minHeight: '500px',
-          marginLeft: showSidebar ? '280px' : 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -61,10 +60,7 @@ export default function MapSkeleton({ className, showSidebar = true }: MapSkelet
       </div>
 
       {/* Legend Skeleton */}
-      <div
-        className="map-legend animate-pulse"
-        style={{ marginLeft: showSidebar ? '280px' : 0 }}
-      >
+      <div className="map-legend animate-pulse">
         <div className="h-5 w-16 bg-forest/20 rounded mb-3" />
         <div className="flex flex-wrap gap-4">
           {[1, 2, 3, 4].map((item) => (
@@ -75,6 +71,6 @@ export default function MapSkeleton({ className, showSidebar = true }: MapSkelet
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

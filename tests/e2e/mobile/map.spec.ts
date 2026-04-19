@@ -22,7 +22,7 @@ test.describe('Interactive Map - Mobile', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/map');
     // Wait for map to initialize
-    await page.waitForSelector('.interactive-map.loaded', { timeout: 10000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 10000 });
   });
 
   test('map loads without SSR errors', async ({ page }) => {
@@ -296,7 +296,7 @@ test.describe('Interactive Map - Tablet (1024px breakpoint)', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/map');
-    await page.waitForSelector('.interactive-map.loaded', { timeout: 10000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 10000 });
   });
 
   test('POI sidebar is visible at 1024px', async ({ page }) => {
@@ -353,7 +353,7 @@ test.describe('Interactive Map - Desktop', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/map');
-    await page.waitForSelector('.interactive-map.loaded', { timeout: 10000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 10000 });
   });
 
   test('full layout with sidebar, map, and legend', async ({ page }) => {

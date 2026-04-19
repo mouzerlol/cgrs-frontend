@@ -33,7 +33,7 @@ export default function UsersPage() {
         />
         <main className="flex-1 min-h-0 overflow-y-auto">
           <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
-            <div className="bg-white rounded-[20px] p-6">
+            <div className="bg-white p-6">
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="h-16 rounded-lg bg-sage/10 animate-pulse" />
@@ -108,7 +108,7 @@ export default function UsersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-white rounded-[20px] overflow-hidden">
+            <div className="bg-white overflow-hidden">
               <div className="px-6 py-5 border-b border-sage/20">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-terracotta/10 flex items-center justify-center">

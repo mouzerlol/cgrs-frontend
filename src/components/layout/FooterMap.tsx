@@ -3,7 +3,7 @@
 import { useRef, useCallback } from 'react';
 import { BOUNDARY_COORDINATES } from '@/data/map-data';
 import BaseMap from '@/components/map/BaseMap';
-import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
+import { getNzWidgetLeafletBasemap } from '@/lib/maps';
 
 interface FooterMapProps {
   className?: string;
@@ -11,7 +11,7 @@ interface FooterMapProps {
 
 /**
  * Interactive Leaflet map component for footer location display.
- * Uses OSM tiles with boundary overlay.
+ * Uses LINZ topographic vector or OSM with boundary overlay.
  * Wraps BaseMap for consistent initialization.
  */
 export default function FooterMap({ className }: FooterMapProps) {
@@ -69,8 +69,7 @@ export default function FooterMap({ className }: FooterMapProps) {
     }).addTo(map);
   }, []);
 
-  const tileUrl = getOSMTileUrl();
-  const tileOptions = getOSMTileOptions();
+  const nzBasemap = getNzWidgetLeafletBasemap();
 
   return (
     <div
@@ -88,8 +87,9 @@ export default function FooterMap({ className }: FooterMapProps) {
         className={className}
         center={[-36.9497, 174.7912]}
         zoom={16}
-        tileUrl={tileUrl}
-        tileOptions={tileOptions}
+        tileUrl={nzBasemap.tileUrl}
+        tileOptions={nzBasemap.tileOptions}
+        maxZoom={nzBasemap.tileOptions.maxZoom}
         zoomControl={false}
         showHomeControl={false}
         scrollWheelZoom={false}
@@ -97,7 +97,7 @@ export default function FooterMap({ className }: FooterMapProps) {
         doubleClickZoom={false}
         boxZoom={false}
         keyboard={false}
-        attributionControl={false}
+        attributionControl={true}
         preferCanvas={true}
         onMapReady={handleMapReady}
       />

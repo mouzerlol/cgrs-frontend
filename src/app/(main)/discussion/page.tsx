@@ -24,6 +24,8 @@ import {
   useReportThread,
   useUpvoteThread,
 } from '@/hooks/useDiscussions';
+import { sortDiscussionCategoriesByName } from '@/lib/discussion-category-order';
+import { buildDiscussionSidebarStats } from '@/lib/discussion-sidebar-stats';
 import { sortThreadsByOption } from '@/lib/discussion-sort';
 
 /**
@@ -43,6 +45,7 @@ export default function DiscussionPage() {
   const [bookmarksOnly, setBookmarksOnly] = useState(false);
 
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
+  const sortedCategories = useMemo(() => sortDiscussionCategoriesByName(categories), [categories]);
   const { data: categoryStats = {}, isLoading: statsLoading } = useCategoryStats();
   const {
     data: threadData,
@@ -91,19 +94,12 @@ export default function DiscussionPage() {
   const isFetchingNextPage = bookmarksOnly ? isFetchingNextBookmarkPage : isFetchingNextMainPage;
   const threadsLoading = bookmarksOnly ? bookmarkedLoading : mainThreadsLoading;
 
-  // Calculate category stats
-  const stats = useMemo(() => {
-    const statsMap: Record<string, { threadCount: number; replyCount: number }> = {};
-
-    categories.forEach((cat) => {
-      statsMap[cat.slug] = {
-        threadCount: categoryStats[cat.slug]?.threadCount ?? 0,
-        replyCount: categoryStats[cat.slug]?.replyCount ?? 0,
-      };
-    });
-
-    return statsMap;
-  }, [categories, categoryStats]);
+  // Sidebar badges: API totals normally; bookmark-only mode counts loaded bookmarked threads so badges match the list.
+  const stats = useMemo(
+    () =>
+      buildDiscussionSidebarStats(bookmarksOnly, sortedCategories, categoryStats, allThreads),
+    [bookmarksOnly, sortedCategories, categoryStats, allThreads],
+  );
 
   const { upvotedThreads, bookmarkedThreads } = useMemo(() => ({
     upvotedThreads: new Set(allThreads.filter((t) => t.isUpvoted).map((t) => t.id)),
@@ -174,7 +170,7 @@ export default function DiscussionPage() {
           </div>
 
           <SidebarLayout
-            categories={categories.map((c): SidebarCategory => ({
+            categories={sortedCategories.map((c): SidebarCategory => ({
               id: c.slug,
               name: c.name,
               icon: c.icon,
@@ -237,7 +233,7 @@ export default function DiscussionPage() {
 
               {/* Category CTA — pinned to bottom of panel; panel padding matches inset above first thread */}
               {activeCategory && (() => {
-                const cat = categories.find((c) => c.slug === activeCategory);
+                const cat = sortedCategories.find((c) => c.slug === activeCategory);
                 return cat ? (
                   <CategoryCTA key={cat.slug} category={cat} threadCount={displayThreads.length} className="mt-auto" />
                 ) : null;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Fragment, useMemo, useRef } from 'react';
+import { useState, useEffect, Fragment, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
@@ -10,11 +10,10 @@ import { Settings, LogOut } from 'lucide-react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
 import NotificationsBell from '@/components/notifications/NotificationsBell';
-import { ALL_NAV_ITEMS } from '@/lib/constants';
-import { formatRole, isNavItemVisible, canAccessManagement } from '@/lib/auth';
+import { useNavItems } from '@/hooks/useNavItems';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
-import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
+import { formatRole, canAccessManagement } from '@/lib/auth';
 
 const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
 
@@ -28,9 +27,9 @@ export default function Header() {
   const lastSignedInRef = useRef(isSignedIn);
   if (isLoaded) lastSignedInRef.current = isSignedIn;
   const lastSignedIn = lastSignedInRef.current;
-  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
   const { data: community } = useCommunity();
-  const featureFlags = useAllFeatureFlags();
+  const { data: navData } = useNavItems();
   const { getToken } = useAuth();
 
   const role = currentUser?.membership?.role;
@@ -44,19 +43,8 @@ export default function Header() {
     setAfterSignOutUrl(`${o}/login/?redirect_url=${encodeURIComponent(`${o}/`)}`);
   }, []);
 
-  const mobileNavItems = useMemo(() => {
-    const items = ALL_NAV_ITEMS.filter((item) =>
-        isNavItemVisible(
-          item.href,
-          currentUser?.membership?.role,
-          currentUser?.is_superadmin ?? false,
-          Boolean(isSignedIn),
-          isSignedIn && (isCurrentUserLoading || currentUser === undefined),
-          featureFlags,
-        ),
-    );
-    return items;
-  }, [currentUser, isSignedIn, isCurrentUserLoading, featureFlags]);
+  // Server-filtered navigation items for mobile menu
+  const mobileNavItems = navData?.items ?? [];
   const mobileMainNav = mobileNavItems.slice(0, 5);
   const mobileMoreNav = mobileNavItems.slice(5);
 

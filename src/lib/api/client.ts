@@ -4,6 +4,8 @@
  * Throws ApiError on non-2xx; 401/403 are handled centrally via React Query onError.
  */
 
+import { getDevAuthToken, isDevAuthEnabled } from '@/lib/dev-auth';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export const isLocalApi = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(API_URL);
 
@@ -73,7 +75,15 @@ export async function apiRequest<T>(
   getToken: () => Promise<string | null>,
   options?: RequestInit,
 ): Promise<T> {
-  const token = await getToken();
+  let token: string | null | undefined;
+  
+  // Check if dev auth bypass is enabled - use proper JWT from backend
+  if (isDevAuthEnabled() && isLocalApi) {
+    token = await getDevAuthToken();
+  } else {
+    token = await getToken();
+  }
+  
   const authToken = token ?? (isLocalApi ? 'dev-token' : null);
   const res = await fetch(`${API_URL}${path}`, {
     ...options,

@@ -59,29 +59,32 @@ export const Avatar = ({ src, alt, name, size = 'sm', className, title }: Avatar
   }, [src]);
 
   const dimensionClass = sizeMap[size];
+  const frameClass = cn(
+    'relative shrink-0 overflow-hidden rounded-full',
+    'border-2 border-white shadow-sm ring-1 ring-sage/10',
+    dimensionClass,
+    className,
+  );
 
   return (
-    <div className={cn('relative shrink-0', className)} title={title}>
+    <div className={frameClass} title={title}>
       {showImage ? (
         <Image
           src={src!}
           alt={alt || 'User'}
-          width={sizePixels[size]}
-          height={sizePixels[size]}
+          fill
+          sizes={`${sizePixels[size]}px`}
           unoptimized={isNonOptimizableImageSrc(src!)}
           onError={() => setImageFailed(true)}
-          className={cn(
-            'rounded-full object-cover border-2 border-white shadow-sm ring-1 ring-sage/10',
-          )}
+          className="object-cover"
         />
       ) : (
         <div
           role="img"
           aria-label={alt || name || 'User'}
           className={cn(
-            dimensionClass,
-            'rounded-full border-2 border-white shadow-sm ring-1 ring-sage/10',
-            'flex items-center justify-center font-semibold bg-sage/35 text-forest/80 select-none',
+            'flex h-full w-full items-center justify-center font-semibold',
+            'bg-sage/35 text-forest/80 select-none',
           )}
         >
           {initialsFromName(labelForInitials)}

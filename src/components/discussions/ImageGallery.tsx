@@ -3,6 +3,7 @@
 import { forwardRef, HTMLAttributes, useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { isNonOptimizableImageSrc } from '@/lib/image';
 import type { ThreadImage } from '@/types';
 import ImageLightbox from '@/components/ui/ImageLightbox';
 
@@ -60,6 +61,7 @@ const ImageGallery = forwardRef<HTMLDivElement, ImageGalleryProps>(
                 alt={image.alt || `Image ${index + 1}`}
                 fill
                 className="object-cover object-center"
+                unoptimized={isNonOptimizableImageSrc(image.thumbnail)}
               />
 
               {/* Show remaining count on last visible image */}

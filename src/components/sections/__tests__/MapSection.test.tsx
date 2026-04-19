@@ -46,20 +46,22 @@ describe('MapSection', () => {
     baseMapPropsSpy.mockClear();
   });
 
-  it('uses Stadia Outdoors basemap (terrain / OSM palette), not aerial or raw OSM', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('uses OSM Standard tiles', () => {
     render(<MapSection />);
 
     expect(baseMapPropsSpy).toHaveBeenCalled();
     const props = baseMapPropsSpy.mock.calls[baseMapPropsSpy.mock.calls.length - 1][0] as {
-      tileUrl: string;
+      tileUrl?: string;
       maxZoom: number;
       overlayTileUrl?: string;
     };
-    expect(props.tileUrl).toContain('tiles.stadiamaps.com');
-    expect(props.tileUrl).toContain('/outdoors/');
-    expect(props.tileUrl).not.toContain('basemaps.linz.govt.nz');
-    expect(props.tileUrl).not.toContain('tile.openstreetmap.org');
-    expect(props.maxZoom).toBe(21);
+    expect(props.tileUrl).toContain('tile.openstreetmap.org');
+    expect(props.tileUrl).toContain('{z}/{x}/{y}.png');
+    expect(props.maxZoom).toBe(18);
   });
 
   it('renders sidebar with Points of Interest header', () => {

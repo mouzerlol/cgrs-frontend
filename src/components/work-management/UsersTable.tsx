@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { formatMemberSince } from '@/lib/format-member-since';
 import { formatRelativeTimeShort } from '@/lib/format-relative-time';
 import { formatRole } from '@/lib/auth';
 import Avatar from '@/components/ui/Avatar';
 import { Badge, type BadgeVariant } from '@/components/ui/Badge';
 import type { AdminUserResponse, RoleEnum } from '@/types/admin';
 
-type SortField = 'name' | 'role' | 'member_since' | 'last_login' | 'pending_verification_count';
+type SortField = 'name' | 'id' | 'role' | 'member_since' | 'last_login' | 'pending_verification_count';
 type SortDirection = 'asc' | 'desc';
 
 interface UsersTableProps {
@@ -24,19 +25,6 @@ const roleBadgeVariant: Record<RoleEnum, BadgeVariant> = {
   committee_member: 'terracotta',
   committee_chairperson: 'terracotta',
 };
-
-function formatMemberSince(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMonths = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30));
-  const diffYears = Math.floor(diffMonths / 12);
-
-  if (diffMonths < 1) return 'Just joined';
-  if (diffMonths < 12) return `${diffMonths}mo`;
-  if (diffYears === 1) return '1yr';
-  return `${diffYears}yr`;
-}
 
 function TruncatedId({ id }: { id: string }) {
   const [copied, setCopied] = useState(false);
@@ -66,6 +54,13 @@ function TruncatedId({ id }: { id: string }) {
   );
 }
 
+const headerLabelClass =
+  'font-display text-xs font-medium uppercase tracking-wider text-forest/40';
+
+function PlainHeaderLabel({ label }: { label: string }) {
+  return <span className={headerLabelClass}>{label}</span>;
+}
+
 function SortableHeader({
   label,
   field,
@@ -80,20 +75,21 @@ function SortableHeader({
   onSort: (field: SortField) => void;
 }) {
   const isActive = currentSort === field;
+  const SortIcon = direction === 'asc' ? ArrowUp : ArrowDown;
 
   return (
     <button
+      type="button"
       onClick={() => onSort(field)}
       className={cn(
-        'flex items-center gap-1 text-left font-display text-xs font-medium uppercase tracking-wider',
-        'text-forest/40 hover:text-forest/70 transition-colors',
+        'inline-flex items-center gap-1.5 text-left transition-colors',
+        headerLabelClass,
+        'hover:text-forest/65',
         isActive && 'text-forest',
       )}
     >
-      {label}
-      {isActive && (
-        <span className="text-[10px]">{direction === 'asc' ? '↑' : '↓'}</span>
-      )}
+      <span>{label}</span>
+      {isActive && <SortIcon className="h-3.5 w-3.5 shrink-0 text-forest" aria-hidden />}
     </button>
   );
 }
@@ -116,6 +112,9 @@ export default function UsersTable({ users }: UsersTableProps) {
     switch (sortField) {
       case 'name':
         comparison = a.name.localeCompare(b.name);
+        break;
+      case 'id':
+        comparison = a.id.localeCompare(b.id);
         break;
       case 'role':
         comparison = a.role.localeCompare(b.role);
@@ -149,11 +148,13 @@ export default function UsersTable({ users }: UsersTableProps) {
                 onSort={handleSort}
               />
             </th>
-            <th className="py-3 px-4 text-left hidden md:table-cell">Email</th>
+            <th className="py-3 px-4 text-left hidden md:table-cell">
+              <PlainHeaderLabel label="Email" />
+            </th>
             <th className="py-3 px-4 text-left">
               <SortableHeader
                 label="User ID"
-                field="name"
+                field="id"
                 currentSort={sortField}
                 direction={sortDirection}
                 onSort={handleSort}
@@ -233,11 +234,11 @@ export default function UsersTable({ users }: UsersTableProps) {
                 </Badge>
               </td>
               <td className="py-3 px-4 hidden lg:table-cell">
-                <div className="flex flex-col">
-                  <span className="text-xs text-amber font-semibold">
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-body text-xs font-medium text-forest/80">
                     {formatMemberSince(user.member_since)}
                   </span>
-                  <span className="text-[10px] text-forest/40">
+                  <span className="font-body text-xs text-forest/45">
                     {new Date(user.member_since).toLocaleDateString('en-NZ', {
                       day: 'numeric',
                       month: 'short',

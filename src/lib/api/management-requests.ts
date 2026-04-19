@@ -51,10 +51,11 @@ function mapManagementRequestWithTask(
 }
 
 async function buildCreateBody(data: ManagementRequestFormData, getToken: () => Promise<string | null>) {
+  const photos = data.photos ?? [];
   const photo_attachment_ids =
-    data.photos.length === 0
+    photos.length === 0
       ? []
-      : await Promise.all(data.photos.map((file) => uploadWorkTaskAttachmentFile(file, getToken)));
+      : await Promise.all(photos.map((file) => uploadWorkTaskAttachmentFile(file, getToken)));
 
   return {
     category: data.category,

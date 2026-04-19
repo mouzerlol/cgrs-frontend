@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { RequestLocation } from '@/types/management-request';
 import { MAP_CENTER, BOUNDARY_COORDINATES } from '@/data/map-data';
 import { formatCoordinates } from '@/lib/management-request';
-import { getOSMTileUrl, getOSMTileOptions } from '@/lib/maps';
+import { getNzWidgetLeafletBasemap } from '@/lib/maps';
 
 interface LocationPickerProps {
   value: RequestLocation | null;
@@ -58,18 +58,16 @@ export function LocationPicker({
 
         if (!containerRef.current) return;
 
-        // Create map without initial view - we'll set it with fitBounds
+        const nz = getNzWidgetLeafletBasemap();
         const map = L.map(containerRef.current, {
           zoomControl: false,
           scrollWheelZoom: false,
           dragging: true,
-          attributionControl: false,
+          attributionControl: true,
+          maxZoom: 19, // OSM tiles only go to 19
         });
 
-        // Add tile layer (same OSM set as map page and footer)
-        const osmUrl = getOSMTileUrl();
-        const osmOpts = getOSMTileOptions();
-        L.tileLayer(osmUrl, osmOpts).addTo(map);
+        L.tileLayer(nz.tileUrl, nz.tileOptions).addTo(map);
 
         // Add boundary polygon
         const boundaryCoords = BOUNDARY_COORDINATES.map(

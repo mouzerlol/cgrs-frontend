@@ -76,10 +76,10 @@ export default function ClerkAppUserButton() {
           <UserAvatar />
         </div>
         <span
-          className="pointer-events-none absolute -bottom-px -right-px flex h-3.5 w-3.5 items-center justify-center rounded-full border border-forest/20 bg-sage text-forest shadow-sm"
+          className="pointer-events-none absolute -bottom-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-forest/30 bg-sage text-forest shadow-sm"
           aria-hidden="true"
         >
-          <ChevronDown className="h-2 w-2" />
+          <ChevronDown className="h-3 w-3 shrink-0" strokeWidth={3.5} />
         </span>
       </MenuButton>
 
@@ -93,6 +93,7 @@ export default function ClerkAppUserButton() {
         leaveTo="transform opacity-0 scale-95"
       >
         <MenuItems
+          modal={false}
           className={cn(
             'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,20rem)] origin-top-right rounded-2xl border border-sage/30',
             'bg-sage-light shadow-[0_20px_60px_rgba(26,34,24,0.12)] focus:outline-none'

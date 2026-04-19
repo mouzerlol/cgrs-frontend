@@ -32,6 +32,7 @@ vi.mock('@clerk/nextjs', () => ({
     isLoaded: true,
     isSignedIn: false,
     userId: null,
+    getToken: vi.fn().mockResolvedValue(null),
   }),
   useUser: () => ({
     isLoaded: true,
@@ -70,6 +71,25 @@ vi.mock('@/hooks/useFeatureFlag', () => ({
   useFeatureFlag: () => true,
   useAllFeatureFlags: () => ({}),
   useFeatureFlagsLoading: () => false,
+}));
+
+/** Server-filtered nav; avoid real fetch in tests (needs Bearer for role-based items). */
+vi.mock('@/hooks/useNavItems', () => ({
+  useNavItems: () => ({
+    data: {
+      items: [
+        { name: 'Report Issue', href: '/management-request', icon: 'lightbulb' },
+        { name: 'About', href: '/about', icon: 'users' },
+        { name: 'Map', href: '/map', icon: 'map' },
+        { name: 'Discussion', href: '/discussions', icon: 'message-square' },
+        { name: 'Management', href: '/management', icon: 'building-2' },
+        { name: 'Calendar', href: '/calendar', icon: 'calendar' },
+      ],
+      flags: {},
+    },
+    isLoading: false,
+    isError: false,
+  }),
 }));
 
 // Mock Headless UI Dialog - avoids use-is-touch-device addEventListener error in jsdom

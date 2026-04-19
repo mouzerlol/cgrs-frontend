@@ -1,11 +1,16 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { TaskLocation } from '@/types/work-management';
 import { MAP_CENTER } from '@/data/map-data';
-import { getOSMTileUrl, getOSMTileOptions, addBoundaryLayer, fitMapToBoundary, BOUNDARY_STYLE_COMPACT } from '@/lib/maps';
+import {
+  getNzWidgetLeafletBasemap,
+  addBoundaryLayer,
+  fitMapToBoundary,
+  BOUNDARY_STYLE_COMPACT,
+} from '@/lib/maps';
 
 /** Treat (0,0) as "no location" so we show pin at MAP_CENTER for user to drag. */
 function effectivePosition(location?: TaskLocation | null): [number, number] {
@@ -33,23 +38,28 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
     if (!mapRef.current) return;
 
     let resizeObserver: ResizeObserver | null = null;
+    let cancelled = false;
 
-    if (!mapInstanceRef.current) {
+    const init = async () => {
+      if (mapInstanceRef.current || !mapRef.current) return;
+
       const center = effectivePosition(location);
-      const map = L.map(mapRef.current).setView(center as L.LatLngExpression, 16);
+      const nz = getNzWidgetLeafletBasemap();
+      const map = L.map(mapRef.current, { maxZoom: 19 }).setView(center as L.LatLngExpression, 16);
 
-      const osmUrl = getOSMTileUrl();
-      const osmOpts = getOSMTileOptions();
-      L.tileLayer(osmUrl, { ...osmOpts }).addTo(map);
+      L.tileLayer(nz.tileUrl, { ...nz.tileOptions }).addTo(map);
+
+      if (cancelled) {
+        map.remove();
+        return;
+      }
 
       addBoundaryLayer(L, map, BOUNDARY_STYLE_COMPACT);
       fitMapToBoundary(L, map, 20);
 
       mapInstanceRef.current = map;
 
-      // Fix for grey tile issue when rendered inside modals or hidden containers
-      // Trigger multiple times during modal open animation
-      [10, 100, 300, 500].forEach(timeout => {
+      [10, 100, 300, 500].forEach((timeout) => {
         setTimeout(() => {
           if (mapInstanceRef.current) {
             mapInstanceRef.current.invalidateSize();
@@ -62,7 +72,7 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
           mapInstanceRef.current.invalidateSize();
         }
       });
-      resizeObserver.observe(mapRef.current);
+      resizeObserver.observe(mapRef.current!);
 
       const markerIcon = L.divIcon({
         className: 'location-map-marker',
@@ -78,7 +88,6 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
         iconAnchor: [16, 40],
       });
 
-      // In edit mode always show a pin (at location or MAP_CENTER); in readonly only if location is set and valid
       const showPin = !readonly || (location && !(location.lat === 0 && location.lng === 0));
       if (showPin) {
         const pos = effectivePosition(location);
@@ -109,9 +118,12 @@ export default function LocationMap({ location, onChange, readonly }: LocationMa
           });
         }
       }
-    }
+    };
+
+    void init();
 
     return () => {
+      cancelled = true;
       if (resizeObserver) {
         resizeObserver.disconnect();
       }

@@ -74,6 +74,8 @@
   html {
     scroll-behavior: smooth;
     font-size: 16px;
+    /* Reserve scrollbar gutter so overflow:hidden (menus, dialogs) does not shift fixed headers */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -270,12 +272,16 @@
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: var(--space-md);
+  /* Match container horizontal inset (same token as top/bottom) */
   padding: var(--space-md);
   background: var(--bone);
+  /* Prevent overflow from causing page-level scrollbars */
+  overflow: hidden;
+  align-items: start;
 }
 
-/* Mobile responsive for map section */
-@media (max-width: 1024px) {
+/* Mobile responsive for map section - sidebar hidden below 1024px */
+@media (max-width: 1023px) {
   .map-section-wrapper {
     grid-template-columns: 1fr;
     padding: var(--space-sm);
@@ -292,9 +298,12 @@
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: fit-content;
+  /* Cap height so long POI lists scroll inside the panel; do not use position:sticky here —
+     sticky + top:64px caused a visible jump when the page scroll-into-view ran, because the
+     sticky offset reflowed relative to the viewport while the map column stayed in flow. */
   max-height: calc(100vh - 180px);
-  position: sticky;
-  top: 100px;
+  align-self: start;
+  contain: layout style;
 }
 
 .sidebar-header {

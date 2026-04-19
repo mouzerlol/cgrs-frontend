@@ -9,12 +9,13 @@
 import Image from 'next/image';
 import { useMembers, useHasCapability } from '@/hooks/useAuthorization';
 import { CAPABILITIES, formatRole as formatRoleLabel } from '@/lib/auth';
+import { memberDisplayName } from '@/lib/member-display';
 import { isNonOptimizableImageSrc } from '@/lib/image';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
 function MemberCard({ member }: { member: import('@/types/authorization').MemberSummaryResponse }) {
-  const fullName = [member.user.first_name, member.user.last_name].filter(Boolean).join(' ') || 'Unknown';
+  const fullName = memberDisplayName(member);
   const initials = fullName
     .split(' ')
     .map((n) => n[0])

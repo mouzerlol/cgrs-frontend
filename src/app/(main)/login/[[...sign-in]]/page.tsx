@@ -1,16 +1,21 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/sections/PageHeader';
 import Card from '@/components/ui/Card';
 import { SignIn } from '@clerk/nextjs';
 import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
- * Resident sign-in page. Uses Clerk's SignIn component; redirects to / after sign-in.
+ * Resident sign-in page. Uses Clerk's SignIn component.
+ * Supports redirect_url query param to return to the originally requested page after sign-in.
  * NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login so "Resident Login" buttons send users here.
  */
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect_url') ?? '/';
+
   return (
     <div className="min-h-screen relative flex flex-col">
       <PageHeader
@@ -28,10 +33,11 @@ export default function LoginPage() {
             <div className="w-full bg-sage-light rounded-[24px] shadow-[0_20px_60px_rgba(26,34,24,0.1)] border border-sage/30 p-6 sm:p-10 relative overflow-hidden">
               {/* Decorative grain overlay inside the card */}
               <div className="absolute inset-0 pointer-events-none texture-grain opacity-50 mix-blend-multiply"></div>
-              
+
               <div className="relative z-10">
                 <SignIn
-                  fallbackRedirectUrl="/"
+                  routing="path"
+                  fallbackRedirectUrl={redirectUrl}
                   signUpUrl="/register"
                   appearance={{
                     ...clerkAppearance,
@@ -45,7 +51,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            
+
             <p className="mt-8 text-center text-sm text-forest/70 font-medium">
               Need help? <Link href="/contact?subject=login-help" className="text-terracotta hover:text-terracotta/80 underline underline-offset-4 transition-colors">Contact support</Link>
             </p>
