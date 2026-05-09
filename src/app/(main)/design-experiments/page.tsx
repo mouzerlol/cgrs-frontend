@@ -8,6 +8,7 @@ import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import QuickAccessCard from '@/components/ui/QuickAccessCard';
 import NewsCard from '@/components/ui/NewsCard';
 import CalendarCard from '@/components/ui/CalendarCard';
+import GoalMeterExperiments from '@/components/experiments/GoalMeterExperiments';
 import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
 import EditorialMagazineCard from '@/components/ui/experimental-cards/EditorialMagazineCard';
 import OrganicNaturalCard from '@/components/ui/experimental-cards/OrganicNaturalCard';
@@ -85,6 +86,7 @@ export default function DesignExperimentsPage() {
             {[
               { id: 'aesthetic-cards', label: 'Aesthetic Card Experiments' },
               { id: 'original-home', label: 'Original Home Cards' },
+              { id: 'goal-meters', label: 'Goal Meter Experiments' },
             ].map((tab) => (
               <Tab
                 key={tab.id}
@@ -267,6 +269,10 @@ export default function DesignExperimentsPage() {
                   </div>
                 </Card>
               </div>
+            </Tab.Panel>
+            {/* Goal Meter Experiments Panel */}
+            <Tab.Panel>
+              <GoalMeterExperiments />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

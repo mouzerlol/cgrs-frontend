@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { SignOutButton, useAuth, useUser, UserAvatar } from '@clerk/nextjs';
 import { Settings, ChevronDown } from 'lucide-react';
+import { siteHeaderDropdownSurface, siteHeaderDropdownItemInteractive } from '@/components/layout/siteChrome';
 import { getAfterSignOutUrl } from '@/lib/app-url';
 import { cn } from '@/lib/utils';
 import { canAccessManagement } from '@/lib/auth';
@@ -19,7 +20,7 @@ const profileLinkIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="h-4 w-4 shrink-0 text-forest/70"
+    className="h-4 w-4 shrink-0 text-bone/70"
     aria-hidden="true"
   >
     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -95,13 +96,14 @@ export default function ClerkAppUserButton() {
         <MenuItems
           modal={false}
           className={cn(
-            'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,20rem)] origin-top-right rounded-2xl border border-sage/30',
-            'bg-sage-light shadow-[0_20px_60px_rgba(26,34,24,0.12)] focus:outline-none'
+            'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,20rem)] origin-top-right rounded-2xl',
+            'focus:outline-none',
+            siteHeaderDropdownSurface
           )}
         >
-          <div className="border-b border-sage/20 px-4 py-3 sm:hidden">
-            <p className="font-display text-sm font-medium text-forest">{display}</p>
-            {primary ? <p className="truncate text-xs text-forest/60">{primary}</p> : null}
+          <div className="border-b border-white/10 px-4 py-3 sm:hidden">
+            <p className="font-display text-sm font-medium text-bone">{display}</p>
+            {primary ? <p className="truncate text-xs text-bone/70">{primary}</p> : null}
           </div>
           <div className="p-1">
             <MenuItem>
@@ -109,8 +111,9 @@ export default function ClerkAppUserButton() {
                 <Link
                   href="/profile"
                   className={cn(
-                    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium',
-                    focus ? 'bg-sage/30 text-forest' : 'text-forest'
+                    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-bone',
+                    siteHeaderDropdownItemInteractive,
+                    focus && 'bg-white/10'
                   )}
                 >
                   {profileLinkIcon}
@@ -125,18 +128,19 @@ export default function ClerkAppUserButton() {
                   <Link
                     href="/settings/system"
                     className={cn(
-                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium',
-                      focus ? 'bg-sage/30 text-forest' : 'text-forest'
+                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-bone',
+                      siteHeaderDropdownItemInteractive,
+                      focus && 'bg-white/10'
                     )}
                   >
-                    <Settings className="h-4 w-4 shrink-0 text-forest/70" aria-hidden="true" />
+                    <Settings className="h-4 w-4 shrink-0 text-bone/70" aria-hidden="true" />
                     System Settings
                   </Link>
                 )}
               </MenuItem>
             )}
 
-            <div className="my-1 border-t border-sage/20" />
+            <div className="my-1 border-t border-white/10" />
 
             <MenuItem>
               {({ focus }) => (
@@ -144,8 +148,9 @@ export default function ClerkAppUserButton() {
                   <button
                     type="button"
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium',
-                      focus ? 'bg-sage/30 text-forest' : 'text-forest'
+                      'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-bone',
+                      siteHeaderDropdownItemInteractive,
+                      focus && 'bg-white/10'
                     )}
                   >
                     Sign out

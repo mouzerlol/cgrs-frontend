@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import PageHeader from '@/components/sections/PageHeader';
 import { CalendarSkeleton } from '@/components/calendar/CalendarContent';
 import { useImmersiveScroll } from '@/hooks/useImmersiveScroll';
+import { getFixedSiteHeaderHeight } from '@/lib/site-layout';
 
 const CalendarContent = dynamic(
   () => import('@/components/calendar/CalendarContent').then(m => m.CalendarContent),
@@ -28,8 +29,8 @@ export default function CalendarPage() {
       if (!element) return;
 
       const rect = element.getBoundingClientRect();
-      const navHeight = 64;
-      const targetY = rect.top + (window.scrollY || document.documentElement.scrollTop) - navHeight;
+      const headerHeight = getFixedSiteHeaderHeight();
+      const targetY = rect.top + (window.scrollY || document.documentElement.scrollTop) - headerHeight;
 
       window.scrollTo({
         top: Math.max(0, targetY),

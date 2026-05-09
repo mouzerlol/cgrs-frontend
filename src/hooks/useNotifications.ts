@@ -6,16 +6,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { getNotifications, getUnreadCount, markRead, type NotificationItem } from '@/lib/api/notifications';
 import { STALE_TIMES } from '@/lib/cache-config';
+import { useBootstrapReady } from '@/components/providers/BootstrapProvider';
 
 export const UNREAD_COUNT_KEY = ['notifications', 'unread-count'] as const;
 export const NOTIFICATIONS_KEY = ['notifications', 'list'] as const;
 
 export function useUnreadCount() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
+  const isBootstrapReady = useBootstrapReady();
   return useQuery({
     queryKey: UNREAD_COUNT_KEY,
     queryFn: () => getUnreadCount(getToken),
-    enabled: isLoaded && !!isSignedIn,
+    enabled: isBootstrapReady && isLoaded && !!isSignedIn,
     staleTime: STALE_TIMES.CONTENT,
     refetchInterval: 60_000,
   });

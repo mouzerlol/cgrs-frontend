@@ -13,6 +13,7 @@ import iconBundle from '@/lib/icon-bundle.json';
 import { ApiError } from '@/lib/api/client';
 import { STALE_TIMES } from '@/lib/cache-config';
 import { useInvalidateCurrentUserOnClerkChange } from '@/hooks/useInvalidateCurrentUserOnClerkChange';
+import { BootstrapProvider } from '@/components/providers/BootstrapProvider';
 import { FeatureFlagProvider } from '@/components/providers/FeatureFlagProvider';
 import { EasterEggProvider } from '@/components/layout/WindyTextContext';
 
@@ -66,12 +67,14 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FeatureFlagProvider>
-        <EasterEggProvider>
-          <ClerkCurrentUserSync />
-          {children}
-        </EasterEggProvider>
-      </FeatureFlagProvider>
+      <BootstrapProvider>
+        <FeatureFlagProvider>
+          <EasterEggProvider>
+            <ClerkCurrentUserSync />
+            {children}
+          </EasterEggProvider>
+        </FeatureFlagProvider>
+      </BootstrapProvider>
     </QueryClientProvider>
   );
 }

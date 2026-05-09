@@ -70,6 +70,7 @@ module.exports = {
         'optimistic-pulse': 'optimisticPulse 0.4s ease-out',
         'pulse-subtle': 'pulseSubtle 1.5s ease-in-out infinite',
         'shake': 'shake 0.4s ease-out',
+        'marquee': 'marquee 300s linear infinite',
       },
       keyframes: {
         fadeUp: {
@@ -104,6 +105,10 @@ module.exports = {
           '0%, 100%': { transform: 'translateX(0)' },
           '20%, 60%': { transform: 'translateX(-8px)' },
           '40%, 80%': { transform: 'translateX(8px)' },
+        },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
         },
       },
     },

@@ -85,7 +85,7 @@ export async function apiRequest<T>(
   }
   
   const authToken = token ?? (isLocalApi ? 'dev-token' : null);
-  const res = await fetch(`${API_URL}${path}`, {
+  let res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -93,6 +93,26 @@ export async function apiRequest<T>(
       ...options?.headers,
     },
   });
+
+  if (
+    res.status === 401 &&
+    !isLocalApi &&
+    !isDevAuthEnabled()
+  ) {
+    const getTokenFresh = getToken as (opts?: { skipCache?: boolean }) => Promise<string | null>;
+    const fresh = await getTokenFresh({ skipCache: true });
+    const retryToken = fresh ?? null;
+    if (retryToken !== authToken) {
+      res = await fetch(`${API_URL}${path}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(retryToken ? { Authorization: `Bearer ${retryToken}` } : {}),
+          ...options?.headers,
+        },
+      });
+    }
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));

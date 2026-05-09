@@ -68,6 +68,7 @@ interface FlagGroupSectionProps {
 
 function FlagGroupSection({ group, flags, flagValues, onToggle, updatingFlags }: FlagGroupSectionProps) {
   const groupLabels: Record<FlagGroup, string> = {
+    site: 'Site',
     navigation: 'Navigation',
     footer: 'Footer',
     homepage: 'Homepage',
@@ -215,6 +216,14 @@ export default function SystemSettingsPage() {
             </div>
           </div>
         </div>
+
+        <FlagGroupSection
+          group="site"
+          flags={FLAG_GROUPS.site}
+          flagValues={featureFlags}
+          onToggle={handleToggle}
+          updatingFlags={updatingFlags}
+        />
 
         <FlagGroupSection
           group="navigation"

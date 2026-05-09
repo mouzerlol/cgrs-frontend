@@ -20,3 +20,20 @@ export interface AdminUsersListResponse {
   users: AdminUserResponse[];
   total: number;
 }
+
+export type ResidentTypeEnum = 'tenant' | 'owner';
+
+export interface AdminSignatureResponse {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  resident_type: ResidentTypeEnum;
+  address: string | null;
+  ip_address: string | null;
+  signed_at: string;
+}
+
+export interface AdminSignaturesListResponse {
+  signatures: AdminSignatureResponse[];
+}

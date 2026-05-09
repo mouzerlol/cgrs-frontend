@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { apiRequest } from '@/lib/api/client';
 import { STALE_TIMES } from '@/lib/cache-config';
+import { useBootstrapReady } from '@/components/providers/BootstrapProvider';
 
 /** Backend returns snake_case via Pydantic. */
 export interface UserResponse {
@@ -41,11 +42,12 @@ export const CURRENT_USER_QUERY_KEY = ['currentUser'] as const;
 
 export function useCurrentUser() {
   const { getToken, isSignedIn, isLoaded } = useAuth();
+  const isBootstrapReady = useBootstrapReady();
 
   return useQuery<CurrentUserResponse>({
     queryKey: CURRENT_USER_QUERY_KEY,
     queryFn: () => apiRequest<CurrentUserResponse>('/api/v1/users/me', getToken),
-    enabled: isLoaded && !!isSignedIn,
+    enabled: isBootstrapReady && isLoaded && !!isSignedIn,
     staleTime: STALE_TIMES.CONTENT,
     retry: 1,
   });

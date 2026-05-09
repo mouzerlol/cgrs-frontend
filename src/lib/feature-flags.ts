@@ -5,6 +5,8 @@
 
 /** All available feature flag IDs */
 export const FEATURE_FLAG_IDS = {
+  // Site-wide chrome
+  SITE_BETA_BANNER: "site.beta-banner",
   // Navigation flags
   NAV_DISCUSSION: "nav.discussion",
   NAV_REPORT_ISSUE: "nav.report-issue",
@@ -23,6 +25,8 @@ export const FEATURE_FLAG_IDS = {
   PROFILE_VERIFICATION: "profile.verification",
   PROFILE_REPORTED_ISSUES: "profile.reported-issues",
   PROFILE_MY_PROPERTY: "profile.my-property",
+  // Petition
+  PETITION_ACTIVE: "petition.active",
 } as const;
 
 export type FeatureFlagId = (typeof FEATURE_FLAG_IDS)[keyof typeof FEATURE_FLAG_IDS];
@@ -40,6 +44,7 @@ export const NAV_ITEM_TO_FLAG: Record<string, FeatureFlagId | undefined> = {
 
 /** Flag ID to display label mapping */
 export const FLAG_LABELS: Record<FeatureFlagId, string> = {
+  [FEATURE_FLAG_IDS.SITE_BETA_BANNER]: "Beta Testing Banner",
   [FEATURE_FLAG_IDS.NAV_DISCUSSION]: "Discussion",
   [FEATURE_FLAG_IDS.NAV_REPORT_ISSUE]: "Report Issue",
   [FEATURE_FLAG_IDS.NAV_CALENDAR]: "Calendar",
@@ -54,10 +59,14 @@ export const FLAG_LABELS: Record<FeatureFlagId, string> = {
   [FEATURE_FLAG_IDS.PROFILE_VERIFICATION]: "Profile Verification",
   [FEATURE_FLAG_IDS.PROFILE_REPORTED_ISSUES]: "Profile Reported Issues",
   [FEATURE_FLAG_IDS.PROFILE_MY_PROPERTY]: "Profile My Property",
+  [FEATURE_FLAG_IDS.PETITION_ACTIVE]: "Petition Active",
 };
 
 /** Group flags by category */
 export const FLAG_GROUPS = {
+  site: [
+    FEATURE_FLAG_IDS.SITE_BETA_BANNER,
+  ],
   navigation: [
     FEATURE_FLAG_IDS.NAV_DISCUSSION,
     FEATURE_FLAG_IDS.NAV_REPORT_ISSUE,

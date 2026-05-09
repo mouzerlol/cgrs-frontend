@@ -1,11 +1,16 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
-import { useUnreadCount, useNotifications } from '@/hooks/useNotifications';
+import { useUnreadCount, useNotifications, useMarkRead } from '@/hooks/useNotifications';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import NotificationsBell from '@/components/notifications/NotificationsBell';
+
+const headlessUiTestHooks = vi.hoisted(() => ({
+  popoverPanelClose: vi.fn(),
+}));
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -58,7 +63,15 @@ vi.mock('@/hooks/useMediaQuery', () => ({
 vi.mock('@headlessui/react', async (importOriginal) => {
   const React = await import('react');
   const actual = await importOriginal<typeof import('@headlessui/react')>();
-  const MockPopoverPanel = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
+  const MockPopoverPanel = ({
+    children,
+  }: {
+    children: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
+  }) => (
+    <div>
+      {typeof children === 'function' ? children({ close: headlessUiTestHooks.popoverPanelClose }) : children}
+    </div>
+  );
   return {
     ...actual,
     Dialog: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -68,8 +81,9 @@ vi.mock('@headlessui/react', async (importOriginal) => {
       <button type="button" aria-label={ariaLabel} data-testid="popover-button">{children}</button>
     ),
     PopoverPanel: MockPopoverPanel,
+    /** Desktop Popover omits `show`; only hide when explicitly false (mobile sheet). */
     Transition: ({ children, show }: { children: React.ReactNode; show?: boolean }) =>
-      show ? <>{children}</> : null,
+      show === false ? null : <>{children}</>,
     TransitionChild: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   };
 });
@@ -82,6 +96,7 @@ describe('NotificationsBell', () => {
       disconnect() {}
     });
     vi.clearAllMocks();
+    headlessUiTestHooks.popoverPanelClose.mockClear();
   });
 
   it('does not render bell when user is signed out', () => {
@@ -129,5 +144,20 @@ describe('NotificationsBell', () => {
     render(<NotificationsBell />, { wrapper: createWrapper() });
     const badge = screen.getByText('9+', { selector: '.bg-terracotta' });
     expect(badge).toBeInTheDocument();
+  });
+
+  it('calls Headless UI popover close when desktop panel close is pressed', async () => {
+    const user = userEvent.setup();
+    vi.mocked(useAuth).mockReturnValue(signedInAuth);
+    vi.mocked(useUser).mockReturnValue(signedInUser);
+    vi.mocked(useUnreadCount).mockReturnValue({ data: { total: 0, by_section: [] } } as never);
+    vi.mocked(useNotifications).mockReturnValue({ data: { items: [], total: 0 }, isLoading: false } as never);
+    vi.mocked(useMediaQuery).mockReturnValue(true);
+    vi.mocked(useMarkRead).mockReturnValue({ mutate: vi.fn() } as never);
+
+    render(<NotificationsBell />, { wrapper: createWrapper() });
+    await user.click(screen.getByRole('button', { name: /close notifications/i }));
+
+    expect(headlessUiTestHooks.popoverPanelClose).toHaveBeenCalledTimes(1);
   });
 });

@@ -3,6 +3,7 @@
 import { useRef, useCallback, useState, useEffect } from 'react';
 import { POINTS_OF_INTEREST, POI_TYPES, BOUNDARY_COORDINATES } from '@/data/map-data';
 import { cn } from '@/lib/utils';
+import { getFixedSiteHeaderHeight } from '@/lib/site-layout';
 import BaseMap from '@/components/map/BaseMap';
 
 // Define map configuration outside component to prevent re-renders
@@ -47,11 +48,11 @@ export default function MapSection({ className }: MapSectionProps) {
   const calculateMapHeight = useCallback(() => {
     if (typeof window === 'undefined') return 600;
 
-    const navHeight = 64;
+    const headerHeight = getFixedSiteHeaderHeight();
     const bottomPadding = 40;
 
     // Map fills the remaining viewport height
-    const availableHeight = window.innerHeight - navHeight - bottomPadding;
+    const availableHeight = window.innerHeight - headerHeight - bottomPadding;
 
     const minHeight = 400;
     return Math.max(minHeight, availableHeight);
@@ -69,13 +70,13 @@ export default function MapSection({ className }: MapSectionProps) {
     // Add immersive mode class to hide the fixed header
     document.documentElement.classList.add('map-immersive-mode');
 
-    // Get the section's position relative to the document
+    const headerHeight = getFixedSiteHeaderHeight();
     const rect = sectionRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const targetY = rect.top + scrollTop;
+    const targetY = rect.top + scrollTop - headerHeight;
 
     window.scrollTo({
-      top: targetY,
+      top: Math.max(0, targetY),
       behavior: 'smooth',
     });
   }, []);
@@ -104,25 +105,40 @@ export default function MapSection({ className }: MapSectionProps) {
     }
   }, [mapHeight, mapInstance]);
 
-  // Scroll to map section on initial mount (instant, no animation)
+  // Scroll so the map section sits just below the fixed site header (same math as calendar page).
+  // Retries handle font/layout settling after the map paints (single pass was slightly miscalibrated).
   useEffect(() => {
-    // Delay to ensure the component is rendered and sectionRef is set
-    const timeoutId = setTimeout(() => {
-      if (!hasScrolledRef.current && sectionRef.current) {
-        const navHeight = 64;
-        const rect = sectionRef.current.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = rect.top + scrollTop - navHeight;
+    if (!mapReady || !sectionRef.current) return;
+    if (hasScrolledRef.current) return;
 
-        window.scrollTo({
-          top: Math.max(0, targetY),
-        });
-        hasScrolledRef.current = true;
-      }
-    }, 100);
+    const scrollMapBelowHeader = () => {
+      const el = sectionRef.current;
+      if (!el) return;
 
-    return () => clearTimeout(timeoutId);
-  }, []);
+      const headerHeight = getFixedSiteHeaderHeight();
+      const rect = el.getBoundingClientRect();
+      const y = window.scrollY || document.documentElement.scrollTop;
+      const targetY = rect.top + y - headerHeight;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'instant',
+      });
+    };
+
+    scrollMapBelowHeader();
+    const rafId = requestAnimationFrame(scrollMapBelowHeader);
+    const t1 = window.setTimeout(scrollMapBelowHeader, 100);
+    const t2 = window.setTimeout(scrollMapBelowHeader, 300);
+
+    hasScrolledRef.current = true;
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [mapReady]);
 
   // Handle map initialization
   const handleMapReady = useCallback(async (map: L.Map) => {
@@ -172,8 +188,8 @@ export default function MapSection({ className }: MapSectionProps) {
       markerRefs.current.set(poi.id, marker);
     });
 
-    // Add boundary polygon
-    L.geoJSON({
+    // Add boundary polygon and center map on it
+    const boundaryLayer = L.geoJSON({
       type: 'Feature',
       geometry: {
         type: 'Polygon',
@@ -188,6 +204,10 @@ export default function MapSection({ className }: MapSectionProps) {
         dashArray: '8, 4',
       },
     }).addTo(map);
+
+    // Center map on the boundary and fit to max zoom
+    const bounds = boundaryLayer.getBounds();
+    map.fitBounds(bounds, { maxZoom: 19 });
 
     // Add scale control
     L.control.scale({

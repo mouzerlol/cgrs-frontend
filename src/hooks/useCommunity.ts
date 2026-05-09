@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { apiRequest } from '@/lib/api/client';
 import { STALE_TIMES } from '@/lib/cache-config';
+import { useBootstrapReady } from '@/components/providers/BootstrapProvider';
 
 /** Backend community response (snake_case). */
 export interface CommunityResponse {
@@ -21,11 +22,12 @@ export interface CommunityResponse {
 
 export function useCommunity() {
   const { getToken, isSignedIn, isLoaded } = useAuth();
+  const isBootstrapReady = useBootstrapReady();
 
   return useQuery<CommunityResponse>({
     queryKey: ['community'],
     queryFn: () => apiRequest<CommunityResponse>('/api/v1/users/community', getToken),
-    enabled: isLoaded && !!isSignedIn,
+    enabled: isBootstrapReady && isLoaded && !!isSignedIn,
     staleTime: STALE_TIMES.CONTENT,
     retry: 1,
   });

@@ -11,7 +11,13 @@ const FLAG_ID = 'nav.discussion';
 vi.mock('@clerk/nextjs', () => ({
   useAuth: () => ({
     getToken: vi.fn().mockResolvedValue('test-token'),
+    isLoaded: true,
   }),
+}));
+
+vi.mock('@/components/providers/BootstrapProvider', () => ({
+  useBootstrapReady: () => true,
+  BootstrapProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 vi.mock('@/lib/api/feature-flags', async (importOriginal) => {
@@ -87,5 +93,40 @@ describe('FeatureFlagProvider', () => {
     );
     /** No automatic refetch after mutation — stale GET could not race with optimistic state. */
     expect(featureFlagsApi.getFeatureFlags).toHaveBeenCalledTimes(1);
+  });
+
+  it('invalidates navItems cache after successful flag update', async () => {
+    const user = userEvent.setup();
+    const { queryClient, Wrapper } = createWrapper();
+
+    render(<FlagProbe />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('flag-value')).toHaveTextContent('false');
+    });
+
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    await user.click(screen.getByRole('button', { name: 'enable' }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('flag-value')).toHaveTextContent('true');
+    });
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: ['navItems'] }),
+    );
+  });
+
+  it('issues a direct GET /feature-flags fetch when bootstrap did not seed the cache (fallback path)', async () => {
+    // useBootstrapReady returns true (mocked above) but the cache is empty —
+    // simulates bootstrap failing to seed the featureFlags key.
+    const { Wrapper } = createWrapper();
+
+    render(<FlagProbe />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(featureFlagsApi.getFeatureFlags).toHaveBeenCalledTimes(1);
+    });
   });
 });

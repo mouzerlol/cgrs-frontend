@@ -2,7 +2,7 @@
  * API client for feature flags endpoints.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { getApiUrl, getServerFetchHeaders } from '@/lib/api/api-url';
 
 export interface FeatureFlagsResponse {
   flags: Record<string, boolean>;
@@ -22,11 +22,19 @@ export interface FeatureFlagUpdateResponse {
 }
 
 /**
- * Fetch all feature flags (public endpoint - no auth required).
+ * Fetch all feature flags (GET is public; optional Bearer helps gateways and matches other API calls).
  */
-export async function getFeatureFlags(): Promise<FeatureFlagsResponse> {
-  const res = await fetch(`${API_URL}/api/v1/feature-flags`, {
+export async function getFeatureFlags(getToken?: () => Promise<string | null>): Promise<FeatureFlagsResponse> {
+  const headers: Record<string, string> = { ...getServerFetchHeaders() };
+  if (getToken) {
+    const token = await getToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  const res = await fetch(`${getApiUrl()}/api/v1/feature-flags`, {
     cache: 'no-store',
+    ...(Object.keys(headers).length > 0 ? { headers } : {}),
   });
 
   if (!res.ok) {
@@ -46,7 +54,7 @@ export async function updateFeatureFlag(
   const token = await getToken();
   const authToken = token ?? 'dev-token';
 
-  const res = await fetch(`${API_URL}/api/v1/feature-flags`, {
+  const res = await fetch(`${getApiUrl()}/api/v1/feature-flags`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

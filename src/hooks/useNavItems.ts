@@ -9,18 +9,18 @@
 import { useAuth } from '@clerk/nextjs';
 import { useQuery } from '@tanstack/react-query';
 import { getNavItems, type NavItemsResponse } from '@/lib/api/nav-items';
-
-const STALE_TIME_NAV_ITEMS = 60 * 60 * 1000; // 1 hour - matches Redis TTL
+import { STALE_TIMES } from '@/lib/cache-config';
+import { queryKeys } from '@/lib/query-keys';
 
 export function useNavItems() {
   const { getToken, isLoaded, userId } = useAuth();
 
   return useQuery<NavItemsResponse, Error>({
     /** Separate cache per signed-in user so nav refetches on login/logout. */
-    queryKey: ['navItems', userId ?? 'anonymous'],
+    queryKey: queryKeys.navItems(userId),
     queryFn: () => getNavItems(getToken),
     enabled: isLoaded,
-    staleTime: STALE_TIME_NAV_ITEMS,
+    staleTime: STALE_TIMES.CONTENT,
     refetchOnWindowFocus: false,
     retry: 1,
   });

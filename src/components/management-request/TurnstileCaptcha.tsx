@@ -79,11 +79,13 @@ function loadTurnstileScript(): Promise<void> {
 export const TurnstileCaptcha = forwardRef<TurnstileCaptchaRef, TurnstileCaptchaProps>(
   function TurnstileCaptcha({ onTokenChange, className }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
     const onTokenChangeRef = useRef(onTokenChange);
     const [isReady, setIsReady] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [scale, setScale] = useState(1);
 
     onTokenChangeRef.current = onTokenChange;
 
@@ -101,6 +103,16 @@ export const TurnstileCaptcha = forwardRef<TurnstileCaptchaRef, TurnstileCaptcha
         onTokenChangeRef.current?.(null);
       },
     }));
+
+    useEffect(() => {
+      const el = wrapperRef.current;
+      if (!el) return;
+      const ro = new ResizeObserver(([entry]) => {
+        setScale(Math.min(1, entry.contentRect.width / 300));
+      });
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
 
     useEffect(() => {
       const sitekey = normalizeTurnstileSiteKey(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
@@ -196,10 +208,17 @@ export const TurnstileCaptcha = forwardRef<TurnstileCaptchaRef, TurnstileCaptcha
             </div>
           </div>
           <div
-            id={CAPTCHA_CONTAINER_ID}
-            ref={containerRef}
-            className={cn('mt-md min-h-[65px]', !isReady && 'opacity-50')}
-          />
+            ref={wrapperRef}
+            className="mt-md overflow-hidden"
+            style={scale < 1 ? { height: `${Math.round(scale * 65)}px` } : undefined}
+          >
+            <div
+              id={CAPTCHA_CONTAINER_ID}
+              ref={containerRef}
+              className={cn('min-h-[65px]', !isReady && 'opacity-50')}
+              style={scale < 1 ? { transform: `scale(${scale})`, transformOrigin: 'top left' } : undefined}
+            />
+          </div>
         </div>
       </div>
     );

@@ -2,14 +2,27 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { LayoutGrid, ClipboardList, Scale, Users } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { LayoutGrid, ClipboardList, Scale, ScrollText, Users } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import portfoliosData from '@/data/portfolios.json';
 import boardsData from '@/data/boards.json';
 import decisionsData from '@/data/decisions.json';
 
-const features = [
+type HubFeature = {
+  id: string;
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  href: string;
+  color: 'forest' | 'terracotta' | 'sage' | 'amber';
+  count?: number;
+  countLabel?: string;
+};
+
+const baseFeatures: HubFeature[] = [
   {
     id: 'users',
     name: 'Users',
@@ -50,6 +63,15 @@ const features = [
   },
 ];
 
+const signaturesFeature: HubFeature = {
+  id: 'signatures',
+  name: 'Signatures',
+  description: 'Review and export petition signatures collected from residents',
+  icon: ScrollText,
+  href: '/work-management/signatures',
+  color: 'terracotta',
+};
+
 const colorMap = {
   forest: {
     bg: 'bg-forest/5',
@@ -86,6 +108,10 @@ const colorMap = {
 };
 
 export default function WorkManagementHub() {
+  const { data: currentUser } = useCurrentUser();
+  const isSuperadmin = currentUser?.is_superadmin ?? false;
+  const features = isSuperadmin ? [...baseFeatures, signaturesFeature] : baseFeatures;
+
   return (
     <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
       <WorkManagementNavBar title="Work Management" />
@@ -97,7 +123,7 @@ export default function WorkManagementHub() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-sage-light/50 rounded-[20px] p-6 md:p-8 mb-8">
+            <div className="bg-sage-light/50 border border-black rounded-none p-6 md:p-8 mb-8">
               <h1 className="font-display text-3xl md:text-4xl font-semibold text-forest mb-2">
                 Work Management
               </h1>

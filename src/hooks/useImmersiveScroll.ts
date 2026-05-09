@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useCallback, useEffect, useState } from 'react';
+import { getFixedSiteHeaderHeight } from '@/lib/site-layout';
 
 /**
  * Hook for scroll behavior - positions content below fixed nav on user interaction.
@@ -33,8 +34,8 @@ export function useImmersiveScroll(
 
     const rect = sectionRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const navHeight = 64;
-    const targetY = rect.top + scrollTop - navHeight;
+    const headerHeight = getFixedSiteHeaderHeight();
+    const targetY = rect.top + scrollTop - headerHeight;
 
     window.scrollTo({
       top: Math.max(0, targetY),

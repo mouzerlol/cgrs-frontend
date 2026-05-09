@@ -1,6 +1,7 @@
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import FooterNewsletter from '@/components/sections/FooterNewsletter';
+import BetaBanner from '@/components/layout/BetaBanner';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { AppToaster } from '@/components/ui/AppToaster';
 
@@ -21,6 +22,7 @@ export default function Layout({ children }: LayoutProps) {
         Skip to main content
       </a>
       <Header />
+      <BetaBanner />
       <ScrollToTop />
       <main id="main-content" className="flex-grow">
         {children}

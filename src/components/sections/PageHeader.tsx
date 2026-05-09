@@ -47,13 +47,14 @@ export default function PageHeader({
   const isFlush = variant === 'flush';
 
   // Variant-specific classes
-  // Note: Top padding must account for fixed nav height (~64px) + margin
+  // Note: Top padding must account for fixed nav height (~64px) + margin,
+  // plus the optional beta banner via --site-banner-height (defaults to 0).
   // Compact reduces bottom padding; flush removes it entirely
   const sectionClasses = isFlush
-    ? 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden'
+    ? 'page-header border-0 pt-[calc(5rem_+_var(--site-banner-height))] pb-0 md:pt-[calc(6rem_+_var(--site-banner-height))] relative overflow-hidden'
     : isCompact
-      ? 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden'
-      : 'page-header border-0 pt-20 pb-0 md:pt-24 relative overflow-hidden';
+      ? 'page-header border-0 pt-[calc(5rem_+_var(--site-banner-height))] pb-0 md:pt-[calc(6rem_+_var(--site-banner-height))] relative overflow-hidden'
+      : 'page-header border-0 pt-[calc(5rem_+_var(--site-banner-height))] pb-0 md:pt-[calc(6rem_+_var(--site-banner-height))] relative overflow-hidden';
 
   const containerMinHeight = isCompact ? 'min-h-[100px]' : 'min-h-[200px]';
 

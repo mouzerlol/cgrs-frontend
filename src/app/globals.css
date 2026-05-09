@@ -39,6 +39,9 @@
   --transition-medium: 0.4s var(--ease-out);
   --transition-slow: 0.6s var(--ease-out);
 
+  /* Site banner height; bumped by <BetaBanner /> when its flag is on, so page top offsets can absorb it. */
+  --site-banner-height: 0px;
+
   /* Texture Patterns — SVG data URIs, too large for Tailwind config */
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
   --texture-dots: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M1 1h1v1H1z' fill='%231A2218' fill-opacity='0.03'/%3E%3C/svg%3E");
@@ -342,7 +345,7 @@
   overflow-y: auto;
   height: fit-content;
   /* Cap height so long POI lists scroll inside the panel; do not use position:sticky here —
-     sticky + top:64px caused a visible jump when the page scroll-into-view ran, because the
+     sticky + top matching the fixed header caused a visible jump when scroll-into-view ran, because the
      sticky offset reflowed relative to the viewport while the map column stayed in flow. */
   max-height: calc(100vh - 180px);
   align-self: start;

@@ -13,6 +13,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { getFeatureFlags, updateFeatureFlag, type FeatureFlagsResponse } from '@/lib/api/feature-flags';
 import { STALE_TIMES } from '@/lib/cache-config';
+import { queryKeys } from '@/lib/query-keys';
+import { useBootstrapReady } from '@/components/providers/BootstrapProvider';
 
 interface FeatureFlagContextValue {
   flags: Record<string, boolean>;
@@ -29,10 +31,15 @@ const DEFAULT_FLAGS: Record<string, boolean> = {};
 export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const isBootstrapReady = useBootstrapReady();
 
+  // Bootstrap seeds queryKeys.featureFlags on sign-in. When the cache is fresh,
+  // this query finds a cache HIT and does not fetch. When bootstrap fails (empty
+  // cache), this fires as the fallback fetch. Feature flags endpoint is public.
   const { data, isLoading, isError } = useQuery<FeatureFlagsResponse, Error>({
-    queryKey: ['featureFlags'],
-    queryFn: getFeatureFlags,
+    queryKey: queryKeys.featureFlags,
+    queryFn: () => getFeatureFlags(getToken),
+    enabled: isBootstrapReady,
     staleTime: STALE_TIMES.CONTENT,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -46,11 +53,11 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
       return updateFeatureFlag({ id, enabled }, getToken);
     },
     onMutate: async ({ id, enabled }) => {
-      await queryClient.cancelQueries({ queryKey: ['featureFlags'] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.featureFlags });
 
-      const previous = queryClient.getQueryData<FeatureFlagsResponse>(['featureFlags']);
+      const previous = queryClient.getQueryData<FeatureFlagsResponse>(queryKeys.featureFlags);
 
-      queryClient.setQueryData<FeatureFlagsResponse>(['featureFlags'], (old) => {
+      queryClient.setQueryData<FeatureFlagsResponse>(queryKeys.featureFlags, (old) => {
         if (!old) {
           return { flags: { [id]: enabled }, updated_at: null };
         }
@@ -64,13 +71,17 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
     },
     onError: (_err, _variables, context) => {
       if (context?.previous !== undefined) {
-        queryClient.setQueryData(['featureFlags'], context.previous);
+        queryClient.setQueryData(queryKeys.featureFlags, context.previous);
       } else {
-        queryClient.invalidateQueries({ queryKey: ['featureFlags'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.featureFlags });
       }
+      queryClient.invalidateQueries({ queryKey: ['navItems'] });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['navItems'] });
     },
     onSuccess: (response, { id }) => {
-      queryClient.setQueryData<FeatureFlagsResponse>(['featureFlags'], (old) => {
+      queryClient.setQueryData<FeatureFlagsResponse>(queryKeys.featureFlags, (old) => {
         if (!old) {
           return { flags: { [id]: response.enabled }, updated_at: null };
         }
@@ -90,7 +101,7 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   );
 
   const refetch = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ['featureFlags'] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.featureFlags });
   }, [queryClient]);
 
   return (

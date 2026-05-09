@@ -61,7 +61,7 @@ describe('MapSection', () => {
     };
     expect(props.tileUrl).toContain('tile.openstreetmap.org');
     expect(props.tileUrl).toContain('{z}/{x}/{y}.png');
-    expect(props.maxZoom).toBe(18);
+    expect(props.maxZoom).toBe(19);
   });
 
   it('renders sidebar with Points of Interest header', () => {

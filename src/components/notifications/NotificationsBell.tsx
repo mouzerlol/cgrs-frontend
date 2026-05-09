@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Popover, PopoverButton, PopoverPanel, Transition, TransitionChild } from '@headlessui/react';
 import { Bell, X } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
+import { siteHeaderDropdownSurface } from '@/components/layout/siteChrome';
 import { cn } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useNotifications, useUnreadCount, useMarkRead } from '@/hooks/useNotifications';
@@ -52,8 +53,8 @@ function NotificationRow({ item, onClose }: { item: NotificationItem; onClose: (
       onClick={handleClick}
       className={cn(
         'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors',
-        'hover:bg-sage/20 border-b border-bone/10 last:border-b-0',
-        !item.is_read && 'bg-terracotta/5'
+        'hover:bg-white/10 border-b border-white/10 last:border-b-0',
+        !item.is_read && 'bg-terracotta/15'
       )}
     >
       <div className="flex-1 min-w-0">
@@ -61,14 +62,14 @@ function NotificationRow({ item, onClose }: { item: NotificationItem; onClose: (
           {!item.is_read && (
             <span className="h-2 w-2 shrink-0 rounded-full bg-terracotta" aria-hidden="true" />
           )}
-          <p className={cn('text-sm truncate', item.is_read ? 'text-forest/60' : 'text-forest font-medium')}>
+          <p className={cn('text-sm truncate', item.is_read ? 'text-bone/60' : 'text-bone font-medium')}>
             {item.title}
           </p>
         </div>
-        <p className={cn('text-xs mt-0.5 line-clamp-2', item.is_read ? 'text-forest/40' : 'text-forest/70')}>
+        <p className={cn('text-xs mt-0.5 line-clamp-2', item.is_read ? 'text-bone/45' : 'text-bone/80')}>
           {item.body}
         </p>
-        <p className="text-[10px] text-forest/40 mt-1">{formatTimeAgo(item.created_at)}</p>
+        <p className="text-[10px] text-bone/45 mt-1">{formatTimeAgo(item.created_at)}</p>
       </div>
     </button>
   );
@@ -83,13 +84,13 @@ interface NotificationsPanelProps {
 function NotificationsPanel({ items, isLoading, onClose }: NotificationsPanelProps) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-bone/10">
-        <h2 className="font-display text-base text-forest">Notifications</h2>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <h2 className="font-display text-base text-bone">Notifications</h2>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close notifications"
-          className="p-1 rounded text-forest/60 hover:text-forest hover:bg-sage/20 transition-colors"
+          className="p-1 rounded text-bone/70 hover:text-bone hover:bg-white/10 transition-colors"
         >
           <X className="h-4 w-4" aria-hidden />
         </button>
@@ -98,18 +99,18 @@ function NotificationsPanel({ items, isLoading, onClose }: NotificationsPanelPro
       <div className="flex-1 overflow-y-auto">
         {isLoading && items.length === 0 ? (
           <div className="p-8 text-center">
-            <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-forest/10">
-              <div className="h-3 w-3 animate-pulse rounded-full bg-forest/30" />
+            <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+              <div className="h-3 w-3 animate-pulse rounded-full bg-bone/40" />
             </div>
-            <p className="text-xs text-forest/50 mt-2">Loading...</p>
+            <p className="text-xs text-bone/50 mt-2">Loading...</p>
           </div>
         ) : items.length === 0 ? (
           <div className="p-8 text-center">
-            <Bell className="mx-auto h-8 w-8 text-forest/20" strokeWidth={1.5} aria-hidden />
-            <p className="text-sm text-forest/50 mt-2">No notifications yet</p>
+            <Bell className="mx-auto h-8 w-8 text-bone/25" strokeWidth={1.5} aria-hidden />
+            <p className="text-sm text-bone/50 mt-2">No notifications yet</p>
           </div>
         ) : (
-          <div className="divide-y divide-bone/10">
+          <div className="divide-y divide-white/10">
             {items.map((item) => (
               <NotificationRow key={item.id} item={item} onClose={onClose} />
             ))}
@@ -133,11 +134,16 @@ export default function NotificationsBell({ className }: { className?: string })
   const count = unreadData?.total ?? 0;
   const items = notificationsData?.items ?? [];
 
-  function handleClose() {
+  /** Mark section read when closing if anything was still unread (shared by mobile dialog + desktop popover). */
+  function runCloseSideEffects() {
     const hasUnread = items.some((item) => !item.is_read);
     if (hasUnread) {
       markRead.mutate({ nav_section: 'profile_verification' });
     }
+  }
+
+  function handleMobilePanelClose() {
+    runCloseSideEffects();
     setPanelOpen(false);
   }
 
@@ -171,17 +177,20 @@ export default function NotificationsBell({ className }: { className?: string })
               <PopoverPanel
                 className={cn(
                   'absolute right-0 top-full mt-2 w-[min(100vw-2rem,22rem)]',
-                  'origin-top-right rounded-2xl border border-white/10',
-                  'bg-bone shadow-[0_20px_60px_rgba(26,34,24,0.18)]',
-                  'flex flex-col overflow-hidden',
-                  'focus:outline-none'
+                  'origin-top-right rounded-2xl flex flex-col overflow-hidden focus:outline-none',
+                  siteHeaderDropdownSurface
                 )}
               >
-                <NotificationsPanel
-                  items={items}
-                  isLoading={isLoading}
-                  onClose={handleClose}
-                />
+                {({ close }) => (
+                  <NotificationsPanel
+                    items={items}
+                    isLoading={isLoading}
+                    onClose={() => {
+                      runCloseSideEffects();
+                      close();
+                    }}
+                  />
+                )}
               </PopoverPanel>
             </Transition>
           </Popover>
@@ -202,7 +211,7 @@ export default function NotificationsBell({ className }: { className?: string })
             </button>
 
             <Transition show={panelOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-[1000]" onClose={handleClose}>
+              <Dialog as="div" className="relative z-[1000]" onClose={handleMobilePanelClose}>
                 <TransitionChild
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -226,11 +235,11 @@ export default function NotificationsBell({ className }: { className?: string })
                       leaveFrom="translate-x-0"
                       leaveTo="translate-x-full"
                     >
-                      <DialogPanel className="w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col min-h-full">
+                      <DialogPanel className="w-[85%] max-w-sm flex flex-col min-h-full border-l border-white/10 bg-forest text-bone">
                         <NotificationsPanel
                           items={items}
                           isLoading={isLoading}
-                          onClose={handleClose}
+                          onClose={handleMobilePanelClose}
                         />
                       </DialogPanel>
                     </TransitionChild>

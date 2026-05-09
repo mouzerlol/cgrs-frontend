@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import { SignInButton, useAuth } from '@clerk/nextjs';
 import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
+import { siteHeaderDropdownSurface } from '@/components/layout/siteChrome';
 import NotificationsBell from '@/components/notifications/NotificationsBell';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { useNavItems } from '@/hooks/useNavItems';
 import { prefetchDiscussionCore } from '@/lib/discussion-prefetch';
+import { cn } from '@/lib/utils';
 
 const NAV_LINK_CLASS =
   'text-sm font-medium tracking-wide uppercase relative px-2 py-1.5 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-current after:transition-[width] after:duration-[250ms] after:ease-out-custom hover:after:w-full text-bone whitespace-nowrap';
@@ -165,7 +167,12 @@ export default function Navigation() {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-3 w-56 origin-top-right bg-forest/95 backdrop-blur-xl rounded-xl shadow-lg ring-1 ring-white/10 border border-white/10 py-2 z-50">
+              <div
+                className={cn(
+                  'absolute right-0 mt-3 w-56 origin-top-right rounded-xl py-2 z-50',
+                  siteHeaderDropdownSurface
+                )}
+              >
                 {overflowItems.map((item) => (
                   <Link
                     key={item.name}

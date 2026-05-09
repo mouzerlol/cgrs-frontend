@@ -69,7 +69,7 @@ export default function Header() {
     : 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone';
 
   return (
-    <header className={headerClassName}>
+    <header data-site-header className={headerClassName}>
       {/* Logo */}
       <Link
         href="/"
@@ -272,3 +272,4 @@ export default function Header() {
     </header>
   );
 }
+
