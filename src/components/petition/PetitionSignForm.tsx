@@ -11,6 +11,7 @@ import {
   type TurnstileCaptchaRef,
 } from '@/components/management-request/TurnstileCaptcha';
 import { signPetition } from '@/lib/api/petition';
+import { track } from '@/lib/analytics/events';
 
 type ResidentType = 'tenant' | 'owner';
 
@@ -37,7 +38,6 @@ interface FieldErrors {
 }
 
 interface PetitionSignFormProps {
-  supporterCount: number;
   goal: number;
 }
 
@@ -45,16 +45,18 @@ function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-export default function PetitionSignForm({ supporterCount, goal }: PetitionSignFormProps) {
+export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
   const router = useRouter();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [residentType, setResidentType] = useState<ResidentType | ''>('');
   const [address, setAddress] = useState('');
+  const [emailUpdatesConsent, setEmailUpdatesConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [maskedEmail, setMaskedEmail] = useState('');
+  const [signatureNumber, setSignatureNumber] = useState(0);
   const [shareState, setShareState] = useState<'idle' | 'copied'>('idle');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [bannerError, setBannerError] = useState<string | null>(null);
@@ -111,16 +113,23 @@ export default function PetitionSignForm({ supporterCount, goal }: PetitionSignF
 
     setIsSubmitting(true);
     try {
-      await signPetition({
+      const result = await signPetition({
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         email: email.trim(),
         resident_type: residentType as ResidentType,
         address: address.trim() || undefined,
+        email_updates_consent: emailUpdatesConsent,
         turnstile_token: token,
       });
+      setSignatureNumber(result.signature_number);
       setMaskedEmail(maskEmail(email.trim()));
       setSubmitted(true);
+      track('petition_signed', {
+        resident_type: residentType as ResidentType,
+        has_address: Boolean(address.trim()),
+        email_updates_consent: emailUpdatesConsent,
+      });
       router.refresh();
     } catch (err: unknown) {
       const status = (err as { status?: number }).status;
@@ -169,7 +178,6 @@ export default function PetitionSignForm({ supporterCount, goal }: PetitionSignF
   }
 
   if (submitted) {
-    const signatureNumber = supporterCount + 1;
     const remaining = Math.max(0, goal - signatureNumber);
     const goalReached = remaining === 0;
 
@@ -364,8 +372,7 @@ export default function PetitionSignForm({ supporterCount, goal }: PetitionSignF
 
         <div className="flex flex-col gap-1.5">
           <label className={labelCls} htmlFor="address">
-            Property address{' '}
-            <span className="font-normal text-forest/50">(optional)</span>
+            Property address
           </label>
           <input
             id="address"
@@ -386,6 +393,31 @@ export default function PetitionSignForm({ supporterCount, goal }: PetitionSignF
 
       <TurnstileCaptcha ref={turnstileRef} />
 
+      <div className="flex flex-col gap-3">
+        <p className="font-body text-xs text-forest/60">
+          By signing, you confirm you&rsquo;ve read how we handle your details. We only use them to verify
+          and tally signatures; they&rsquo;re never published or shared.{' '}
+          <Link href="/petition/privacy-policy" className="underline hover:text-forest/90">
+            Read our privacy policy
+          </Link>
+          .
+        </p>
+        <label htmlFor="email-updates" className="group flex cursor-pointer items-start gap-3">
+          <input
+            id="email-updates"
+            type="checkbox"
+            checked={emailUpdatesConsent}
+            onChange={(e) => setEmailUpdatesConsent(e.target.checked)}
+            disabled={isSubmitting}
+            className="mt-0.5 h-4 w-4 shrink-0 rounded-[4px] border-sage accent-terracotta focus:outline-none focus-visible:ring-[3px] focus-visible:ring-terracotta/20 disabled:cursor-not-allowed disabled:opacity-60"
+          />
+          <span className="font-body text-sm text-forest/80 group-hover:text-forest">
+            Email me updates about this petition. We won&rsquo;t share your address, and you can unsubscribe
+            anytime.
+          </span>
+        </label>
+      </div>
+
       {bannerError && (
         <p
           role="alert"
@@ -395,13 +427,7 @@ export default function PetitionSignForm({ supporterCount, goal }: PetitionSignF
         </p>
       )}
 
-      <div className="flex flex-row flex-wrap items-center justify-between gap-sm">
-        <p className="font-body text-xs text-forest/50">
-          What will we do with your details?{' '}
-          <Link href="/petition/privacy-policy" className="underline hover:text-forest/80">
-            Read our privacy policy
-          </Link>
-        </p>
+      <div className="flex justify-end">
         <button
           type="submit"
           disabled={isSubmitting}

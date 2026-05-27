@@ -20,6 +20,7 @@ import TaskLocationPicker from './TaskLocationPicker';
 import TaskImageGallery from './TaskImageGallery';
 import TaskComments from './TaskComments';
 import TaskActivityLog from './TaskActivityLog';
+import CorrespondencePanel from './correspondence/CorrespondencePanel';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { DeleteTaskDialog } from './DeleteTaskDialog';
 
@@ -41,7 +42,7 @@ export default function TaskDetailModal({
   onDelete,
   onAssetUploadError,
 }: TaskDetailModalProps) {
-  const [activeTab, setActiveTab] = useState<'comments' | 'activity'>('comments');
+  const [activeTab, setActiveTab] = useState<'comments' | 'correspondence' | 'activity'>('comments');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const assigneeFieldRef = useRef<InlineEditFieldHandle>(null);
   const [assigneeFieldEditing, setAssigneeFieldEditing] = useState(false);
@@ -341,7 +342,7 @@ export default function TaskDetailModal({
                 </Card>
               </div>
 
-              {/* Comments & Activity Section */}
+              {/* Comments / Correspondence / Activity Section */}
               <Card className="rounded-none overflow-hidden shadow-lg">
                 <div className="flex border-b border-sage/5 bg-bone/30 p-1 gap-1">
                   <button
@@ -354,6 +355,18 @@ export default function TaskDetailModal({
                     )}
                   >
                     Comments {task.comments?.length ? `(${task.comments.length})` : ''}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('correspondence')}
+                    className={cn(
+                      "flex-1 py-2 px-4 text-[10px] font-bold uppercase tracking-widest transition-all inline-flex items-center justify-center gap-1.5",
+                      activeTab === 'correspondence'
+                        ? "bg-white text-forest shadow-sm border border-sage/10"
+                        : "text-forest/40 hover:text-forest/60 hover:bg-white/50"
+                    )}
+                  >
+                    <span aria-hidden>✉</span>
+                    Correspondence
                   </button>
                   <button
                     onClick={() => setActiveTab('activity')}
@@ -371,6 +384,8 @@ export default function TaskDetailModal({
                 <div className="p-6">
                   {activeTab === 'comments' ? (
                     <TaskComments taskId={task.id} comments={task.comments || []} />
+                  ) : activeTab === 'correspondence' ? (
+                    <CorrespondencePanel taskId={task.id} />
                   ) : (
                     <TaskActivityLog task={task} />
                   )}

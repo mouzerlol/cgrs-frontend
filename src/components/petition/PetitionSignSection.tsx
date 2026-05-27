@@ -44,7 +44,7 @@ export default function PetitionSignSection({
       className="mb-10 bg-white rounded-xl border border-sage/30 p-6 md:p-8 shadow-sm scroll-mt-24"
     >
       <h3 className="font-semibold text-forest mb-4">Sign this petition</h3>
-      <PetitionSignForm supporterCount={supporterCount} goal={goal} />
+      <PetitionSignForm goal={goal} />
     </section>
   );
 }

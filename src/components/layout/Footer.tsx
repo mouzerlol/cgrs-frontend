@@ -35,6 +35,7 @@ const SUPPORT_LINKS = [
   { name: 'Help FAQ', href: '/guidelines#faq' },
   { name: 'Community Rules', href: '/guidelines' },
   { name: 'Privacy Policy', href: '/privacy-policy' },
+  { name: 'Why we sleep', href: '/sustainability' },
   { name: 'Contact Us', href: '/contact' },
 ];
 

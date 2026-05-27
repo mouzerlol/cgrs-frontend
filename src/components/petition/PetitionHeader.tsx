@@ -112,14 +112,9 @@ export default function PetitionHeader({
             );
           })}
 
+          {/* Pinned to the grid's left edge so the label can't collide with the terracotta goal text */}
           {filledPips > 0 && (
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                top: 0,
-                left: `${(((filledPips - 1) + (filledPips > GOAL_PIP ? 1 : 0)) / (TOTAL_PIPS + 1)) * 100}%`,
-              }}
-            >
+            <div className="absolute top-0 left-0 pointer-events-none">
               <div className="h-5" aria-hidden="true" />
               <div className="mt-2 whitespace-nowrap">
                 <div

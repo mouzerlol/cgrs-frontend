@@ -18,6 +18,7 @@ import type { SidebarCategory } from '@/components/shared/SidebarLayout';
 import { RequestFormFields } from './RequestFormFields';
 import { SuccessConfirmation } from './SuccessConfirmation';
 import { useFormPersistence } from '@/hooks/useFormPersistence';
+import { track } from '@/lib/analytics/events';
 
 const FORM_STORAGE_KEY = 'management-request-draft';
 
@@ -264,6 +265,11 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         setSubmittedId(created.request.id);
         setSubmittedRequestHref(`/profile/reported-issues/${created.request.id}`);
         setIsSubmitted(true);
+        track('report_form_submitted', {
+          form_kind: 'management_request',
+          category: formData.category ?? 'unknown',
+          has_attachment: (formData.photos?.length ?? 0) > 0,
+        });
       } catch (error) {
         console.error('Submission error:', error);
         setErrors({

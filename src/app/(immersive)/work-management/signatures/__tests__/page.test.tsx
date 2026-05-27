@@ -7,6 +7,7 @@ import SignaturesPage from '../page';
 
 const mockGetAdminSignatures = vi.fn();
 const mockDownloadSignaturesCsv = vi.fn();
+const mockDeleteAdminSignature = vi.fn();
 const mockUseCurrentUser = vi.fn();
 const mockUseAuth = vi.fn();
 
@@ -21,6 +22,7 @@ vi.mock('@clerk/nextjs', () => ({
 vi.mock('@/lib/api/petition', () => ({
   getAdminSignatures: (...args: unknown[]) => mockGetAdminSignatures(...args),
   downloadSignaturesCsv: (...args: unknown[]) => mockDownloadSignaturesCsv(...args),
+  deleteAdminSignature: (...args: unknown[]) => mockDeleteAdminSignature(...args),
 }));
 
 vi.mock('next/link', () => ({
@@ -60,44 +62,108 @@ const residentUser: CurrentUserResponse = {
   is_superadmin: false,
 };
 
-const fixtureResponse: AdminSignaturesListResponse = {
-  signatures: [
-    {
-      id: 'sig-1',
-      first_name: 'Ada',
-      last_name: 'Lovelace',
-      email: 'ada@example.com',
-      resident_type: 'owner',
-      address: '1 Analytical Engine Way',
-      ip_address: '203.0.113.7',
-      signed_at: '2026-05-05T12:00:00Z',
-    },
-  ],
-};
+function makeResponse(overrides: Partial<AdminSignaturesListResponse> = {}): AdminSignaturesListResponse {
+  return {
+    signatures: [
+      {
+        id: 'sig-1',
+        first_name: 'Ada',
+        last_name: 'Lovelace',
+        email: 'ada@example.com',
+        resident_type: 'owner',
+        address: '1 Analytical Engine Way',
+        ip_address: '203.0.113.7',
+        email_updates_consent: false,
+        consent_recorded_at: null,
+        signed_at: '2026-05-05T12:00:00Z',
+      },
+    ],
+    total: 1,
+    offset: 0,
+    limit: 50,
+    has_more: false,
+    ...overrides,
+  };
+}
 
 describe('SignaturesPage', () => {
   beforeEach(() => {
     mockGetAdminSignatures.mockReset();
     mockDownloadSignaturesCsv.mockReset();
+    mockDeleteAdminSignature.mockReset();
     mockUseCurrentUser.mockReset();
     mockUseAuth.mockReset();
   });
 
-  it('renders the signatures table for a superadmin', async () => {
+  it('renders the signatures table for a superadmin and shows total in the header', async () => {
     mockUseAuth.mockReturnValue({
       isLoaded: true,
       isSignedIn: true,
       getToken: async () => 'token',
     });
     mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
-    mockGetAdminSignatures.mockResolvedValue(fixtureResponse);
+    mockGetAdminSignatures.mockResolvedValue(makeResponse({ total: 137, has_more: true }));
 
     renderWithQueryClient(<SignaturesPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
     });
+    expect(screen.getByText('137 signatures collected')).toBeInTheDocument();
     expect(mockGetAdminSignatures).toHaveBeenCalled();
+  });
+
+  it('passes pagination + sort parameters to the API', async () => {
+    mockUseAuth.mockReturnValue({
+      isLoaded: true,
+      isSignedIn: true,
+      getToken: async () => 'token',
+    });
+    mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
+    mockGetAdminSignatures.mockResolvedValue(makeResponse({ total: 137, has_more: true }));
+
+    renderWithQueryClient(<SignaturesPage />);
+
+    await waitFor(() => {
+      expect(mockGetAdminSignatures).toHaveBeenCalled();
+    });
+    const [, params] = mockGetAdminSignatures.mock.calls[0];
+    expect(params).toMatchObject({ offset: 0, limit: 50, sort: 'signed_at', order: 'desc' });
+  });
+
+  it('renders the pager when total exceeds the page size', async () => {
+    mockUseAuth.mockReturnValue({
+      isLoaded: true,
+      isSignedIn: true,
+      getToken: async () => 'token',
+    });
+    mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
+    mockGetAdminSignatures.mockResolvedValue(makeResponse({ total: 137, has_more: true }));
+
+    renderWithQueryClient(<SignaturesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/showing 1–\d+ of 137/i)).toBeInTheDocument();
+    });
+    expect(screen.getByRole('button', { name: /next page/i })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: /previous page/i })).toBeDisabled();
+  });
+
+  it('hides the pager when total fits in one page', async () => {
+    mockUseAuth.mockReturnValue({
+      isLoaded: true,
+      isSignedIn: true,
+      getToken: async () => 'token',
+    });
+    mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
+    mockGetAdminSignatures.mockResolvedValue(makeResponse({ total: 1 }));
+
+    renderWithQueryClient(<SignaturesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+    });
+    expect(screen.queryByRole('button', { name: /next page/i })).not.toBeInTheDocument();
   });
 
   it('renders Access Denied for a non-superadmin and does not fetch signatures', async () => {
@@ -107,7 +173,7 @@ describe('SignaturesPage', () => {
       getToken: async () => 'token',
     });
     mockUseCurrentUser.mockReturnValue({ data: residentUser, isLoading: false });
-    mockGetAdminSignatures.mockResolvedValue(fixtureResponse);
+    mockGetAdminSignatures.mockResolvedValue(makeResponse());
 
     renderWithQueryClient(<SignaturesPage />);
 
@@ -124,7 +190,7 @@ describe('SignaturesPage', () => {
       getToken: async () => 'token',
     });
     mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
-    mockGetAdminSignatures.mockResolvedValue(fixtureResponse);
+    mockGetAdminSignatures.mockResolvedValue(makeResponse());
     mockDownloadSignaturesCsv.mockResolvedValue(undefined);
 
     renderWithQueryClient(<SignaturesPage />);
@@ -144,7 +210,7 @@ describe('SignaturesPage', () => {
       getToken: async () => 'token',
     });
     mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
-    mockGetAdminSignatures.mockResolvedValue(fixtureResponse);
+    mockGetAdminSignatures.mockResolvedValue(makeResponse());
     mockDownloadSignaturesCsv.mockRejectedValue(new Error('boom'));
 
     renderWithQueryClient(<SignaturesPage />);
@@ -164,7 +230,7 @@ describe('SignaturesPage', () => {
       getToken: async () => null,
     });
     mockUseCurrentUser.mockReturnValue({ data: undefined, isLoading: false });
-    mockGetAdminSignatures.mockResolvedValue(fixtureResponse);
+    mockGetAdminSignatures.mockResolvedValue(makeResponse());
 
     renderWithQueryClient(<SignaturesPage />);
 
@@ -172,5 +238,26 @@ describe('SignaturesPage', () => {
       expect(screen.getByText(/access denied/i)).toBeInTheDocument();
     });
     expect(mockGetAdminSignatures).not.toHaveBeenCalled();
+  });
+
+  it('calls deleteAdminSignature when the row delete is confirmed', async () => {
+    mockUseAuth.mockReturnValue({
+      isLoaded: true,
+      isSignedIn: true,
+      getToken: async () => 'token',
+    });
+    mockUseCurrentUser.mockReturnValue({ data: superadminUser, isLoading: false });
+    mockGetAdminSignatures.mockResolvedValue(makeResponse());
+    mockDeleteAdminSignature.mockResolvedValue(undefined);
+
+    renderWithQueryClient(<SignaturesPage />);
+
+    const trash = await screen.findByRole('button', { name: /delete signature/i });
+    fireEvent.click(trash);
+    fireEvent.click(screen.getByRole('button', { name: /^confirm$/i }));
+
+    await waitFor(() => {
+      expect(mockDeleteAdminSignature).toHaveBeenCalledWith('sig-1', expect.any(Function));
+    });
   });
 });

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { track } from '@/lib/analytics/events';
 
 interface MapMarkerProps {
   map: L.Map | null;
@@ -16,6 +17,11 @@ interface MapMarkerProps {
   onClick?: () => void;
   onMarkerClick?: (position: [number, number]) => void;
   onCreate?: (marker: L.Marker) => void;
+  /**
+   * If set, a `map_marker_clicked` event is captured when the marker is clicked.
+   * Omit on purely decorative markers (e.g., the homepage boundary marker).
+   */
+  trackingMeta?: { marker_kind: string; marker_id: string };
 }
 
 /**
@@ -36,6 +42,7 @@ export default function MapMarker({
   onClick,
   onMarkerClick,
   onCreate,
+  trackingMeta,
 }: MapMarkerProps) {
   const markerRef = useRef<L.Marker | null>(null);
 
@@ -102,6 +109,12 @@ export default function MapMarker({
         });
       }
 
+      if (trackingMeta) {
+        markerRef.current.on('click', () => {
+          track('map_marker_clicked', trackingMeta);
+        });
+      }
+
       markerRef.current.addTo(map);
 
       if (onCreate) {
@@ -115,7 +128,7 @@ export default function MapMarker({
         markerRef.current = null;
       }
     };
-  }, [map, position, color, size, iconAnchor, popupAnchor, popup, popupDescription, popupType, zIndexOffset, onClick, onMarkerClick, onCreate]);
+  }, [map, position, color, size, iconAnchor, popupAnchor, popup, popupDescription, popupType, zIndexOffset, onClick, onMarkerClick, onCreate, trackingMeta]);
 
   return null;
 }

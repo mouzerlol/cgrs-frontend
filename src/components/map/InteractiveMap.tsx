@@ -157,6 +157,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
                 size={24}
                 popup={`<strong>${poi.name}</strong><p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${poi.description}</p>`}
                 onCreate={handleMarkerCreate(poi.id)}
+                trackingMeta={{ marker_kind: poi.type as string, marker_id: poi.id }}
               />
             );
           })}

@@ -31,9 +31,18 @@ export interface AdminSignatureResponse {
   resident_type: ResidentTypeEnum;
   address: string | null;
   ip_address: string | null;
+  email_updates_consent: boolean;
+  consent_recorded_at: string | null;
   signed_at: string;
 }
 
+export type SignatureSortField = 'name' | 'email' | 'resident_type' | 'signed_at';
+export type SignatureSortOrder = 'asc' | 'desc';
+
 export interface AdminSignaturesListResponse {
   signatures: AdminSignatureResponse[];
+  total: number;
+  offset: number;
+  limit: number;
+  has_more: boolean;
 }

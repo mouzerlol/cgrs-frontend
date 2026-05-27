@@ -11,6 +11,10 @@ function cspApiConnectOrigins() {
   }
 }
 
+// Dev-only allowance so impeccable live mode can load.
+const __impeccableLiveDev =
+  process.env.NODE_ENV === 'development' ? ' http://localhost:8400' : '';
+
 /** Production custom Clerk Frontend API (Dashboard → Domains). clerk.browser.js loads from this origin — must be in script-src. */
 const CLERK_CUSTOM_FRONTEND_ORIGIN = 'https://clerk.cgrs.co.nz';
 
@@ -49,6 +53,27 @@ const nextConfig = {
 
   // Trailing slashes for consistent URLs
   trailingSlash: true,
+
+  // PostHog ingestion endpoints (/ingest/e, /ingest/decide) are slash-sensitive.
+  // Skipping the trailing-slash redirect ensures the reverse-proxy rewrites below
+  // forward exactly the path the SDK requests.
+  skipTrailingSlashRedirect: true,
+
+  // Reverse-proxy PostHog ingestion through cgrs.co.nz so events bypass adblock
+  // domain lists and reuse the existing TLS connection. See
+  // openspec/changes/add-product-analytics-posthog/design.md (D3).
+  async rewrites() {
+    return [
+      {
+        source: '/ingest/static/:path*',
+        destination: 'https://us-assets.i.posthog.com/static/:path*',
+      },
+      {
+        source: '/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
+    ];
+  },
 
   // Image optimization configuration
   images: {
@@ -141,11 +166,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${cspClerkOrigins()} https://*.cloudflare.com`,
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${cspClerkOrigins()} https://*.cloudflare.com${__impeccableLiveDev}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
               "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com https://img.clerk.com https://*.r2.cloudflarestorage.com",
-              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000`.replace(/\s+/g, ' ').trim(),
+              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000${__impeccableLiveDev}`.replace(/\s+/g, ' ').trim(),
               "worker-src 'self' blob:",
               `frame-src 'self' ${cspClerkOrigins()} https://challenges.cloudflare.com`,
               "frame-ancestors 'none'",

@@ -16,6 +16,7 @@ import { useInvalidateCurrentUserOnClerkChange } from '@/hooks/useInvalidateCurr
 import { BootstrapProvider } from '@/components/providers/BootstrapProvider';
 import { FeatureFlagProvider } from '@/components/providers/FeatureFlagProvider';
 import { EasterEggProvider } from '@/components/layout/WindyTextContext';
+import { PostHogProvider } from '@/lib/analytics/PostHogProvider';
 
 // Register curated icon subset locally (CSP blocks api.iconify.design).
 // Run `node scripts/extract-icons.mjs` after adding new icon references.
@@ -67,14 +68,16 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BootstrapProvider>
-        <FeatureFlagProvider>
-          <EasterEggProvider>
-            <ClerkCurrentUserSync />
-            {children}
-          </EasterEggProvider>
-        </FeatureFlagProvider>
-      </BootstrapProvider>
+      <PostHogProvider>
+        <BootstrapProvider>
+          <FeatureFlagProvider>
+            <EasterEggProvider>
+              <ClerkCurrentUserSync />
+              {children}
+            </EasterEggProvider>
+          </FeatureFlagProvider>
+        </BootstrapProvider>
+      </PostHogProvider>
     </QueryClientProvider>
   );
 }

@@ -68,6 +68,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/sustainability/`,
+      lastModified: new Date('2026-05-13'),
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
   ]
 
   // Dynamic blog post routes

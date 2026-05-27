@@ -1,22 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Download, ScrollText } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import Card from '@/components/ui/Card';
 import SignaturesTable from '@/components/work-management/SignaturesTable';
+import SignaturesPager from '@/components/work-management/SignaturesPager';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { downloadSignaturesCsv, getAdminSignatures } from '@/lib/api/petition';
+import {
+  deleteAdminSignature,
+  downloadSignaturesCsv,
+  getAdminSignatures,
+} from '@/lib/api/petition';
+import type { SignatureSortField, SignatureSortOrder } from '@/types/admin';
+
+const PAGE_SIZE = 50;
 
 export default function SignaturesPage() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const isSuperadmin = currentUser?.is_superadmin ?? false;
+  const queryClient = useQueryClient();
+
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [sort, setSort] = useState<SignatureSortField>('signed_at');
+  const [order, setOrder] = useState<SignatureSortOrder>('desc');
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [rowErrorById, setRowErrorById] = useState<Record<string, string | undefined>>({});
+
+  const queryKey = ['admin', 'petition-signatures', offset, sort, order] as const;
 
   const handleDownload = async () => {
     setDownloadError(null);
@@ -30,14 +47,66 @@ export default function SignaturesPage() {
     }
   };
 
-  const {
-    data: response,
-    isLoading: isSignaturesLoading,
-  } = useQuery({
-    queryKey: ['admin', 'petition-signatures'],
-    queryFn: () => getAdminSignatures(getToken),
+  const { data: response, isLoading: isSignaturesLoading } = useQuery({
+    queryKey,
+    queryFn: () =>
+      getAdminSignatures(getToken, { offset, limit: PAGE_SIZE, sort, order }),
     enabled: isLoaded && isSignedIn && isSuperadmin,
   });
+
+  const handleSortChange = useCallback(
+    (nextSort: SignatureSortField, nextOrder: SignatureSortOrder) => {
+      setSort(nextSort);
+      setOrder(nextOrder);
+      setOffset(0);
+      setRowErrorById({});
+    },
+    [],
+  );
+
+  const handleOffsetChange = useCallback((next: number) => {
+    setOffset(next);
+    setRowErrorById({});
+  }, []);
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteAdminSignature(id, getToken),
+    onMutate: (id: string) => {
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+      setRowErrorById((prev) => ({ ...prev, [id]: undefined }));
+    },
+    onSuccess: (_data, id) => {
+      const remainingOnPage = (response?.signatures.length ?? 0) - 1;
+      if (remainingOnPage <= 0 && offset > 0) {
+        setOffset(Math.max(0, offset - PAGE_SIZE));
+      }
+      queryClient.invalidateQueries({ queryKey: ['admin', 'petition-signatures'] });
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    },
+    onError: (_err, id) => {
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      setRowErrorById((prev) => ({ ...prev, [id]: 'Delete failed' }));
+    },
+  });
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteMutation.mutate(id);
+    },
+    [deleteMutation],
+  );
 
   if (!isLoaded || isUserLoading) {
     return (
@@ -88,6 +157,8 @@ export default function SignaturesPage() {
   }
 
   const signatures = response?.signatures ?? [];
+  const total = response?.total ?? 0;
+  const hasMore = response?.has_more ?? false;
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
@@ -113,9 +184,7 @@ export default function SignaturesPage() {
                   </div>
                   <div>
                     <h2 className="font-display text-xl text-forest">Petition Signatures</h2>
-                    <p className="text-sm text-forest/50">
-                      {signatures.length} signatures collected
-                    </p>
+                    <p className="text-sm text-forest/50">{total} signatures collected</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
@@ -143,7 +212,24 @@ export default function SignaturesPage() {
                   </div>
                 </div>
               ) : (
-                <SignaturesTable signatures={signatures} />
+                <>
+                  <SignaturesTable
+                    signatures={signatures}
+                    sort={sort}
+                    order={order}
+                    onSortChange={handleSortChange}
+                    onDelete={handleDelete}
+                    deletingIds={deletingIds}
+                    rowErrorById={rowErrorById}
+                  />
+                  <SignaturesPager
+                    total={total}
+                    offset={offset}
+                    limit={PAGE_SIZE}
+                    hasMore={hasMore}
+                    onChangeOffset={handleOffsetChange}
+                  />
+                </>
               )}
             </div>
           </motion.div>

@@ -1,17 +1,29 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowDown, ArrowUp, Eye, EyeOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatRelativeTimeShort } from '@/lib/format-relative-time';
+import { maskEmail } from '@/lib/format-mask-email';
 import { Badge, type BadgeVariant } from '@/components/ui/Badge';
-import type { AdminSignatureResponse, ResidentTypeEnum } from '@/types/admin';
+import { MaskedValue } from '@/components/work-management/MaskedValue';
+import type {
+  AdminSignatureResponse,
+  ResidentTypeEnum,
+  SignatureSortField,
+  SignatureSortOrder,
+} from '@/types/admin';
 
-type SortField = 'name' | 'email' | 'resident_type' | 'signed_at';
-type SortDirection = 'asc' | 'desc';
+const SORTABLE_FIELDS: SignatureSortField[] = ['name', 'email', 'resident_type', 'signed_at'];
 
 interface SignaturesTableProps {
   signatures: AdminSignatureResponse[];
+  sort: SignatureSortField;
+  order: SignatureSortOrder;
+  onSortChange: (sort: SignatureSortField, order: SignatureSortOrder) => void;
+  onDelete: (id: string) => void;
+  deletingIds: ReadonlySet<string>;
+  rowErrorById?: Record<string, string | undefined>;
 }
 
 const residentTypeBadgeVariant: Record<ResidentTypeEnum, BadgeVariant> = {
@@ -34,10 +46,10 @@ function SortableHeader({
   onSort,
 }: {
   label: string;
-  field: SortField;
-  currentSort: SortField;
-  direction: SortDirection;
-  onSort: (field: SortField) => void;
+  field: SignatureSortField;
+  currentSort: SignatureSortField;
+  direction: SignatureSortOrder;
+  onSort: (field: SignatureSortField) => void;
 }) {
   const isActive = currentSort === field;
   const SortIcon = direction === 'asc' ? ArrowUp : ArrowDown;
@@ -59,90 +71,69 @@ function SortableHeader({
   );
 }
 
-function MaskedIp({
-  ip,
-  isRevealed,
-  onToggle,
-}: {
-  ip: string | null;
-  isRevealed: boolean;
-  onToggle: () => void;
-}) {
-  if (ip === null) {
-    return <span className="text-forest/30">—</span>;
-  }
-
-  return (
-    <div className="inline-flex items-center gap-2">
-      <code className="font-mono text-xs text-forest/60">
-        {isRevealed ? ip : '•••.•••.•••.•••'}
-      </code>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="p-0.5 rounded hover:bg-forest/5 transition-colors"
-        aria-label={isRevealed ? 'Hide IP address' : 'Reveal IP address'}
-      >
-        {isRevealed ? (
-          <EyeOff className="w-3.5 h-3.5 text-forest/40" />
-        ) : (
-          <Eye className="w-3.5 h-3.5 text-forest/40" />
-        )}
-      </button>
-    </div>
-  );
-}
-
 function formatResidentType(type: ResidentTypeEnum): string {
   return type === 'owner' ? 'Owner' : 'Tenant';
 }
 
-export default function SignaturesTable({ signatures }: SignaturesTableProps) {
-  const [sortField, setSortField] = useState<SortField>('signed_at');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [revealedIps, setRevealedIps] = useState<Set<string>>(new Set());
+export default function SignaturesTable({
+  signatures,
+  sort,
+  order,
+  onSortChange,
+  onDelete,
+  deletingIds,
+  rowErrorById,
+}: SignaturesTableProps) {
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
+  // Clear reveal state and any pending confirmation when sort changes — the page
+  // also clears it on offset changes by remounting the table via the query key.
+  useEffect(() => {
+    setRevealed(new Set());
+    setConfirmingDeleteId(null);
+  }, [sort, order]);
+
+  // Document-level Escape listener while a confirmation is open.
+  useEffect(() => {
+    if (confirmingDeleteId === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setConfirmingDeleteId(null);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [confirmingDeleteId]);
+
+  const handleSort = (field: SignatureSortField) => {
+    if (sort === field) {
+      onSortChange(field, order === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
-      setSortDirection('asc');
+      onSortChange(field, 'asc');
     }
   };
 
-  const toggleIp = (id: string) => {
-    setRevealedIps((prev) => {
+  const toggleReveal = (id: string, kind: 'ip' | 'email') => {
+    setRevealed((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      const key = `${id}:${kind}`;
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   };
 
-  const sortedSignatures = [...signatures].sort((a, b) => {
-    let comparison = 0;
-    switch (sortField) {
-      case 'name':
-        comparison = `${a.first_name} ${a.last_name}`.localeCompare(
-          `${b.first_name} ${b.last_name}`,
-        );
-        break;
-      case 'email':
-        comparison = a.email.localeCompare(b.email);
-        break;
-      case 'resident_type':
-        comparison = a.resident_type.localeCompare(b.resident_type);
-        break;
-      case 'signed_at':
-        comparison = new Date(a.signed_at).getTime() - new Date(b.signed_at).getTime();
-        break;
-    }
-    return sortDirection === 'asc' ? comparison : -comparison;
-  });
+  const handleTrash = (id: string) => {
+    setConfirmingDeleteId(id);
+  };
+
+  const handleCancel = () => {
+    setConfirmingDeleteId(null);
+  };
+
+  const handleConfirm = (id: string) => {
+    onDelete(id);
+    setConfirmingDeleteId(null);
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -153,8 +144,8 @@ export default function SignaturesTable({ signatures }: SignaturesTableProps) {
               <SortableHeader
                 label="Name"
                 field="name"
-                currentSort={sortField}
-                direction={sortDirection}
+                currentSort={sort}
+                direction={order}
                 onSort={handleSort}
               />
             </th>
@@ -162,8 +153,8 @@ export default function SignaturesTable({ signatures }: SignaturesTableProps) {
               <SortableHeader
                 label="Email"
                 field="email"
-                currentSort={sortField}
-                direction={sortDirection}
+                currentSort={sort}
+                direction={order}
                 onSort={handleSort}
               />
             </th>
@@ -171,8 +162,8 @@ export default function SignaturesTable({ signatures }: SignaturesTableProps) {
               <SortableHeader
                 label="Resident Type"
                 field="resident_type"
-                currentSort={sortField}
-                direction={sortDirection}
+                currentSort={sort}
+                direction={order}
                 onSort={handleSort}
               />
             </th>
@@ -182,65 +173,138 @@ export default function SignaturesTable({ signatures }: SignaturesTableProps) {
             <th className="py-3 px-4 text-left hidden xl:table-cell">
               <PlainHeaderLabel label="IP Address" />
             </th>
+            <th className="py-3 px-4 text-left hidden md:table-cell">
+              <PlainHeaderLabel label="Email Updates" />
+            </th>
             <th className="py-3 px-4 text-left">
               <SortableHeader
                 label="Signed At"
                 field="signed_at"
-                currentSort={sortField}
-                direction={sortDirection}
+                currentSort={sort}
+                direction={order}
                 onSort={handleSort}
               />
             </th>
+            <th className="py-3 px-2 w-1" aria-label="Row actions" />
           </tr>
         </thead>
         <tbody>
-          {sortedSignatures.map((sig, index) => (
-            <tr
-              key={sig.id}
-              className={cn(
-                'border-b border-sage/10 transition-colors hover:bg-sage-light/30',
-                'animate-fade-up',
-              )}
-              style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'both' }}
-            >
-              <td className="py-3 px-4">
-                <span className="font-body text-sm font-medium text-forest">
-                  {sig.first_name} {sig.last_name}
-                </span>
-              </td>
-              <td className="py-3 px-4 hidden md:table-cell">
-                <span className="font-mono text-xs text-forest/60">{sig.email}</span>
-              </td>
-              <td className="py-3 px-4">
-                <Badge variant={residentTypeBadgeVariant[sig.resident_type]} size="sm">
-                  {formatResidentType(sig.resident_type)}
-                </Badge>
-              </td>
-              <td className="py-3 px-4 hidden lg:table-cell">
-                {sig.address ? (
-                  <span className="font-body text-xs text-forest/70">{sig.address}</span>
-                ) : (
-                  <span className="text-forest/30">—</span>
+          {signatures.map((sig, index) => {
+            const emailKey = `${sig.id}:email`;
+            const ipKey = `${sig.id}:ip`;
+            const isConfirming = confirmingDeleteId === sig.id;
+            const isDeleting = deletingIds.has(sig.id);
+            const rowError = rowErrorById?.[sig.id];
+            return (
+              <tr
+                key={sig.id}
+                className={cn(
+                  'border-b border-sage/10 transition-colors hover:bg-sage-light/30',
+                  'animate-fade-up',
                 )}
-              </td>
-              <td className="py-3 px-4 hidden xl:table-cell">
-                <MaskedIp
-                  ip={sig.ip_address}
-                  isRevealed={revealedIps.has(sig.id)}
-                  onToggle={() => toggleIp(sig.id)}
-                />
-              </td>
-              <td className="py-3 px-4">
-                <span className="text-sm text-forest/70">
-                  {formatRelativeTimeShort(sig.signed_at)}
-                </span>
-              </td>
-            </tr>
-          ))}
+                style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'both' }}
+              >
+                <td className="py-3 px-4">
+                  <span className="font-body text-sm font-medium text-forest">
+                    {sig.first_name} {sig.last_name}
+                  </span>
+                </td>
+                <td className="py-3 px-4 hidden md:table-cell">
+                  <MaskedValue
+                    value={sig.email}
+                    masked={maskEmail(sig.email)}
+                    isRevealed={revealed.has(emailKey)}
+                    onToggle={() => toggleReveal(sig.id, 'email')}
+                    ariaLabelHide="Hide email"
+                    ariaLabelReveal="Reveal email"
+                  />
+                </td>
+                <td className="py-3 px-4">
+                  <Badge variant={residentTypeBadgeVariant[sig.resident_type]} size="sm">
+                    {formatResidentType(sig.resident_type)}
+                  </Badge>
+                </td>
+                <td className="py-3 px-4 hidden lg:table-cell">
+                  {sig.address ? (
+                    <span className="font-body text-xs text-forest/70">{sig.address}</span>
+                  ) : (
+                    <span className="text-forest/30">—</span>
+                  )}
+                </td>
+                <td className="py-3 px-4 hidden xl:table-cell">
+                  <MaskedValue
+                    value={sig.ip_address}
+                    masked="•••.•••.•••.•••"
+                    isRevealed={revealed.has(ipKey)}
+                    onToggle={() => toggleReveal(sig.id, 'ip')}
+                    ariaLabelHide="Hide IP address"
+                    ariaLabelReveal="Reveal IP address"
+                  />
+                </td>
+                <td className="py-3 px-4 hidden md:table-cell">
+                  {sig.email_updates_consent ? (
+                    <span
+                      title={
+                        sig.consent_recorded_at
+                          ? `Recorded ${new Date(sig.consent_recorded_at).toLocaleString()}`
+                          : undefined
+                      }
+                    >
+                      <Badge variant="forest" size="sm">
+                        Opted in
+                      </Badge>
+                    </span>
+                  ) : (
+                    <span className="text-forest/30" aria-label="No email updates consent">
+                      —
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 px-4">
+                  <span className="text-sm text-forest/70">
+                    {formatRelativeTimeShort(sig.signed_at)}
+                  </span>
+                </td>
+                <td className="py-3 px-2 text-right">
+                  {isConfirming ? (
+                    <div className="inline-flex items-center gap-2 text-xs">
+                      <span className="text-terracotta font-medium">Delete?</span>
+                      <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="px-2 py-1 rounded-full text-forest/60 hover:bg-sage/10 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleConfirm(sig.id)}
+                        disabled={isDeleting}
+                        className="px-2 py-1 rounded-full bg-terracotta text-bone hover:bg-terracotta/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {isDeleting ? 'Deleting…' : 'Confirm'}
+                      </button>
+                    </div>
+                  ) : rowError ? (
+                    <span className="text-xs text-terracotta">{rowError}</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleTrash(sig.id)}
+                      aria-label="Delete signature"
+                      className="p-1.5 rounded-full text-forest/40 hover:bg-sage/10 hover:text-terracotta transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" aria-hidden />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      {sortedSignatures.length === 0 && (
+      {signatures.length === 0 && (
         <div className="py-12 text-center">
           <p className="text-forest/50 font-display text-lg">No signatures yet</p>
           <p className="text-forest/30 text-sm mt-1">
@@ -251,3 +315,5 @@ export default function SignaturesTable({ signatures }: SignaturesTableProps) {
     </div>
   );
 }
+
+export { SORTABLE_FIELDS };

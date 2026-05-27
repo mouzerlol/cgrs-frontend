@@ -26,9 +26,15 @@ describe('getAdminSignatures', () => {
           resident_type: 'owner',
           address: '1 Analytical Engine Way',
           ip_address: '203.0.113.7',
+          email_updates_consent: true,
+          consent_recorded_at: '2026-05-01T12:00:00Z',
           signed_at: '2026-05-01T12:00:00Z',
         },
       ],
+      total: 1,
+      offset: 0,
+      limit: 50,
+      has_more: false,
     };
     vi.mocked(apiRequest).mockResolvedValue(fixture);
 
@@ -41,8 +47,31 @@ describe('getAdminSignatures', () => {
     expect(result).toEqual(fixture);
   });
 
+  it('appends pagination and sort query params when supplied', async () => {
+    const empty: AdminSignaturesListResponse = {
+      signatures: [],
+      total: 0,
+      offset: 0,
+      limit: 50,
+      has_more: false,
+    };
+    vi.mocked(apiRequest).mockResolvedValue(empty);
+    await getAdminSignatures(getToken, { offset: 50, limit: 50, sort: 'email', order: 'asc' });
+    expect(apiRequest).toHaveBeenCalledWith(
+      '/api/v1/petition/signatures/list?offset=50&limit=50&sort=email&order=asc',
+      getToken,
+    );
+  });
+
   it('passes the getToken function through to apiRequest', async () => {
-    vi.mocked(apiRequest).mockResolvedValue({ signatures: [] });
+    const empty: AdminSignaturesListResponse = {
+      signatures: [],
+      total: 0,
+      offset: 0,
+      limit: 50,
+      has_more: false,
+    };
+    vi.mocked(apiRequest).mockResolvedValue(empty);
     await getAdminSignatures(getToken);
     expect(apiRequest).toHaveBeenCalledWith(expect.any(String), getToken);
   });

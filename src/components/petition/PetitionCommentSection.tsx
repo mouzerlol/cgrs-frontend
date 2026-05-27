@@ -12,6 +12,7 @@ import { createReply, upvoteReply, deleteReply, updateReply } from '@/lib/api/di
 import { toast } from '@/lib/sonner';
 import ReplyList from '@/components/discussions/ReplyList';
 import ReplyForm from '@/components/discussions/ReplyForm';
+import { track, commentLengthBucket } from '@/lib/analytics/events';
 
 export default function PetitionCommentSection() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
@@ -36,6 +37,12 @@ export default function PetitionCommentSection() {
   async function handleReply(body: string, parentReplyId?: string) {
     if (!thread?.id) return;
     await createReply(thread.id, body, getToken, parentReplyId);
+    track('comment_posted', {
+      thread_id: thread.id,
+      thread_kind: 'petition',
+      is_reply: Boolean(parentReplyId),
+      comment_length_bucket: commentLengthBucket(body.length),
+    });
     await refetchReplies();
   }
 

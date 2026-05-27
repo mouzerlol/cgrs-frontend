@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { RsvpStatus } from '@/types';
 import { cn } from '@/lib/utils';
+import { track } from '@/lib/analytics/events';
 
 interface EventRsvpButtonProps {
   eventId: string;
@@ -46,12 +47,14 @@ export default function EventRsvpButton({
     if (selectedStatus === status) {
       setSelectedStatus(null);
       localStorage.removeItem(getStorageKey(eventId));
+      track('event_rsvp_submitted', { event_id: eventId, rsvp_status: 'cleared' });
     } else {
       setSelectedStatus(status);
       localStorage.setItem(
         getStorageKey(eventId),
         JSON.stringify({ status, timestamp: new Date().toISOString() })
       );
+      track('event_rsvp_submitted', { event_id: eventId, rsvp_status: status });
     }
   };
 

@@ -9,6 +9,8 @@ import QuickAccessCard from '@/components/ui/QuickAccessCard';
 import NewsCard from '@/components/ui/NewsCard';
 import CalendarCard from '@/components/ui/CalendarCard';
 import GoalMeterExperiments from '@/components/experiments/GoalMeterExperiments';
+import { ColdStartBanner } from '@/components/layout/ColdStartBanner';
+import type { ColdStartPhase } from '@/hooks/useColdStartDetection';
 import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
 import EditorialMagazineCard from '@/components/ui/experimental-cards/EditorialMagazineCard';
 import OrganicNaturalCard from '@/components/ui/experimental-cards/OrganicNaturalCard';
@@ -87,6 +89,7 @@ export default function DesignExperimentsPage() {
               { id: 'aesthetic-cards', label: 'Aesthetic Card Experiments' },
               { id: 'original-home', label: 'Original Home Cards' },
               { id: 'goal-meters', label: 'Goal Meter Experiments' },
+              { id: 'cold-start-banner', label: 'Cold-Start Banner' },
             ].map((tab) => (
               <Tab
                 key={tab.id}
@@ -274,6 +277,11 @@ export default function DesignExperimentsPage() {
             <Tab.Panel>
               <GoalMeterExperiments />
             </Tab.Panel>
+
+            {/* Cold-Start Banner Panel */}
+            <Tab.Panel>
+              <ColdStartBannerShowcase />
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </main>
@@ -284,6 +292,90 @@ export default function DesignExperimentsPage() {
           <p className="opacity-60">Design Experiments Archive — Preserved for reference</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/**
+ * Showcase for the Cold-Start Banner. The banner is currently parked here while
+ * we iterate on its craft (see the critique notes in
+ * `openspec/changes/cold-start-status-banner/`). The production Header.tsx no
+ * longer mounts it.
+ *
+ * Each strip below renders one phase of the state machine on the same
+ * translucent-forest header surface used in production, so visual tuning can
+ * happen here without touching the live nav.
+ */
+function ColdStartBannerShowcase() {
+  const PHASES: Array<{ phase: ColdStartPhase; label: string; note: string }> = [
+    {
+      phase: 'waiting',
+      label: 'Waiting',
+      note: 'Initial state. Prose types in over ~2.5s; sunrise stripe fills over ~10s.',
+    },
+    {
+      phase: 'prolonged',
+      label: 'Prolonged',
+      note: 'After 10s with no response. Stripe pauses at 100%, dims to sage, copy softens.',
+    },
+    {
+      phase: 'timedOut',
+      label: 'Timed out',
+      note: 'After 20s. Stripe goes amber, error copy with Try again / Let us know.',
+    },
+    {
+      phase: 'resolved',
+      label: 'Resolved',
+      note: 'Resolution beat. Stripe completes rapidly, copy swaps to "Awake. Good morning.", banner fades.',
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-display text-2xl">Cold-Start Banner</h2>
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber/20 text-amber-dark">
+            Parked
+          </span>
+        </div>
+        <p className="text-sm opacity-70 mb-2">
+          Replaces the desktop nav while the cgrs-api warms up from scale-to-zero. Each strip below
+          shows one phase of the state machine on the same translucent-forest header surface used in
+          production.
+        </p>
+        <p className="text-xs opacity-60">
+          Source: <code className="font-mono">src/components/layout/ColdStartBanner/</code>. Spec:{' '}
+          <code className="font-mono">openspec/changes/cold-start-status-banner/</code>. Enable in
+          production by setting <code className="font-mono">NEXT_PUBLIC_COLD_START_BANNER_ENABLED=true</code>{' '}
+          AND restoring the integration in <code className="font-mono">Header.tsx</code>.
+        </p>
+      </Card>
+
+      {PHASES.map(({ phase, label, note }) => (
+        <Card key={phase} className="p-6">
+          <div className="flex items-baseline justify-between mb-3">
+            <h3 className="font-display text-lg text-forest">{label}</h3>
+            <span className="font-mono text-[0.6875rem] uppercase tracking-wider text-forest/50">
+              phase = {phase}
+            </span>
+          </div>
+          <p className="text-xs text-forest/70 mb-4">{note}</p>
+
+          {/* Header strip mock — mirrors the production header chrome. */}
+          <div className="bg-forest/85 backdrop-blur-[12px] border-b border-white/10 py-sm px-md md:px-lg flex justify-between items-center rounded-lg overflow-hidden">
+            <span className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 text-bone">
+              <span className="flex flex-col leading-tight">
+                <span className="block whitespace-nowrap">CORONATION</span>
+                <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
+              </span>
+            </span>
+            <div className="hidden md:flex flex-1 items-center justify-end min-w-0">
+              <ColdStartBanner phase={phase} onRetry={() => {}} />
+            </div>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 }

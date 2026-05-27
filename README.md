@@ -28,6 +28,7 @@ A modern, responsive website for the Coronation Gardens Residents Society in Man
 - **Content**: JSON files (future CMS ready)
 - **Forms**: Formspree integration ready
 - **CAPTCHA**: hCaptcha integration ready
+- **Analytics**: PostHog (US Cloud, reverse-proxied via `/ingest/*`) — see [`docs/analytics.md`](docs/analytics.md)
 
 ## 🎨 Design System
 

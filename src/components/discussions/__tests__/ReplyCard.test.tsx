@@ -59,7 +59,7 @@ describe('ReplyCard', () => {
     expect(screen.getByText('Test User')).toBeInTheDocument();
   });
 
-  it('styles author name badge with sage/20 background matching border, corner radii, black text, no uppercase', () => {
+  it('styles author name badge with sage/20 background matching border, corner radii, forest text, no uppercase', () => {
     const reply = makeReply();
     render(<ReplyCard reply={reply} />);
     const badge = screen.getByText('Test User');
@@ -68,7 +68,8 @@ describe('ReplyCard', () => {
     expect(badge.className).not.toContain('bg-sage-light');
     expect(badge.className).not.toMatch(/text-shadow/);
     expect(badge.className).toContain('border-sage/20');
-    expect(badge.className.split(/\s+/)).toContain('text-black');
+    expect(badge.className.split(/\s+/)).toContain('text-forest');
+    expect(badge.className.split(/\s+/)).not.toContain('text-black');
     expect(badge.className).not.toContain('italic');
     expect(badge.className.split(/\s+/)).not.toContain('uppercase');
     expect(badge.className).toContain('rounded-tl-md');

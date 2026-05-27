@@ -7,7 +7,11 @@
 import { apiRequest } from '@/lib/api/client';
 import { getApiUrl, getServerFetchHeaders } from '@/lib/api/api-url';
 import type { Reply, ForumUser, ForumUserStats } from '@/types';
-import type { AdminSignaturesListResponse } from '@/types/admin';
+import type {
+  AdminSignaturesListResponse,
+  SignatureSortField,
+  SignatureSortOrder,
+} from '@/types/admin';
 
 // =============================================================================
 // Types
@@ -23,6 +27,8 @@ export interface SignPetitionInput {
   email: string;
   resident_type: 'tenant' | 'owner';
   address?: string;
+  /** Optional opt-in: signer agreed to receive email updates about this petition. */
+  email_updates_consent: boolean;
   turnstile_token: string;
 }
 
@@ -130,13 +136,39 @@ export async function getPetitionReplies(getToken: () => Promise<string | null>)
   return response.items.map(mapReplyResponse);
 }
 
-/** Fetch all petition signatures (superadmin only). */
+export interface GetAdminSignaturesParams {
+  offset?: number;
+  limit?: number;
+  sort?: SignatureSortField;
+  order?: SignatureSortOrder;
+}
+
+/** Fetch one page of petition signatures (superadmin only). */
 export async function getAdminSignatures(
   getToken: () => Promise<string | null>,
+  params: GetAdminSignaturesParams = {},
 ): Promise<AdminSignaturesListResponse> {
-  return apiRequest<AdminSignaturesListResponse>(
-    '/api/v1/petition/signatures/list',
+  const search = new URLSearchParams();
+  if (params.offset !== undefined) search.set('offset', String(params.offset));
+  if (params.limit !== undefined) search.set('limit', String(params.limit));
+  if (params.sort) search.set('sort', params.sort);
+  if (params.order) search.set('order', params.order);
+  const query = search.toString();
+  const path = query
+    ? `/api/v1/petition/signatures/list?${query}`
+    : '/api/v1/petition/signatures/list';
+  return apiRequest<AdminSignaturesListResponse>(path, getToken);
+}
+
+/** Delete a single petition signature (superadmin only). Returns void on 204. */
+export async function deleteAdminSignature(
+  signatureId: string,
+  getToken: () => Promise<string | null>,
+): Promise<void> {
+  await apiRequest<void>(
+    `/api/v1/petition/signatures/${signatureId}`,
     getToken,
+    { method: 'DELETE' },
   );
 }
 
@@ -167,8 +199,12 @@ export async function downloadSignaturesCsv(
   }
 }
 
+export interface SignPetitionResult {
+  signature_number: number;
+}
+
 /** Submit a petition signature (public — Turnstile protected). */
-export async function signPetition(input: SignPetitionInput): Promise<void> {
+export async function signPetition(input: SignPetitionInput): Promise<SignPetitionResult> {
   const res = await fetch(`${getApiUrl()}/api/v1/petition/sign`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -182,4 +218,7 @@ export async function signPetition(input: SignPetitionInput): Promise<void> {
     error.status = res.status;
     throw error;
   }
+
+  const body = (await res.json().catch(() => ({}))) as Partial<SignPetitionResult>;
+  return { signature_number: body.signature_number ?? 0 };
 }
