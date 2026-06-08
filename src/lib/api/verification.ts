@@ -232,3 +232,120 @@ export async function withdrawVerificationRequest(
     method: 'DELETE',
   });
 }
+
+// --- Staff verification reviewer + property membership management ---
+
+export interface ReviewQueueItem {
+  request_id: string;
+  user_id: string;
+  requester_name: string | null;
+  email: string | null;
+  verification_type: string;
+  method: string;
+  property_id: string;
+  street_name: string;
+  street_number: string;
+  created_at: string;
+}
+
+export interface ReviewQueueResponse {
+  items: ReviewQueueItem[];
+}
+
+export interface VerificationReviewResponse {
+  success: boolean;
+  request_id: string;
+  approved: boolean;
+}
+
+export interface PropertyMemberItem {
+  relationship_id: string;
+  user_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  relationship_type: string;
+  status: string;
+  established_at: string;
+}
+
+export interface PropertyMembersResponse {
+  property_id: string;
+  street_name: string;
+  street_number: string;
+  members: PropertyMemberItem[];
+}
+
+export interface RelationshipRevokeResponse {
+  success: boolean;
+  relationship_id: string;
+  already_ended: boolean;
+}
+
+export async function getReviewQueue(
+  getToken: () => Promise<string | null>,
+): Promise<ReviewQueueResponse> {
+  return apiRequest<ReviewQueueResponse>(`${API_PATH}/verification/review-queue`, getToken);
+}
+
+export async function reviewVerification(
+  requestId: string,
+  payload: { approved: boolean; note?: string | null },
+  getToken: () => Promise<string | null>,
+): Promise<VerificationReviewResponse> {
+  return apiRequest<VerificationReviewResponse>(`${API_PATH}/verification/${requestId}/review`, getToken, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export interface PropertyDirectoryItem {
+  property_id: string;
+  street_name: string;
+  street_number: string;
+  unit_number: string | null;
+  resident_count: number;
+  owner_count: number;
+}
+
+export interface PropertyDirectoryResponse {
+  properties: PropertyDirectoryItem[];
+  total: number;
+  offset: number;
+  limit: number;
+  has_more: boolean;
+}
+
+export type PropertyDirectorySort = 'address' | 'residents' | 'owners';
+export type PropertyDirectoryOrder = 'asc' | 'desc';
+
+export async function getProperties(
+  getToken: () => Promise<string | null>,
+  params: { offset: number; limit: number; sort: PropertyDirectorySort; order: PropertyDirectoryOrder },
+): Promise<PropertyDirectoryResponse> {
+  const query = new URLSearchParams({
+    offset: String(params.offset),
+    limit: String(params.limit),
+    sort: params.sort,
+    order: params.order,
+  });
+  return apiRequest<PropertyDirectoryResponse>(`${API_PATH}?${query.toString()}`, getToken);
+}
+
+export async function getPropertyMembers(
+  propertyId: string,
+  getToken: () => Promise<string | null>,
+): Promise<PropertyMembersResponse> {
+  return apiRequest<PropertyMembersResponse>(`${API_PATH}/${propertyId}/members`, getToken);
+}
+
+export async function revokeRelationship(
+  relationshipId: string,
+  payload: { reason?: string | null },
+  getToken: () => Promise<string | null>,
+): Promise<RelationshipRevokeResponse> {
+  return apiRequest<RelationshipRevokeResponse>(`${API_PATH}/relationships/${relationshipId}/revoke`, getToken, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}

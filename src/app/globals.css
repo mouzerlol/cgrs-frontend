@@ -374,6 +374,55 @@
   margin: 0;
 }
 
+/* Sidebar accordion styles */
+.sidebar-accordions {
+  padding: var(--space-xs) 0;
+}
+
+.accordion-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  transition: background 0.15s ease;
+}
+
+.accordion-trigger:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.accordion-count {
+  opacity: 0.5;
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.accordion-chevron {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease;
+}
+
+[data-headlessui-state~="open"] > .accordion-chevron,
+[data-open] > .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.accordion-panel {
+  padding: var(--space-xs) 0;
+}
+
 .poi-group {
   padding: var(--space-xs) 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -408,10 +457,110 @@
   margin-left: auto;
 }
 
+/* Inline show/hide eye pinned to the right of a layer-group label */
+.layer-toggle {
+  margin-left: 2px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.layer-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.layer-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 1px;
+}
+
+.layer-toggle svg {
+  display: block;
+}
+
+/* Off state: a muted slashed eye */
+.layer-toggle[aria-pressed='false'] {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.layer-toggle[aria-pressed='false']:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Dim a layer group whose map layer is hidden (eye off); the eye itself stays bright */
+.poi-group.layer-hidden .poi-group-header > span,
+.poi-group.layer-hidden .poi-list {
+  opacity: 0.4;
+}
+
 .poi-list {
   list-style: none;
   margin: 0;
   padding: 2px var(--space-sm);
+}
+
+/* Bin enclosures: per-precinct subheading + bins laid out in two columns */
+.bin-subheading {
+  padding: var(--space-xs) var(--space-md) 2px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.bin-group:first-child .bin-subheading {
+  padding-top: 2px;
+}
+
+.bin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 6px;
+}
+
+.poi-group.layer-hidden .bin-subheading {
+  opacity: 0.4;
+}
+
+/* Street parking: readable count pill aligned to the right of each location row */
+.parking-count {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(45, 143, 214, 0.22);
+  border: 1px solid rgba(45, 143, 214, 0.5);
+  line-height: 1.3;
+}
+
+.parking-count-num {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.parking-count-unit {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .poi-button {
@@ -423,6 +572,9 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .poi-button:hover {
@@ -455,6 +607,116 @@
   pointer-events: none;
 }
 
+.property-count {
+  margin-left: auto;
+  font-size: 10px;
+  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.address-search-section {
+  padding: var(--space-sm) var(--space-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.address-search-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.address-search {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 13px;
+  font-family: var(--font-body);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.address-search::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.address-search:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.address-hint {
+  padding: var(--space-sm) 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  margin: 0;
+}
+
+.address-results {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.address-result-button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.address-result-button:last-child {
+  border-bottom: none;
+}
+
+.address-result-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.address-result-name {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.3;
+}
+
+.address-result-precinct {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.address-pin {
+  background: none !important;
+  border: none !important;
+}
+
 .map-container {
   position: relative;
   border-radius: 12px;
@@ -485,29 +747,90 @@
   filter: brightness(0.76) contrast(1.08) saturate(0.96);
 }
 
+/* Floating precinct info card */
+.precinct-info-card {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--forest-light);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(26, 34, 24, 0.25);
+  border: 1px solid rgba(168, 181, 160, 0.3);
+  pointer-events: none;
+  animation: precinct-card-in 0.2s ease-out;
+}
+
+@keyframes precinct-card-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.precinct-info-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.precinct-info-card strong {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  display: block;
+  line-height: 1.2;
+}
+
+.precinct-info-count {
+  font-family: var(--font-body);
+  font-size: 12px;
+  opacity: 0.75;
+  display: block;
+  margin-top: 2px;
+}
+
 /* Map legend */
 .map-legend {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: var(--space-sm);
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: var(--forest-light);
+  padding: 9px 11px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  max-width: 180px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.legend-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.legend-group + .legend-group {
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .map-legend h4 {
   font-family: var(--font-body);
-  font-size: var(--font-size-xs);
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--forest);
-  margin-bottom: var(--space-xs);
-  padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--sage);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 5px;
+  padding: 0;
+  border: none;
 }
 
 .legend-list {
@@ -516,26 +839,50 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .legend-marker {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.legend-marker-p {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  box-shadow: none;
 }
 
 .legend-label {
   font-family: var(--font-body);
-  font-size: 11px;
-  color: var(--forest);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* Allow a long label (e.g. "Emergency Access — Keep Clear") to wrap onto two lines */
+.legend-label-wrap {
+  white-space: normal;
+  max-width: 92px;
+  line-height: 1.15;
 }
 
 /* POI popup styling */
@@ -568,6 +915,99 @@
   transform: rotate(45deg);
   margin: -8px 0 0 5px !important;
   border: none;
+}
+
+/* ==========================================================================
+   CG Almanac-Seal selection pin
+   A single terracotta wax-seal medallion that drops onto the centre of
+   whatever a resident selects in the map sidebar. Only one exists at a time.
+   The faller (.cg-seal__body) drops + squashes onto the tip; the shadow and
+   sonar ripple stay on the ground. Decorative only (pointer-events: none) so
+   it never steals clicks from the markers beneath it.
+   ========================================================================== */
+.cg-seal {
+  background: none !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.cg-seal__body,
+.cg-seal__shadow,
+.cg-seal__ripple,
+.cg-seal__mono {
+  position: absolute;
+}
+
+/* The medallion + monogram that physically drops in. Origin at the stem tip
+   (50% 90% of the 64x80 box) so the impact squash anchors to the point. */
+.cg-seal__body {
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 80px;
+  transform-origin: 50% 90%;
+  filter: drop-shadow(0 4px 5px rgba(26, 34, 24, 0.3));
+  animation: cgSealDrop 0.66s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+/* "CG" in the masthead serif, centred on the medallion. Child of the body so
+   it falls and squashes with it. */
+.cg-seal__mono {
+  left: 50%;
+  top: 31.25%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--bone);
+  text-shadow: 0 1px 1px rgba(26, 34, 24, 0.4);
+  white-space: nowrap;
+}
+
+/* Ground shadow under the tip; persists once landed. */
+.cg-seal__shadow {
+  left: 50%;
+  top: 90%;
+  width: 26px;
+  height: 9px;
+  background: radial-gradient(ellipse at center, rgba(26, 34, 24, 0.34), rgba(26, 34, 24, 0) 70%);
+  transform: translate(-50%, -50%) scale(1);
+  animation: cgSealShadow 0.66s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+/* One terracotta sonar ring on landing, then gone. */
+.cg-seal__ripple {
+  left: 50%;
+  top: 90%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--forest-light);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: cgSealRipple 0.9s ease-out 0.4s both;
+}
+
+@keyframes cgSealDrop {
+  0%   { opacity: 0; transform: translateY(-46px) scaleX(0.92) scaleY(1.12); }
+  45%  { opacity: 1; }
+  64%  { transform: translateY(0) scaleX(1.12) scaleY(0.84); }
+  80%  { transform: translateY(0) scaleX(0.97) scaleY(1.05); }
+  100% { transform: translateY(0) scaleX(1) scaleY(1); }
+}
+
+@keyframes cgSealShadow {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  64%  { opacity: 0.32; transform: translate(-50%, -50%) scale(0.78); }
+  100% { opacity: 0.26; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes cgSealRipple {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  18%  { opacity: 0.55; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.7); }
 }
 
 /* Popup container with type indicator */
@@ -725,7 +1165,7 @@
   justify-content: center !important;
   width: 36px !important;
   height: 36px !important;
-  background: var(--bone) !important;
+  background: var(--forest-light) !important;
   border: none !important;
   cursor: pointer !important;
   text-decoration: none !important;
@@ -734,13 +1174,13 @@
 }
 
 .leaflet-control-zoom .leaflet-control-home-button:hover {
-  background: var(--sage-light) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .leaflet-control-zoom .leaflet-control-home-button svg {
   width: 18px !important;
   height: 18px !important;
-  stroke: var(--forest) !important;
+  stroke: rgba(255, 255, 255, 0.85) !important;
   stroke-width: 2.5 !important;
   fill: none !important;
   display: block !important;
@@ -748,7 +1188,7 @@
 
 /* Ensure the zoom-out button above it has its bottom border */
 .leaflet-control-zoom .leaflet-control-zoom-out {
-  border-bottom: 1px solid var(--sage-light) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Mobile: increase touch targets to WCAG 44px minimum */
@@ -838,8 +1278,8 @@
 }
 
 .leaflet-control-zoom {
-  border: none !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
   border-radius: 8px !important;
   overflow: hidden;
 }
@@ -848,10 +1288,10 @@
   width: 36px !important;
   height: 36px !important;
   line-height: 36px !important;
-  color: var(--forest) !important;
-  background: var(--bone) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: var(--forest-light) !important;
   border: none !important;
-  border-bottom: 1px solid var(--sage-light) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .leaflet-control-zoom a:last-child {
@@ -859,7 +1299,7 @@
 }
 
 .leaflet-control-zoom a:hover {
-  background: var(--sage-light) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Mobile: increase zoom control touch targets to WCAG 2.5.5 44px minimum */
@@ -872,7 +1312,7 @@
   }
 
   .leaflet-control-zoom a + a {
-    border-top: 1px solid var(--sage-light) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
   }
 
   .leaflet-control-zoom .leaflet-control-home-button {
@@ -888,16 +1328,49 @@
 
 /* Scale control styling */
 .leaflet-control-scale {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: none !important;
-  border-radius: 4px !important;
+  background: var(--forest-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
   padding: 4px 8px !important;
 }
 
 .leaflet-control-scale-line {
-  border-color: var(--forest) !important;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-top: none !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: none !important;
   font-family: var(--font-body) !important;
   font-size: 10px !important;
+}
+
+/* Second line (e.g. imperial) sits below the first; keep spacing tidy */
+.leaflet-control-scale-line:not(:first-child) {
+  margin-top: 2px !important;
+  border-top: none !important;
+}
+
+/* Map attribution: license-required, kept but muted so it reads as a quiet footnote */
+.leaflet-control-attribution {
+  background: rgba(26, 34, 24, 0.45) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-family: var(--font-body) !important;
+  font-size: 9px !important;
+  line-height: 1.4 !important;
+  padding: 1px 6px !important;
+  border-radius: 0 4px 0 0 !important;
+  backdrop-filter: blur(2px);
+}
+
+.leaflet-control-attribution a {
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-attribution a:hover {
+  color: #fff !important;
+  text-decoration: underline !important;
 }
 
 /* Responsive adjustments */
@@ -920,21 +1393,8 @@
     justify-content: center;
   }
   
-  .map-legend h4 {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 0;
-    padding-bottom: 0;
-    padding-right: var(--space-sm);
-    border-bottom: none;
-    border-right: 1px solid var(--sage);
-  }
-  
-  .legend-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+  .legend-group {
+    flex: 0 0 auto;
   }
 
   .leaflet-control-scale-line {

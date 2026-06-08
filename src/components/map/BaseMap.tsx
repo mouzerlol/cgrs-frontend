@@ -106,6 +106,13 @@ export default function BaseMap({
           minZoom,
         }).setView(center, zoom);
 
+        // Drop Leaflet's "Leaflet" self-credit; keep the (license-required) tile
+        // attribution, tucked into the bottom-left corner.
+        if (attributionControl) {
+          map.attributionControl.setPrefix(false);
+          map.attributionControl.setPosition('bottomleft');
+        }
+
         if (tileUrl) {
           L.tileLayer(tileUrl, {
             maxZoom: tileOptions.maxZoom ?? 19,

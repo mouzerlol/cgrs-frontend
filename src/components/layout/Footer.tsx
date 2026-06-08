@@ -104,12 +104,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-white/10 pt-8 flex flex-col items-center gap-3 md:flex-row md:justify-between">
+        <div className="border-t border-white/10 pt-8 flex justify-center">
           <p className="text-[0.8125rem] opacity-50">
             &copy; {new Date().getFullYear()} Coronation Gardens. All rights reserved.
-          </p>
-          <p className="text-[0.8125rem] opacity-50">
-            Designed with intention. Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer" className="hover:text-terracotta transition-colors">CARTO</a>
           </p>
         </div>
       </div>

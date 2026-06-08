@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { ArrowDown, ArrowUp, Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatMemberSince } from '@/lib/format-member-since';
@@ -257,13 +258,19 @@ export default function UsersTable({ users }: UsersTableProps) {
               </td>
               <td className="py-3 px-4">
                 {user.pending_verification_count > 0 ? (
-                  <Badge
-                    variant="status-open"
-                    size="sm"
-                    className="animate-pulse-subtle"
+                  <Link
+                    href="/work-management/verifications"
+                    title="Open the verification review queue"
+                    className="inline-flex"
                   >
-                    {user.pending_verification_count}
-                  </Badge>
+                    <Badge
+                      variant="status-open"
+                      size="sm"
+                      className="animate-pulse-subtle cursor-pointer hover:opacity-80"
+                    >
+                      {user.pending_verification_count}
+                    </Badge>
+                  </Link>
                 ) : (
                   <span className="text-xs text-forest/30">-</span>
                 )}

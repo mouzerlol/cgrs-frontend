@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-import { LayoutGrid, ClipboardList, Scale, ScrollText, Users } from 'lucide-react';
+import { Building2, LayoutGrid, ClipboardList, Scale, ScrollText, ShieldCheck, Users } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { isVerificationReviewer } from '@/hooks/useVerificationReview';
 import portfoliosData from '@/data/portfolios.json';
 import boardsData from '@/data/boards.json';
 import decisionsData from '@/data/decisions.json';
@@ -72,6 +73,24 @@ const signaturesFeature: HubFeature = {
   color: 'terracotta',
 };
 
+const verificationsFeature: HubFeature = {
+  id: 'verifications',
+  name: 'Verifications',
+  description: 'Review pending resident & owner verification requests and manage property members',
+  icon: ShieldCheck,
+  href: '/work-management/verifications',
+  color: 'forest',
+};
+
+const propertiesFeature: HubFeature = {
+  id: 'properties',
+  name: 'Properties',
+  description: 'Browse properties and see their verified residents and owners',
+  icon: Building2,
+  href: '/work-management/properties',
+  color: 'sage',
+};
+
 const colorMap = {
   forest: {
     bg: 'bg-forest/5',
@@ -110,7 +129,13 @@ const colorMap = {
 export default function WorkManagementHub() {
   const { data: currentUser } = useCurrentUser();
   const isSuperadmin = currentUser?.is_superadmin ?? false;
-  const features = isSuperadmin ? [...baseFeatures, signaturesFeature] : baseFeatures;
+  const isReviewer = isVerificationReviewer(currentUser?.membership?.role, isSuperadmin);
+
+  const features = [
+    ...baseFeatures,
+    ...(isReviewer ? [verificationsFeature, propertiesFeature] : []),
+    ...(isSuperadmin ? [signaturesFeature] : []),
+  ];
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col bg-bone">
