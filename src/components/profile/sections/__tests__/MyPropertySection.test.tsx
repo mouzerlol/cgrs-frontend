@@ -148,29 +148,34 @@ describe('MyPropertySection', () => {
       expect(screen.getByTestId('property-map')).toHaveTextContent('41 Huri Street');
     });
 
-    it('renders co-members widget', () => {
+    it('renders co-members widget when co-members exist', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
       expect(screen.getByTestId('co-members-widget')).toHaveTextContent('owner');
     });
 
-    it('renders detail items for bedrooms, bathrooms, carparks', () => {
+    it('states the relationship to the property', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      expect(screen.getByText('Bedrooms')).toBeInTheDocument();
-      expect(screen.getByText('Bathrooms')).toBeInTheDocument();
-      expect(screen.getByText('Carparks')).toBeInTheDocument();
+      // One co-member in the mock means two owners total.
+      expect(screen.getByText(/one of 2 owners here/i)).toBeInTheDocument();
     });
 
-    it('shows verified date', () => {
+    it('does not render bedroom/bathroom/carpark stats', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      expect(screen.getByText(/verified on: 4\/4\/2026/i)).toBeInTheDocument();
+      expect(screen.queryByText('Bedrooms')).not.toBeInTheDocument();
+      expect(screen.queryByText('Bathrooms')).not.toBeInTheDocument();
+      expect(screen.queryByText('Carparks')).not.toBeInTheDocument();
     });
 
-    it('renders address in details card', () => {
+    it('renders the society rules link', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      // The address appears in both PropertyMap mock and details card h3
-      // Check for the h3 heading specifically
+      const rulesLink = screen.getByRole('link', { name: /read the rules/i });
+      expect(rulesLink).toHaveAttribute('href', '/rules');
+    });
+
+    it('renders the address as a heading', () => {
+      render(<MyPropertySection />, { wrapper: createWrapper() });
       const headings = screen.getAllByRole('heading', { level: 3 });
-      expect(headings.some(h => h.textContent === '41 Huri Street')).toBe(true);
+      expect(headings.some((h) => h.textContent === '41 Huri Street')).toBe(true);
     });
 
     it('does not render pending requests section', () => {
@@ -203,7 +208,9 @@ describe('MyPropertySection', () => {
 
     it('renders request date', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      expect(screen.getByText(/requested: 4\/1\/2026/i)).toBeInTheDocument();
+      // Format the same way the component does so the assertion is locale-agnostic.
+      const expected = new Date('2026-04-01T00:00:00Z').toLocaleDateString();
+      expect(screen.getByText(`Requested: ${expected}`)).toBeInTheDocument();
     });
 
     it('renders withdraw button', () => {
@@ -212,11 +219,11 @@ describe('MyPropertySection', () => {
     });
   });
 
-  describe('Two-column layout', () => {
-    it('applies lg:w-1/3 class to left column', () => {
+  describe('Sole owner (no co-members)', () => {
+    it('renders the singular relationship line and no co-members widget', () => {
       mockUseMyPropertiesQuery.mockReturnValue({
         data: {
-          verified_properties: mockVerifiedProperties,
+          verified_properties: [{ ...mockVerifiedProperties[0], co_members: [] }],
           pending_requests: [],
         },
         isLoading: false,
@@ -224,23 +231,8 @@ describe('MyPropertySection', () => {
       });
 
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      const leftColumn = screen.getByTestId('property-map').closest('[class*="lg:w-1/3"]');
-      expect(leftColumn).toBeInTheDocument();
-    });
-
-    it('applies lg:w-2/3 class to right column', () => {
-      mockUseMyPropertiesQuery.mockReturnValue({
-        data: {
-          verified_properties: mockVerifiedProperties,
-          pending_requests: [],
-        },
-        isLoading: false,
-        error: null,
-      });
-
-      render(<MyPropertySection />, { wrapper: createWrapper() });
-      const detailsCard = screen.getByText('Bedrooms').closest('[class*="lg:w-2/3"]');
-      expect(detailsCard).toBeInTheDocument();
+      expect(screen.getByText(/you're the owner here/i)).toBeInTheDocument();
+      expect(screen.queryByTestId('co-members-widget')).not.toBeInTheDocument();
     });
   });
 });

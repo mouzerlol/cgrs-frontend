@@ -72,7 +72,7 @@ function FlagGroupSection({ group, flags, flagValues, onToggle, updatingFlags }:
     navigation: 'Navigation',
     footer: 'Footer',
     homepage: 'Homepage',
-    profile: 'Profile',
+    account: 'Account',
   };
 
   return (
@@ -250,8 +250,8 @@ export default function SystemSettingsPage() {
         />
 
         <FlagGroupSection
-          group="profile"
-          flags={FLAG_GROUPS.profile}
+          group="account"
+          flags={FLAG_GROUPS.account}
           flagValues={featureFlags}
           onToggle={handleToggle}
           updatingFlags={updatingFlags}

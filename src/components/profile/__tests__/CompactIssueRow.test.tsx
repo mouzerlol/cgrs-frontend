@@ -16,7 +16,7 @@ describe('CompactIssueRow', () => {
     );
 
     const link = screen.getByRole('link', { name: /leaking tap/i });
-    expect(link).toHaveAttribute('href', `/profile/reported-issues/${id}`);
+    expect(link).toHaveAttribute('href', `/account/reported-issues/${id}`);
     expect(screen.getByText('Maintenance')).toBeInTheDocument();
   });
 });

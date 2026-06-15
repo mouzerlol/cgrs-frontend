@@ -25,7 +25,7 @@ export default function LinkedBoardsSection({ linkedBoardIds, boards, portfolioT
           {linkedBoards.map((board) => (
             <Link
               key={board.id}
-              href={`/work-management/boards/${board.id}?tag=${portfolioTag}`}
+              href={`/admin/boards/${board.id}?tag=${portfolioTag}`}
               className="flex items-center gap-3 p-2.5 rounded-xl bg-sage-light/30 hover:bg-sage-light/60 transition-colors group"
             >
               <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">

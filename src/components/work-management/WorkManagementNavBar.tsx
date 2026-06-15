@@ -22,13 +22,13 @@ interface WorkManagementNavBarProps {
 }
 
 /**
- * Secondary navigation bar for Work Management pages.
+ * Secondary navigation bar for Administration pages.
  * Sits below the master Header; provides breadcrumbs, title, and action buttons.
  */
 export default function WorkManagementNavBar({
   title,
   showBackButton = false,
-  backHref = '/work-management',
+  backHref = '/admin',
   backLabel,
   actions = [],
   children,
@@ -47,9 +47,11 @@ export default function WorkManagementNavBar({
             </Link>
           )}
           {showBackButton && <div className="h-4 w-px bg-bone/30" />}
-          <h1 className="font-display text-sm font-medium text-bone tracking-wide">
-            {title}
-          </h1>
+          {title && (
+            <h1 className="font-display text-sm font-medium text-bone tracking-wide">
+              {title}
+            </h1>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

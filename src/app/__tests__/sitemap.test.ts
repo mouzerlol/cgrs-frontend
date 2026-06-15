@@ -40,6 +40,7 @@ describe('sitemap', () => {
       `${BASE_URL}/map/`,
       `${BASE_URL}/notice-board/`,
       `${BASE_URL}/management-request/`,
+      `${BASE_URL}/sustainability/`,
     ]
     for (const route of expectedStaticRoutes) {
       expect(urls).toContain(route)
@@ -129,7 +130,7 @@ describe('sitemap', () => {
     const entries = sitemap()
     const eventsWithSlugs = eventsData.events.filter((e) => e.slug)
     const expectedCount =
-      10 + // static routes
+      11 + // static routes
       newsData.articles.length +
       eventsWithSlugs.length +
       discussionsData.threads.length

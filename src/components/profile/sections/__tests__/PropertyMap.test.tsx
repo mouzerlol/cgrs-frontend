@@ -34,19 +34,19 @@ vi.mock('@/data/map-data', () => ({
 }));
 
 describe('PropertyMap', () => {
-  it('renders with address label', () => {
+  it('exposes the address as an accessible map description', () => {
     render(<PropertyMap lat={-36.9497} lng={174.7912} address="41 Huri Street" />);
-    expect(screen.getByText('41 Huri Street')).toBeInTheDocument();
+    expect(screen.getByText(/Map showing the location of 41 Huri Street/)).toBeInTheDocument();
   });
 
   it('renders with null coordinates', () => {
     render(<PropertyMap lat={null} lng={null} address="41 Huri Street" />);
-    expect(screen.getByText('41 Huri Street')).toBeInTheDocument();
+    expect(screen.getByText(/Map showing the location of 41 Huri Street/)).toBeInTheDocument();
   });
 
   it('renders with different address', () => {
     render(<PropertyMap lat={-36.9497} lng={174.7912} address="123 Test Road" />);
-    expect(screen.getByText('123 Test Road')).toBeInTheDocument();
+    expect(screen.getByText(/Map showing the location of 123 Test Road/)).toBeInTheDocument();
   });
 
   it('applies custom className', () => {

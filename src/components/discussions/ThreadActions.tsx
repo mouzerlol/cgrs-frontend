@@ -32,9 +32,9 @@ const formatReplyCount = (count: number): string => {
   return `${count} replies`;
 };
 
-/** Icon-only controls in the thread toolbar (aligned with compact upvote / reply count). */
+/** Icon-only controls in the thread toolbar. 44px touch target on mobile, compact from sm+. */
 const threadActionIconButtonClass =
-  'flex items-center justify-center rounded-md border transition-all duration-200 bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20 min-w-[36px] min-h-[36px] p-1.5';
+  'flex items-center justify-center rounded-md border transition-all duration-200 bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20 min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] p-1.5';
 
 /**
  * Thread actions bar - upvote, bookmark, share, and optional delete (more menu).
@@ -87,7 +87,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
               type="button"
               onClick={onReplyButtonClick}
               className={cn(
-                'flex items-center gap-1.5 px-2 py-1 min-h-[36px] rounded-md border border-sage',
+                'flex items-center gap-1.5 px-2 py-1 min-h-[44px] sm:min-h-[36px] rounded-md border border-sage',
                 'text-xs text-forest/60 font-medium',
                 'bg-transparent hover:bg-sage-light hover:text-forest hover:border-forest/20 transition-colors'
               )}

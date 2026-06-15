@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Dropdown } from '@/components/ui/Dropdown';
 
 const mockItems = [
-  { label: 'Profile', href: '/profile' },
+  { label: 'Profile', href: '/account/profile' },
   { label: 'Settings', href: '/settings' },
   { label: 'Logout', onClick: vi.fn() },
 ];

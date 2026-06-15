@@ -217,7 +217,7 @@ export default function DesignExperimentsPage() {
                     <QuickAccessCard
                       card={{
                         title: 'Connect',
-                        description: 'Join our Facebook & Messenger',
+                        description: 'Join our Facebook & WhatsApp',
                         href: '#',
                         type: 'accent',
                         icon: 'share',

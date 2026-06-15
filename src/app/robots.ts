@@ -8,8 +8,8 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
       disallow: [
-        '/work-management/',
-        '/profile/',
+        '/admin/',
+        '/account/',
         '/discussion/new',
         '/login/',
         '/register/',

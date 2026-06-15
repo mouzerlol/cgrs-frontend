@@ -3,17 +3,18 @@
 import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
+import { Building2, Landmark, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
 
 /** Profile nav uses Lucide SVGs directly so icons always render (no Iconify async bundle). */
 const NAV_ITEMS = [
-  { id: 'verification', href: '/profile/verification', label: 'Verification', flagId: 'profile.verification' },
-  { id: 'details', href: '/profile', label: 'Profile Details', flagId: null },
-  { id: 'reported-issues', href: '/profile/reported-issues', label: 'Reported Issues', flagId: 'profile.reported-issues' },
-  { id: 'my-property', href: '/profile/my-property', label: 'My Property', flagId: 'profile.my-property' },
-  { id: 'bookmarks', href: '/profile/bookmarks', label: 'Bookmarks', flagId: null },
+  { id: 'details', href: '/account/profile', label: 'Profile Details', flagId: null },
+  { id: 'my-property', href: '/account/my-property', label: 'My Property', flagId: 'account.my-property' },
+  { id: 'reported-issues', href: '/account/reported-issues', label: 'Reported Issues', flagId: 'account.reported-issues' },
+  { id: 'bookmarks', href: '/account/bookmarks', label: 'Bookmarks', flagId: null },
+  { id: 'verification', href: '/account/verification', label: 'Verification', flagId: 'account.verification' },
+  { id: 'society', href: '/account/society', label: 'Society', flagId: null },
 ] as const;
 
 type NavId = (typeof NAV_ITEMS)[number]['id'];
@@ -24,12 +25,13 @@ const NAV_ITEM_ICONS: Record<NavId, LucideIcon> = {
   'reported-issues': MessageSquare,
   'my-property': Building2,
   bookmarks: Bookmark,
+  society: Landmark,
 };
 
 const DEFAULT_FLAG_IDS: Record<string, boolean> = {
-  'profile.verification': true,
-  'profile.reported-issues': true,
-  'profile.my-property': true,
+  'account.verification': true,
+  'account.reported-issues': true,
+  'account.my-property': true,
 };
 
 interface ProfileSideNavProps {
@@ -38,6 +40,14 @@ interface ProfileSideNavProps {
   onTabHover?: (href: string) => void;
   activeCategory?: string | null;
   hasPendingVerification?: boolean;
+  /** Whether the Society tab should be shown (owners-and-up only). */
+  canViewSociety?: boolean;
+  /**
+   * `desktop` renders the sticky folder-tab sidebar (≥lg only).
+   * `mobile` renders a transparent, full-width list for the slide-in drawer
+   * on small screens, sharing the same items, icons, badges and flag logic.
+   */
+  variant?: 'desktop' | 'mobile';
   className?: string;
 }
 
@@ -47,19 +57,25 @@ export default function ProfileSideNav({
   onTabHover,
   activeCategory: controlledActive,
   hasPendingVerification,
+  canViewSociety = false,
+  variant = 'desktop',
   className,
 }: ProfileSideNavProps) {
+  // `mobile` drops the desktop folder-tab affordances for the slide-in drawer.
+  const isMobile = variant === 'mobile';
   const pathname = usePathname();
   const featureFlags = useAllFeatureFlags();
 
   // Filter nav items based on feature flags
   const visibleNavItems = useMemo(() => {
     return NAV_ITEMS.filter((item) => {
+      // Society is role-gated (owners-and-up), not feature-flagged.
+      if (item.id === 'society') return canViewSociety;
       if (!item.flagId) return true;
       // Use feature flag if available, otherwise default to true
       return featureFlags[item.flagId] ?? DEFAULT_FLAG_IDS[item.flagId] ?? true;
     });
-  }, [featureFlags]);
+  }, [featureFlags, canViewSociety]);
 
   function isActive(id: string) {
     if (controlledActive !== undefined) {
@@ -68,7 +84,7 @@ export default function ProfileSideNav({
     // Fallback to pathname-based active detection
     const item = visibleNavItems.find((item) => item.id === id);
     if (!item) return false;
-    if (item.href === '/profile') return pathname === '/profile';
+    if (item.href === '/account/profile') return pathname === '/account/profile';
     return pathname.startsWith(item.href);
   }
 
@@ -90,7 +106,13 @@ export default function ProfileSideNav({
   return (
     <nav
       aria-label="Profile navigation"
-      className={cn('hidden lg:flex flex-col w-64 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0 p-md', className)}
+      className={cn(
+        'flex-col flex-shrink-0',
+        isMobile
+          ? 'flex w-full bg-transparent p-0'
+          : 'hidden lg:flex w-64 bg-forest-light rounded-l-2xl pr-0 p-md',
+        className
+      )}
     >
       <ul className="flex flex-col gap-1">
         {visibleNavItems.map(({ id, href, label }) => {
@@ -104,16 +126,19 @@ export default function ProfileSideNav({
                 onMouseEnter={() => handleMouseEnter(href)}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-xl w-full',
+                  'group flex items-center border border-bone/[0.12] w-full',
+                  isMobile ? 'rounded-xl' : 'border-r-0 rounded-l-xl',
                   'gap-sm px-md py-3.5 min-h-[56px] text-[0.9375rem]',
                   'bg-bone/[0.08]',
                   'font-body font-medium text-bone text-left',
                   'cursor-pointer relative',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-terracotta',
                   'transition-all duration-[250ms] ease-out-custom',
-                  !active && 'hover:bg-bone/[0.15] hover:translate-x-1',
+                  !active && (isMobile ? 'hover:bg-bone/[0.15]' : 'hover:bg-bone/[0.15] hover:translate-x-1'),
                   active && [
                     'bg-sage-light text-forest font-semibold z-10',
-                    'after:content-[""] after:absolute after:right-[-1px] after:top-0 after:bottom-0 after:w-0.5 after:bg-sage-light',
+                    !isMobile &&
+                      'after:content-[""] after:absolute after:right-[-1px] after:top-0 after:bottom-0 after:w-0.5 after:bg-sage-light',
                   ]
                 )}
               >

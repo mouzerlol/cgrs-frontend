@@ -259,7 +259,7 @@ export default function UsersTable({ users }: UsersTableProps) {
               <td className="py-3 px-4">
                 {user.pending_verification_count > 0 ? (
                   <Link
-                    href="/work-management/verifications"
+                    href="/admin/verifications"
                     title="Open the verification review queue"
                     className="inline-flex"
                   >

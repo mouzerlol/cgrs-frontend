@@ -4,9 +4,9 @@ import { NextResponse } from 'next/server';
 
 /** Routes that require sign-in; unauthenticated users are redirected to sign-in. */
 const isProtectedRoute = createRouteMatcher([
-  '/work-management(.*)',
+  '/admin(.*)',
   '/discussion/new(.*)',
-  '/profile(.*)',
+  '/account(.*)',
 ]);
 
 /** Routes that should be publicly accessible (SEO-critical). */

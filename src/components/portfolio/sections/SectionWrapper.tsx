@@ -43,25 +43,27 @@ export default function SectionWrapper({
               <GripVertical className="w-4 h-4" />
             </div>
           )}
-          <h3 className="font-display text-sm font-semibold text-forest tracking-wide">
+          <h2 className="font-display text-sm font-semibold text-forest tracking-wide">
             {title}
-          </h3>
+          </h2>
         </div>
         <div className="flex items-center gap-1">
           {!isEditingLayout && onEdit && (
             <button
               onClick={onEdit}
-              className="text-xs text-terracotta/70 hover:text-terracotta transition-colors px-1.5 py-0.5 rounded"
+              aria-label={`Edit ${title}`}
+              className="inline-flex items-center justify-center h-9 w-9 -my-1 text-terracotta/70 hover:text-terracotta transition-colors rounded"
             >
-              <Pencil className="w-3 h-3" />
+              <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           )}
           {isEditingLayout && onRemove && (
             <button
               onClick={onRemove}
-              className="text-forest/30 hover:text-red-500 transition-colors p-1 rounded"
+              aria-label={`Remove ${title}`}
+              className="inline-flex items-center justify-center h-9 w-9 -my-1 text-forest/30 hover:text-terracotta transition-colors rounded"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           )}
         </div>

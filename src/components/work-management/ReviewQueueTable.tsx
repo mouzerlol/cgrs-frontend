@@ -67,7 +67,7 @@ export default function ReviewQueueTable({ items, onApprove, onReject }: ReviewQ
               </td>
               <td className="px-4 py-3 hidden md:table-cell">
                 <Link
-                  href={`/work-management/verifications/property/${item.property_id}`}
+                  href={`/admin/verifications/property/${item.property_id}`}
                   className="text-sm text-forest underline-offset-2 hover:underline"
                 >
                   {item.street_number} {item.street_name}

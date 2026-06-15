@@ -45,13 +45,16 @@ const ROUTE_BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
   '/register': [{ label: 'Home', href: '/' }, { label: 'Register', href: '/register' }],
   '/discussion': [{ label: 'Home', href: '/' }, { label: 'Discussion', href: '/discussion' }],
   '/discussion/new': [{ label: 'Home', href: '/' }, { label: 'Discussion', href: '/discussion' }, { label: 'New Thread', href: '/discussion/new' }],
-  '/profile': [{ label: 'Home', href: '/' }, { label: 'Profile', href: '/profile' }],
-  '/profile/my-property': [{ label: 'Home', href: '/' }, { label: 'Profile', href: '/profile' }, { label: 'My Property', href: '/profile/my-property' }],
-  '/profile/reported-issues': [{ label: 'Home', href: '/' }, { label: 'Profile', href: '/profile' }, { label: 'Reported Issues', href: '/profile/reported-issues' }],
-  '/work-management': [{ label: 'Home', href: '/' }, { label: 'Work Management', href: '/work-management' }],
-  '/work-management/portfolios': [{ label: 'Home', href: '/' }, { label: 'Work Management', href: '/work-management' }, { label: 'Portfolios', href: '/work-management/portfolios' }],
-  '/work-management/boards': [{ label: 'Home', href: '/' }, { label: 'Work Management', href: '/work-management' }, { label: 'Boards', href: '/work-management/boards' }],
-  '/work-management/decisions': [{ label: 'Home', href: '/' }, { label: 'Work Management', href: '/work-management' }, { label: 'Decisions', href: '/work-management/decisions' }],
+  '/account': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }],
+  '/account/profile': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Profile', href: '/account/profile' }],
+  '/account/my-property': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'My Property', href: '/account/my-property' }],
+  '/account/reported-issues': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Reported Issues', href: '/account/reported-issues' }],
+  '/admin': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }],
+  '/admin/portfolios': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Portfolios', href: '/admin/portfolios' }],
+  '/admin/boards': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Boards', href: '/admin/boards' }],
+  '/admin/decisions': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Decisions', href: '/admin/decisions' }],
+  '/admin/society': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Society', href: '/admin/society' }],
+  '/admin/documents': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Documents', href: '/admin/documents' }],
   '/no-access': [{ label: 'Home', href: '/' }, { label: 'No Access', href: '/no-access' }],
 };
 
@@ -64,9 +67,9 @@ const DYNAMIC_PATTERNS: Array<{
   { pattern: /^\/blog\/([^/]+)$/, base: '/blog', labelKind: 'blog' },
   { pattern: /^\/calendar\/([^/]+)$/, base: '/calendar', labelKind: 'calendar' },
   { pattern: /^\/discussion\/thread\/([^/]+)$/, base: '/discussion', labelKind: 'thread' },
-  { pattern: /^\/profile\/reported-issues\/([^/]+)$/, base: '/profile/reported-issues', labelKind: 'request' },
-  { pattern: /^\/work-management\/portfolios\/([^/]+)$/, base: '/work-management/portfolios', labelKind: 'portfolio' },
-  { pattern: /^\/work-management\/boards\/([^/]+)$/, base: '/work-management/boards', labelKind: 'board' },
+  { pattern: /^\/account\/reported-issues\/([^/]+)$/, base: '/account/reported-issues', labelKind: 'request' },
+  { pattern: /^\/admin\/portfolios\/([^/]+)$/, base: '/admin/portfolios', labelKind: 'portfolio' },
+  { pattern: /^\/admin\/boards\/([^/]+)$/, base: '/admin/boards', labelKind: 'board' },
 ];
 
 /**

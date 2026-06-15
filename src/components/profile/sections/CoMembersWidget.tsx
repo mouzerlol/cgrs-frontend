@@ -17,48 +17,38 @@ interface CoMembersWidgetProps {
 function getMemberName(member: CoMember): string {
   const first = member.first_name || '';
   const last = member.last_name || '';
-  if (first && last) {
-    return `${first} ${last}`.trim();
-  }
-  if (first) {
-    return first;
-  }
-  return 'Unknown';
+  if (first && last) return `${first} ${last}`.trim();
+  if (first) return first;
+  return 'A neighbour';
 }
 
+/**
+ * Named list of the other people tied to a property. Renders nothing when the
+ * current user is the only owner/resident on record.
+ */
 export default function CoMembersWidget({ members, type }: CoMembersWidgetProps) {
-  const label = type === 'owner' ? 'Property Owners' : 'Property Residents';
+  if (members.length === 0) return null;
+
+  const label = type === 'owner' ? 'Also owned by' : 'Also living here';
 
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-xs font-medium text-forest/60 uppercase tracking-wide">
+    <div data-testid="co-members-widget" data-type={type} className="flex flex-col gap-3">
+      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-forest/45">
         {label}
       </span>
-      <div className="flex flex-col gap-2">
-        {/* We assume the current user is part of the property conceptually, but this widget specifically shows the fetched co-members.
-            Wait, if members list is empty, should we show current user? 
-            The previous implementation showed "Only you verified here" if members.length === 0.
-            The plan says: "just show heading with only the current user" -> but we don't have the current user's name/avatar in this component props! 
-            Ah, "Remove the 'Only you verified here' text (just show heading with only the current user)". 
-            Wait, the prompt says: "It should just show a heading saying property owners, and then you show the avatar and the user's name for each co-owner."
-            "In fact, we already have a sort of subheading. Instead of saying owner of street address, it should say plural owners if there are co-owners, otherwise, just keep the same."
-            If I don't have current user, maybe I should just show the co_members if length > 0, else show nothing or show the heading and that's it?
-            Actually, the plan says: "Remove the 'Only you verified here' text (just show heading with only the current user)" which might imply just removing it and if there are co-members they will render. 
-            If there are 0 members, we render nothing under the heading. */}
+      <ul className="flex flex-col gap-2.5">
         {members.map((member) => (
-          <div key={member.user_id} className="flex items-center gap-2">
-            <div className="relative rounded-full shrink-0">
-              <Avatar
-                src={member.avatar_url}
-                name={getMemberName(member)}
-                size="sm"
-                className="h-7 w-7"
-              />
-            </div>
-            <span className="text-sm text-forest truncate">{getMemberName(member)}</span>
-          </div>
+          <li key={member.user_id} className="flex items-center gap-2.5">
+            <Avatar
+              src={member.avatar_url}
+              name={getMemberName(member)}
+              size="sm"
+              className="h-8 w-8 ring-1 ring-sage/30"
+            />
+            <span className="text-sm text-forest">{getMemberName(member)}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

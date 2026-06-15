@@ -70,7 +70,7 @@ const CARDS: QuickAccessCardType[] = [
   },
   {
     title: 'Connect',
-    description: 'Join our Facebook & Messenger',
+    description: 'Join our Facebook & WhatsApp',
     href: '/contact?subject=connect',
     type: 'simple',
     icon: 'share',

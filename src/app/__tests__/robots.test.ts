@@ -66,11 +66,11 @@ describe('robots', () => {
     expect(config.sitemap).toBe('https://staging.cgrs.co.nz/sitemap.xml')
   })
 
-  it('disallows profile routes', async () => {
+  it('disallows account routes', async () => {
     const { default: robots } = await import('../robots')
     const config = robots()
     const rules = config.rules
     const disallow = Array.isArray(rules) ? rules[0].disallow : rules.disallow
-    expect(disallow).toContain('/profile/')
+    expect(disallow).toContain('/account/')
   })
 })

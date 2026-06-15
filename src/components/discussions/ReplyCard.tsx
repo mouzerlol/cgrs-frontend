@@ -30,9 +30,9 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
-/** Compact reply row actions: faint outline, aligned with horizontal `UpvoteButton` size="sm". */
+/** Reply row actions: 44px touch target on mobile, compact (sibling-aligned) from sm+. */
 const replyToolbarBtn =
-  'inline-flex items-center justify-center min-h-[26px] gap-1 px-1.5 py-0.5 rounded-md border border-forest/10 text-[11px] leading-tight text-forest/60 transition-colors hover:text-forest hover:border-forest/18 hover:bg-forest/[0.03]';
+  'inline-flex items-center justify-center min-h-[44px] sm:min-h-[26px] gap-1 px-2.5 sm:px-1.5 py-2 sm:py-0.5 rounded-md border border-forest/10 text-xs sm:text-[11px] leading-tight text-forest/60 transition-colors hover:text-forest hover:border-forest/18 hover:bg-forest/[0.03]';
 
 /** Author name chip: sage/20 fill matches border; -m-3 aligns it flush to the card corner. Shrinks/wraps before crowding the timestamp. */
 const replyAuthorBadgeClass =
@@ -40,7 +40,7 @@ const replyAuthorBadgeClass =
 
 /** Quiet metadata, top-right of the card. JetBrains mono per the DESIGN.md "Mono-as-Metadata" rule. */
 const replyMetaClass =
-  'shrink-0 pt-0.5 text-right font-mono text-[11px] leading-tight text-forest/40 whitespace-nowrap';
+  'shrink-0 pt-0.5 text-right font-mono text-xs leading-tight text-forest/40 whitespace-nowrap';
 
 const formatRelativeTime = (dateStr: string): string => {
   const date = new Date(dateStr);
@@ -163,7 +163,7 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
             />
           </div>
         ) : (
-          <p className="mt-2 text-sm leading-relaxed text-forest/80 whitespace-pre-wrap break-words">
+          <p className="mt-2 text-[0.9375rem] leading-relaxed text-forest/80 whitespace-pre-wrap break-words">
             {reply.body}
           </p>
         )}

@@ -37,6 +37,7 @@ import { FormInput } from '@/components/ui/FormInput';
 import { FormTextarea } from '@/components/ui/FormTextarea';
 import { FormSelect } from '@/components/ui/FormSelect';
 import { Modal } from '@/components/ui/Modal';
+import { DocumentViewerModal } from '@/components/ui/DocumentViewerModal';
 import { Switch } from '@/components/ui/Switch';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { Accordion } from '@/components/ui/Accordion';
@@ -103,6 +104,7 @@ export default function DesignSystemPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPosition, setModalPosition] = useState<'center' | 'right'>('center');
+  const [docViewerOpen, setDocViewerOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(false);
   const [switchDisabledChecked, setSwitchDisabledChecked] = useState(true);
 
@@ -124,6 +126,7 @@ export default function DesignSystemPage() {
     { id: 'components', label: 'Components' },
     { id: 'map-components', label: 'Map Components' },
     { id: 'interactive', label: 'Interactive' },
+    { id: 'document-viewer', label: 'Document Viewer' },
     { id: 'shared', label: 'Shared Components' },
   ];
 
@@ -476,7 +479,7 @@ export default function DesignSystemPage() {
                 </div>
 
                 <div className="mt-8 p-8 bg-bone border-[3px] border-black">
-                  <h4 className="text-xs font-mono font-bold mb-6 uppercase tracking-widest border-b-[3px] border-black pb-2">Work Management Components</h4>
+                  <h4 className="text-xs font-mono font-bold mb-6 uppercase tracking-widest border-b-[3px] border-black pb-2">Administration Components</h4>
 
                   <div className="space-y-12">
                     {/* Hub Card */}
@@ -889,8 +892,8 @@ export default function DesignSystemPage() {
                                   <BreadcrumbTrail
                                     items={[
                                       { label: 'Home', href: '/' },
-                                      { label: 'Work Management', href: '/work-management' },
-                                      { label: 'Boards', href: '/work-management/boards' },
+                                      { label: 'Administration', href: '/admin' },
+                                      { label: 'Boards', href: '/admin/boards' },
                                       { label: 'Society Management' },
                                     ]}
                                   />
@@ -1643,6 +1646,32 @@ background-color: #F4F1EA; /* Bone color */`}</code>
                 </Tab.Panels>
               </Tab.Group>
             </div>
+          </Section>
+
+          {/* Document Viewer */}
+          <Section
+            id="document-viewer"
+            title="Document Viewer"
+            description="A near-fullscreen modal for previewing documents in the browser. Renders PDFs inline today; images and other formats fall back to a download. Being proven here before rollout to other areas of the site."
+          >
+            <Card>
+              <CardContent className="space-y-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button onClick={() => setDocViewerOpen(true)}>View document</Button>
+                  <p className="text-sm text-forest/60">
+                    Opens the modal on a sample PDF. Close with the X, the Escape key, or by clicking the backdrop.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <DocumentViewerModal
+              isOpen={docViewerOpen}
+              onClose={() => setDocViewerOpen(false)}
+              fileUrl="/sample.pdf"
+              fileName="Concrete Pad Report.pdf"
+              fileType="pdf"
+            />
           </Section>
         </div>
       </main>

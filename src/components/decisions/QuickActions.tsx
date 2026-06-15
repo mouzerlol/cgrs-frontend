@@ -34,7 +34,7 @@ export default function QuickActions({
     );
 
     const copyLink = () => {
-        const url = `${window.location.origin}/work-management/decisions/${resolution.id}`;
+        const url = `${window.location.origin}/admin/decisions/${resolution.id}`;
         navigator.clipboard.writeText(url);
         showToast("Link copied to clipboard");
     };
@@ -61,7 +61,7 @@ Owner:      ${ownerName}
 Deadline:   ${resolution.deadline ? formatDate(resolution.deadline) : "—"}
 Status:     ${derivedStatus}
 
-View online: ${window.location.origin}/work-management/decisions/${resolution.id}
+View online: ${window.location.origin}/admin/decisions/${resolution.id}
 
 ──────────────────────────────────────
 Coronation Gardens Residents Society

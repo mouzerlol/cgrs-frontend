@@ -51,17 +51,17 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
         button:
           direction === 'vertical'
             ? 'min-w-[40px] min-h-[44px] p-1'
-            : /* horizontal: slightly shorter than sibling text actions for visual balance */
-              'h-6 min-h-[24px] px-1.5 py-0',
+            : /* horizontal: 44px touch target on mobile, compact (sibling-aligned) from sm+ */
+              'min-h-[44px] sm:h-6 sm:min-h-[24px] px-2 sm:px-1.5 py-0',
         icon: direction === 'vertical' ? 'w-4 h-4' : 'w-3 h-3',
-        text: direction === 'vertical' ? 'text-xs' : 'text-[11px]',
+        text: direction === 'vertical' ? 'text-xs' : 'text-xs sm:text-[11px]',
         gap: direction === 'vertical' ? 'gap-0.5' : 'gap-0.5',
       },
       md: {
         button:
           direction === 'vertical'
             ? 'min-w-[48px] min-h-[48px] p-1.5'
-            : 'h-9 min-h-[36px] px-2 py-1',
+            : 'min-h-[44px] sm:h-9 sm:min-h-[36px] px-2.5 sm:px-2 py-1',
         icon: direction === 'vertical' ? 'w-5 h-5' : 'w-4 h-4',
         text: direction === 'vertical' ? 'text-sm' : 'text-xs',
         gap: direction === 'vertical' ? 'gap-0.5' : 'gap-1',

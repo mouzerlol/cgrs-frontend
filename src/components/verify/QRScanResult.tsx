@@ -71,7 +71,7 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
               Try Again
             </button>
             <Link
-              href="/profile/verification"
+              href="/account/verification"
               className="w-full rounded-xl border border-sage/30 px-4 py-2.5 text-sm font-medium text-forest hover:bg-sage-light/30 transition-colors text-center"
             >
               Go to Verification Page
@@ -102,10 +102,10 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
           </p>
         </div>
         <Link
-          href="/profile"
+          href="/account/profile"
           className="w-full max-w-xs rounded-xl bg-forest px-4 py-2.5 text-sm font-medium text-bone hover:bg-forest/90 transition-colors"
         >
-          Go to My Profile
+          Go to My Account
         </Link>
       </div>
     </div>

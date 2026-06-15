@@ -118,7 +118,7 @@ export default function CompactIssueRow({
 
   return (
     <Link
-      href={`/profile/reported-issues/${id}`}
+      href={`/account/reported-issues/${id}`}
       className={cn(
         'group/card relative flex items-center gap-3 px-3 py-1 sm:px-4 sm:py-1',
         'bg-white border border-sage/20',

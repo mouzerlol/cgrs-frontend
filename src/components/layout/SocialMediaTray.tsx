@@ -22,13 +22,13 @@ export default function SocialMediaTray() {
           <Icon name="mdi:facebook" size="lg" />
         </a>
         <a
-          href="https://m.me/ch/AbY9QUkOtr08iXCF/"
+          href="https://chat.whatsapp.com/Gl9qfkWipml9gfjZeP3NZk?mode=gi_t"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center w-8 h-8 text-bone opacity-70 transition-opacity duration-300 hover:opacity-100"
-          aria-label="Message us on Messenger"
+          aria-label="Join our WhatsApp group"
         >
-          <Icon name="mdi:facebook-messenger" size="lg" />
+          <Icon name="mdi:whatsapp" size="lg" />
         </a>
       </div>
     </div>

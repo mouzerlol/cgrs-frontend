@@ -13,7 +13,7 @@ export const ALL_NAV_ITEMS = [
   { name: 'Report Issue', href: '/management-request', icon: 'lightbulb' as const },
   { name: 'Calendar', href: '/calendar', icon: 'calendar' as const },
   { name: 'Blog', href: '/blog', icon: 'edit' as const },
-  { name: 'Management', href: '/work-management', icon: 'document' as const },
+  { name: 'Management', href: '/admin', icon: 'document' as const },
   { name: 'About', href: '/about', icon: 'lucide:users' as const },
   { name: 'Map', href: '/map', icon: 'map' as const },
 ] as const;

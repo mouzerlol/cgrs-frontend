@@ -34,14 +34,14 @@ export default function BudgetSection({ content, isEditingLayout, isLoading = fa
             <span className="text-xs text-forest/60">
               {formatCurrency(spent)} spent
             </span>
-            <span className={`text-xs font-medium ${isOverBudget ? 'text-red-500' : 'text-forest/70'}`}>
+            <span className={`text-xs font-medium ${isOverBudget ? 'text-terracotta' : 'text-forest/70'}`}>
               {percentage}%
             </span>
           </div>
           <div className="h-2 bg-sage-light rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                isOverBudget ? 'bg-red-400' : percentage > 80 ? 'bg-amber' : 'bg-sage'
+                isOverBudget ? 'bg-terracotta' : percentage > 80 ? 'bg-amber' : 'bg-sage'
               }`}
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />

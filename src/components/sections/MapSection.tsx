@@ -6,6 +6,15 @@ import { PROPERTY_DATA } from '@/data/property-addresses';
 import { cn } from '@/lib/utils';
 import { getFixedSiteHeaderHeight } from '@/lib/site-layout';
 import BaseMap from '@/components/map/BaseMap';
+import { track } from '@/lib/analytics/events';
+import {
+  SHARE_MAX_ZOOM,
+  PLACE_FLOOR,
+  buildShareUrl,
+  describeLocation,
+  placeLabel,
+  roundCoord,
+} from '@/lib/share-location';
 
 const MAP_CENTER: [number, number] = [-36.9497, 174.7918];
 const MAP_ZOOM = 17;
@@ -23,6 +32,10 @@ const PRECINCT_ZOOM = 19;
 
 interface MapSectionProps {
   className?: string;
+  /** Deep-link share target parsed server-side from `/map?lat&lng&from`. */
+  shareLat?: number;
+  shareLng?: number;
+  shareFrom?: string;
 }
 
 function computeCentroid(coords: [number, number][]): [number, number] {
@@ -47,9 +60,21 @@ const BIN_GLYPH = `<g fill="none" stroke="#fff" stroke-width="1.1" stroke-lineca
 const TREE_GLYPH = `<path fill="#fff" stroke="none" d="M10 3.2c-2.7 0-4.8 2-4.8 4.5 0 2.1 1.5 3.8 3.6 4.3v3.3c0 .55.55 1 1.2 1s1.2-.45 1.2-1v-3.3c2.1-.5 3.6-2.2 3.6-4.3 0-2.5-2.1-4.5-4.8-4.5z"/>`;
 
 // Width of a bin marker: 20px icon cell plus a number cell when a label is present.
+// Visitor parking is a touch wider to seat the "P" and the guest badge side by side.
 function facilityMarkerWidth(icon: string, label?: string): number {
   if (icon === 'bin' && label) return 20 + label.length * 7 + 8;
+  if (icon === 'parking-visitor') return 24;
   return 20;
+}
+
+// A small "guest" person silhouette (head + shoulders) cut into a white badge, drawn in the
+// chip colour `c`, centred at (cx, cy). Marks parking reserved for visitors rather than a
+// general public "P".
+function guestBadge(cx: number, cy: number, c: string): string {
+  return `<circle cx="${cx}" cy="${cy}" r="5" fill="${c}"/>
+    <circle cx="${cx}" cy="${cy}" r="4.1" fill="#fff"/>
+    <circle cx="${cx}" cy="${cy - 1.6}" r="1.2" fill="${c}"/>
+    <path d="M${cx - 2.3} ${cy + 2.2} A2.3 2.3 0 0 1 ${cx + 2.3} ${cy + 2.2} Z" fill="${c}"/>`;
 }
 
 // Map marker for facilities: a "P" square for parking; for bin enclosures a rectangle
@@ -80,6 +105,14 @@ function facilityMarkerHtml(color: string, icon: string, label?: string): string
       <text x="10" y="14.2" text-anchor="middle" font-size="11" font-weight="700" font-family="system-ui,sans-serif" fill="#1F2937">P</text>
       <circle cx="10" cy="10" r="7.3" fill="none" stroke="#EA580C" stroke-width="1.8"/>
       <line x1="4.8" y1="4.8" x2="15.2" y2="15.2" stroke="#EA580C" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>`;
+  }
+  if (icon === 'parking-visitor') {
+    // "P" with a guest badge: still reads as parking, but flags it as visitor-only.
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20">
+      <rect x="1" y="1" width="22" height="18" rx="3" fill="${color}" stroke="none"/>
+      <text x="8.5" y="14.4" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,sans-serif" fill="#fff">P</text>
+      ${guestBadge(16.5, 10, color)}
     </svg>`;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
@@ -234,15 +267,17 @@ const BIN_ENCLOSURE_GROUPS: BinEnclosureGroup[] = (() => {
 interface StreetParkingGroup {
   name: string;
   count: number;
+  serves?: string; // for visitor parking: the stage whose visitors it's reserved for
   rings: [number, number][][]; // every polygon belonging to this location
   centroid: [number, number];
 }
 
-// Street parking grouped by location name (e.g. all "Huri Street Parking" polygons → one entry),
-// carrying the number of car parks available at that location.
-const STREET_PARKING: StreetParkingGroup[] = (() => {
+// Parking polygons grouped by location name (e.g. all "Huri Street Parking" polygons → one entry),
+// carrying the number of car parks available at that location. Used for both street parking and
+// private visitor parking — they render identically, only the colour differs.
+const groupParkingByType = (type: string): StreetParkingGroup[] => {
   const byName = new Map<string, typeof FACILITIES>();
-  FACILITIES.filter((f) => f.type === 'street-parking').forEach((f) => {
+  FACILITIES.filter((f) => f.type === type).forEach((f) => {
     const arr = byName.get(f.name) ?? [];
     arr.push(f);
     byName.set(f.name, arr);
@@ -256,12 +291,26 @@ const STREET_PARKING: StreetParkingGroup[] = (() => {
         centroids.reduce((s, c) => s + c[1], 0) / centroids.length,
       ];
       const count = Math.max(...members.map((m) => m.count ?? 0));
-      return { name, count, rings, centroid };
+      const serves = members.find((m) => m.serves)?.serves;
+      return { name, count, serves, rings, centroid };
     })
     .sort((a, b) => a.name.localeCompare(b.name));
-})();
+};
 
-export default function MapSection({ className }: MapSectionProps) {
+// Facility types that render as grouped, clickable parking locations with a car-park count.
+const PARKING_GROUPS: Record<string, StreetParkingGroup[]> = {
+  'street-parking': groupParkingByType('street-parking'),
+  'private-visitor-parking': groupParkingByType('private-visitor-parking'),
+};
+
+// Info-card subtitle for a parking location. Private visitor parking spells out the restriction
+// so it isn't mistaken for general public parking; street parking just states availability.
+const parkingSubtitle = (type: string, count: number, serves?: string): string =>
+  type === 'private-visitor-parking'
+    ? `For ${serves ?? 'private'} visitors only · ${count} space${count === 1 ? '' : 's'}`
+    : `${count} car park${count === 1 ? '' : 's'} available`;
+
+export default function MapSection({ className, shareLat, shareLng, shareFrom }: MapSectionProps) {
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   const markerRefs = useRef<Map<string, L.Marker>>(new Map());
   const precinctLayerRefs = useRef<Map<string, L.GeoJSON>>(new Map());
@@ -282,6 +331,33 @@ export default function MapSection({ className }: MapSectionProps) {
   const [stageVisibility, setStageVisibility] = useState<Record<string, boolean>>({});
   const [selectedFacility, setSelectedFacility] = useState<string | null>(null);
   const [addressSearch, setAddressSearch] = useState('');
+
+  // --- Share a point on the map ---
+  const [shareMode, setShareMode] = useState(false);
+  const shareModeRef = useRef(false);
+  const [shareCard, setShareCard] = useState<{
+    lat: number;
+    lng: number;
+    isView?: boolean;
+    /** Resolved place name ("Whai Hua", "Mount Roskill"); undefined while still resolving. */
+    name?: string;
+    /** Specifier under the name ("near 38 Huri Street"). */
+    detail?: string;
+    /** True while the reverse geocode is in flight and no local name was available yet. */
+    resolving?: boolean;
+  } | null>(null);
+  const [shareCardPos, setShareCardPos] = useState<{ x: number; y: number } | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const shareUrlInputRef = useRef<HTMLInputElement>(null);
+  // Monotonic guard: a newer card open invalidates an older geocode response (race-safe).
+  const shareGeocodeSeqRef = useRef(0);
+  const placeSharePinFnRef = useRef<(lat: number, lng: number) => void>(() => {});
+  // The deep-link target is read once on mount; handleMapReady consumes it to land.
+  const shareTargetRef = useRef<{ lat: number; lng: number; from?: string } | null>(
+    shareLat != null && shareLng != null
+      ? { lat: shareLat, lng: shareLng, from: shareFrom }
+      : null
+  );
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const hasScrolledRef = useRef(false);
@@ -400,7 +476,11 @@ export default function MapSection({ className }: MapSectionProps) {
         </svg>`,
       });
       const marker = L.marker(addr.coordinates, { icon });
-      marker.on('click', () => {
+      marker.on('click', (e: L.LeafletMouseEvent) => {
+        if (shareModeRef.current) {
+          placeSharePinFnRef.current(e.latlng.lat, e.latlng.lng);
+          return;
+        }
         dropSelectionPinFnRef.current(addr.coordinates[0], addr.coordinates[1]);
         setInfoCardRef.current({ title: addr.fullAddress, dotColor: '#2d5a3d' });
       });
@@ -452,6 +532,154 @@ export default function MapSection({ className }: MapSectionProps) {
     mapInstance?.closePopup();
   }, [mapInstance, applyPrecinctStyle, clearAddressMarkers, clearSelectionPin]);
   resetAllPrecinctsFnRef.current = resetAllPrecincts;
+
+  // --- Share a point on the map -------------------------------------------------
+
+  // Open the share card for a point and name it. Shows the precise CGRS label instantly
+  // (precinct / nearby address); otherwise it resolves a suburb / street via the same
+  // reverse-geocode ladder the link unfurl uses, so a point outside the development still
+  // names somewhere real instead of a bare "Shared location".
+  const openShareCard = useCallback((lat: number, lng: number, isView: boolean) => {
+    const local = placeLabel(describeLocation(lat, lng));
+    setShareCard({
+      lat,
+      lng,
+      isView,
+      name: local.resolved ? local.name : undefined,
+      detail: local.resolved ? local.detail : undefined,
+      resolving: !local.resolved,
+    });
+
+    const seq = ++shareGeocodeSeqRef.current;
+    fetch(`/api/geocode/share?lat=${lat}&lng=${lng}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (seq !== shareGeocodeSeqRef.current || !data?.name) return;
+        setShareCard((prev) =>
+          prev && prev.lat === lat && prev.lng === lng
+            ? { ...prev, name: data.name, detail: data.detail, resolving: false }
+            : prev
+        );
+      })
+      .catch(() => {
+        if (seq !== shareGeocodeSeqRef.current) return;
+        setShareCard((prev) =>
+          prev && prev.lat === lat && prev.lng === lng
+            ? { ...prev, name: prev.name ?? PLACE_FLOOR, resolving: false }
+            : prev
+        );
+      });
+  }, []);
+
+  // Drop the seal at a clicked point and open the share card (author flow). Sticky:
+  // each call repositions the single pin (dropSelectionPin already replaces it).
+  const placeSharePin = useCallback(async (lat: number, lng: number) => {
+    await dropSelectionPin(lat, lng);
+    openShareCard(lat, lng, false);
+    track('share_pin_placed', {
+      lat: roundCoord(lat),
+      lng: roundCoord(lng),
+      precinct_id: describeLocation(lat, lng).precinctId ?? null,
+    });
+  }, [dropSelectionPin, openShareCard]);
+  placeSharePinFnRef.current = placeSharePin;
+
+  const disarmShareMode = useCallback(() => {
+    shareModeRef.current = false;
+    setShareMode(false);
+  }, []);
+
+  const armShareMode = useCallback(() => {
+    // Clear any prior precinct/POI selection so the seal unambiguously marks the
+    // share point (this also clears an existing seal/info-card).
+    resetAllPrecincts();
+    shareModeRef.current = true;
+    setShareMode(true);
+    track('share_mode_armed', { source: 'map_control' });
+  }, [resetAllPrecincts]);
+
+  const toggleShareMode = useCallback(() => {
+    if (shareModeRef.current) {
+      disarmShareMode();
+    } else {
+      armShareMode();
+    }
+  }, [armShareMode, disarmShareMode]);
+
+  // Dismiss the share card via its close button: remove the card + pin and end
+  // placement mode (if armed).
+  const closeShareCard = useCallback(() => {
+    setShareCard(null);
+    setShareCopied(false);
+    clearSelectionPin();
+    disarmShareMode();
+  }, [clearSelectionPin, disarmShareMode]);
+
+  const handleCopyShareUrl = useCallback(async () => {
+    if (!shareCard) return;
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${origin}${buildShareUrl(shareCard.lat, shareCard.lng, { from: 'share' })}`;
+
+    // Try the async Clipboard API, then fall back to execCommand on the selected
+    // field (covers insecure contexts and "document not focused" rejections).
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const el = shareUrlInputRef.current;
+      if (el) {
+        el.select();
+        try {
+          document.execCommand('copy');
+        } catch {
+          /* nothing more we can do; the field stays selected for manual copy */
+        }
+      }
+    }
+
+    track('share_link_copied', {
+      lat: roundCoord(shareCard.lat),
+      lng: roundCoord(shareCard.lng),
+    });
+
+    // Confirm briefly, then close the card itself — the share action is complete.
+    setShareCopied(true);
+    disarmShareMode();
+    setTimeout(() => {
+      setShareCard(null);
+      setShareCopied(false);
+    }, 800);
+  }, [shareCard, disarmShareMode]);
+
+  // Escape disarms placement mode from anywhere on the page (pin + card persist).
+  useEffect(() => {
+    if (!shareMode) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') disarmShareMode();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [shareMode, disarmShareMode]);
+
+  // Keep the share card anchored above the pin as the map pans/zooms/resizes.
+  useEffect(() => {
+    if (!mapInstance || !shareCard) {
+      setShareCardPos(null);
+      return;
+    }
+    const update = () => {
+      const pt = mapInstance.latLngToContainerPoint([shareCard.lat, shareCard.lng]);
+      setShareCardPos({ x: pt.x, y: pt.y });
+    };
+    update();
+    mapInstance.on('move', update);
+    mapInstance.on('zoom', update);
+    mapInstance.on('resize', update);
+    return () => {
+      mapInstance.off('move', update);
+      mapInstance.off('zoom', update);
+      mapInstance.off('resize', update);
+    };
+  }, [mapInstance, shareCard]);
 
   const selectPrecinct = useCallback((precinctId: string) => {
     if (!mapInstance || !mapReady) return;
@@ -562,14 +790,22 @@ export default function MapSection({ className }: MapSectionProps) {
       });
 
       layer.on('click', () => {
+        // In placement mode, let the map-level click handler drop the pin (the
+        // vector-layer click bubbles up to it) — don't select the precinct.
+        if (shareModeRef.current) return;
         selectPrecinctFnRef.current(precinct.id);
       });
 
       precinctLayerRefs.current.set(precinct.id, layer);
     });
 
-    // Reset on background click
+    // Reset on background click — unless placement mode is armed, in which case the
+    // click drops/repositions the share pin and must NOT reset precincts.
     map.on('click', (e: L.LeafletMouseEvent) => {
+      if (shareModeRef.current) {
+        placeSharePinFnRef.current(e.latlng.lat, e.latlng.lng);
+        return;
+      }
       if (!(e.originalEvent.target as HTMLElement)?.closest('.leaflet-interactive')) {
         resetAllPrecinctsFnRef.current();
       }
@@ -591,26 +827,26 @@ export default function MapSection({ className }: MapSectionProps) {
 
       // The emergency clearway is a warning zone: stronger yellow fill + a dashed orange border.
       const isWarning = facilityType.icon === 'no-parking';
-      // Street parking gets a crisp solid outline so it stays legible even when it sits
-      // on top of another coloured area (e.g. a park) rather than the grey road.
+      // Parking areas (street + private visitor) get a crisp solid outline so they stay legible
+      // even when sitting on top of another coloured area (e.g. a park) rather than the grey road.
       // A stronger fill so the blue reads clearly even on top of a coloured area (e.g. a park).
-      const isStreetParking = facility.type === 'street-parking';
-      const baseFillOpacity = isWarning ? 0.5 : isStreetParking ? 0.6 : FACILITY_STYLES.default.fillOpacity;
-      const hoverFillOpacity = isWarning ? 0.62 : isStreetParking ? 0.72 : FACILITY_STYLES.hover.fillOpacity;
+      const isParkingArea = facility.type === 'street-parking' || facility.type === 'private-visitor-parking';
+      const baseFillOpacity = isWarning ? 0.5 : isParkingArea ? 0.6 : FACILITY_STYLES.default.fillOpacity;
+      const hoverFillOpacity = isWarning ? 0.62 : isParkingArea ? 0.72 : FACILITY_STYLES.hover.fillOpacity;
       const facilitySubtitle = isWarning
         ? 'No parking — keep clear at all times'
-        : isStreetParking && facility.count
-          ? `${facility.count} car park${facility.count === 1 ? '' : 's'} available`
+        : isParkingArea && facility.count
+          ? parkingSubtitle(facility.type, facility.count, facility.serves)
           : undefined;
 
       const layer = L.geoJSON(feature as GeoJSON.GeoJsonObject, {
         style: {
           color: isWarning ? '#EA580C' : facilityType.color,
-          weight: isWarning ? 2 : isStreetParking ? 1.5 : FACILITY_STYLES.default.weight,
+          weight: isWarning ? 2 : isParkingArea ? 1.5 : FACILITY_STYLES.default.weight,
           dashArray: isWarning ? '5,4' : undefined,
           fillColor: facilityType.color,
           fillOpacity: baseFillOpacity,
-          stroke: isWarning || isStreetParking,
+          stroke: isWarning || isParkingArea,
         },
       }).addTo(map);
 
@@ -623,6 +859,9 @@ export default function MapSection({ className }: MapSectionProps) {
       });
 
       layer.on('click', () => {
+        // In placement mode, defer to the map-level click handler (the polygon
+        // click bubbles up) so a share pin drops where the user clicked.
+        if (shareModeRef.current) return;
         const centroid = computeCentroid(facility.coordinates);
         dropSelectionPinFnRef.current(centroid[1], centroid[0]);
         map.flyTo([centroid[1], centroid[0]], PRECINCT_ZOOM, { duration: 0.4 });
@@ -633,26 +872,33 @@ export default function MapSection({ className }: MapSectionProps) {
         });
       });
 
-      // Add centered marker at polygon centroid (P for parking, bin icon + number for enclosures)
-      const centroid = computeCentroid(facility.coordinates);
-      const enclosureNum = facilityType.icon === 'bin' ? (facility.name.match(/\d+/)?.[0] ?? '') : '';
-      const markerW = facilityMarkerWidth(facilityType.icon, enclosureNum);
-      const pIcon = L.divIcon({
-        className: 'facility-p-marker',
-        iconSize: [markerW, 20],
-        iconAnchor: [markerW / 2, 10],
-        html: facilityMarkerHtml(facilityType.color, facilityType.icon, enclosureNum),
-      });
-      const pMarker = L.marker([centroid[1], centroid[0]], { icon: pIcon }).addTo(map);
-      pMarker.on('click', () => {
-        dropSelectionPinFnRef.current(centroid[1], centroid[0]);
-        setInfoCardRef.current({
-          title: facility.name,
-          subtitle: facilitySubtitle,
-          dotColor: facilityType.color,
+      // Add centered marker at polygon centroid (P for parking, bin icon + number for enclosures).
+      // Skipped where it would collide with a neighbour's marker (facility.hideMarker).
+      if (!facility.hideMarker) {
+        const centroid = computeCentroid(facility.coordinates);
+        const enclosureNum = facilityType.icon === 'bin' ? (facility.name.match(/\d+/)?.[0] ?? '') : '';
+        const markerW = facilityMarkerWidth(facilityType.icon, enclosureNum);
+        const pIcon = L.divIcon({
+          className: 'facility-p-marker',
+          iconSize: [markerW, 20],
+          iconAnchor: [markerW / 2, 10],
+          html: facilityMarkerHtml(facilityType.color, facilityType.icon, enclosureNum),
         });
-      });
-      facilityLayerRefs.current.set(`${facility.id}-marker`, pMarker as unknown as L.GeoJSON);
+        const pMarker = L.marker([centroid[1], centroid[0]], { icon: pIcon }).addTo(map);
+        pMarker.on('click', (e: L.LeafletMouseEvent) => {
+          if (shareModeRef.current) {
+            placeSharePinFnRef.current(e.latlng.lat, e.latlng.lng);
+            return;
+          }
+          dropSelectionPinFnRef.current(centroid[1], centroid[0]);
+          setInfoCardRef.current({
+            title: facility.name,
+            subtitle: facilitySubtitle,
+            dotColor: facilityType.color,
+          });
+        });
+        facilityLayerRefs.current.set(`${facility.id}-marker`, pMarker as unknown as L.GeoJSON);
+      }
 
       facilityLayerRefs.current.set(facility.id, layer);
     });
@@ -669,7 +915,11 @@ export default function MapSection({ className }: MapSectionProps) {
         icon,
         zIndexOffset: 500,
       }).addTo(map);
-      marker.on('click', () => {
+      marker.on('click', (e: L.LeafletMouseEvent) => {
+        if (shareModeRef.current) {
+          placeSharePinFnRef.current(e.latlng.lat, e.latlng.lng);
+          return;
+        }
         dropSelectionPinFnRef.current(entrance.coordinates[1], entrance.coordinates[0]);
         setInfoCardRef.current({
           title: entrance.name,
@@ -713,25 +963,91 @@ export default function MapSection({ className }: MapSectionProps) {
         </div>
       `, { className: 'custom-popup' });
 
-      marker.on('click', () => {
+      marker.on('click', (e: L.LeafletMouseEvent) => {
+        if (shareModeRef.current) {
+          placeSharePinFnRef.current(e.latlng.lat, e.latlng.lng);
+          return;
+        }
         dropSelectionPinFnRef.current(poi.coordinates[0], poi.coordinates[1]);
       });
 
       markerRefs.current.set(poi.id, marker);
     });
 
-    const allBounds = L.latLngBounds([]);
-    precinctLayerRefs.current.forEach((layer) => {
-      allBounds.extend(layer.getBounds());
-    });
-    map.setView(allBounds.getCenter(), INITIAL_MAX_ZOOM);
+    const shareTarget = shareTargetRef.current;
+    if (shareTarget) {
+      // Deep-link landing: skip the fit-to-bounds overview, jump straight to the
+      // shared point at max zoom (instant), drop the pin, and open the card.
+      const { lat, lng, from } = shareTarget;
+      const landZoom = Math.min(map.getMaxZoom(), SHARE_MAX_ZOOM);
+      map.setView([lat, lng], landZoom, { animate: false });
+
+      const icon = L.divIcon({
+        className: 'cg-seal',
+        html: SELECTION_PIN_HTML,
+        iconSize: [64, 80],
+        iconAnchor: [32, SEAL_TIP_Y],
+      });
+      selectionPinRef.current = L.marker([lat, lng], {
+        icon,
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: 2000,
+      }).addTo(map);
+
+      openShareCard(lat, lng, from === 'share');
+      track('shared_link_opened', {
+        lat: roundCoord(lat),
+        lng: roundCoord(lng),
+        from: from ?? null,
+      });
+
+      // Once the user does anything to the map, the share params no longer describe the
+      // view — strip lat/lng/from from the address bar (replaceState, no reload). We
+      // listen for native input on the Leaflet container (pointer/wheel/keyboard), which
+      // fires reliably for drag, zoom buttons, wheel-zoom, and keyboard pan. The share
+      // card is a sibling of this container, so interacting with the card won't trigger
+      // it. Armed on the next tick so the programmatic landing setView doesn't count.
+      const container = map.getContainer();
+      let cleared = false;
+      const clearShareParams = () => {
+        if (cleared) return;
+        cleared = true;
+        container.removeEventListener('pointerdown', clearShareParams);
+        container.removeEventListener('wheel', clearShareParams);
+        container.removeEventListener('keydown', clearShareParams);
+        if (typeof window === 'undefined') return;
+        const url = new URL(window.location.href);
+        let touched = false;
+        ['lat', 'lng', 'from'].forEach((p) => {
+          if (url.searchParams.has(p)) {
+            url.searchParams.delete(p);
+            touched = true;
+          }
+        });
+        if (touched) {
+          window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        }
+      };
+      setTimeout(() => {
+        container.addEventListener('pointerdown', clearShareParams);
+        container.addEventListener('wheel', clearShareParams, { passive: true });
+        container.addEventListener('keydown', clearShareParams);
+      }, 0);
+    } else {
+      const allBounds = L.latLngBounds([]);
+      precinctLayerRefs.current.forEach((layer) => {
+        allBounds.extend(layer.getBounds());
+      });
+      map.setView(allBounds.getCenter(), INITIAL_MAX_ZOOM);
+    }
 
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
     map.invalidateSize();
 
     setMapInstance(map);
     setMapReady(true);
-  }, [scrollToFullView, applyPrecinctStyle]);
+  }, [scrollToFullView, applyPrecinctStyle, openShareCard]);
 
   const handlePOIClick = useCallback((poi: (typeof POINTS_OF_INTEREST)[number]) => {
     scrollToFullView();
@@ -797,8 +1113,8 @@ export default function MapSection({ className }: MapSectionProps) {
     });
   }, [mapInstance, mapReady, scrollToFullView, dropSelectionPin]);
 
-  // Fit to all polygons of a street-parking location and show its park count.
-  const handleStreetParkingClick = useCallback(async (group: StreetParkingGroup) => {
+  // Fit to all polygons of a parking location (street or private visitor) and show its park count.
+  const handleStreetParkingClick = useCallback(async (group: StreetParkingGroup, type: string) => {
     if (!mapInstance || !mapReady) return;
     scrollToFullView();
     setSelectedFacility(group.name);
@@ -813,8 +1129,8 @@ export default function MapSection({ className }: MapSectionProps) {
     dropSelectionPin(group.centroid[1], group.centroid[0]);
     setInfoCard({
       title: group.name,
-      subtitle: `${group.count} car park${group.count === 1 ? '' : 's'} available`,
-      dotColor: FACILITY_TYPES['street-parking'].color,
+      subtitle: parkingSubtitle(type, group.count, group.serves),
+      dotColor: FACILITY_TYPES[type as keyof typeof FACILITY_TYPES].color,
     });
   }, [mapInstance, mapReady, scrollToFullView, dropSelectionPin]);
 
@@ -840,6 +1156,7 @@ export default function MapSection({ className }: MapSectionProps) {
       ref={sectionRef}
       className={cn('map-section-wrapper', className)}
       data-testid="map-section-wrapper"
+      data-share-arming={shareMode ? '' : undefined}
     >
       {/* Sidebar */}
       <aside className="map-sidebar">
@@ -940,7 +1257,7 @@ export default function MapSection({ className }: MapSectionProps) {
                       <div className="poi-group-header">
                         <span className="poi-group-color" style={{ backgroundColor: color }} />
                         <span>{label}</span>
-                        <span className="poi-count">({type === 'street-parking' ? STREET_PARKING.length : facilities.length})</span>
+                        <span className="poi-count">({PARKING_GROUPS[type] ? PARKING_GROUPS[type].length : facilities.length})</span>
                         <VisibilityToggle visible={isVisible} onClick={() => toggleFacilityType(type)} label={label} />
                       </div>
                       {icon === 'bin' && (
@@ -971,13 +1288,13 @@ export default function MapSection({ className }: MapSectionProps) {
                           ))}
                         </div>
                       )}
-                      {type === 'street-parking' && (
+                      {PARKING_GROUPS[type] && (
                         <ul className="poi-list">
-                          {STREET_PARKING.map((group) => (
+                          {PARKING_GROUPS[type].map((group) => (
                             <li key={group.name}>
                               <button
                                 type="button"
-                                onClick={() => handleStreetParkingClick(group)}
+                                onClick={() => handleStreetParkingClick(group, type)}
                                 disabled={!mapReady}
                                 className={cn(
                                   'poi-button',
@@ -1012,7 +1329,7 @@ export default function MapSection({ className }: MapSectionProps) {
               aria-expanded={openAccordion === 'pois'}
               onClick={() => setOpenAccordion(openAccordion === 'pois' ? null : 'pois')}
             >
-              <span>Neighborhood Features</span>
+              <span>Māngere Bridge Points of Interest</span>
               <span className="accordion-count">{POINTS_OF_INTEREST.length}</span>
               <ChevronIcon />
             </button>
@@ -1123,9 +1440,95 @@ export default function MapSection({ className }: MapSectionProps) {
           maxZoom={19}
           minZoom={12}
           onMapReady={handleMapReady}
+          showShareControl={true}
+          shareActive={shareMode}
+          onShareClick={toggleShareMode}
           className="interactive-map"
           style={{ height: '100%' }}
         />
+
+        {/* Placement-mode banner — primary affordance (esp. on touch, where there is
+            no pin cursor). Cancel ends the mode; the pin/card persist. */}
+        {shareMode && (
+          <div className="share-banner" role="status">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>Share a point on the map</span>
+            <button
+              type="button"
+              className="share-banner-cancel"
+              aria-label="Cancel sharing"
+              onClick={disarmShareMode}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Share card — anchored above the dropped pin (re-anchored on map move). */}
+        {shareCard && shareCardPos && (
+          <div
+            className="share-card"
+            style={{ left: shareCardPos.x, top: shareCardPos.y }}
+          >
+            <button
+              type="button"
+              className="share-card-close"
+              aria-label="Close"
+              onClick={closeShareCard}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <span className="share-card-eyebrow">
+              {shareCard.isView ? 'Shared location' : 'Share this location'}
+            </span>
+            {shareCard.resolving ? (
+              <span className="share-card-name share-card-name--loading">
+                Pinpointing location
+                <span className="share-card-dots" aria-hidden="true" />
+              </span>
+            ) : (
+              <strong className="share-card-name">{shareCard.name}</strong>
+            )}
+            {!shareCard.resolving && shareCard.detail && (
+              <span className="share-card-detail">{shareCard.detail}</span>
+            )}
+            {/* Re-share affordance only on the author flow; on a link-arrival the visitor
+                already followed a link, so the card stays a clean place label. */}
+            {!shareCard.isView && (
+              <div className="share-card-row">
+                <input
+                  ref={shareUrlInputRef}
+                  className="share-card-url"
+                  type="text"
+                  readOnly
+                  value={
+                    typeof window !== 'undefined'
+                      ? `${window.location.origin}${buildShareUrl(shareCard.lat, shareCard.lng, { from: 'share' })}`
+                      : buildShareUrl(shareCard.lat, shareCard.lng, { from: 'share' })
+                  }
+                  onFocus={(e) => e.currentTarget.select()}
+                  aria-label="Shareable link"
+                />
+                <button
+                  type="button"
+                  className="share-card-copy"
+                  onClick={handleCopyShareUrl}
+                >
+                  {shareCopied ? 'Copied ✓' : 'Copy'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {infoCard && (
           <div className="precinct-info-card" key={infoCard.title}>
@@ -1142,6 +1545,7 @@ export default function MapSection({ className }: MapSectionProps) {
         {/* Legend — three columns: development, precincts, facilities */}
         <div className="map-legend">
           <div className="legend-group">
+            <h4>Map</h4>
             <ul className="legend-list">
               <li className="legend-item">
                 <span className="legend-marker" style={{ backgroundColor: '#ffffff', width: '14px', height: '3px', borderRadius: '2px', border: 'none', boxShadow: 'none' }} />
@@ -1162,6 +1566,7 @@ export default function MapSection({ className }: MapSectionProps) {
             </ul>
           </div>
           <div className="legend-group">
+            <h4>Precincts</h4>
             <ul className="legend-list">
               {PRECINCT_STAGES.map((stage) => (
                 <li key={stage.id} className="legend-item">
@@ -1172,13 +1577,14 @@ export default function MapSection({ className }: MapSectionProps) {
             </ul>
           </div>
           <div className="legend-group">
+            <h4>Facilities</h4>
             <ul className="legend-list">
               {Object.entries(FACILITY_TYPES)
                 .filter(([type]) => type !== 'no-parking-zone')
                 .map(([type, { color, label, icon }]) => (
                 <li key={type} className="legend-item">
                   <span className="legend-marker legend-marker-p" style={{ backgroundColor: color }}>
-                    {icon === 'bin' ? <BinGlyph /> : icon === 'tree' ? <TreeGlyph /> : icon === 'no-parking' ? <NoParkingGlyph /> : 'P'}
+                    {icon === 'bin' ? <BinGlyph /> : icon === 'tree' ? <TreeGlyph /> : icon === 'no-parking' ? <NoParkingGlyph /> : icon === 'parking-visitor' ? <VisitorParkingGlyph color={color} /> : 'P'}
                   </span>
                   <span className="legend-label">{label}</span>
                 </li>
@@ -1225,6 +1631,19 @@ function NoParkingGlyph() {
       <text x="10" y="14.2" textAnchor="middle" fontSize="11" fontWeight={700} fontFamily="system-ui,sans-serif" fill="#1F2937">P</text>
       <circle cx="10" cy="10" r="7.3" fill="none" stroke="#EA580C" strokeWidth={1.8} />
       <line x1="4.8" y1="4.8" x2="15.2" y2="15.2" stroke="#EA580C" strokeWidth={1.8} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// "P" with a guest badge — marks visitor-only parking on the legend chip. Drawn directly on the
+// chip's coloured background (the badge person is filled in the chip colour against a white disc).
+function VisitorParkingGlyph({ color }: { color: string }) {
+  return (
+    <svg width={17} height={14} viewBox="0 0 20 16" fill="none">
+      <text x="6" y="12.4" textAnchor="middle" fontSize="11" fontWeight={700} fontFamily="system-ui,sans-serif" fill="#fff">P</text>
+      <circle cx="14" cy="8" r="4" fill="#fff" />
+      <circle cx="14" cy="6.5" r="1.15" fill={color} />
+      <path d="M11.8 10.1 A2.2 2.2 0 0 1 16.2 10.1 Z" fill={color} />
     </svg>
   );
 }
@@ -1297,3 +1716,5 @@ function ChevronIcon() {
     </svg>
   );
 }
+
+

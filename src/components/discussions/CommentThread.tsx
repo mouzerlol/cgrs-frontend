@@ -108,16 +108,22 @@ const CommentThread = memo(function CommentThread({
     }
   }, []);
 
+  // `--thread-indent` drives both the child offset and the connector geometry, so the
+  // curve stays aligned at any indent. Tighter on mobile (32px) to spare nested width,
+  // back to 44px (avatar gutter + gap) from sm+. `16px` is the avatar half-width the
+  // connector reaches back to.
   return (
-    <article className={cn('relative', depth > 0 && 'mt-1')}>
+    <article
+      className={cn('relative [--thread-indent:32px] sm:[--thread-indent:44px]', depth > 0 && 'mt-1')}
+    >
       {/* Thread Connector from Parent (The Curve) */}
       {depth > 0 && (
         <div
           className="absolute pointer-events-none border-sage opacity-40"
           style={{
-            left: '-28.5px',
+            left: 'calc((var(--thread-indent) - 16px) * -1)',
             top: '-4px',
-            width: '28.5px',
+            width: 'calc(var(--thread-indent) - 16px)',
             height: '28px',
             borderBottomLeftRadius: '20px',
             borderBottomWidth: '1px',
@@ -133,7 +139,7 @@ const CommentThread = memo(function CommentThread({
         <div
           className="absolute pointer-events-none border-sage opacity-40"
           style={{
-            left: '-28.5px',
+            left: 'calc((var(--thread-indent) - 16px) * -1)',
             top: '16px',
             bottom: '-4px',
             borderLeftWidth: '1px',
@@ -151,7 +157,7 @@ const CommentThread = memo(function CommentThread({
             {hasChildren && (
               <button
                 onClick={toggleCollapse}
-                className="absolute left-[20px] top-[24px] bg-[#FDFCF9] border border-forest/45 rounded-full w-5 h-5 flex items-center justify-center text-[12px] font-medium text-forest/90 hover:text-forest hover:bg-sage/10 transition-colors z-10"
+                className="absolute left-[16px] top-[20px] bg-bone-light border border-forest/45 rounded-full w-7 h-7 flex items-center justify-center text-sm font-medium text-forest/90 hover:text-forest hover:bg-sage/10 transition-colors z-10"
                 aria-label={isCollapsed ? 'Expand' : 'Collapse'}
               >
                 {isCollapsed ? '+' : '−'}
@@ -172,7 +178,7 @@ const CommentThread = memo(function CommentThread({
               <span className="font-semibold text-forest text-sm">
                 {reply.author.displayName}
               </span>
-              <span className="text-[11px] text-forest/40">
+              <span className="text-xs text-forest/40">
                 • {totalDescendants} {totalDescendants === 1 ? 'reply' : 'replies'} hidden
               </span>
             </div>
@@ -195,7 +201,7 @@ const CommentThread = memo(function CommentThread({
       {!isCollapsed && hasChildren && (
         <div
           id={childrenId}
-          className="relative flex flex-col ml-[44px]"
+          className="relative flex flex-col ml-[var(--thread-indent)]"
           role="group"
           aria-label={`Replies to ${reply.author.displayName}`}
         >
@@ -220,7 +226,7 @@ const CommentThread = memo(function CommentThread({
       {!isCollapsed && depth >= MAX_RENDER_DEPTH && hasChildren && (
         <button
           type="button"
-          className="mt-2 ml-[44px] text-[11px] font-medium text-terracotta hover:text-terracotta-dark transition-colors"
+          className="mt-2 ml-[var(--thread-indent)] text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors"
         >
           Continue thread &rarr;
         </button>

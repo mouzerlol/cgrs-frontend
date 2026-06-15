@@ -61,9 +61,10 @@ const ThreadHeader = forwardRef<HTMLDivElement, ThreadHeaderProps>(
           </Link>
         )}
 
-        {/* Title row: heading + pinned + category (top right) */}
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="font-display text-2xl md:text-3xl font-semibold text-forest leading-tight flex-1 min-w-0">
+        {/* Title row: on mobile the badges sit above a full-width heading (editorial eyebrow
+            feel); from sm+ they return to the top-right of the title. */}
+        <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <h1 className="font-display text-2xl md:text-3xl font-semibold text-forest leading-tight sm:flex-1 sm:min-w-0">
             {thread.title}
           </h1>
           <div className="flex items-center gap-2 flex-shrink-0">

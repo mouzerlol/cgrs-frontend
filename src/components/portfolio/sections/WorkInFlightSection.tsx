@@ -47,11 +47,11 @@ export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, por
         <div className="space-y-4">
           {/* Summary stats */}
           <div className="flex items-center gap-2">
-            <StatusBadge label="Backlog" count={statusCounts.backlog} color="bg-sage-light/50" />
-            <StatusBadge label="To Do" count={statusCounts.todo} color="bg-blue-50" />
-            <StatusBadge label="In Progress" count={statusCounts.in_progress} color="bg-amber/10" />
-            <StatusBadge label="Review" count={statusCounts.review} color="bg-purple-50" />
-            <StatusBadge label="Done" count={statusCounts.done} color="bg-green-50" />
+            <StatusBadge label="Backlog" count={statusCounts.backlog} color="bg-sage-light/40" />
+            <StatusBadge label="To Do" count={statusCounts.todo} color="bg-sage-light" />
+            <StatusBadge label="In Progress" count={statusCounts.in_progress} color="bg-amber/15" />
+            <StatusBadge label="Review" count={statusCounts.review} color="bg-sage/25" />
+            <StatusBadge label="Done" count={statusCounts.done} color="bg-forest/10" />
           </div>
 
           {totalActive > 0 && (
@@ -65,7 +65,7 @@ export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, por
             {linkedBoards.map((board) => (
               <Link
                 key={board.id}
-                href={`/work-management/boards/${board.id}?tag=${portfolioTag}`}
+                href={`/admin/boards/${board.id}?tag=${portfolioTag}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sage-light/30 hover:bg-sage-light/60 text-xs font-medium text-forest hover:text-terracotta transition-colors"
               >
                 {board.name}

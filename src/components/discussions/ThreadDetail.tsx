@@ -77,7 +77,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
     return (
       <div ref={ref} className={cn('space-y-8', className)} {...props}>
         {/* Thread Content */}
-        <article className="bg-white rounded-none border border-sage/30 px-8 pt-8 pb-4 shadow-sm mt-6 md:px-10 md:pt-10 md:pb-5">
+        <article className="bg-white rounded-none border border-sage/30 px-5 pt-6 pb-4 shadow-sm mt-6 sm:px-8 sm:pt-8 md:px-10 md:pt-10 md:pb-5">
           {/* Header */}
           <ThreadHeader thread={thread} showBackLink={false} />
 

@@ -1186,6 +1186,42 @@
   display: block !important;
 }
 
+/* Share button — a 4th stacked control beneath Home; mirrors the Home styling and
+   carries an active (terracotta) state while placement mode is armed. */
+.leaflet-control-zoom .leaflet-control-share-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  background: var(--forest-light) !important;
+  border: none !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: background 0.2s ease !important;
+  box-sizing: border-box !important;
+}
+
+.leaflet-control-zoom .leaflet-control-share-button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-control-zoom .leaflet-control-share-button.is-active {
+  background: var(--terracotta) !important;
+}
+
+.leaflet-control-zoom .leaflet-control-share-button svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: rgba(255, 255, 255, 0.85) !important;
+  fill: none !important;
+  display: block !important;
+}
+
+.leaflet-control-zoom .leaflet-control-share-button.is-active svg {
+  stroke: #fff !important;
+}
+
 /* Ensure the zoom-out button above it has its bottom border */
 .leaflet-control-zoom .leaflet-control-zoom-out {
   border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -1208,6 +1244,214 @@
     width: 20px !important;
     height: 20px !important;
   }
+
+  .leaflet-control-zoom .leaflet-control-share-button {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .leaflet-control-zoom .leaflet-control-share-button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+/* ==========================================================================
+   Share a point on the map
+   Placement-mode cursor, bottom-center banner, and the on-map share card.
+   ========================================================================== */
+
+/* While placement mode is armed, the cursor becomes the CG wax-seal pin (identical to
+   the marker that drops on click), hotspot at the seal's tip. No-op on touch devices,
+   where the banner guides instead. */
+.map-section-wrapper[data-share-arming] .leaflet-container,
+.map-section-wrapper[data-share-arming] .leaflet-interactive,
+.map-section-wrapper[data-share-arming] .leaflet-grab {
+  cursor: url("/images/share-pin-cursor.svg") 32 72, crosshair !important;
+}
+
+.share-banner {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--forest-light);
+  color: #fff;
+  padding: 9px 9px 9px 16px;
+  border-radius: 999px;
+  box-shadow: 0 6px 24px rgba(26, 34, 24, 0.35);
+  border: 1px solid rgba(168, 181, 160, 0.3);
+  font-size: 14px;
+  font-weight: 500;
+  max-width: calc(100% - 32px);
+  animation: precinct-card-in 0.2s ease-out;
+}
+
+.share-banner > svg {
+  flex-shrink: 0;
+  stroke: #fff;
+}
+
+.share-banner-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.share-banner-cancel:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.share-card {
+  position: absolute;
+  z-index: 1100;
+  /* Anchor pixel is the pin tip (latlng); lift the card above the ~80px-tall pin. */
+  transform: translate(-50%, calc(-100% - 80px));
+  width: max-content;
+  max-width: 280px;
+  background: #fff;
+  color: var(--forest);
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(26, 34, 24, 0.28);
+  border: 1px solid rgba(26, 34, 24, 0.08);
+  animation: precinct-card-in 0.2s ease-out;
+}
+
+/* Small terracotta eyebrow that introduces the place name (the DESIGN eyebrow-and-title pair). */
+.share-card-eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  padding-right: 22px; /* clear the close button in the top-right corner */
+}
+
+/* The hero of the card: the resolved place name in Fraunces, over the pin. */
+.share-card-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--forest);
+  margin-top: 3px;
+  padding-right: 22px;
+}
+
+.share-card-detail {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: rgba(26, 34, 24, 0.62);
+  margin-top: 3px;
+}
+
+/* While the reverse geocode is in flight (point outside the CGRS data). */
+.share-card-name--loading {
+  color: rgba(26, 34, 24, 0.5);
+  font-size: 16px;
+}
+
+.share-card-dots::after {
+  content: '…';
+  animation: share-card-dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes share-card-dots {
+  0% { content: ''; }
+  25% { content: '·'; }
+  50% { content: '··'; }
+  75%, 100% { content: '···'; }
+}
+
+.share-card-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(26, 34, 24, 0.55);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.share-card-close:hover {
+  background: rgba(26, 34, 24, 0.08);
+  color: var(--forest);
+}
+
+/* Tail: a small wedge under the card pointing down toward the dropped pin, so the card
+   reads as belonging to it. Matches the card's white fill and bottom border. */
+.share-card::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-right: 1px solid rgba(26, 34, 24, 0.08);
+  border-bottom: 1px solid rgba(26, 34, 24, 0.08);
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom-right-radius: 2px;
+}
+
+.share-card-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.share-card-url {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid rgba(26, 34, 24, 0.15);
+  border-radius: 6px;
+  background: #f5f5f3;
+  color: var(--forest);
+}
+
+.share-card-copy {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  background: var(--forest-light);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.share-card-copy:hover {
+  background: var(--forest);
 }
 
 /* Raster tiles: avoid -webkit-optimize-contrast — it exaggerates edges and can make tile seams look like a grid. */
@@ -1485,4 +1729,5 @@ img.leaflet-tile {
   visibility: visible !important;
   opacity: 1 !important;
 }
+
 

@@ -182,7 +182,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
               <button
                 type="button"
                 onClick={() => setVotersExpanded((v) => !v)}
-                className="inline-flex items-center gap-1.5 py-1 px-3 bg-transparent border-none rounded-lg text-xs text-forest/70 cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[32px] shrink-0 hover:opacity-100 hover:bg-sage-light"
+                className="inline-flex items-center gap-1.5 py-1 px-3 bg-transparent border-none rounded-lg text-xs text-forest/70 cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[44px] sm:min-h-[32px] shrink-0 hover:opacity-100 hover:bg-sage-light"
                 aria-expanded={votersExpanded}
                 aria-controls={voterPanelIds || undefined}
               >

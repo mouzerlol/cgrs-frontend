@@ -74,7 +74,7 @@ export function BrutallyMinimalPortfolioCard({ portfolio, onDelete }: BrutallyMi
 
   return (
     <div className="relative group">
-      <Link href={`/work-management/portfolios/${portfolio.id}`} className="block">
+      <Link href={`/admin/portfolios/${portfolio.id}`} className="block">
         <div className="relative bg-sage-light border border-black rounded-none p-5 transition-all duration-200 hover:bg-black hover:text-sage-light flex flex-col h-full">
           <div className="flex items-start justify-between mb-4">
             <div className="w-10 h-10 border border-black group-hover:border-sage-light flex items-center justify-center bg-sage-light group-hover:bg-black text-black group-hover:text-sage-light transition-colors">
@@ -143,7 +143,7 @@ export function BrutallyMinimalBoardCard({ board, onDelete, isDeleting }: Brutal
 
   return (
     <div className="relative group">
-      <Link href={`/work-management/boards/${board.id}`} className="block">
+      <Link href={`/admin/boards/${board.id}`} className="block">
         <div className="relative bg-sage-light border border-black rounded-none p-5 transition-all duration-200 hover:bg-black hover:text-sage-light flex flex-col h-full min-h-[200px]">
           <div className="flex items-start justify-between mb-4">
             <div className="text-3xl font-black font-sans uppercase">

@@ -15,14 +15,14 @@ const mockMembers = [
 ];
 
 describe('CoMembersWidget', () => {
-  it('renders property owners label when type is owner', () => {
+  it('renders the owner label when type is owner', () => {
     render(<CoMembersWidget members={mockMembers} type="owner" />);
-    expect(screen.getByText('Property Owners')).toBeInTheDocument();
+    expect(screen.getByText('Also owned by')).toBeInTheDocument();
   });
 
-  it('renders property residents label when type is resident', () => {
+  it('renders the resident label when type is resident', () => {
     render(<CoMembersWidget members={mockMembers} type="resident" />);
-    expect(screen.getByText('Property Residents')).toBeInTheDocument();
+    expect(screen.getByText('Also living here')).toBeInTheDocument();
   });
 
   it('renders member names when members exist', () => {
@@ -33,11 +33,13 @@ describe('CoMembersWidget', () => {
     expect(screen.getAllByText('Bob Wilson').length).toBeGreaterThan(0);
   });
 
-  it('renders heading but no list when no members', () => {
-    render(<CoMembersWidget members={[]} type="owner" />);
-    expect(screen.getByText('Property Owners')).toBeInTheDocument();
-    // Assuming 'Avatar' mock is only rendered when there are members
+  it('renders nothing when there are no co-members', () => {
+    const { container } = render(<CoMembersWidget members={[]} type="owner" />);
+    // The sole owner/resident is implied by the surrounding relationship line,
+    // so an empty widget should render nothing rather than a bare heading.
+    expect(screen.queryByText('Also owned by')).not.toBeInTheDocument();
     expect(screen.queryByTestId('mock-avatar')).not.toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('handles member with only first name', () => {
@@ -49,7 +51,7 @@ describe('CoMembersWidget', () => {
   it('handles member with null first and last name', () => {
     const noNameMember = [{ user_id: '1', first_name: null, last_name: null, avatar_url: null }];
     render(<CoMembersWidget members={noNameMember} type="owner" />);
-    expect(screen.getAllByText('Unknown').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('A neighbour').length).toBeGreaterThan(0);
   });
 
   it('shows all members even if there are many (no overflow capping)', () => {

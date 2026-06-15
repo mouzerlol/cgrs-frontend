@@ -1,0 +1,278 @@
+import type { ReactNode } from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import VerificationSection from '@/components/profile/sections/VerificationSection';
+
+// --- Mocks -----------------------------------------------------------------
+
+function createWrapper() {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return function TestWrapper({ children }: { children: ReactNode }) {
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  };
+}
+
+vi.mock('@clerk/nextjs', () => ({
+  useAuth: () => ({
+    getToken: vi.fn(() => Promise.resolve('token')),
+    isLoaded: true,
+    isSignedIn: true,
+  }),
+}));
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => ({ get: () => null }),
+}));
+
+const markReadMutate = vi.fn();
+vi.mock('@/hooks/useNotifications', () => ({
+  useMarkRead: () => ({ mutate: markReadMutate }),
+}));
+
+const createVerificationRequest = vi.fn((..._args: unknown[]) =>
+  Promise.resolve({
+    verification_method: 'peer',
+    property_id: 'prop-new',
+    request_id: 'req-new',
+    status: 'pending',
+    qr_image_data: null,
+    expires_at: null,
+  }),
+);
+const lookupAddress = vi.fn((..._args: unknown[]) =>
+  Promise.resolve({ street_name: 'Huri Street', street_number: '41', property_exists: true }),
+);
+const respondToVerification = vi.fn((..._args: unknown[]) => Promise.resolve({ success: true }));
+vi.mock('@/lib/api/verification', () => ({
+  createVerificationRequest: (...args: unknown[]) => createVerificationRequest(...args),
+  lookupAddress: (...args: unknown[]) => lookupAddress(...args),
+  respondToVerification: (...args: unknown[]) => respondToVerification(...args),
+}));
+
+// Self-fetching child — stub so it doesn't hit the network; keep the section wrapper in the parent.
+vi.mock('@/components/profile/verification/VerificationHistory', () => ({
+  default: () => <div data-testid="verification-history" />,
+}));
+
+// Isolate the section logic from the address form internals; expose a one-click submit.
+vi.mock('@/components/profile/verification/AddressSelectionForm', () => ({
+  default: ({
+    onSubmit,
+    initialVerificationType,
+  }: {
+    onSubmit: (d: { streetId: string; streetNumber: string; verificationType: 'resident' | 'owner' }) => void;
+    initialVerificationType?: 'resident' | 'owner';
+  }) => (
+    <button
+      data-testid="mock-address-submit"
+      onClick={() =>
+        onSubmit({ streetId: 's1', streetNumber: '41', verificationType: initialVerificationType ?? 'resident' })
+      }
+    >
+      submit
+    </button>
+  ),
+}));
+
+const mockStreets = vi.fn();
+const mockStatus = vi.fn();
+const mockPending = vi.fn();
+const mockMyProperties = vi.fn();
+const invalidateMyProperties = vi.fn();
+const invalidateVerification = vi.fn();
+
+vi.mock('@/hooks/useProfileData', () => ({
+  useStreetsQuery: () => mockStreets(),
+  useVerificationStatusQuery: () => mockStatus(),
+  usePendingVerificationsQuery: () => mockPending(),
+  useMyPropertiesQuery: () => mockMyProperties(),
+  useInvalidateProfileData: () => ({ invalidateMyProperties, invalidateVerification, invalidateAll: vi.fn() }),
+}));
+
+// --- Fixtures --------------------------------------------------------------
+
+const verified = (n: number) =>
+  Array.from({ length: n }, (_, i) => ({
+    property_id: `prop-${i}`,
+    street_name: 'Huri Street',
+    street_number: String(40 + i),
+    verification_type: i % 2 === 0 ? 'owner' : 'resident',
+    verified_at: '2026-04-04T00:00:00Z',
+    unit_number: null,
+    property_type: 'house',
+    bedrooms: null,
+    bathrooms: null,
+    parking_spaces: null,
+    lat: null,
+    lng: null,
+    image_url: null,
+    co_members: [],
+  }));
+
+const pendingResponse = {
+  id: 'resp-1',
+  property_id: 'prop-x',
+  street_name: 'Huri Street',
+  street_number: '99',
+  verification_type: 'resident',
+  requester_name: 'Jane',
+  requester_email: 'jane@example.com',
+  created_at: '2026-04-01T00:00:00Z',
+};
+
+function setup({
+  verifiedCount = 0,
+  hasPending = false,
+  responses = 0,
+}: {
+  verifiedCount?: number;
+  hasPending?: boolean;
+  responses?: number;
+}) {
+  mockStreets.mockReturnValue({
+    data: [{ id: 's1', name: 'Huri Street', created_at: '2026-01-01T00:00:00Z' }],
+    isLoading: false,
+  });
+  mockStatus.mockReturnValue({
+    data: {
+      is_verified: verifiedCount > 0,
+      role: verifiedCount > 0 ? 'owner' : null,
+      has_pending_request: hasPending,
+      pending_address: hasPending ? 'Huri Street 50' : null,
+      pending_type: hasPending ? 'resident' : null,
+      pending_verification_method: hasPending ? 'peer' : null,
+    },
+    isLoading: false,
+  });
+  mockPending.mockReturnValue({
+    data: {
+      my_pending_requests: [],
+      pending_responses: Array.from({ length: responses }, () => pendingResponse),
+    },
+    isLoading: false,
+  });
+  mockMyProperties.mockReturnValue({
+    data: { verified_properties: verified(verifiedCount), pending_requests: [] },
+    isLoading: false,
+  });
+}
+
+function sectionOrder(): string[] {
+  return Array.from(document.querySelectorAll('[data-section]')).map(
+    (el) => (el as HTMLElement).dataset.section || '',
+  );
+}
+
+const verifyAnotherButton = () =>
+  screen.queryByRole('button', { name: /verify another property/i });
+
+describe('VerificationSection', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('state model & ordering (3.2)', () => {
+    it('renders one badge per verified property', () => {
+      setup({ verifiedCount: 3, hasPending: false });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(screen.getAllByTestId('property-badge')).toHaveLength(3);
+    });
+
+    it('lays badges out in a two-column grid container', () => {
+      setup({ verifiedCount: 2 });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      const wall = screen.getByTestId('badge-wall');
+      expect(wall.className).toMatch(/md:grid-cols-2/);
+    });
+
+    it('orders sections badges → pending → responses → history', () => {
+      setup({ verifiedCount: 2, hasPending: true, responses: 1 });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(sectionOrder()).toEqual(['badges', 'pending', 'responses', 'history']);
+    });
+
+    it('omits empty sections', () => {
+      setup({ verifiedCount: 2, hasPending: false, responses: 0 });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      const order = sectionOrder();
+      expect(order).not.toContain('pending');
+      expect(order).not.toContain('responses');
+      expect(order).toContain('badges');
+      expect(order).toContain('history');
+    });
+  });
+
+  describe('NONE state (3.3)', () => {
+    beforeEach(() => setup({ verifiedCount: 0, hasPending: false, responses: 0 }));
+
+    it('shows the resident/owner selection flow as the primary content', () => {
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(screen.getByRole('button', { name: /become a resident/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /become an owner/i })).toBeInTheDocument();
+    });
+
+    it('shows no badge wall and no "verify another property" button', () => {
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(screen.queryByTestId('badge-wall')).not.toBeInTheDocument();
+      expect(verifyAnotherButton()).not.toBeInTheDocument();
+    });
+  });
+
+  describe('one-in-flight gate (3.4)', () => {
+    it('shows the button when verified and no pending', () => {
+      setup({ verifiedCount: 1, hasPending: false });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(verifyAnotherButton()).toBeInTheDocument();
+    });
+
+    it('hides the button while a pending request exists', () => {
+      setup({ verifiedCount: 1, hasPending: true });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      expect(verifyAnotherButton()).not.toBeInTheDocument();
+      // pending request is still shown
+      expect(sectionOrder()).toContain('pending');
+    });
+  });
+
+  describe('inline reveal / collapse (3.5)', () => {
+    beforeEach(() => setup({ verifiedCount: 1, hasPending: false }));
+
+    it('reveals the flow inline when clicked, and collapses again', () => {
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      // collapsed: no selection cards yet
+      expect(screen.queryByRole('button', { name: /become a resident/i })).not.toBeInTheDocument();
+
+      fireEvent.click(verifyAnotherButton()!);
+      expect(screen.getByRole('button', { name: /become a resident/i })).toBeInTheDocument();
+
+      // toggle collapses
+      fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+      expect(screen.queryByRole('button', { name: /become a resident/i })).not.toBeInTheDocument();
+    });
+
+    it('submits a new request, then collapses and invalidates queries', async () => {
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      fireEvent.click(verifyAnotherButton()!);
+      fireEvent.click(screen.getByRole('button', { name: /become a resident/i }));
+      fireEvent.click(screen.getByTestId('mock-address-submit'));
+
+      await waitFor(() => expect(createVerificationRequest).toHaveBeenCalledTimes(1));
+      await waitFor(() =>
+        expect(screen.queryByTestId('mock-address-submit')).not.toBeInTheDocument(),
+      );
+      expect(invalidateMyProperties).toHaveBeenCalled();
+      expect(invalidateVerification).toHaveBeenCalled();
+    });
+  });
+
+  describe('single "View my properties" link (3.6)', () => {
+    it('renders exactly one link to my-property regardless of badge count', () => {
+      setup({ verifiedCount: 3 });
+      render(<VerificationSection />, { wrapper: createWrapper() });
+      const links = screen.getAllByRole('link', { name: /view my propert/i });
+      expect(links).toHaveLength(1);
+      expect(links[0]).toHaveAttribute('href', '/account/my-property');
+    });
+  });
+});

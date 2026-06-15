@@ -109,7 +109,7 @@ export default function ClerkAppUserButton() {
             <MenuItem>
               {({ focus }) => (
                 <Link
-                  href="/profile"
+                  href="/account/profile"
                   className={cn(
                     'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-bone',
                     siteHeaderDropdownItemInteractive,
@@ -117,7 +117,7 @@ export default function ClerkAppUserButton() {
                   )}
                 >
                   {profileLinkIcon}
-                  My Profile
+                  My Account
                 </Link>
               )}
             </MenuItem>

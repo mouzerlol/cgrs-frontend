@@ -24,8 +24,9 @@ export function getOSMTileUrl(): string {
  */
 export function getOSMTileOptions() {
   return {
-    maxZoom: 19, // OSM tiles only exist up to 19 - no overzoom
-    maxNativeZoom: 19,
+    maxZoom: 20, // allow overzoom one level past native tiles by upscaling z19 tiles
+    maxNativeZoom: 19, // OSM Standard tiles only exist up to z19
+
     crossOrigin: 'anonymous' as const,
     subdomains: [...OSM_CONFIG.subdomains],
     attribution: OSM_CONFIG.attribution,
@@ -34,25 +35,25 @@ export function getOSMTileOptions() {
 
 /**
  * Get community basemap options for the main map page.
- * Uses OSM with max zoom 19.
+ * Uses OSM with native tiles to z19 and overzoom to z20.
  */
 export function getCommunityMapLeafletBasemap() {
   return {
     tileUrl: getOSMTileUrl(),
     tileOptions: getOSMTileOptions(),
-    maxZoom: 19,
+    maxZoom: 20,
   };
 }
 
 /**
  * Get widget basemap options for small map components.
- * Uses OSM with max zoom 19.
+ * Uses OSM with native tiles to z19 and overzoom to z20.
  */
 export function getNzWidgetLeafletBasemap() {
   return {
     tileUrl: getOSMTileUrl(),
     tileOptions: getOSMTileOptions(),
-    maxZoom: 19,
+    maxZoom: 20,
   };
 }
 

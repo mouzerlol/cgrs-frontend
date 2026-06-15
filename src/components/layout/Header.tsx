@@ -16,7 +16,7 @@ import { useCommunity } from '@/hooks/useCommunity';
 import { formatRole, canAccessManagement } from '@/lib/auth';
 import { useEasterEggContext } from './WindyTextContext';
 
-const MANAGEMENT_PATHS = ['/work-management', '/management-request'];
+const MANAGEMENT_PATHS = ['/admin', '/management-request'];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -215,14 +215,14 @@ export default function Header() {
                         {/* Flattened menu items - no nested dropdown */}
                         <nav className="space-y-1">
                           <Link
-                            href="/profile"
+                            href="/account/profile"
                             onClick={closeMenu}
                             className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
                           >
                             <div className="w-6 h-6 shrink-0 flex items-center justify-center rounded-full overflow-hidden">
                               <UserAvatar />
                             </div>
-                            <span className="font-medium">My Profile</span>
+                            <span className="font-medium">My Account</span>
                           </Link>
 
                           {canSeeSystemSettings && (

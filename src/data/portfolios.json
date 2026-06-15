@@ -10,7 +10,7 @@
       "lead": {
         "id": "member-1",
         "name": "Louise Putt",
-        "avatar": "/images/committee/louise-putt.jpg",
+        "avatar": "",
         "role": "Chairperson",
         "email": "cgrscommittee@gmail.com",
         "phone": "+27 21 555 0100"
@@ -18,7 +18,7 @@
       "coLead": {
         "id": "member-2",
         "name": "James Morton",
-        "avatar": "/images/committee/member1.jpg",
+        "avatar": "",
         "role": "Treasurer",
         "email": "treasurer@cgrs.co.za",
         "phone": "+27 21 555 0101"
@@ -153,7 +153,7 @@
       "lead": {
         "id": "member-3",
         "name": "David Chen",
-        "avatar": "/images/committee/member2.jpg",
+        "avatar": "",
         "role": "Maintenance Coordinator",
         "email": "maintenance@cgrs.co.za",
         "phone": "+27 21 555 0102"
@@ -161,7 +161,7 @@
       "coLead": {
         "id": "member-4",
         "name": "Sarah Williams",
-        "avatar": "/images/committee/member3.jpg",
+        "avatar": "",
         "role": "Committee Member",
         "email": "sarah.w@cgrs.co.za"
       },

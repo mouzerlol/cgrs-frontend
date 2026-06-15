@@ -54,7 +54,7 @@ export default function ReferencesSection({
 
                     {linkedBoardTask && (
                         <a
-                            href={`/work-management/boards/${linkedBoardTask}`}
+                            href={`/admin/boards/${linkedBoardTask}`}
                             className="flex items-center gap-2 p-2 rounded-lg hover:bg-sage/10 transition-colors group"
                         >
                             <LinkIcon className="w-4 h-4 text-terracotta" />

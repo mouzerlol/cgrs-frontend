@@ -3,12 +3,12 @@ import { describe, it, expect } from 'vitest'
 /**
  * Route patterns that should require authentication.
  * This mirrors the patterns in middleware.ts isProtectedRoute.
- * Tests verify that profile routes are included in protection.
+ * Tests verify that account routes are included in protection.
  */
 const PROTECTED_ROUTE_PATTERNS = [
-  '/work-management(.*)',
+  '/admin(.*)',
   '/discussion/new(.*)',
-  '/profile(.*)',
+  '/account(.*)',
 ] as const
 
 /**
@@ -41,16 +41,16 @@ function isProtectedPath(pathname: string): boolean {
 }
 
 describe('middleware route protection', () => {
-  describe('profile routes should be protected', () => {
-    const profilePaths = [
-      '/profile/',
-      '/profile/verification',
-      '/profile/reported-issues',
-      '/profile/reported-issues/28b81a2e-1d4d-4109-981d-d5ee4bba704d',
-      '/profile/my-property',
+  describe('account routes should be protected', () => {
+    const accountPaths = [
+      '/account/',
+      '/account/verification',
+      '/account/reported-issues',
+      '/account/reported-issues/28b81a2e-1d4d-4109-981d-d5ee4bba704d',
+      '/account/my-property',
     ]
 
-    for (const path of profilePaths) {
+    for (const path of accountPaths) {
       it(`protects ${path}`, () => {
         expect(isProtectedPath(path)).toBe(true)
       })
@@ -59,8 +59,8 @@ describe('middleware route protection', () => {
 
   describe('existing protected routes still protected', () => {
     const workManagementPaths = [
-      '/work-management/',
-      '/work-management/requests',
+      '/admin/',
+      '/admin/requests',
     ]
 
     for (const path of workManagementPaths) {

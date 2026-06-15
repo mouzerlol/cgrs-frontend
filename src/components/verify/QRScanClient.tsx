@@ -36,9 +36,9 @@ export default function QRScanClient({ token }: QRScanClientProps) {
         setRoleAssigned(result.role_assigned);
         setState('success');
 
-        // Redirect to profile after a short delay
+        // Redirect to account profile after a short delay
         setTimeout(() => {
-          router.push('/profile');
+          router.push('/account/profile');
         }, 3000);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Verification failed');

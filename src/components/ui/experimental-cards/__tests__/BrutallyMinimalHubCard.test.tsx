@@ -10,13 +10,13 @@ describe('BrutallyMinimalHubCard', () => {
         name="Portfolios"
         description="Define scope"
         icon={FileText}
-        href="/work-management/portfolios"
+        href="/admin/portfolios"
         count={3}
         countLabel="portfolios"
       />
     );
 
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/work-management/portfolios');
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/admin/portfolios');
     expect(screen.getByText('3 portfolios')).toBeInTheDocument();
   });
 
@@ -26,12 +26,12 @@ describe('BrutallyMinimalHubCard', () => {
         name="Users"
         description="Manage members"
         icon={FileText}
-        href="/work-management/users"
+        href="/admin/users"
       />
     );
 
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/work-management/users');
+    expect(link).toHaveAttribute('href', '/admin/users');
     expect(link.textContent).not.toMatch(/\d/);
   });
 });

@@ -329,11 +329,18 @@ export interface Facility {
   /** Number of car parks at this location (street parking). For a location split across
    *  several polygons (e.g. Huri Street), the same location total is set on each. */
   count?: number;
+  /** For private visitor parking: which stage's visitors the spaces are reserved for
+   *  (e.g. "Stage 0", "Stage 2 & 3"). Surfaced in the info card to deter misuse. */
+  serves?: string;
+  /** Suppress the centred "P" map marker (keep the polygon fill). Used where a marker would
+   *  collide with an adjacent facility's marker, e.g. rcp-18 sits against Tukari visitor parking. */
+  hideMarker?: boolean;
 }
 
 export const FACILITY_TYPES = {
   'resident-parking': { color: '#D95D39', label: 'Resident Car Parks', icon: 'parking' },
   'street-parking': { color: '#2D8FD6', label: 'Street Parking', icon: 'parking' },
+  'private-visitor-parking': { color: '#2B5CA8', label: 'Private Visitor Parking', icon: 'parking-visitor' },
   'bin-enclosure': { color: '#7A5230', label: 'Bin Enclosures', icon: 'bin' },
   'park': { color: '#2E5E3A', label: 'Parks', icon: 'tree' },
   'no-parking-zone': { color: '#F2C94C', label: 'Emergency Access — Keep Clear', icon: 'no-parking' },
@@ -508,6 +515,18 @@ export const FACILITIES: Facility[] = [
     ],
   },
   {
+    // Reclaims the bay vacated when Tukari visitor parking moved one car park north —
+    // same shape and position the old sp-04 polygon occupied.
+    id: 'rcp-18',
+    name: 'Private Parking',
+    type: 'resident-parking',
+    hideMarker: true,
+    coordinates: [
+      [174.7905577, -36.949253], [174.790612, -36.9492369], [174.7906043, -36.9492153],
+      [174.7905466, -36.9492319], [174.7905577, -36.949253],
+    ],
+  },
+  {
     id: 'bin-01',
     name: 'Bin Enclosure 1',
     type: 'bin-enclosure',
@@ -674,18 +693,20 @@ export const FACILITIES: Facility[] = [
   {
     id: 'sp-04',
     name: 'Tukari Visitor Parking',
-    type: 'street-parking',
+    type: 'private-visitor-parking',
     count: 1,
+    serves: 'Stage 2 & 3',
     coordinates: [
-      [174.7905577, -36.949253], [174.790612, -36.9492369], [174.7906043, -36.9492153],
-      [174.7905466, -36.9492319], [174.7905577, -36.949253],
+      [174.7905466, -36.9492319], [174.7906043, -36.9492153], [174.7905966, -36.9491937],
+      [174.7905355, -36.9492108], [174.7905466, -36.9492319],
     ],
   },
   {
     id: 'sp-05',
-    name: 'Tanners Street Parking',
-    type: 'street-parking',
+    name: 'Tanners Visitor Parking',
+    type: 'private-visitor-parking',
     count: 7,
+    serves: 'Stage 0',
     coordinates: [
       [174.7921336, -36.9499457], [174.7923126, -36.9503364], [174.7923428, -36.9503294],
       [174.7921631, -36.9499361], [174.7921336, -36.9499457],
@@ -693,9 +714,10 @@ export const FACILITIES: Facility[] = [
   },
   {
     id: 'sp-06',
-    name: 'Patiti Street Parking',
-    type: 'street-parking',
+    name: 'Patiti Visitor Parking',
+    type: 'private-visitor-parking',
     count: 6,
+    serves: 'Stage 0',
     coordinates: [
       [174.7930691, -36.949875], [174.793093, -36.9499235], [174.7931185, -36.9499171],
       [174.7931842, -36.9500553], [174.793238, -36.9500381], [174.7931576, -36.9498527],

@@ -263,7 +263,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
 
         // Mark as submitted
         setSubmittedId(created.request.id);
-        setSubmittedRequestHref(`/profile/reported-issues/${created.request.id}`);
+        setSubmittedRequestHref(`/account/reported-issues/${created.request.id}`);
         setIsSubmitted(true);
         track('report_form_submitted', {
           form_kind: 'management_request',

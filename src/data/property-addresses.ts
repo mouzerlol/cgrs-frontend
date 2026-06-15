@@ -2520,7 +2520,7 @@ export const PROPERTY_DATA: PrecinctProperties[] = [
   {
     "precinctId": "patiti-parade",
     "name": "Patiti Parade",
-    "count": 6,
+    "count": 5,
     "addresses": [
       {
         "id": "2138332",
@@ -2570,16 +2570,6 @@ export const PROPERTY_DATA: PrecinctProperties[] = [
         "coordinates": [
           -36.9499837537,
           174.7933298323
-        ]
-      },
-      {
-        "id": "2037231",
-        "fullAddress": "9 Patiti Parade, Māngere Bridge, Auckland",
-        "streetName": "Patiti Parade",
-        "streetNumber": "9",
-        "coordinates": [
-          -36.9497933856,
-          174.7930599625
         ]
       }
     ]

@@ -19,6 +19,11 @@ interface BaseMapProps {
   zoomControl?: boolean;
   showHomeControl?: boolean;
   homeControlPosition?: 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
+  /** Show a Share button stacked beneath the Home button (toggles placement mode). */
+  showShareControl?: boolean;
+  /** Reflects whether placement mode is currently armed (drives the active state). */
+  shareActive?: boolean;
+  onShareClick?: () => void;
   scrollWheelZoom?: boolean;
   dragging?: boolean;
   doubleClickZoom?: boolean;
@@ -47,6 +52,9 @@ export default function BaseMap({
   zoomControl = true,
   showHomeControl = true,
   homeControlPosition = 'topright',
+  showShareControl = false,
+  shareActive = false,
+  onShareClick,
   scrollWheelZoom = true,
   dragging = true,
   doubleClickZoom = true,
@@ -70,12 +78,23 @@ export default function BaseMap({
   // Store callbacks in refs to avoid triggering re-initialization
   const onMapReadyRef = useRef(onMapReady);
   const onHomeClickRef = useRef(onHomeClick);
+  const onShareClickRef = useRef(onShareClick);
+  const shareButtonRef = useRef<HTMLAnchorElement | null>(null);
   const tileOptionsRef = useRef(tileOptions);
   const centerRef = useRef(center);
   const maxZoomRef = useRef(maxZoom);
 
   useEffect(() => { onMapReadyRef.current = onMapReady; }, [onMapReady]);
   useEffect(() => { onHomeClickRef.current = onHomeClick; }, [onHomeClick]);
+  useEffect(() => { onShareClickRef.current = onShareClick; }, [onShareClick]);
+
+  // Reflect placement-mode state on the Share button without re-initialising the map.
+  useEffect(() => {
+    const btn = shareButtonRef.current;
+    if (!btn) return;
+    btn.classList.toggle('is-active', shareActive);
+    btn.setAttribute('aria-pressed', shareActive ? 'true' : 'false');
+  }, [shareActive]);
   useEffect(() => { tileOptionsRef.current = tileOptions; }, [tileOptions]);
   useEffect(() => { centerRef.current = center; }, [center]);
   useEffect(() => { maxZoomRef.current = maxZoom; }, [maxZoom]);
@@ -161,6 +180,36 @@ export default function BaseMap({
                 });
               }
             });
+
+            // Share button — a 4th button stacked beneath Home. Toggles the map's
+            // "share a point" placement mode (owned by the parent via onShareClick).
+            if (showShareControl) {
+              homeButton.classList.remove('leaflet-bar-part-bottom');
+              homeButton.style.borderBottom = '1px solid var(--sage-light)';
+              const shareButton = L.DomUtil.create('a', 'leaflet-control-share-button leaflet-bar-part leaflet-bar-part-bottom', zoomControlContainer as HTMLElement);
+              shareButton.href = '#';
+              shareButton.title = 'Share a point on the map';
+              shareButton.setAttribute('aria-label', 'Share a point on the map');
+              shareButton.role = 'button';
+              shareButton.setAttribute('aria-pressed', 'false');
+              shareButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin: auto;">
+                  <circle cx="18" cy="5" r="3"/>
+                  <circle cx="6" cy="12" r="3"/>
+                  <circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+              `;
+              shareButtonRef.current = shareButton as HTMLAnchorElement;
+
+              L.DomEvent.disableClickPropagation(shareButton);
+              L.DomEvent.on(shareButton, 'click', (e: Event) => {
+                L.DomEvent.preventDefault(e);
+                L.DomEvent.stopPropagation(e);
+                onShareClickRef.current?.();
+              });
+            }
           }
         }
 

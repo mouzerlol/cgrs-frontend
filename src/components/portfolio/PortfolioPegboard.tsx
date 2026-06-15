@@ -20,6 +20,7 @@ import DocumentsSection from './sections/DocumentsSection';
 import LinkedBoardsSection from './sections/LinkedBoardsSection';
 import WorkInFlightSection from './sections/WorkInFlightSection';
 import AddSectionModal from './AddSectionModal';
+import SectionWrapper from './sections/SectionWrapper';
 import { renderResizeHandle } from './ResizeHandle';
 
 interface PortfolioPegboardProps {
@@ -45,6 +46,11 @@ export default function PortfolioPegboard({
 }: PortfolioPegboardProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { width, containerRef, mounted } = useContainerWidth();
+
+  // Below the grid's `md` breakpoint the layout collapses to a single column;
+  // render a natural-height flow there so short cards don't inherit fixed grid rows.
+  const isReady = mounted && width > 0;
+  const isMobile = isReady && width < 768;
 
   const visibleSections = portfolio.sections.filter(s => s.visible);
   const existingSectionTypes = visibleSections.map(s => s.sectionType);
@@ -258,7 +264,36 @@ export default function PortfolioPegboard({
         />
       )}
 
-      {mounted && (
+      {!isReady ? (
+        // Loading fallback: skeleton cards so content is shaped before the grid measures,
+        // instead of a blank flash. Also exercises SectionWrapper's loading state.
+        <div className="space-y-4">
+          {visibleSections.map(section => {
+            const cfg = SECTION_TYPE_CONFIGS.find(c => c.type === section.sectionType);
+            return (
+              <div key={section.id} style={{ minHeight: 120 }}>
+                <SectionWrapper title={cfg?.label ?? ''} isEditingLayout={false} isLoading>
+                  {null}
+                </SectionWrapper>
+              </div>
+            );
+          })}
+        </div>
+      ) : isMobile ? (
+        // Single-column flow with content-driven heights (no dead whitespace on mobile).
+        <div className="space-y-4">
+          {visibleSections.map((section, index) => (
+            <motion.div
+              key={section.id}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              {renderSection(section)}
+            </motion.div>
+          ))}
+        </div>
+      ) : (
         <Responsive
           layouts={layouts}
           breakpoints={{ lg: 996, md: 768, sm: 0 }}

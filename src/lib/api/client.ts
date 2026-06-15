@@ -85,10 +85,14 @@ export async function apiRequest<T>(
   }
   
   const authToken = token ?? (isLocalApi ? 'dev-token' : null);
+  // FormData bodies must NOT carry an explicit Content-Type — the browser sets the
+  // multipart boundary itself. Only default to JSON for non-FormData requests.
+  const isFormData = typeof FormData !== 'undefined' && options?.body instanceof FormData;
+  const defaultHeaders: Record<string, string> = isFormData ? {} : { 'Content-Type': 'application/json' };
   let res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...defaultHeaders,
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...options?.headers,
     },
@@ -106,7 +110,7 @@ export async function apiRequest<T>(
       res = await fetch(`${API_URL}${path}`, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
+          ...defaultHeaders,
           ...(retryToken ? { Authorization: `Bearer ${retryToken}` } : {}),
           ...options?.headers,
         },

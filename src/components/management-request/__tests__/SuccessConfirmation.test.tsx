@@ -23,7 +23,7 @@ describe('SuccessConfirmation – scroll to top on mount', () => {
           issueId="REQ-001"
           categoryName="Maintenance & Repairs"
           onSubmitAnother={vi.fn()}
-          viewRequestHref="/profile/reported-issues/REQ-001"
+          viewRequestHref="/account/reported-issues/REQ-001"
         />
       );
     });

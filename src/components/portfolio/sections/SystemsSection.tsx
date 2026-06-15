@@ -12,10 +12,10 @@ const typeIcons = {
 };
 
 const typeColors = {
-  digital: 'bg-blue-50 text-blue-600',
-  governance: 'bg-purple-50 text-purple-600',
-  documentation: 'bg-amber/10 text-amber-dark',
-  other: 'bg-sage-light text-forest',
+  digital: 'bg-sage-light text-forest',
+  governance: 'bg-forest/10 text-forest',
+  documentation: 'bg-amber/15 text-amber-dark',
+  other: 'bg-sage/20 text-forest',
 };
 
 interface SystemsSectionProps {
@@ -45,8 +45,14 @@ export default function SystemsSection({ content, isEditingLayout, isLoading = f
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-medium text-forest">{item.name}</span>
                     {item.url && (
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-forest/30 hover:text-terracotta">
-                        <ExternalLink className="w-3 h-3" />
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open ${item.name} (opens in new tab)`}
+                        className="inline-flex items-center justify-center h-9 w-9 -my-1.5 text-forest/40 hover:text-terracotta transition-colors"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
                       </a>
                     )}
                   </div>

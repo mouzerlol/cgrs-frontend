@@ -49,8 +49,10 @@ vi.mock('leaflet', () => ({
 describe('Dynamic import loading states', () => {
   describe('MapPage', () => {
     it('shows MapSkeleton loading fallback while MapSection loads', async () => {
-      const MapPage = (await import('@/app/(main)/map/page')).default;
-      render(<MapPage />);
+      // The dynamic (ssr:false) import + skeleton fallback live in MapClient; the
+      // page itself is now an async server component.
+      const MapClient = (await import('@/app/(main)/map/MapClient')).default;
+      render(<MapClient />);
 
       // MapSkeleton renders elements with animate-pulse class
       const skeletonElements = document.querySelectorAll('.animate-pulse');

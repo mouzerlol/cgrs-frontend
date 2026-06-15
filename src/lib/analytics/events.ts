@@ -8,6 +8,10 @@ export const EVENT_NAMES = [
   'report_form_submitted',
   'account_signed_up',
   'account_signed_in',
+  'share_mode_armed',
+  'share_pin_placed',
+  'share_link_copied',
+  'shared_link_opened',
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];

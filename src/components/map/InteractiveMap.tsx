@@ -139,7 +139,7 @@ export default function InteractiveMap({ showSidebar = true, showLegend = true }
           keyboard={true}
           attributionControl={true}
           preferCanvas={true}
-          maxZoom={19}
+          maxZoom={20}
           minZoom={12}
           onMapReady={handleMapReady}
           className={`interactive-map ${mapInitialized ? 'loaded' : ''}`}

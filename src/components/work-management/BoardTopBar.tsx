@@ -17,7 +17,7 @@ export default function BoardTopBar({ onNewTask, filterSlot }: BoardTopBarProps)
           </span>
         </Link>
         <div className="h-6 w-px bg-white/20 hidden sm:block"></div>
-        <h1 className="font-display text-sm font-medium text-bone/90 hidden sm:block tracking-wide">Work Management</h1>
+        <h1 className="font-display text-sm font-medium text-bone/90 hidden sm:block tracking-wide">Administration</h1>
       </div>
       <div className="flex items-center gap-4">
         {filterSlot}

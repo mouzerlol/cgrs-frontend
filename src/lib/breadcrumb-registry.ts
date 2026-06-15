@@ -35,5 +35,10 @@ export function resolveDynamicLabel(kind: DynamicLabelKind, value: string): stri
     const b = boardsData.boards.find((x: { id: string }) => x.id === value);
     return (b as { name?: string } | undefined)?.name ?? shortId(value);
   }
+  // Thread titles live behind the authed API, not sync JSON. A plain "Thread" leaf reads
+  // better than a truncated UUID and stays meaningful on a narrow breadcrumb strip.
+  if (kind === 'thread') {
+    return 'Thread';
+  }
   return shortId(value);
 }

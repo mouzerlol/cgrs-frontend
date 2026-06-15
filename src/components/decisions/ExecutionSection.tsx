@@ -89,7 +89,7 @@ export default function ExecutionSection({
                     <>
                         <span className="text-forest/60">Board:</span>
                         <Link
-                            href={`/work-management/boards/${resolution.linkedBoardTask}`}
+                            href={`/admin/boards/${resolution.linkedBoardTask}`}
                             className="text-terracotta hover:underline"
                         >
                             View linked task →

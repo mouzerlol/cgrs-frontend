@@ -119,11 +119,11 @@ describe('Environment Variable Security', () => {
 describe('Route Pattern Security', () => {
   describe('protected routes should require auth', () => {
     const protectedRoutes = [
-      '/work-management/',
-      '/work-management/requests',
+      '/admin/',
+      '/admin/requests',
       '/discussion/new',
-      '/profile/',
-      '/profile/verification',
+      '/account/',
+      '/account/verification',
     ];
 
     for (const route of protectedRoutes) {

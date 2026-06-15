@@ -45,7 +45,7 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
 
     const sizeClasses = {
       sm: {
-        button: 'min-w-[36px] min-h-[36px] p-1.5',
+        button: 'min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] p-1.5',
         icon: 'w-4 h-4',
         text: 'text-xs',
       },

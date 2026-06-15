@@ -46,8 +46,25 @@ export function canAccessManagement(role: string | undefined, isSuperadmin: bool
   return role !== undefined && MANAGEMENT_ROLES.has(role);
 }
 
+/**
+ * Roles that may view the society registration record (owners-and-up: strict
+ * society membership). Mirrors the API's `VisibilityEnum.OWNER` read gate.
+ */
+const SOCIETY_RECORD_VIEW_ROLES = new Set([
+  'owner',
+  'society_manager',
+  'committee_member',
+  'committee_chairperson',
+]);
+
+/** Whether the user can view the Society record (account tab + read API). */
+export function canViewSocietyRecord(role: string | undefined, isSuperadmin: boolean): boolean {
+  if (isSuperadmin) return true;
+  return role !== undefined && SOCIETY_RECORD_VIEW_ROLES.has(role);
+}
+
 /** Nav item href that is restricted by role (Management). */
-const MANAGEMENT_NAV_HREF = '/work-management';
+const MANAGEMENT_NAV_HREF = '/admin';
 
 /** Nav item href that requires authentication (Discussion). */
 const DISCUSSION_NAV_HREF = '/discussion';
