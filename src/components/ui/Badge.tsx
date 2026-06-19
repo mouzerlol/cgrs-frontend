@@ -25,10 +25,10 @@ const variantStyles: Record<BadgeVariant, string> = {
   forest: 'bg-forest/5 text-forest border-forest/10',
   terracotta: 'bg-terracotta/5 text-terracotta border-terracotta/10',
   amber: 'bg-amber/15 text-amber-dark border-amber/20',
-  'status-open': 'bg-amber/15 text-amber-700 border-transparent',
+  'status-open': 'bg-amber/15 text-amber-dark border-transparent',
   'status-in-progress': 'bg-sage-light text-forest border-transparent',
   'status-closed': 'bg-forest-light/15 text-forest-light border-transparent',
-  'status-withdrawn': 'bg-gray-100 text-gray-500 border-transparent',
+  'status-withdrawn': 'bg-sage/10 text-forest/45 border-transparent',
 };
 
 const shapeStyles = {

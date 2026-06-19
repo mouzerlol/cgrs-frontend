@@ -21,8 +21,8 @@ export default function VerificationStatus({
     if (verificationMethod === 'qr_mail') {
       return (
         <div className="space-y-6">
-          <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-sage/20">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-terracotta/10">
+          <div className="flex items-center gap-3 rounded-none bg-white p-4 shadow-sm border border-sage/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-none bg-terracotta/10">
               <Mail className="h-6 w-6 text-terracotta" />
             </div>
             <div>
@@ -35,11 +35,11 @@ export default function VerificationStatus({
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+          <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
             <h4 className="font-display text-lg text-forest mb-4">What happens next?</h4>
             <ol className="space-y-4">
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   1
                 </span>
                 <div>
@@ -50,7 +50,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   2
                 </span>
                 <div>
@@ -61,7 +61,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   3
                 </span>
                 <div>
@@ -74,7 +74,7 @@ export default function VerificationStatus({
             </ol>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl bg-sage-light/30 p-4">
+          <div className="flex items-center gap-2 rounded-none bg-sage-light/30 p-4">
             <Clock className="h-5 w-5 text-forest/60" />
             <p className="text-sm text-forest/70">
               Standard mail delivery typically takes 3-5 business days. QR code expires in 30 days.
@@ -87,8 +87,8 @@ export default function VerificationStatus({
     if (verificationMethod === 'role_management') {
       return (
         <div className="space-y-6">
-          <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-sage/20">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-forest/10">
+          <div className="flex items-center gap-3 rounded-none bg-white p-4 shadow-sm border border-sage/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-none bg-forest/10">
               <ShieldCheck className="h-6 w-6 text-forest" />
             </div>
             <div>
@@ -99,11 +99,11 @@ export default function VerificationStatus({
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+          <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
             <h4 className="font-display text-lg text-forest mb-4">What happens next?</h4>
             <ol className="space-y-4">
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   1
                 </span>
                 <div>
@@ -114,7 +114,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   2
                 </span>
                 <div>
@@ -126,7 +126,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   3
                 </span>
                 <div>
@@ -140,7 +140,7 @@ export default function VerificationStatus({
             </ol>
           </div>
 
-          <div className="flex items-start gap-2 rounded-xl bg-amber/10 p-4 border border-amber/20">
+          <div className="flex items-start gap-2 rounded-none bg-amber/10 p-4 border border-amber/20">
             <Info className="h-5 w-5 text-amber shrink-0 mt-0.5" />
             <p className="text-sm text-forest/70">
               If you have any questions or need to provide additional documentation, please contact your property
@@ -153,8 +153,8 @@ export default function VerificationStatus({
 
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-sage/20">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-terracotta/10">
+        <div className="flex items-center gap-3 rounded-none bg-white p-4 shadow-sm border border-sage/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-none bg-terracotta/10">
             <Clock className="h-6 w-6 text-terracotta" />
           </div>
           <div>
@@ -167,12 +167,12 @@ export default function VerificationStatus({
           </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+        <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
           <h4 className="font-display text-lg text-forest mb-4">What happens next?</h4>
           {verificationType === 'resident' ? (
             <ol className="space-y-4">
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   1
                 </span>
                 <div>
@@ -183,7 +183,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   2
                 </span>
                 <div>
@@ -194,7 +194,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   3
                 </span>
                 <div>
@@ -208,7 +208,7 @@ export default function VerificationStatus({
           ) : (
             <ol className="space-y-4">
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   1
                 </span>
                 <div>
@@ -219,7 +219,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   2
                 </span>
                 <div>
@@ -230,7 +230,7 @@ export default function VerificationStatus({
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
                   3
                 </span>
                 <div>
@@ -244,7 +244,7 @@ export default function VerificationStatus({
           )}
         </div>
 
-        <div className="flex items-center gap-2 rounded-xl bg-sage-light/30 p-4">
+        <div className="flex items-center gap-2 rounded-none bg-sage-light/30 p-4">
           <Info className="h-5 w-5 text-forest/60" />
           <p className="text-sm text-forest/70">
             If no existing member responds within 7 days, please contact the society manager.
@@ -256,8 +256,8 @@ export default function VerificationStatus({
 
   if (type === 'approved') {
     return (
-      <div className="flex items-center gap-3 rounded-2xl bg-forest/10 p-6">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-forest text-bone">
+      <div className="flex items-center gap-3 rounded-none bg-forest/10 p-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-none bg-forest text-bone">
           <Check className="h-6 w-6" />
         </div>
         <div>
@@ -271,8 +271,8 @@ export default function VerificationStatus({
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-terracotta/10 p-6">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-terracotta text-bone">
+    <div className="flex items-center gap-3 rounded-none bg-terracotta/10 p-6">
+      <div className="flex h-12 w-12 items-center justify-center rounded-none bg-terracotta text-bone">
         <X className="h-6 w-6" />
       </div>
       <div>

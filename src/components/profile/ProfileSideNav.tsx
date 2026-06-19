@@ -3,9 +3,11 @@
 import { useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, Landmark, MessageSquare, ShieldCheck, User, Bookmark } from 'lucide-react';
+import { Building2, Landmark, MapPinned, MessageSquare, User, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAllFeatureFlags } from '@/hooks/useFeatureFlag';
+import ProfileIdentityCard from './ProfileIdentityCard';
+import type { CurrentUserResponse } from '@/hooks/useCurrentUser';
 
 /** Profile nav uses Lucide SVGs directly so icons always render (no Iconify async bundle). */
 const NAV_ITEMS = [
@@ -13,23 +15,22 @@ const NAV_ITEMS = [
   { id: 'my-property', href: '/account/my-property', label: 'My Property', flagId: 'account.my-property' },
   { id: 'reported-issues', href: '/account/reported-issues', label: 'Reported Issues', flagId: 'account.reported-issues' },
   { id: 'bookmarks', href: '/account/bookmarks', label: 'Bookmarks', flagId: null },
-  { id: 'verification', href: '/account/verification', label: 'Verification', flagId: 'account.verification' },
   { id: 'society', href: '/account/society', label: 'Society', flagId: null },
+  { id: 'ground-report', href: '/account/ground-report', label: 'Ground Report', flagId: null },
 ] as const;
 
 type NavId = (typeof NAV_ITEMS)[number]['id'];
 
 const NAV_ITEM_ICONS: Record<NavId, LucideIcon> = {
-  verification: ShieldCheck,
   details: User,
   'reported-issues': MessageSquare,
   'my-property': Building2,
   bookmarks: Bookmark,
   society: Landmark,
+  'ground-report': MapPinned,
 };
 
 const DEFAULT_FLAG_IDS: Record<string, boolean> = {
-  'account.verification': true,
   'account.reported-issues': true,
   'account.my-property': true,
 };
@@ -42,6 +43,8 @@ interface ProfileSideNavProps {
   hasPendingVerification?: boolean;
   /** Whether the Society tab should be shown (owners-and-up only). */
   canViewSociety?: boolean;
+  /** Whether the Ground Report tab should be shown (owners-and-up only). */
+  canViewGroundReport?: boolean;
   /**
    * `desktop` renders the sticky folder-tab sidebar (≥lg only).
    * `mobile` renders a transparent, full-width list for the slide-in drawer
@@ -49,6 +52,13 @@ interface ProfileSideNavProps {
    */
   variant?: 'desktop' | 'mobile';
   className?: string;
+  /**
+   * Signed-in identity rendered as a card pinned above the nav buttons (the old
+   * ProfileHero, relocated). Optional so the nav still renders if data is absent.
+   */
+  user?: CurrentUserResponse['user'];
+  membership?: CurrentUserResponse['membership'];
+  clerkFallback?: { firstName?: string; lastName?: string; imageUrl?: string; email?: string };
 }
 
 export default function ProfileSideNav({
@@ -58,8 +68,12 @@ export default function ProfileSideNav({
   activeCategory: controlledActive,
   hasPendingVerification,
   canViewSociety = false,
+  canViewGroundReport = false,
   variant = 'desktop',
   className,
+  user,
+  membership,
+  clerkFallback,
 }: ProfileSideNavProps) {
   // `mobile` drops the desktop folder-tab affordances for the slide-in drawer.
   const isMobile = variant === 'mobile';
@@ -69,13 +83,14 @@ export default function ProfileSideNav({
   // Filter nav items based on feature flags
   const visibleNavItems = useMemo(() => {
     return NAV_ITEMS.filter((item) => {
-      // Society is role-gated (owners-and-up), not feature-flagged.
+      // Society & Ground Report are role-gated (owners-and-up), not feature-flagged.
       if (item.id === 'society') return canViewSociety;
+      if (item.id === 'ground-report') return canViewGroundReport;
       if (!item.flagId) return true;
       // Use feature flag if available, otherwise default to true
       return featureFlags[item.flagId] ?? DEFAULT_FLAG_IDS[item.flagId] ?? true;
     });
-  }, [featureFlags, canViewSociety]);
+  }, [featureFlags, canViewSociety, canViewGroundReport]);
 
   function isActive(id: string) {
     if (controlledActive !== undefined) {
@@ -114,6 +129,14 @@ export default function ProfileSideNav({
         className
       )}
     >
+      {user && (
+        <ProfileIdentityCard
+          user={user}
+          membership={membership ?? null}
+          clerkFallback={clerkFallback}
+          onActivate={() => handleNavClick('details', '/account/profile')}
+        />
+      )}
       <ul className="flex flex-col gap-1">
         {visibleNavItems.map(({ id, href, label }) => {
           const active = isActive(id);
@@ -155,7 +178,7 @@ export default function ProfileSideNav({
                   <NavIcon className="h-5 w-5 shrink-0" aria-hidden strokeWidth={2} />
                 </span>
                 <span className="flex-1 leading-snug">{label}</span>
-                {id === 'verification' && hasPendingVerification && (
+                {id === 'my-property' && hasPendingVerification && (
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-bone shadow-sm shrink-0">
                     <span className="sr-only">Pending verification</span>
                     <span aria-hidden="true">!</span>

@@ -65,13 +65,11 @@ export function ThreadEditModal({
       removePoll?: boolean;
     } = { title, body };
 
-    if (hasPoll && pollOptions.length >= 2) {
-      data.pollOptions = pollOptions;
-      data.allowMultiple = allowMultiple;
-    }
-
     if (removePoll) {
       data.removePoll = true;
+    } else if (hasPoll && pollOptions.length >= 2) {
+      data.pollOptions = pollOptions;
+      data.allowMultiple = allowMultiple;
     }
 
     await onSave(data);

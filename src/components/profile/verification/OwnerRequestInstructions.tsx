@@ -11,8 +11,8 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
   return (
     <div className="space-y-6">
       {/* Success indicator */}
-      <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-sage/20">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-forest/10">
+      <div className="flex items-center gap-3 rounded-none bg-white p-4 shadow-sm border border-sage/20">
+        <div className="flex h-12 w-12 items-center justify-center rounded-none bg-forest/10">
           <ClipboardCheck className="h-6 w-6 text-forest" />
         </div>
         <div>
@@ -22,11 +22,11 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
       </div>
 
       {/* Instructions */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+      <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
         <h4 className="font-display text-lg text-forest mb-4">What happens next?</h4>
         <ol className="space-y-4">
           <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
               1
             </span>
             <div>
@@ -37,7 +37,7 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
             </div>
           </li>
           <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
               2
             </span>
             <div>
@@ -49,7 +49,7 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
             </div>
           </li>
           <li className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-light text-xs font-medium text-forest">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-sage-light text-xs font-medium text-forest">
               3
             </span>
             <div>
@@ -65,7 +65,7 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
 
       {/* Request reference */}
       {requestId && (
-        <div className="flex items-center gap-2 rounded-xl bg-sage-light/30 p-4">
+        <div className="flex items-center gap-2 rounded-none bg-sage-light/30 p-4">
           <Hash className="h-5 w-5 text-forest/60" />
           <p className="text-sm text-forest/70">
             Reference: {requestId.slice(0, 8).toUpperCase()}
@@ -74,7 +74,7 @@ export default function OwnerRequestInstructions({ address, requestId }: OwnerRe
       )}
 
       {/* Contact info */}
-      <div className="flex items-start gap-3 rounded-xl bg-amber/10 p-4 border border-amber/20">
+      <div className="flex items-start gap-3 rounded-none bg-amber/10 p-4 border border-amber/20">
         <Info className="h-5 w-5 text-amber shrink-0 mt-0.5" />
         <p className="text-sm text-forest/70">
           If you have any questions or need to provide additional documentation, please contact your property

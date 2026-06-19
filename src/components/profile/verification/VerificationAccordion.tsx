@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Clock, Home, Building2, ArrowRight, Plus, X } from 'lucide-react';
+import { ShieldCheck, Clock, Home, Building2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   useStreetsQuery,
@@ -23,7 +22,23 @@ import VerificationHistory from '@/components/profile/verification/VerificationH
 import PropertyBadge from '@/components/profile/verification/PropertyBadge';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-export default function VerificationSection() {
+/**
+ * The verification surface, rendered as the body of the My Property accordion
+ * (formerly the standalone /account/verification page). Self-contained: owns its
+ * own queries and mutations. The "Verify another property" affordance is hoisted
+ * to the My Property heading; this component receives its reveal state via props.
+ */
+interface VerificationAccordionProps {
+  /** Whether the "Verify another property" flow is revealed (driven from the heading CTA). */
+  showVerifyForm?: boolean;
+  /** Collapse the reveal — called on cancel and on a successful submission. */
+  onCloseVerifyForm?: () => void;
+}
+
+export default function VerificationAccordion({
+  showVerifyForm = false,
+  onCloseVerifyForm,
+}: VerificationAccordionProps) {
   const { getToken } = useAuth();
   const searchParams = useSearchParams();
   const markRead = useMarkRead();
@@ -45,7 +60,6 @@ export default function VerificationSection() {
     }
   }, [notificationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [selectedCard, setSelectedCard] = useState<'resident' | 'owner' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,7 +100,7 @@ export default function VerificationSection() {
 
       // Collapse the inline flow; the new pending request surfaces in the pending section
       // once the refreshed queries resolve (design D8).
-      setShowVerifyForm(false);
+      onCloseVerifyForm?.();
       setSelectedCard(null);
       invalidateMyProperties();
       invalidateVerification();
@@ -122,23 +136,14 @@ export default function VerificationSection() {
   // Loading skeleton
   if (isStreetsLoading || isStatusLoading || isPendingLoading || isPropsLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-12 w-12 rounded-xl" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-        </div>
-        <div className="ml-14 space-y-4">
-          <Skeleton className="h-48 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
-        </div>
+      <div className="space-y-4">
+        <Skeleton className="h-48 rounded-none" />
+        <Skeleton className="h-32 rounded-none" />
       </div>
     );
   }
 
-  // The resident/owner selection flow — reused as the whole page (NONE state) and
+  // The resident/owner selection flow — reused as the whole body (NONE state) and
   // behind the "Verify another property" toggle (design D8).
   const verifyFlow = (
     <div className="space-y-6">
@@ -149,21 +154,21 @@ export default function VerificationSection() {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
           className={cn(
-            'rounded-2xl bg-white p-6 shadow-sm border border-sage text-left transition-all',
+            'rounded-none bg-white p-6 shadow-sm border border-sage text-left transition-all',
             selectedCard === 'resident'
               ? 'border-terracotta ring-2 ring-terracotta/20'
               : 'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
           )}
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-terracotta/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-none bg-terracotta/10">
               <Home className="h-5 w-5 text-terracotta" />
             </div>
             <div className="flex-1">
               <h4 className="font-display text-lg text-forest">Become a Resident</h4>
             </div>
             {selectedCard === 'resident' && (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-terracotta text-bone">
+              <div className="flex h-6 w-6 items-center justify-center rounded-none bg-terracotta text-bone">
                 <ShieldCheck className="h-4 w-4" />
               </div>
             )}
@@ -180,21 +185,21 @@ export default function VerificationSection() {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
           className={cn(
-            'rounded-2xl bg-white p-6 shadow-sm border border-sage text-left transition-all',
+            'rounded-none bg-white p-6 shadow-sm border border-sage text-left transition-all',
             selectedCard === 'owner'
               ? 'border-forest ring-2 ring-forest/20'
               : 'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
           )}
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-forest/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-none bg-forest/10">
               <Building2 className="h-5 w-5 text-forest" />
             </div>
             <div className="flex-1">
               <h4 className="font-display text-lg text-forest">Become an Owner</h4>
             </div>
             {selectedCard === 'owner' && (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-forest text-bone">
+              <div className="flex h-6 w-6 items-center justify-center rounded-none bg-forest text-bone">
                 <ShieldCheck className="h-4 w-4" />
               </div>
             )}
@@ -218,7 +223,7 @@ export default function VerificationSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="rounded-2xl bg-sage-light/30 p-8 text-center text-forest/60 text-sm"
+          className="rounded-none border border-sage/25 bg-sage-light/30 p-8 text-center text-forest/60 text-sm"
         >
           Select an option above to continue
         </motion.div>
@@ -226,161 +231,121 @@ export default function VerificationSection() {
     </div>
   );
 
-  // NONE state — the selection flow IS the page.
-  if (isNoneState) {
+  if (error) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-terracotta/10">
-            <ShieldCheck className="h-6 w-6 text-terracotta" />
-          </div>
-          <div>
-            <h2 className="font-display text-2xl text-forest">Verification</h2>
-            <p className="text-sm text-forest/60">Become a verified resident or owner of your property.</p>
-          </div>
+        <div className="rounded-none bg-terracotta/10 border border-terracotta/30 p-4 text-terracotta text-sm">
+          {error}
         </div>
-
-        {error && (
-          <div className="ml-14 rounded-xl bg-terracotta/10 border border-terracotta/30 p-4 text-terracotta text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="ml-14">{verifyFlow}</div>
+        {isNoneState ? verifyFlow : null}
       </div>
     );
   }
 
+  // NONE state — the selection flow IS the accordion body.
+  if (isNoneState) {
+    return <div className="space-y-6">{verifyFlow}</div>;
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sage/10">
-          <ShieldCheck className="h-6 w-6 text-sage" />
+      {/* Two-column layout: actions on the left, history on the right */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        {/* Left column */}
+        <div className="space-y-6">
+          {/* 1. Verified property badges */}
+          {hasVerified && (
+            <section data-section="badges" className="space-y-4">
+              <div data-testid="badge-wall" className="flex flex-wrap justify-center gap-4">
+                {verifiedProperties.map((property) => (
+                  <div key={property.property_id} className="w-full sm:w-80">
+                    <PropertyBadge
+                      streetName={property.street_name}
+                      streetNumber={property.street_number}
+                      verificationType={property.verification_type}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 2. Pending request (singular, one-in-flight) */}
+          {hasPending && (
+            <motion.section
+              data-section="pending"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="ml-0"
+            >
+              <VerificationStatus
+                type="pending"
+                address={verificationStatus?.pending_address || ''}
+                verificationType={(verificationStatus?.pending_type as 'resident' | 'owner') || 'resident'}
+                verificationMethod={verificationStatus?.pending_verification_method}
+              />
+            </motion.section>
+          )}
+
+          {/* 3. Requests needing your response */}
+          {pendingResponses.length > 0 && (
+            <section data-section="responses" className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-none bg-amber/10">
+                  <Clock className="h-5 w-5 text-amber" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg text-forest">Requests Needing Your Response</h3>
+                  <p className="text-sm text-forest/60">
+                    As a verified member, you can approve or reject requests from others at your property.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-4 pl-[3.5rem]">
+                {pendingResponses.map((item) => (
+                  <PendingVerificationCard
+                    key={item.id}
+                    request={item}
+                    onApprove={() => handleApprove(item.id)}
+                    onReject={() => handleReject(item.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
-        <div>
-          <h2 className="font-display text-2xl text-forest">Verification</h2>
-          <p className="text-sm text-forest/60">Manage your verified properties and verification status.</p>
-        </div>
+
+        {/* Right column */}
+        {/* 4. Verification history */}
+        <section data-section="history">
+          <VerificationHistory />
+        </section>
       </div>
 
-      {error && (
-        <div className="ml-14 rounded-xl bg-terracotta/10 border border-terracotta/30 p-4 text-terracotta text-sm">
-          {error}
-        </div>
-      )}
-
-      {/* 1. Verified property badges */}
-      {hasVerified && (
-        <section data-section="badges" className="ml-14 space-y-4">
-          <div data-testid="badge-wall" className="grid gap-4 md:grid-cols-2">
-            {verifiedProperties.map((property) => (
-              <PropertyBadge
-                key={property.property_id}
-                streetName={property.street_name}
-                streetNumber={property.street_number}
-                verificationType={property.verification_type}
-              />
-            ))}
-          </div>
-          <Link
-            href="/account/my-property"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-forest hover:text-terracotta transition-colors"
+      {/* 5. Verify another property form (gated: verified AND no pending) */}
+      {showVerifyAnotherButton && showVerifyForm && (
+        <section>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
           >
-            View my properties
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </section>
-      )}
-
-      {/* 2. Pending request (singular, one-in-flight) */}
-      {hasPending && (
-        <motion.section
-          data-section="pending"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="ml-14"
-        >
-          <VerificationStatus
-            type="pending"
-            address={verificationStatus?.pending_address || ''}
-            verificationType={(verificationStatus?.pending_type as 'resident' | 'owner') || 'resident'}
-            verificationMethod={verificationStatus?.pending_verification_method}
-          />
-        </motion.section>
-      )}
-
-      {/* 3. Requests needing your response */}
-      {pendingResponses.length > 0 && (
-        <section data-section="responses" className="ml-14 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber/10">
-              <Clock className="h-5 w-5 text-amber" />
+            <div className="flex items-center justify-between">
+              <h3 className="font-display text-lg text-forest">Verify another property</h3>
+              <button
+                type="button"
+                onClick={() => {
+                  onCloseVerifyForm?.();
+                  setSelectedCard(null);
+                }}
+                className="inline-flex items-center gap-1.5 text-sm text-forest/60 hover:text-terracotta transition-colors"
+              >
+                <X className="h-4 w-4" />
+                Cancel
+              </button>
             </div>
-            <div>
-              <h3 className="font-display text-lg text-forest">Requests Needing Your Response</h3>
-              <p className="text-sm text-forest/60">
-                As a verified member, you can approve or reject requests from others at your property.
-              </p>
-            </div>
-          </div>
-          <div className="space-y-4 pl-[3.5rem]">
-            {pendingResponses.map((item) => (
-              <PendingVerificationCard
-                key={item.id}
-                request={item}
-                onApprove={() => handleApprove(item.id)}
-                onReject={() => handleReject(item.id)}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Verification history */}
-      <section data-section="history" className="ml-14">
-        <VerificationHistory />
-      </section>
-
-      {/* 5. Verify another property (gated: verified AND no pending) */}
-      {showVerifyAnotherButton && (
-        <section className="ml-14">
-          {!showVerifyForm ? (
-            <motion.button
-              type="button"
-              onClick={() => setShowVerifyForm(true)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className="inline-flex items-center gap-2 rounded-xl border border-forest/20 bg-white px-5 py-3 text-sm font-medium text-forest shadow-sm transition-all hover:border-forest/40 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]"
-            >
-              <Plus className="h-4 w-4" />
-              Verify another property
-            </motion.button>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-lg text-forest">Verify another property</h3>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowVerifyForm(false);
-                    setSelectedCard(null);
-                  }}
-                  className="inline-flex items-center gap-1.5 text-sm text-forest/60 hover:text-terracotta transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                  Cancel
-                </button>
-              </div>
-              {verifyFlow}
-            </motion.div>
-          )}
+            {verifyFlow}
+          </motion.div>
         </section>
       )}
     </div>

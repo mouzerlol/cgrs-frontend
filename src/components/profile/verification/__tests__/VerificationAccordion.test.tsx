@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import VerificationSection from '@/components/profile/sections/VerificationSection';
+import VerificationAccordion from '@/components/profile/verification/VerificationAccordion';
 
 // --- Mocks -----------------------------------------------------------------
 
@@ -167,7 +167,18 @@ function sectionOrder(): string[] {
 const verifyAnotherButton = () =>
   screen.queryByRole('button', { name: /verify another property/i });
 
-describe('VerificationSection', () => {
+const becomeResident = () => screen.queryByRole('button', { name: /become a resident/i });
+
+/**
+ * The "verify another property" reveal is controlled by the parent (the My Property
+ * heading CTA) now. This harness mirrors that wiring so cancel/submit collapse it.
+ */
+function ControlledAccordion({ initialOpen = true }: { initialOpen?: boolean }) {
+  const [open, setOpen] = useState(initialOpen);
+  return <VerificationAccordion showVerifyForm={open} onCloseVerifyForm={() => setOpen(false)} />;
+}
+
+describe('VerificationAccordion', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -175,26 +186,26 @@ describe('VerificationSection', () => {
   describe('state model & ordering (3.2)', () => {
     it('renders one badge per verified property', () => {
       setup({ verifiedCount: 3, hasPending: false });
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       expect(screen.getAllByTestId('property-badge')).toHaveLength(3);
     });
 
-    it('lays badges out in a two-column grid container', () => {
+    it('lays badges out in a centered wrapping row', () => {
       setup({ verifiedCount: 2 });
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       const wall = screen.getByTestId('badge-wall');
-      expect(wall.className).toMatch(/md:grid-cols-2/);
+      expect(wall.className).toMatch(/justify-center/);
     });
 
     it('orders sections badges → pending → responses → history', () => {
       setup({ verifiedCount: 2, hasPending: true, responses: 1 });
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       expect(sectionOrder()).toEqual(['badges', 'pending', 'responses', 'history']);
     });
 
     it('omits empty sections', () => {
       setup({ verifiedCount: 2, hasPending: false, responses: 0 });
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       const order = sectionOrder();
       expect(order).not.toContain('pending');
       expect(order).not.toContain('responses');
@@ -207,29 +218,35 @@ describe('VerificationSection', () => {
     beforeEach(() => setup({ verifiedCount: 0, hasPending: false, responses: 0 }));
 
     it('shows the resident/owner selection flow as the primary content', () => {
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       expect(screen.getByRole('button', { name: /become a resident/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /become an owner/i })).toBeInTheDocument();
     });
 
     it('shows no badge wall and no "verify another property" button', () => {
-      render(<VerificationSection />, { wrapper: createWrapper() });
+      render(<VerificationAccordion />, { wrapper: createWrapper() });
       expect(screen.queryByTestId('badge-wall')).not.toBeInTheDocument();
       expect(verifyAnotherButton()).not.toBeInTheDocument();
     });
   });
 
   describe('one-in-flight gate (3.4)', () => {
-    it('shows the button when verified and no pending', () => {
+    it('never renders its own verify-another button (the CTA lives in the My Property heading)', () => {
       setup({ verifiedCount: 1, hasPending: false });
-      render(<VerificationSection />, { wrapper: createWrapper() });
-      expect(verifyAnotherButton()).toBeInTheDocument();
+      render(<VerificationAccordion showVerifyForm={false} />, { wrapper: createWrapper() });
+      expect(verifyAnotherButton()).not.toBeInTheDocument();
     });
 
-    it('hides the button while a pending request exists', () => {
+    it('reveals the verify-another flow when verified and no pending', () => {
+      setup({ verifiedCount: 1, hasPending: false });
+      render(<VerificationAccordion showVerifyForm />, { wrapper: createWrapper() });
+      expect(becomeResident()).toBeInTheDocument();
+    });
+
+    it('does not reveal the flow while a pending request exists, even when asked', () => {
       setup({ verifiedCount: 1, hasPending: true });
-      render(<VerificationSection />, { wrapper: createWrapper() });
-      expect(verifyAnotherButton()).not.toBeInTheDocument();
+      render(<VerificationAccordion showVerifyForm />, { wrapper: createWrapper() });
+      expect(becomeResident()).not.toBeInTheDocument();
       // pending request is still shown
       expect(sectionOrder()).toContain('pending');
     });
@@ -238,22 +255,16 @@ describe('VerificationSection', () => {
   describe('inline reveal / collapse (3.5)', () => {
     beforeEach(() => setup({ verifiedCount: 1, hasPending: false }));
 
-    it('reveals the flow inline when clicked, and collapses again', () => {
-      render(<VerificationSection />, { wrapper: createWrapper() });
-      // collapsed: no selection cards yet
-      expect(screen.queryByRole('button', { name: /become a resident/i })).not.toBeInTheDocument();
+    it('shows the flow when revealed and collapses it on cancel', () => {
+      render(<ControlledAccordion />, { wrapper: createWrapper() });
+      expect(becomeResident()).toBeInTheDocument();
 
-      fireEvent.click(verifyAnotherButton()!);
-      expect(screen.getByRole('button', { name: /become a resident/i })).toBeInTheDocument();
-
-      // toggle collapses
       fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
-      expect(screen.queryByRole('button', { name: /become a resident/i })).not.toBeInTheDocument();
+      expect(becomeResident()).not.toBeInTheDocument();
     });
 
     it('submits a new request, then collapses and invalidates queries', async () => {
-      render(<VerificationSection />, { wrapper: createWrapper() });
-      fireEvent.click(verifyAnotherButton()!);
+      render(<ControlledAccordion />, { wrapper: createWrapper() });
       fireEvent.click(screen.getByRole('button', { name: /become a resident/i }));
       fireEvent.click(screen.getByTestId('mock-address-submit'));
 
@@ -266,13 +277,6 @@ describe('VerificationSection', () => {
     });
   });
 
-  describe('single "View my properties" link (3.6)', () => {
-    it('renders exactly one link to my-property regardless of badge count', () => {
-      setup({ verifiedCount: 3 });
-      render(<VerificationSection />, { wrapper: createWrapper() });
-      const links = screen.getAllByRole('link', { name: /view my propert/i });
-      expect(links).toHaveLength(1);
-      expect(links[0]).toHaveAttribute('href', '/account/my-property');
-    });
-  });
+  // The "View my properties" bridge link was removed when verification moved into
+  // the My Property surface itself — the badges now sit alongside the property cards.
 });

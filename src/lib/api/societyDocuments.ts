@@ -9,6 +9,7 @@ import type {
   SocietyDocumentListResponse,
   SocietyDocumentResponse,
   SocietyDocumentUpdateRequest,
+  VisibleSocietyDocumentsResponse,
 } from '@/types/admin';
 
 /** Mirror of the server-side 30 MB cap (Cloud Run request-body limit). */
@@ -62,6 +63,34 @@ export async function getSocietyDocument(
   getToken: () => Promise<string | null>,
 ): Promise<SocietyDocumentResponse> {
   return apiRequest<SocietyDocumentResponse>(`/api/v1/society-documents/${id}`, getToken);
+}
+
+/**
+ * Member-facing read (owners-and-up): visible categories grouped with the
+ * documents the caller may see. Unlike listSocietyDocuments, this does NOT
+ * require the manageSocietyDocuments capability.
+ */
+export async function listVisibleSocietyDocuments(
+  getToken: () => Promise<string | null>,
+): Promise<VisibleSocietyDocumentsResponse> {
+  return apiRequest<VisibleSocietyDocumentsResponse>(
+    '/api/v1/society-documents:visible',
+    getToken,
+  );
+}
+
+/**
+ * Member-facing presigned GET URL (owners-and-up, scoped to visible documents).
+ * Mirrors getSocietyDocumentDownloadUrl but does NOT require the manage capability.
+ */
+export async function getSocietyDocumentViewUrl(
+  id: string,
+  getToken: () => Promise<string | null>,
+): Promise<SocietyDocumentDownloadUrlResponse> {
+  return apiRequest<SocietyDocumentDownloadUrlResponse>(
+    `/api/v1/society-documents/${id}/view-url`,
+    getToken,
+  );
 }
 
 export async function uploadSocietyDocument(

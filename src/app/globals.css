@@ -42,6 +42,12 @@
   /* Site banner height; bumped by <BetaBanner /> when its flag is on, so page top offsets can absorb it. */
   --site-banner-height: 0px;
 
+  /* Live height of the fixed top chrome; set by <SiteChromeBar />. */
+  /* --chrome-offset → 0 when collapsed: sub-bars pinned to it DOCK to the viewport top. */
+  /* --chrome-height stays the real height: bars pinned to it ride WITH the chrome (hide together). */
+  --chrome-offset: 72px;
+  --chrome-height: 72px;
+
   /* Texture Patterns — SVG data URIs, too large for Tailwind config */
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
   --texture-dots: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M1 1h1v1H1z' fill='%231A2218' fill-opacity='0.03'/%3E%3C/svg%3E");

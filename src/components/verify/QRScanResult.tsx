@@ -71,10 +71,10 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
               Try Again
             </button>
             <Link
-              href="/account/verification"
+              href="/account/my-property"
               className="w-full rounded-xl border border-sage/30 px-4 py-2.5 text-sm font-medium text-forest hover:bg-sage-light/30 transition-colors text-center"
             >
-              Go to Verification Page
+              Go to My Property
             </Link>
           </div>
         </div>

@@ -1,28 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { isNonOptimizableImageSrc } from '@/lib/image';
-import {
-  Wrench,
-  Trash2,
-  Car,
-  CircleHelp,
-  Volume2,
-  Shield,
-  Trees,
-  CircleDot,
-  ChevronRight,
-  User,
-  Timer,
-  CheckCircle2,
-  XCircle,
-  ChevronsUp,
-  ChevronUp,
-  Minus,
-  ChevronDown,
-} from 'lucide-react';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { ChevronRight } from 'lucide-react';
+import StatusBadge from '@/components/ui/StatusBadge';
+import { categoryIcon, categoryLabel } from '@/lib/reported-issue-display';
 import { cn, formatRelativeDate } from '@/lib/utils';
 import type { TaskPriority } from '@/types/work-management';
 
@@ -32,176 +13,60 @@ interface CompactIssueRowProps {
   category: string;
   status: 'open' | 'in_progress' | 'closed' | 'withdrawn';
   submittedAt: string;
+  // Operational fields kept on the type for callers; the resident row no longer
+  // surfaces priority/assignee (committee-facing data), only what a reporter needs:
+  // what it is, when reported, and where it's at.
   priority?: TaskPriority;
   assigneeName?: string;
   assigneeAvatarUrl?: string | null;
 }
 
-const CATEGORY_ICONS = {
-  maintenance: Wrench,
-  waste: Trash2,
-  parking: Car,
-  general: CircleHelp,
-  noise: Volume2,
-  safety: Shield,
-  landscaping: Trees,
-};
-
-const CATEGORY_LABELS: Record<string, string> = {
-  maintenance: 'Maintenance',
-  waste: 'Waste',
-  parking: 'Parking',
-  general: 'General',
-  noise: 'Noise Complaint',
-  safety: 'Safety',
-  landscaping: 'Landscaping',
-};
-
-const STATUS_BAR_COLORS = {
-  open: 'bg-amber',
-  in_progress: 'bg-sage',
-  closed: 'bg-forest-light',
-  withdrawn: 'bg-gray-300',
-};
-
-const STATUS_ICONS = {
-  open: CircleDot,
-  in_progress: Timer,
-  closed: CheckCircle2,
-  withdrawn: XCircle,
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  open: 'Open',
-  in_progress: 'In Progress',
-  closed: 'Closed',
-  withdrawn: 'Withdrawn',
-};
-
-const STATUS_ICON_COLORS = {
-  open: 'text-amber-600',
-  in_progress: 'text-sage',
-  closed: 'text-forest-light',
-  withdrawn: 'text-gray-400',
-};
-
-const PRIORITY_ICONS = {
-  urgent: ChevronsUp,
-  high: ChevronUp,
-  medium: Minus,
-  low: ChevronDown,
-};
-
-const PRIORITY_COLORS = {
-  urgent: 'text-terracotta',
-  high: 'text-amber-600',
-  medium: 'text-sage',
-  low: 'text-forest/50',
-};
-
+/**
+ * One reported issue, rendered as an almanac ledger line: category, what it is, when
+ * it was reported, and a plainly-readable status badge that is visible at every
+ * breakpoint (no hover-gated meaning, which dies on touch).
+ */
 export default function CompactIssueRow({
   id,
   title,
   category,
   status,
   submittedAt,
-  priority = 'medium',
-  assigneeName,
-  assigneeAvatarUrl,
 }: CompactIssueRowProps) {
-  const IconComponent = CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS] || CircleDot;
-  const categoryLabel = CATEGORY_LABELS[category] || 'Other';
-  const barColor = STATUS_BAR_COLORS[status] || 'bg-sage';
-  
-  const StatusIcon = STATUS_ICONS[status] || CircleDot;
-  const PriorityIcon = PRIORITY_ICONS[priority] || Minus;
+  const IconComponent = categoryIcon(category);
 
   return (
     <Link
       href={`/account/reported-issues/${id}`}
       className={cn(
-        'group/card relative flex items-center gap-3 px-3 py-1 sm:px-4 sm:py-1',
-        'bg-white border border-sage/20',
-        'transition-all duration-200 ease-out',
-        'hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(26,34,24,0.08)] hover:border-sage/40'
+        'group/row flex items-center gap-3 px-3 py-1.5 sm:gap-4 sm:px-4',
+        'border border-sage/20 bg-white',
+        'transition-colors duration-200 ease-out',
+        'hover:border-sage/40 hover:bg-sage-light/20',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-1',
       )}
     >
-      {/* Accent Bar */}
-      <div
-        className={cn(
-          'absolute left-0 top-2 bottom-2 w-[3px] rounded-full',
-          barColor
-        )}
-        aria-hidden="true"
-      />
+      {/* Category tile, quiet forest (terracotta is reserved for one action per screen) */}
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-forest/5 text-forest/70">
+        <IconComponent className="h-4 w-4" aria-hidden="true" />
+      </span>
 
-      {/* Category Icon Tile */}
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] bg-terracotta/8 sm:ml-1">
-        <IconComponent className="h-4 w-4 text-terracotta" aria-hidden="true" />
-      </div>
-
-      {/* Title & Category Label */}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-display font-semibold text-forest transition-colors group-hover/card:text-terracotta">
-          {title}
-        </p>
-        <p className="text-xs text-forest/50 mt-0.5">
-          {categoryLabel}
-        </p>
-      </div>
-
-      {/* Status Tray */}
-      <div className="hidden sm:flex shrink-0 items-center gap-2.5 rounded-lg bg-sage-light/30 px-2.5 py-1.5 border border-sage/10">
-        <Tooltip content={`Status: ${STATUS_LABELS[status]}`}>
-          <StatusIcon className={cn("w-4 h-4", STATUS_ICON_COLORS[status])} />
-        </Tooltip>
-        
-        <div className="w-px h-3.5 bg-sage/30" />
-        
-        <Tooltip content="Time since reported">
-          <span className="text-[11px] font-medium text-forest/60 whitespace-nowrap">
-            {formatRelativeDate(submittedAt)}
-          </span>
-        </Tooltip>
-
-        <div className="w-px h-3.5 bg-sage/30" />
-        
-        <Tooltip content={`Priority: ${priority.charAt(0).toUpperCase() + priority.slice(1)}`}>
-          <PriorityIcon className={cn("w-4 h-4", PRIORITY_COLORS[priority])} />
-        </Tooltip>
-
-        <div className="w-px h-3.5 bg-sage/30" />
-        
-        <Tooltip content={assigneeName ? `Assigned to ${assigneeName}` : 'Unassigned'}>
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-bone border border-sage/20 overflow-hidden">
-            {assigneeAvatarUrl ? (
-              <Image
-                src={assigneeAvatarUrl}
-                alt={assigneeName || 'Assignee'}
-                width={20}
-                height={20}
-                unoptimized={isNonOptimizableImageSrc(assigneeAvatarUrl)}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <User className="h-3 w-3 text-forest/40" />
-            )}
-          </div>
-        </Tooltip>
-      </div>
-      
-      {/* Mobile abbreviated status tray */}
-      <div className="flex sm:hidden shrink-0 items-center gap-1.5 rounded-lg bg-sage-light/30 px-2 py-1">
-        <StatusIcon className={cn("w-3.5 h-3.5", STATUS_ICON_COLORS[status])} />
-        <span className="text-[10px] font-medium text-forest/60 whitespace-nowrap">
-          {formatRelativeDate(submittedAt, true)}
+      {/* What it is, plus the ledger metadata */}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-display text-[15px] text-forest">{title}</span>
+        <span className="mt-0.5 flex items-center gap-1.5 text-xs text-forest/55">
+          <span>{categoryLabel(category)}</span>
+          <span className="text-sage" aria-hidden="true">·</span>
+          {/* Amber on a timestamp is decorative, which the brand permits on the community side */}
+          <span className="text-amber-dark">{formatRelativeDate(submittedAt)}</span>
         </span>
-      </div>
+      </span>
 
-      {/* Hover Chevron */}
-      <ChevronRight 
-        className="h-4 w-4 shrink-0 text-terracotta opacity-0 -ml-1 -mr-1 transition-all duration-200 group-hover/card:opacity-100 group-hover/card:translate-x-0.5" 
-        aria-hidden="true" 
+      <StatusBadge status={status} surface="community" className="shrink-0" />
+
+      <ChevronRight
+        className="h-4 w-4 shrink-0 text-forest/30 transition-transform duration-200 group-hover/row:translate-x-0.5 group-hover/row:text-forest/60"
+        aria-hidden="true"
       />
     </Link>
   );

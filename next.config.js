@@ -51,6 +51,10 @@ const nextConfig = {
   // - This allows dynamic content while maintaining performance
   // output: 'export', // Disabled - using SSR/ISR instead of static export
 
+  // Build output dir. Defaults to .next; override (e.g. NEXT_BUILD_DIR=.next-prod) to
+  // run a production build in isolation while a dev server is holding .next.
+  distDir: process.env.NEXT_BUILD_DIR || '.next',
+
   // Trailing slashes for consistent URLs
   trailingSlash: true,
 
@@ -170,7 +174,8 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
               "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com https://img.clerk.com https://*.r2.cloudflarestorage.com",
-              `connect-src 'self' https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000${__impeccableLiveDev}`.replace(/\s+/g, ' ').trim(),
+              // blob: lets pdf.js fetch the in-memory blob: URL the document viewer frames (see DocumentViewerModal).
+              `connect-src 'self' blob: https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000${__impeccableLiveDev}`.replace(/\s+/g, ' ').trim(),
               "worker-src 'self' blob:",
               `frame-src 'self' blob: ${cspClerkOrigins()} https://challenges.cloudflare.com`,
               "frame-ancestors 'none'",

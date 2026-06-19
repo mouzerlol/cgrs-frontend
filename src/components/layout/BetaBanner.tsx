@@ -7,9 +7,10 @@ import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 /**
  * Site-wide beta-testing announcement.
  *
- * Renders directly under the fixed site header on layouts that mount {@link Header}
- * (community {@link Layout}, immersive `(immersive)/layout`). The banner sits at
- * `top: 72px` to clear the fixed header and is hidden in print.
+ * Renders directly under the header inside the {@link SiteChrome} wrapper (community
+ * {@link Layout}, immersive `(immersive)/layout`). It flows beneath the header in the
+ * fixed wrapper — no own positioning — and is hidden in print. Still publishes
+ * `--site-banner-height` so existing content padding (`pt-[calc(72px + ...)]`) clears it.
  *
  * Layouts without the shared header (e.g. `/petition`, `/no-access`, `/verify`) are
  * intentionally banner-free. To show the banner on a future custom-header layout,
@@ -40,8 +41,8 @@ export default function BetaBanner() {
       data-site-banner
       role="status"
       aria-live="off"
-      className="group fixed left-0 right-0 z-[999] overflow-hidden bg-forest border-y border-amber/40 print:hidden select-none"
-      style={{ top: '72px', height: `${BANNER_HEIGHT_PX}px` }}
+      className="group relative z-0 w-full overflow-hidden bg-forest border-y border-amber/40 print:hidden select-none"
+      style={{ height: `${BANNER_HEIGHT_PX}px` }}
     >
       <span className="sr-only">Website currently under beta testing.</span>
       <div

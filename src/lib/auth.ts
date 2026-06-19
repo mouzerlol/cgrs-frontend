@@ -63,6 +63,15 @@ export function canViewSocietyRecord(role: string | undefined, isSuperadmin: boo
   return role !== undefined && SOCIETY_RECORD_VIEW_ROLES.has(role);
 }
 
+/**
+ * Whether the user can view the Ground Report (account tab + member read API).
+ * Owners-and-up only — mirrors the API's `VisibilityEnum.OWNER` read gate.
+ */
+export function canViewGroundReport(role: string | undefined, isSuperadmin: boolean): boolean {
+  if (isSuperadmin) return true;
+  return role !== undefined && SOCIETY_RECORD_VIEW_ROLES.has(role);
+}
+
 /** Nav item href that is restricted by role (Management). */
 const MANAGEMENT_NAV_HREF = '/admin';
 

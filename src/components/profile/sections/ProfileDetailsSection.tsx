@@ -2,8 +2,9 @@
 
 import { useClerk } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
-import { User, Key, Shield } from 'lucide-react';
+import { User, Settings, Shield } from 'lucide-react';
 import { useCurrentUserQuery } from '@/hooks/useProfileData';
+import AccountSectionHeading from '@/components/profile/AccountSectionHeading';
 import MembershipCard from '@/components/profile/MembershipCard';
 import CapabilitiesCard from '@/components/profile/CapabilitiesCard';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -25,7 +26,7 @@ export default function ProfileDetailsSection() {
           </div>
         </div>
         {/* Content skeleton */}
-        <div className="ml-14 space-y-4">
+        <div className="space-y-4">
           <Skeleton className="h-24 rounded-xl" />
           <Skeleton className="h-32 rounded-xl" />
         </div>
@@ -37,65 +38,45 @@ export default function ProfileDetailsSection() {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-6 lg:pl-8 lg:[&>*:first-child]:-ml-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header with icon */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/10">
-          <User className="h-6 w-6 text-forest" />
-        </div>
-        <div>
-          <h2 className="font-display text-2xl text-forest">Profile Details</h2>
-          <p className="text-sm text-forest/60">
-            Manage your account settings and preferences.
-          </p>
-        </div>
-      </div>
-
-      {/* Account & Security Card */}
-      <div className="ml-14">
-        <div className="flex flex-col gap-3 border border-sage/25 bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.06)] sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sage/10">
-              <Key className="h-5 w-5 text-forest" />
-            </div>
-            <div>
-              <h3 className="font-display text-sm font-semibold text-forest">Account &amp; security</h3>
-              <p className="text-xs text-forest/65">
-                Email addresses, password, and connected sign-in methods (Clerk).
-              </p>
-            </div>
-          </div>
+      <AccountSectionHeading
+        eyebrow="Account"
+        title="Profile Details"
+        subtitle="Manage your account settings and preferences."
+        icon={User}
+        action={
           <button
             type="button"
             onClick={() => openUserProfile()}
-            className="shrink-0 rounded-xl border border-sage/40 bg-bone px-4 py-2.5 text-sm font-medium text-forest transition-colors hover:border-forest/20 hover:bg-sage-light/50"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
           >
+            <Settings className="w-4 h-4" />
             Manage account
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Membership Card */}
       {userData.membership && (
-        <div className="ml-14">
+        <div>
           <MembershipCard membership={userData.membership} />
         </div>
       )}
 
       {/* Capabilities Card */}
       {userData.capabilities.length > 0 && (
-        <div className="ml-14">
+        <div>
           <CapabilitiesCard capabilities={userData.capabilities} />
         </div>
       )}
 
       {/* Superadmin indicator */}
       {userData.is_superadmin && (
-        <div className="ml-14">
+        <div>
           <div className="flex items-center gap-3 rounded-xl bg-forest p-4 text-bone">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bone/10">
               <Shield className="h-5 w-5" />

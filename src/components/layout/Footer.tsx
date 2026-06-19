@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SocialMediaTray from './SocialMediaTray';
+import Wordmark from './Wordmark';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
@@ -24,15 +25,11 @@ const FooterMap = dynamic(() => import('./FooterMap'), {
 const QUICK_LINKS = [
   { name: 'About Us', href: '/about' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Contact the Committee', href: '/contact' },
-  { name: 'Community Guidelines', href: '/guidelines' },
   { name: 'Parking', href: '/guidelines#parking' },
   { name: 'Pet Policy', href: '/guidelines#pets' },
 ];
 
 const SUPPORT_LINKS = [
-  { name: 'Report an Issue', href: '/management-request' },
-  { name: 'Help FAQ', href: '/guidelines#faq' },
   { name: 'Community Rules', href: '/guidelines' },
   { name: 'Privacy Policy', href: '/privacy-policy' },
   { name: 'Why we sleep', href: '/sustainability' },
@@ -54,10 +51,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-lg md:gap-xl mb-xl">
           {/* Brand Column with Map - min-w-0 prevents Leaflet overflow into adjacent columns */}
           <div className="w-full min-w-0 md:col-span-1 flex flex-col">
-            <h3 className="font-display text-[clamp(2rem,4vw,3rem)] mb-sm tracking-tight leading-[0.95] text-bone">
-              <span className="block whitespace-nowrap">CORONATION</span>
-              <span className="block whitespace-nowrap tracking-wider">GARDENS</span>
-            </h3>
+            <Wordmark className="text-[clamp(2rem,4vw,3rem)] mb-sm" />
+
             <div className="flex-1 flex items-start min-h-[160px] w-full min-w-0 overflow-hidden">
               <Link href="/map" aria-label="View interactive map" className="footer-map-link block min-w-0 w-full">
                 <FooterMap className="footer-map-interactive w-full" />

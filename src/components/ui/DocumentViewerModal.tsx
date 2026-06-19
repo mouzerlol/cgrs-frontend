@@ -2,8 +2,15 @@
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import dynamic from 'next/dynamic';
 import { Download, ExternalLink, FileText, FileWarning, Image as ImageIcon, Loader2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// pdf.js (react-pdf) references browser-only globals at import time and must never be evaluated on
+// the server, so the PDF renderer is loaded as a client-only chunk. We render PDFs with pdf.js
+// rather than a native <iframe> because Android Chrome/Opera have no built-in inline PDF viewer —
+// an iframed PDF shows a blank frame there, while a <canvas> render works on every platform.
+const PdfDocumentView = dynamic(() => import('./PdfDocumentView'), { ssr: false });
 
 /** Document kinds the viewer knows how to present. `pdf` and `image` render inline; everything else falls back. */
 export type DocumentFileType = 'pdf' | 'image' | 'doc' | 'docx' | string;
@@ -58,10 +65,9 @@ export function DocumentViewerModal({
 
   // 'loading' until the document reports ready; 'error' if it fails to load.
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  // Object URL for the framed PDF. We fetch the document and frame a blob: URL instead of the
-  // raw URL, because document responses carry X-Frame-Options/frame-ancestors that forbid framing.
-  // A client-side blob has no such headers, and this same path generalises to cross-origin
-  // signed URLs (with CORS) at rollout.
+  // Object URL for the PDF. We fetch the document and hand pdf.js a blob: URL instead of the raw
+  // signed URL: the blob is same-origin (no CORS preflight for the worker fetch) and this same path
+  // generalises to cross-origin signed URLs (with CORS) at rollout.
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
 
   // Reset load status whenever the source or open state changes so a re-open starts clean.
@@ -176,12 +182,10 @@ export function DocumentViewerModal({
                       {status === 'loading' && <LoadingState />}
                       {renderer === 'pdf' ? (
                         pdfBlobUrl && (
-                          <iframe
-                            src={pdfBlobUrl}
-                            title={displayName}
-                            className="h-full w-full border-0 bg-white"
-                            onLoad={() => setStatus('ready')}
-                            onError={() => setStatus('error')}
+                          <PdfDocumentView
+                            fileUrl={pdfBlobUrl}
+                            onLoadSuccess={() => setStatus('ready')}
+                            onLoadError={() => setStatus('error')}
                           />
                         )
                       ) : (

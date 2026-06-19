@@ -1,7 +1,6 @@
-import Header from '@/components/layout/Header';
+import SiteChromeBar from '@/components/layout/SiteChromeBar';
 import Footer from '@/components/layout/Footer';
 import FooterNewsletter from '@/components/sections/FooterNewsletter';
-import BetaBanner from '@/components/layout/BetaBanner';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { AppToaster } from '@/components/ui/AppToaster';
 
@@ -21,8 +20,7 @@ export default function Layout({ children }: LayoutProps) {
       <a href="#main-content" className="absolute -top-[100px] left-0 bg-forest text-bone p-4 z-[10000] transition-[top] duration-300 focus:top-0">
         Skip to main content
       </a>
-      <Header />
-      <BetaBanner />
+      <SiteChromeBar />
       <ScrollToTop />
       <main id="main-content" className="flex-grow">
         {children}

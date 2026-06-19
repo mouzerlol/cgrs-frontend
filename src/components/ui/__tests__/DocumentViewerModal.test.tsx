@@ -2,6 +2,24 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DocumentViewerModal } from '../DocumentViewerModal';
 
+// PdfDocumentView pulls in pdf.js (browser-only globals, no DOMMatrix in jsdom) and is loaded via
+// next/dynamic. Stub it with a lightweight view that reports load success so the modal's
+// fetch → blob → status flow stays testable without rendering real PDF canvas output.
+vi.mock('../PdfDocumentView', async () => {
+  const React = await import('react');
+  function MockPdfDocumentView({
+    fileUrl,
+    onLoadSuccess,
+  }: {
+    fileUrl: string;
+    onLoadSuccess?: () => void;
+  }) {
+    React.useEffect(() => onLoadSuccess?.(), [onLoadSuccess]);
+    return React.createElement('div', { 'data-testid': 'pdf-view', 'data-file': fileUrl }, 'pdf');
+  }
+  return { default: MockPdfDocumentView };
+});
+
 describe('DocumentViewerModal', () => {
   const baseProps = {
     isOpen: true,
@@ -12,7 +30,7 @@ describe('DocumentViewerModal', () => {
   };
 
   beforeEach(() => {
-    // The PDF renderer fetches the document and frames a blob: URL, so stub both.
+    // The PDF renderer fetches the document and renders a blob: URL, so stub both.
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       blob: () => Promise.resolve(new Blob(['%PDF-1.4'], { type: 'application/pdf' })),
@@ -35,12 +53,11 @@ describe('DocumentViewerModal', () => {
     expect(screen.queryByText('Concrete Pad Report.pdf')).not.toBeInTheDocument();
   });
 
-  it('fetches the fileUrl and frames the resulting blob in an iframe', async () => {
+  it('fetches the fileUrl and renders the resulting blob in the PDF view', async () => {
     render(<DocumentViewerModal {...baseProps} onClose={vi.fn()} />);
     expect(global.fetch).toHaveBeenCalledWith('/sample.pdf');
-    const frame = (await screen.findByTitle('Concrete Pad Report.pdf')) as HTMLIFrameElement;
-    expect(frame.tagName).toBe('IFRAME');
-    expect(frame.getAttribute('src')).toBe('blob:mock-pdf');
+    const view = await screen.findByTestId('pdf-view');
+    expect(view.getAttribute('data-file')).toBe('blob:mock-pdf');
   });
 
   it('shows the error state when the document fails to load', async () => {
@@ -57,7 +74,7 @@ describe('DocumentViewerModal', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('shows the unsupported fallback for docx instead of an iframe', () => {
+  it('shows the unsupported fallback for docx instead of the PDF view', () => {
     render(
       <DocumentViewerModal
         {...baseProps}
@@ -67,7 +84,7 @@ describe('DocumentViewerModal', () => {
       />,
     );
     expect(screen.getByText("This file type can't be previewed yet.")).toBeInTheDocument();
-    expect(screen.queryByTitle('minutes.docx')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('pdf-view')).not.toBeInTheDocument();
     // A download action remains available (header + fallback both offer one).
     expect(screen.getAllByText('Download').length).toBeGreaterThan(0);
     // Unsupported types never trigger a fetch.

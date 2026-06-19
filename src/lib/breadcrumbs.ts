@@ -49,12 +49,16 @@ const ROUTE_BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
   '/account/profile': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Profile', href: '/account/profile' }],
   '/account/my-property': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'My Property', href: '/account/my-property' }],
   '/account/reported-issues': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Reported Issues', href: '/account/reported-issues' }],
+  '/account/bookmarks': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Bookmarks', href: '/account/bookmarks' }],
+  '/account/society': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Society', href: '/account/society' }],
   '/admin': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }],
   '/admin/portfolios': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Portfolios', href: '/admin/portfolios' }],
   '/admin/boards': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Boards', href: '/admin/boards' }],
   '/admin/decisions': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Decisions', href: '/admin/decisions' }],
   '/admin/society': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Society', href: '/admin/society' }],
   '/admin/documents': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Documents', href: '/admin/documents' }],
+  '/admin/ground-report': [{ label: 'Home', href: '/' }, { label: 'Administration', href: '/admin' }, { label: 'Ground Report', href: '/admin/ground-report' }],
+  '/account/ground-report': [{ label: 'Home', href: '/' }, { label: 'Account', href: '/account' }, { label: 'Ground Report', href: '/account/ground-report' }],
   '/no-access': [{ label: 'Home', href: '/' }, { label: 'No Access', href: '/no-access' }],
 };
 

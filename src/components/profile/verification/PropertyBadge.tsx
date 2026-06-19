@@ -48,7 +48,7 @@ export default function PropertyBadge({ streetName, streetNumber, verificationTy
       whileHover={prefersReducedMotion ? undefined : { y: -3 }}
       transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }}
       className={cn(
-        'group relative flex flex-col items-center overflow-hidden rounded-card border bg-gradient-to-br p-6 text-center shadow-sm transition-shadow',
+        'group relative flex flex-col items-center overflow-hidden rounded-none border bg-gradient-to-br p-6 text-center shadow-sm transition-shadow',
         'hover:shadow-card-hover',
         accent.frame,
       )}
@@ -56,7 +56,7 @@ export default function PropertyBadge({ streetName, streetNumber, verificationTy
       {/* Crest holding the illustrated house */}
       <div
         className={cn(
-          'relative mb-4 flex h-24 w-24 items-center justify-center rounded-full ring-1',
+          'relative mb-4 flex h-24 w-24 items-center justify-center rounded-none ring-1',
           accent.crest,
         )}
       >
@@ -69,7 +69,7 @@ export default function PropertyBadge({ streetName, streetNumber, verificationTy
       {/* Role chip */}
       <span
         className={cn(
-          'mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium',
+          'mt-3 inline-flex items-center gap-1.5 rounded-none px-3 py-1 text-xs font-medium',
           accent.chip,
         )}
       >

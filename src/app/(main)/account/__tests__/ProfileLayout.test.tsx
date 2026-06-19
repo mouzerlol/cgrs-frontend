@@ -65,9 +65,6 @@ vi.mock('@/components/profile/ProfileSideNav', () => ({
 vi.mock('@/components/profile/ProfileSkeleton', () => ({
   default: () => <div data-testid="profile-skeleton" />,
 }));
-vi.mock('@/components/profile/sections/VerificationSection', () => ({
-  default: () => <div data-testid="verification-section" />,
-}));
 vi.mock('@/components/profile/sections/ProfileDetailsSection', () => ({
   default: () => <div data-testid="details-section" />,
 }));
@@ -124,7 +121,7 @@ describe('ProfileLayout', () => {
     expect(screen.queryByTestId('nested-route-child')).not.toBeInTheDocument();
   });
 
-  it('renders VerificationSection on /account/verification without throwing (Suspense fallback uses Skeleton)', () => {
+  it('does not render a verification tab section — verification now lives in My Property', () => {
     mockPathname.mockReturnValue('/account/verification');
 
     renderWithQueryClient(
@@ -133,6 +130,8 @@ describe('ProfileLayout', () => {
       </ProfileLayout>
     );
 
-    expect(screen.getByTestId('verification-section')).toBeInTheDocument();
+    // No matching tab → the layout renders children (the route page handles the redirect).
+    expect(screen.queryByTestId('verification-section')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('my-property-section')).not.toBeInTheDocument();
   });
 });

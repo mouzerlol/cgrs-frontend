@@ -39,7 +39,7 @@ export default function AddressSelectionForm({ streets, initialVerificationType,
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+    <form onSubmit={handleSubmit} className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
       <h3 className={cn('font-display text-lg mb-4', initialVerificationType === 'owner' ? 'text-forest' : 'text-terracotta')}>
         {initialVerificationType === 'owner' ? 'Owner' : 'Resident'} of your property
       </h3>
@@ -60,7 +60,7 @@ export default function AddressSelectionForm({ streets, initialVerificationType,
               inputMode="numeric"
               pattern="[0-9]*"
               className={cn(
-                'w-full rounded-xl border bg-white px-3 py-3 text-sm text-forest',
+                'w-full rounded-none border bg-white px-3 py-3 text-sm text-forest',
                 'focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/20',
                 'transition-all placeholder:text-forest/30',
               )}
@@ -76,7 +76,7 @@ export default function AddressSelectionForm({ streets, initialVerificationType,
                 value={streetId}
                 onChange={(e) => setStreetId(e.target.value)}
                 className={cn(
-                  'w-full appearance-none rounded-xl border bg-white px-4 py-3 pr-10 text-sm text-forest',
+                  'w-full appearance-none rounded-none border bg-white px-4 py-3 pr-10 text-sm text-forest',
                   'focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/20',
                   'transition-all',
                   !streetId && 'text-forest/50',
@@ -102,7 +102,7 @@ export default function AddressSelectionForm({ streets, initialVerificationType,
         type="submit"
         disabled={!isValid || isSubmitting}
         className={cn(
-          'w-full rounded-xl px-6 py-3 text-sm font-medium transition-all',
+          'w-full rounded-none px-6 py-3 text-sm font-medium transition-all',
           'flex items-center justify-center gap-2',
           isValid && !isSubmitting
             ? 'bg-terracotta text-bone hover:bg-terracotta/90 cursor-pointer'

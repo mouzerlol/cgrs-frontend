@@ -19,4 +19,35 @@ describe('CompactIssueRow', () => {
     expect(link).toHaveAttribute('href', `/account/reported-issues/${id}`);
     expect(screen.getByText('Maintenance')).toBeInTheDocument();
   });
+
+  it('shows the status as a visible inline label (not hover-gated)', () => {
+    render(
+      <CompactIssueRow
+        id="1"
+        title="Broken gate"
+        category="safety"
+        status="in_progress"
+        submittedAt="2025-01-01T00:00:00Z"
+      />
+    );
+
+    // The status word renders directly in the row, readable on touch with no tooltip.
+    expect(screen.getByText('In Progress')).toBeInTheDocument();
+    expect(screen.getByText('Safety')).toBeInTheDocument();
+  });
+
+  it('maps an unknown category to a friendly fallback label', () => {
+    render(
+      <CompactIssueRow
+        id="2"
+        title="Mystery"
+        category="something_unmapped"
+        status="closed"
+        submittedAt="2025-01-01T00:00:00Z"
+      />
+    );
+
+    expect(screen.getByText('Other')).toBeInTheDocument();
+    expect(screen.getByText('Closed')).toBeInTheDocument();
+  });
 });

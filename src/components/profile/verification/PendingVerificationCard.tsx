@@ -44,9 +44,9 @@ export default function PendingVerificationCard({ request, onApprove, onReject }
 
   if (responded) {
     return (
-      <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20 opacity-60">
+      <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20 opacity-60">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sage-light">
+          <div className="flex h-10 w-10 items-center justify-center rounded-none bg-sage-light">
             <Check className="h-5 w-5 text-forest" />
           </div>
           <div>
@@ -61,7 +61,7 @@ export default function PendingVerificationCard({ request, onApprove, onReject }
   }
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm border border-sage/20">
+    <div className="rounded-none bg-white p-6 shadow-sm border border-sage/20">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
@@ -75,7 +75,7 @@ export default function PendingVerificationCard({ request, onApprove, onReject }
         </div>
         <div
           className={cn(
-            'rounded-full px-3 py-1 text-xs font-medium',
+            'rounded-none px-3 py-1 text-xs font-medium',
             request.verification_type === 'resident'
               ? 'bg-terracotta/10 text-terracotta'
               : 'bg-forest/10 text-forest',
@@ -101,7 +101,7 @@ export default function PendingVerificationCard({ request, onApprove, onReject }
           onClick={handleApprove}
           disabled={isApproving || isRejecting}
           className={cn(
-            'flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-medium transition-all',
+            'flex items-center justify-center gap-2 rounded-none px-6 py-4 text-sm font-medium transition-all',
             'bg-forest text-bone hover:bg-forest/90',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
@@ -118,7 +118,7 @@ export default function PendingVerificationCard({ request, onApprove, onReject }
           onClick={handleReject}
           disabled={isApproving || isRejecting}
           className={cn(
-            'flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-medium transition-all',
+            'flex items-center justify-center gap-2 rounded-none px-6 py-4 text-sm font-medium transition-all',
             'bg-terracotta/10 text-terracotta hover:bg-terracotta/20',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}

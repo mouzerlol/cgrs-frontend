@@ -6,9 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { SignInButton, useAuth, useUser, UserAvatar } from '@clerk/nextjs';
 import { SignOutButton } from '@clerk/nextjs';
-import { Settings, LogOut } from 'lucide-react';
+import { Settings, LogOut, X } from 'lucide-react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
+import Wordmark from './Wordmark';
 import NotificationsBell from '@/components/notifications/NotificationsBell';
 import { useNavItems } from '@/hooks/useNavItems';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -18,7 +19,12 @@ import { useEasterEggContext } from './WindyTextContext';
 
 const MANAGEMENT_PATHS = ['/admin', '/management-request'];
 
-export default function Header() {
+interface HeaderProps {
+  /** Reports mobile-menu open/close up to SiteChrome so it can pin the chrome shown. */
+  onMenuOpenChange?: (open: boolean) => void;
+}
+
+export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const isManagementPage = MANAGEMENT_PATHS.some((p) => pathname === p || (pathname ?? '').startsWith(`${p}/`));
@@ -45,6 +51,11 @@ export default function Header() {
     setAfterSignOutUrl(`${o}/login/?redirect_url=${encodeURIComponent(`${o}/`)}`);
   }, []);
 
+  // Report menu state up so SiteChrome keeps the chrome shown while the menu is open.
+  useEffect(() => {
+    onMenuOpenChange?.(isMenuOpen);
+  }, [isMenuOpen, onMenuOpenChange]);
+
   // Server-filtered navigation items for mobile menu
   const mobileNavItems = navData?.items ?? [];
   const mobileMainNav = mobileNavItems.slice(0, 5);
@@ -64,25 +75,26 @@ export default function Header() {
     }
   };
 
+  // Fixed positioning lives on the SiteChrome wrapper; the header is an in-flow child.
+  // `relative z-10` keeps the header (and its dropdowns) stacked above the banner sibling —
+  // the header's backdrop-blur creates a stacking context that would otherwise trap z-50
+  // popovers below the later-painted banner.
   const headerClassName = isManagementPage
-    ? 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest border-b border-white/10 text-bone'
-    : 'fixed top-0 left-0 w-full py-sm px-md md:px-lg flex justify-between items-center z-[1000] bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone';
+    ? 'relative z-10 w-full py-sm px-md md:px-lg flex justify-between items-center bg-forest border-b border-white/10 text-bone'
+    : 'relative z-10 w-full py-sm px-md md:px-lg flex justify-between items-center bg-forest/85 backdrop-blur-[12px] border-b border-white/10 text-bone';
 
   return (
     <header data-site-header className={headerClassName}>
       {/* Logo */}
       <Link
         href="/"
-        className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 lg:pr-24"
+        className="flex items-center shrink-0 pr-8 md:pr-16 lg:pr-24"
         onClick={(e) => {
           closeMenu();
           handleLogoClick(e);
         }}
       >
-        <span className="flex flex-col leading-tight">
-          <span className="block whitespace-nowrap">CORONATION</span>
-          <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
-        </span>
+        <Wordmark className="text-lg md:text-base" />
       </Link>
 
       {/* Desktop Navigation (includes Resident Login on md+) */}
@@ -155,15 +167,21 @@ export default function Header() {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <DialogPanel className="w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 pb-8 min-h-full">
-                  
+                <DialogPanel className="relative w-[85%] max-w-sm bg-forest/[0.98] backdrop-blur-xl flex flex-col pt-[min(20vh,6rem)] px-8 pb-8 min-h-full">
+
+                  {/* Mobile: Close button */}
+                  <button
+                    type="button"
+                    onClick={closeMenu}
+                    aria-label="Close menu"
+                    className="absolute top-5 left-5 inline-flex h-10 w-10 items-center justify-center rounded text-bone/90 transition-colors hover:bg-forest-light hover:text-bone focus:outline-none focus-visible:ring-2 focus-visible:ring-bone/70"
+                  >
+                    <X className="h-5 w-5" aria-hidden="true" />
+                  </button>
+
                   {/* Mobile: Logo */}
                   <Link href="/" onClick={closeMenu} className="mb-10">
-                    <span className="flex flex-col text-bone">
-                      <span className="block whitespace-nowrap font-display text-3xl">CORONATION</span>
-                      <span className="block whitespace-nowrap text-[1.15em] tracking-wider">GARDENS</span>
-                      <span className="text-xs tracking-widest text-bone/50 mt-1">Residents Society</span>
-                    </span>
+                    <Wordmark className="text-3xl" subtitle />
                   </Link>
 
                   {/* Mobile: Navigation Items - ALL CAPS for consistency (role-filtered) */}

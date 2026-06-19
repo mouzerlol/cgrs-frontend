@@ -112,3 +112,30 @@ export interface SocietyDocumentDownloadUrlResponse {
   download_url: string;
   expires_in_seconds: number;
 }
+
+/**
+ * Member-facing document metadata (owners-and-up). Leaner than
+ * SocietyDocumentResponse: no storage key, source, or sync fields.
+ */
+export interface VisibleSocietyDocument {
+  id: string;
+  title: string;
+  description: string | null;
+  display_name: string;
+  content_type: string;
+  size_bytes: number;
+  visibility: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VisibleSocietyCategoryGroup {
+  id: string;
+  label: string;
+  documents: VisibleSocietyDocument[];
+}
+
+/** Response of `GET /society-documents:visible` — visible categories, grouped. */
+export interface VisibleSocietyDocumentsResponse {
+  categories: VisibleSocietyCategoryGroup[];
+}

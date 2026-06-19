@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Bookmark, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
+import AccountSectionHeading from '@/components/profile/AccountSectionHeading';
 import ThreadList from '@/components/discussions/ThreadList';
 import ThreadCardSkeleton from '@/components/discussions/skeletons/ThreadCardSkeleton';
 import EmptyState from '@/components/ui/EmptyState';
@@ -73,23 +74,26 @@ export default function BookmarksSection() {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-6 lg:pl-8 lg:[&>*:first-child]:-ml-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header with icon */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/10">
-          <Bookmark className="h-6 w-6 text-forest" />
-        </div>
-        <div>
-          <h2 className="font-display text-2xl text-forest">Saved Threads</h2>
-          <p className="text-sm text-forest/60">
-            Threads you have bookmarked for later reference.
-          </p>
-        </div>
-      </div>
+      <AccountSectionHeading
+        eyebrow="Bookmarks"
+        title="Saved Threads"
+        subtitle="Threads you have bookmarked for later reference."
+        icon={Bookmark}
+        action={
+          <Link
+            href="/discussion"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Latest Discussion
+          </Link>
+        }
+      />
 
       {/* Thread list or empty state */}
       {threads.length > 0 ? (

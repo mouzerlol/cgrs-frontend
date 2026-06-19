@@ -31,7 +31,7 @@ export default function VerificationHistory() {
     return (
       <section>
         <h3 className="font-display text-lg text-forest mb-4">Verification History</h3>
-        <div className="rounded-2xl bg-white p-4 shadow-sm border border-sage/20">
+        <div className="rounded-none bg-white p-4 shadow-sm border border-sage/20">
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-sage" />
           </div>
@@ -59,12 +59,12 @@ export default function VerificationHistory() {
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm border border-sage/10"
+              className="flex items-center justify-between rounded-none bg-white px-4 py-3 shadow-sm border border-sage/10"
             >
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    'flex h-8 w-8 items-center justify-center rounded-full',
+                    'flex h-8 w-8 items-center justify-center rounded-none',
                     item.outcome === 'success'
                       ? 'bg-forest/10'
                       : item.outcome === 'rejected'
@@ -95,7 +95,7 @@ export default function VerificationHistory() {
               <div className="text-right">
                 <span
                   className={cn(
-                    'rounded-full px-2 py-0.5 text-xs font-medium',
+                    'rounded-none px-2 py-0.5 text-xs font-medium',
                     item.outcome === 'success'
                       ? 'bg-forest/10 text-forest'
                       : item.outcome === 'rejected'

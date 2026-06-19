@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, FileText, Landmark, LayoutGrid, ClipboardList, Scale, ScrollText, ShieldCheck, Users } from 'lucide-react';
+import { Building2, FileText, Landmark, LayoutGrid, ClipboardList, MapPinned, Scale, ScrollText, ShieldCheck, Users } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -110,6 +110,15 @@ const documentsFeature: HubFeature = {
   color: 'sage',
 };
 
+const groundReportFeature: HubFeature = {
+  id: 'ground-report',
+  name: 'Ground Report',
+  description: 'Author location-tagged photo reports of the development, by zone, for members to view',
+  icon: MapPinned,
+  href: '/admin/ground-report',
+  color: 'terracotta',
+};
+
 const colorMap = {
   forest: {
     bg: 'bg-forest/5',
@@ -156,7 +165,7 @@ export default function WorkManagementHub() {
     ...baseFeatures,
     ...(isReviewer ? [verificationsFeature, propertiesFeature] : []),
     ...(isSuperadmin ? [signaturesFeature] : []),
-    ...(canEditSociety ? [societyFeature, documentsFeature] : []),
+    ...(canEditSociety ? [societyFeature, documentsFeature, groundReportFeature] : []),
   ];
 
   return (

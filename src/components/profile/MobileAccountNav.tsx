@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 import ProfileSideNav from './ProfileSideNav';
+import type { CurrentUserResponse } from '@/hooks/useCurrentUser';
 
 interface MobileAccountNavProps {
   open: boolean;
@@ -12,6 +13,10 @@ interface MobileAccountNavProps {
   onCategoryChange: (id: string) => void;
   hasPendingVerification: boolean;
   canViewSociety: boolean;
+  canViewGroundReport?: boolean;
+  user?: CurrentUserResponse['user'];
+  membership?: CurrentUserResponse['membership'];
+  clerkFallback?: { firstName?: string; lastName?: string; imageUrl?: string; email?: string };
 }
 
 /**
@@ -28,6 +33,10 @@ export default function MobileAccountNav({
   onCategoryChange,
   hasPendingVerification,
   canViewSociety,
+  canViewGroundReport = false,
+  user,
+  membership,
+  clerkFallback,
 }: MobileAccountNavProps) {
   const prefersReducedMotion = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -125,6 +134,10 @@ export default function MobileAccountNav({
                 onNavigate={onClose}
                 hasPendingVerification={hasPendingVerification}
                 canViewSociety={canViewSociety}
+                canViewGroundReport={canViewGroundReport}
+                user={user}
+                membership={membership}
+                clerkFallback={clerkFallback}
               />
             </div>
           </motion.div>

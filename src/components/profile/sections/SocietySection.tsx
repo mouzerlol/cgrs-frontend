@@ -17,6 +17,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Building2, ChevronDown, ExternalLink } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
+import AccountSectionHeading from '@/components/profile/AccountSectionHeading';
 import { useSocietyRecordQuery } from '@/hooks/useSociety';
 import type { SocietyRecordResponse } from '@/lib/api/society';
 import { cn } from '@/lib/utils';
@@ -38,17 +39,26 @@ function formatStatus(value: string): string {
 export default function SocietySection() {
   const { data: record, isLoading, error } = useSocietyRecordQuery();
 
-  if (isLoading) return <LoadingFold />;
+  return (
+    <div className="space-y-6 lg:pl-8 lg:[&>*:first-child]:-ml-8">
+      <AccountSectionHeading
+        eyebrow="Governance"
+        title="Society"
+        subtitle="The incorporated society on the public record."
+        icon={Building2}
+      />
 
-  if (error || !record) {
-    return (
-      <div className="rounded-card border border-terracotta/20 bg-terracotta/10 p-6 text-center">
-        <p className="text-sm text-terracotta">We couldn&apos;t load the society record. Please try again.</p>
-      </div>
-    );
-  }
-
-  return <SocietyFold record={record} />;
+      {isLoading ? (
+        <LoadingFold />
+      ) : error || !record ? (
+        <div className="rounded-none border border-terracotta/20 bg-terracotta/10 p-6 text-center">
+          <p className="text-sm text-terracotta">We couldn&apos;t load the society record. Please try again.</p>
+        </div>
+      ) : (
+        <SocietyFold record={record} />
+      )}
+    </div>
+  );
 }
 
 function SocietyFold({ record }: { record: SocietyRecordResponse }) {
@@ -60,15 +70,15 @@ function SocietyFold({ record }: { record: SocietyRecordResponse }) {
       {({ open }) => (
         <div
           className={cn(
-            'overflow-hidden rounded-card border bg-white transition-[border-color,box-shadow,transform] duration-[400ms] ease-out',
+            'overflow-hidden rounded-none border bg-white transition-[border-color,box-shadow] duration-[400ms] ease-out',
             open
-              ? 'border-sage/40 shadow-[0_20px_40px_rgba(26,34,24,0.10)]'
-              : 'border-sage/20 hover:-translate-y-1 hover:border-sage/40 hover:shadow-[0_20px_40px_rgba(26,34,24,0.12)]',
+              ? 'border-sage/45 shadow-[0_12px_30px_rgba(26,34,24,0.09)]'
+              : 'border-sage/25 hover:border-forest/30 hover:shadow-[0_8px_22px_rgba(26,34,24,0.08)]',
           )}
         >
           <DisclosureButton className="group flex w-full items-center gap-4 px-5 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-6">
             <span
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-forest/[0.07] text-forest transition-colors duration-300 group-hover:bg-forest/10"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-none bg-forest/[0.07] text-forest transition-colors duration-300 group-hover:bg-forest/10"
               aria-hidden="true"
             >
               <Building2 className="h-6 w-6" />
@@ -94,7 +104,7 @@ function SocietyFold({ record }: { record: SocietyRecordResponse }) {
               ) : null}
               <span
                 className={cn(
-                  'flex h-9 w-9 items-center justify-center rounded-full border border-sage/25 text-forest/55',
+                  'flex h-9 w-9 items-center justify-center rounded-none border border-sage/25 text-forest/55',
                   'transition-[transform,background-color,color,border-color] duration-300 ease-out',
                   'group-hover:border-sage/45 group-hover:bg-sage-light/50 group-hover:text-forest',
                   open && 'rotate-180',
@@ -213,7 +223,7 @@ function StatusTag({ status, className }: { status: string; className?: string }
     <span
       role="status"
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full bg-sage-light px-2.5 py-0.5',
+        'inline-flex items-center gap-1.5 rounded-none border border-sage/40 bg-sage-light px-2.5 py-0.5',
         'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-forest',
         className,
       )}
@@ -226,15 +236,15 @@ function StatusTag({ status, className }: { status: string; className?: string }
 
 function LoadingFold() {
   return (
-    <div className="overflow-hidden rounded-card border border-sage/20 bg-white">
+    <div className="overflow-hidden rounded-none border border-sage/25 bg-white">
       <div className="flex items-center gap-4 px-5 py-5 sm:px-6">
-        <Skeleton className="h-12 w-12 shrink-0 rounded-xl" />
+        <Skeleton className="h-12 w-12 shrink-0 rounded-none" />
         <div className="flex-1 space-y-2">
           <Skeleton className="h-3 w-32" />
           <Skeleton className="h-5 w-24" />
           <Skeleton className="h-3 w-56" />
         </div>
-        <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+        <Skeleton className="h-9 w-9 shrink-0 rounded-none" />
       </div>
     </div>
   );

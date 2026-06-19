@@ -173,4 +173,22 @@ describe('ThreadEditModal', () => {
       expect(screen.getByText('Poll')).toBeInTheDocument();
     });
   });
+
+  describe('Poll Removal', () => {
+    it('sends removePoll without pollOptions when poll is removed', async () => {
+      const user = userEvent.setup();
+      const onSave = vi.fn().mockResolvedValue(undefined);
+      const threadWithPoll = { ...mockThread, poll: mockPoll };
+      render(<ThreadEditModal {...defaultProps} thread={threadWithPoll} onSave={onSave} />);
+
+      await user.click(screen.getByRole('button', { name: /remove poll/i }));
+      await user.click(screen.getByRole('button', { name: /^save$/i }));
+
+      expect(onSave).toHaveBeenCalledTimes(1);
+      const payload = onSave.mock.calls[0][0];
+      expect(payload.removePoll).toBe(true);
+      // Must NOT also send poll options, or the API recreates the poll.
+      expect(payload.pollOptions).toBeUndefined();
+    });
+  });
 });

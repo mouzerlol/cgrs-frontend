@@ -3,26 +3,34 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@clerk/nextjs';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   AlertTriangle,
   ArrowRight,
   Building2,
+  ChevronDown,
   Clock,
-  Home,
   Loader2,
+  Plus,
   ShieldCheck,
   X,
 } from 'lucide-react';
-import { useMyPropertiesQuery, useInvalidateProfileData } from '@/hooks/useProfileData';
+import {
+  useMyPropertiesQuery,
+  usePendingVerificationsQuery,
+  useInvalidateProfileData,
+} from '@/hooks/useProfileData';
 import { withdrawVerificationRequest } from '@/lib/api/verification';
 import { resolvePropertyCoordinates } from '@/lib/property-locator';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
+import AccountSectionHeading from '@/components/profile/AccountSectionHeading';
+import VerificationAccordion from '@/components/profile/verification/VerificationAccordion';
 import PropertyMap from './PropertyMap';
 import CoMembersWidget from './CoMembersWidget';
 
 const SOCIETY_NAME = "Coronation Gardens Residents' Society";
+const EASE_OUT: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
 
 /** A confident, plain-spoken line describing how the user relates to a property. */
 function relationshipLine(type: string, coMemberCount: number): string {
@@ -36,18 +44,122 @@ function relationshipLine(type: string, coMemberCount: number): string {
     : `You're one of ${total} residents here.`;
 }
 
-function SectionHeader() {
+function SectionHeader({ action }: { action?: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-forest/10">
-        <Building2 className="h-6 w-6 text-forest" />
-      </div>
-      <div>
-        <h2 className="font-display text-2xl text-forest">My Property</h2>
-        <p className="text-sm text-forest/60">
-          Your investment into the neighbourhood
-        </p>
-      </div>
+    <AccountSectionHeading
+      eyebrow="Membership"
+      title="My Property"
+      subtitle="Your stake in the neighbourhood, on the record."
+      icon={Building2}
+      action={action}
+    />
+  );
+}
+
+/** Amber when the resident has an outstanding verification action, sage once settled. */
+function VerificationTag({ needsAction, className }: { needsAction: boolean; className?: string }) {
+  return (
+    <span
+      role="status"
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-none border px-2.5 py-0.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em]',
+        needsAction ? 'border-amber/40 bg-amber/10 text-amber-dark' : 'border-sage/40 bg-sage-light text-forest',
+        className,
+      )}
+    >
+      <span
+        className={cn('h-1.5 w-1.5 rounded-full', needsAction ? 'bg-amber' : 'bg-sage')}
+        aria-hidden="true"
+      />
+      {needsAction ? 'Action needed' : 'Verified'}
+    </span>
+  );
+}
+
+/**
+ * A folded record for verification, styled as a sibling to the Society fold: a calm
+ * masthead row (icon, eyebrow, title, status tag, rotating chevron) that unfolds into
+ * the verification surface. Controlled so the heading CTA can open it.
+ */
+function VerificationFold({
+  open,
+  onToggle,
+  needsAction,
+  children,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  needsAction: boolean;
+  children: React.ReactNode;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  return (
+    <div
+      className={cn(
+        'overflow-hidden rounded-none border bg-white transition-[border-color,box-shadow] duration-[400ms] ease-out',
+        open
+          ? 'border-sage/45 shadow-[0_12px_30px_rgba(26,34,24,0.09)]'
+          : 'border-sage/25 hover:border-forest/30 hover:shadow-[0_8px_22px_rgba(26,34,24,0.08)]',
+      )}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls="verification-fold-panel"
+        className="group flex w-full items-center gap-4 px-5 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-6"
+      >
+        <span
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-none bg-forest/[0.07] text-forest transition-colors duration-300 group-hover:bg-forest/10"
+          aria-hidden="true"
+        >
+          <ShieldCheck className="h-6 w-6" />
+        </span>
+
+        <span className="min-w-0 flex-1">
+          <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-forest/45">
+            Membership
+          </span>
+          <span className="mt-1 block font-display text-base leading-snug text-forest sm:text-lg">
+            Verification
+          </span>
+        </span>
+
+        <span className="ml-auto flex shrink-0 items-center gap-3">
+          <VerificationTag needsAction={needsAction} className="hidden sm:inline-flex" />
+          <span
+            className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-none border border-sage/25 text-forest/55',
+              'transition-[transform,background-color,color,border-color] duration-300 ease-out',
+              'group-hover:border-sage/45 group-hover:bg-sage-light/50 group-hover:text-forest',
+              open && 'rotate-180',
+            )}
+            aria-hidden="true"
+          >
+            <ChevronDown className="h-4 w-4" />
+          </span>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            key="verification-panel"
+            initial={prefersReducedMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.42, ease: EASE_OUT }}
+            className="overflow-hidden"
+          >
+            <div
+              id="verification-fold-panel"
+              className="border-t border-sage/15 px-5 pb-6 pt-5 sm:px-6"
+            >
+              {children}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }
@@ -56,8 +168,13 @@ export default function MyPropertySection() {
   const { getToken } = useAuth();
   const prefersReducedMotion = useReducedMotion();
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+  // Verification fold: null = follow the auto-open heuristic; true/false = user override.
+  const [verifyOpenOverride, setVerifyOpenOverride] = useState<boolean | null>(null);
+  // "Verify another property" reveal, driven by the heading CTA, rendered in the fold.
+  const [showVerifyForm, setShowVerifyForm] = useState(false);
 
   const { data, isLoading, error } = useMyPropertiesQuery();
+  const { data: pendingVerifications } = usePendingVerificationsQuery();
   const { invalidateMyProperties } = useInvalidateProfileData();
 
   async function handleWithdraw(requestId: string) {
@@ -97,7 +214,7 @@ export default function MyPropertySection() {
 
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 lg:pl-8 lg:[&>*:first-child]:-ml-8">
         <SectionHeader />
         <div className="border border-terracotta/30 bg-terracotta/10 p-6 text-center">
           <div className="mb-3 flex justify-center">
@@ -116,38 +233,40 @@ export default function MyPropertySection() {
   const hasVerifiedProperties = verifiedProperties.length > 0;
   const hasPendingRequests = pendingRequests.length > 0;
   const multipleProperties = verifiedProperties.length > 1;
+  const pendingResponses = pendingVerifications?.pending_responses ?? [];
 
-  if (!hasVerifiedProperties && !hasPendingRequests) {
-    return (
-      <div className="space-y-6">
-        <SectionHeader />
-        <div className="bg-white p-6 shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-sage/10">
-              <Home className="h-6 w-6 text-sage" />
-            </div>
-            <div>
-              <h3 className="mb-1 font-display text-lg text-forest">No Verified Properties</h3>
-              <p className="text-sm text-forest/70">
-                Go to{' '}
-                <Link
-                  href="/account/verification"
-                  className="font-medium text-terracotta hover:underline"
-                >
-                  Verification
-                </Link>{' '}
-                to verify your property.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  // The verification accordion opens on first paint whenever the resident has an
+  // outstanding action: nothing verified yet, a request of their own in flight, or
+  // a neighbour's request awaiting their response. Otherwise it stays collapsed.
+  const verificationNeedsAction =
+    !hasVerifiedProperties || hasPendingRequests || pendingResponses.length > 0;
+
+  // Re-entry CTA gate (one-in-flight, design D3): only when verified and nothing pending.
+  const showVerifyAnotherButton = hasVerifiedProperties && !hasPendingRequests;
+  // Auto-open when action is needed, unless the user has manually toggled the fold.
+  const verifyOpen = verifyOpenOverride ?? verificationNeedsAction;
+
+  function handleVerifyAnother() {
+    setShowVerifyForm(true);
+    setVerifyOpenOverride(true);
   }
 
   return (
-    <div className="space-y-8">
-      <SectionHeader />
+    <div className="space-y-8 lg:pl-8 lg:[&>*:first-child]:-ml-8">
+      <SectionHeader
+        action={
+          showVerifyAnotherButton && !showVerifyForm ? (
+            <button
+              type="button"
+              onClick={handleVerifyAnother}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+            >
+              <Plus className="w-4 h-4" />
+              Verify another property
+            </button>
+          ) : null
+        }
+      />
 
       {/* One record per property, stacked. */}
       <div className="space-y-8">
@@ -275,11 +394,24 @@ export default function MyPropertySection() {
         </section>
       )}
 
+      {/* Verification lives here now — a folded record of how you prove and manage
+          your tie to the property above. Auto-opens when action is needed. */}
+      <VerificationFold
+        open={verifyOpen}
+        onToggle={() => setVerifyOpenOverride(!verifyOpen)}
+        needsAction={verificationNeedsAction}
+      >
+        <VerificationAccordion
+          showVerifyForm={showVerifyForm}
+          onCloseVerifyForm={() => setShowVerifyForm(false)}
+        />
+      </VerificationFold>
+
       {/* Civic footer: the shared rules that bind every property above. Shown once. */}
       {hasVerifiedProperties && (
-        <aside className="bg-forest p-6 text-bone sm:p-8">
+        <aside className="rounded-xl bg-forest p-6 text-bone sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center bg-bone/10">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-bone/10">
               <ShieldCheck className="h-5 w-5 text-bone" aria-hidden="true" />
             </div>
             <div className="space-y-3">
@@ -289,7 +421,7 @@ export default function MyPropertySection() {
                 everyone safe and happy.
               </p>
               <Link
-                href="/rules"
+                href="/guidelines"
                 className="group inline-flex items-center gap-1.5 text-sm font-semibold text-amber transition-colors hover:text-bone"
               >
                 Read the rules

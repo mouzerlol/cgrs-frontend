@@ -72,7 +72,7 @@ export default function BlogListing({ articles }: BlogListingProps) {
 
   return (
     <div>
-      <div className="sticky top-[72px] z-40 bg-bone/95 backdrop-blur-sm py-4 border-b border-sage/20">
+      <div className="sticky top-[var(--chrome-offset,72px)] z-40 bg-bone/95 backdrop-blur-sm py-4 border-b border-sage/20">
         <div className="container">
           <CategoryFilter
             activeCategory={activeCategory}

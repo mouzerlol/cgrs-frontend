@@ -40,6 +40,12 @@ vi.mock('@/components/ui/Skeleton', () => ({
   ),
 }));
 
+// The verification surface lives in an accordion at the bottom of My Property now.
+// Stub it so these tests stay focused on the property record itself.
+vi.mock('@/components/profile/verification/VerificationAccordion', () => ({
+  default: () => <div data-testid="verification-accordion" />,
+}));
+
 const mockVerifiedProperties = [
   {
     property_id: 'prop-1',
@@ -74,9 +80,11 @@ const mockPendingRequests = [
 ];
 
 const mockUseMyPropertiesQuery = vi.fn();
+const mockUsePendingVerificationsQuery = vi.fn(() => ({ data: { pending_responses: [] } }));
 
 vi.mock('@/hooks/useProfileData', () => ({
   useMyPropertiesQuery: () => mockUseMyPropertiesQuery(),
+  usePendingVerificationsQuery: () => mockUsePendingVerificationsQuery(),
   useInvalidateProfileData: vi.fn(() => ({
     invalidateMyProperties: vi.fn(),
   })),
@@ -114,7 +122,7 @@ describe('MyPropertySection', () => {
   });
 
   describe('Empty state', () => {
-    it('shows no verified properties message', () => {
+    it('surfaces the verification accordion as the primary action when nothing is verified', () => {
       mockUseMyPropertiesQuery.mockReturnValue({
         data: { verified_properties: [], pending_requests: [] },
         isLoading: false,
@@ -122,7 +130,9 @@ describe('MyPropertySection', () => {
       });
 
       render(<MyPropertySection />, { wrapper: createWrapper() });
-      expect(screen.getByText(/no verified properties/i)).toBeInTheDocument();
+      // No standalone "No Verified Properties" card anymore — verification lives inline.
+      expect(screen.queryByText(/no verified properties/i)).not.toBeInTheDocument();
+      expect(screen.getByTestId('verification-accordion')).toBeInTheDocument();
     });
   });
 
@@ -169,7 +179,7 @@ describe('MyPropertySection', () => {
     it('renders the society rules link', () => {
       render(<MyPropertySection />, { wrapper: createWrapper() });
       const rulesLink = screen.getByRole('link', { name: /read the rules/i });
-      expect(rulesLink).toHaveAttribute('href', '/rules');
+      expect(rulesLink).toHaveAttribute('href', '/guidelines');
     });
 
     it('renders the address as a heading', () => {

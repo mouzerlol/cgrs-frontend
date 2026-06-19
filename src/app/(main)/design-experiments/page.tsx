@@ -9,6 +9,8 @@ import QuickAccessCard from '@/components/ui/QuickAccessCard';
 import NewsCard from '@/components/ui/NewsCard';
 import CalendarCard from '@/components/ui/CalendarCard';
 import GoalMeterExperiments from '@/components/experiments/GoalMeterExperiments';
+import HeadingExperiments from '@/components/experiments/HeadingExperiments';
+import NavCardExperiments from '@/components/experiments/NavCardExperiments';
 import { ColdStartBanner } from '@/components/layout/ColdStartBanner';
 import type { ColdStartPhase } from '@/hooks/useColdStartDetection';
 import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
@@ -90,6 +92,8 @@ export default function DesignExperimentsPage() {
               { id: 'original-home', label: 'Original Home Cards' },
               { id: 'goal-meters', label: 'Goal Meter Experiments' },
               { id: 'cold-start-banner', label: 'Cold-Start Banner' },
+              { id: 'account-headings', label: 'Account Headings' },
+              { id: 'nav-identity-card', label: 'Nav Identity Card' },
             ].map((tab) => (
               <Tab
                 key={tab.id}
@@ -281,6 +285,16 @@ export default function DesignExperimentsPage() {
             {/* Cold-Start Banner Panel */}
             <Tab.Panel>
               <ColdStartBannerShowcase />
+            </Tab.Panel>
+
+            {/* Account Headings Panel */}
+            <Tab.Panel>
+              <HeadingExperiments />
+            </Tab.Panel>
+
+            {/* Nav Identity Card Panel */}
+            <Tab.Panel>
+              <NavCardExperiments />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
