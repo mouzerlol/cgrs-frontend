@@ -29,11 +29,6 @@ vi.mock('@clerk/nextjs', () => ({
   SignInButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-// Mock notifications
-vi.mock('@/components/notifications/NotificationsBell', () => ({
-  default: () => <div data-testid="notifications-bell">Bell</div>,
-}));
-
 // Mock ClerkAppUserButton
 vi.mock('@/components/layout/ClerkAppUserButton', () => ({
   default: () => <div data-testid="user-button">User</div>,

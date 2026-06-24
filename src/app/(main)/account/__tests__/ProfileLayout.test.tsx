@@ -43,11 +43,6 @@ vi.mock('@/hooks/useProfileData', () => ({
   useVerificationStatusQuery: () => ({ data: { has_pending_request: false } }),
 }));
 
-vi.mock('@/hooks/useNotifications', () => ({
-  useUnreadCount: () => ({ data: { total: 0, by_section: [] } }),
-  useNotifications: () => ({ data: null, isLoading: false }),
-}));
-
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,

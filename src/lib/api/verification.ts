@@ -90,10 +90,6 @@ export interface VerificationHistoryItem {
   created_at: string;
 }
 
-export interface NotificationCountResponse {
-  count: number;
-}
-
 export interface VerificationStatusResponse {
   is_verified: boolean;
   role: string | null;
@@ -204,12 +200,6 @@ export async function getVerificationHistory(
   getToken: () => Promise<string | null>,
 ): Promise<VerificationHistoryItem[]> {
   return apiRequest<VerificationHistoryItem[]>(`${API_PATH}/verification/history`, getToken);
-}
-
-export async function getNotificationCount(
-  getToken: () => Promise<string | null>,
-): Promise<NotificationCountResponse> {
-  return apiRequest<NotificationCountResponse>(`${API_PATH}/verification/notifications/count`, getToken);
 }
 
 export async function getVerificationStatus(

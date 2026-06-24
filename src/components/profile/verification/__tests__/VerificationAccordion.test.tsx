@@ -21,15 +21,6 @@ vi.mock('@clerk/nextjs', () => ({
   }),
 }));
 
-vi.mock('next/navigation', () => ({
-  useSearchParams: () => ({ get: () => null }),
-}));
-
-const markReadMutate = vi.fn();
-vi.mock('@/hooks/useNotifications', () => ({
-  useMarkRead: () => ({ mutate: markReadMutate }),
-}));
-
 const createVerificationRequest = vi.fn((..._args: unknown[]) =>
   Promise.resolve({
     verification_method: 'peer',
