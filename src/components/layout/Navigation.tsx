@@ -7,7 +7,6 @@ import { SignInButton, useAuth } from '@clerk/nextjs';
 import { useQueryClient } from '@tanstack/react-query';
 import ClerkAppUserButton from '@/components/layout/ClerkAppUserButton';
 import { siteHeaderDropdownSurface } from '@/components/layout/siteChrome';
-import NotificationsBell from '@/components/notifications/NotificationsBell';
 import Icon, { IconName } from '@/components/ui/Icon';
 import { useNavItems } from '@/hooks/useNavItems';
 import { prefetchDiscussionCore } from '@/lib/discussion-prefetch';
@@ -193,11 +192,7 @@ export default function Navigation() {
 
         <div ref={authSlotRef} className="flex items-center shrink-0">
           {isLoaded && lastSignedIn ? (
-            <>
-              <NotificationsBell />
-              <span className="mx-1 shrink-0" aria-hidden />
-              <ClerkAppUserButton />
-            </>
+            <ClerkAppUserButton />
           ) : (
             <SignInButton mode="redirect">
               <span

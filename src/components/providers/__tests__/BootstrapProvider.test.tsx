@@ -50,7 +50,6 @@ describe('BootstrapProvider — isBootstrapReady', () => {
       user: MOCK_USER as never,
       community: null,
       feature_flags: null,
-      unread_count: null,
     });
 
     render(<ReadyProbe />, { wrapper: Wrapper });

@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, Suspense, useEffect, useRef } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth, useUser, SignInButton } from '@clerk/nextjs';
-import { useQueryClient } from '@tanstack/react-query';
 import { Menu } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useCurrentUserQuery, useVerificationStatusQuery } from '@/hooks/useProfileData';
-import { useUnreadCount, markReadWithoutHook } from '@/hooks/useNotifications';
 import ProfileSkeleton from '@/components/profile/ProfileSkeleton';
 import ProfileSideNav from '@/components/profile/ProfileSideNav';
 import ProfileIdentityCard from '@/components/profile/ProfileIdentityCard';
@@ -24,21 +22,6 @@ import { isReportedIssueDetailPath, isSquareAccountTab } from '@/lib/account-rou
 import { canViewSocietyRecord, canViewGroundReport } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
-function NotificationReadHandler({ queryClient, getToken }: { queryClient: ReturnType<typeof useQueryClient>; getToken: () => Promise<string | null> }) {
-  const searchParams = useSearchParams();
-  const processedRef = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    const notificationId = searchParams.get('notification_id');
-    if (notificationId && !processedRef.current.has(notificationId)) {
-      processedRef.current.add(notificationId);
-      markReadWithoutHook(getToken, queryClient, notificationId);
-    }
-  }, [searchParams, queryClient, getToken]);
-
-  return null;
-}
-
 const TAB_ITEMS = [
   { id: 'details', href: '/account/profile', label: 'Profile Details' },
   { id: 'my-property', href: '/account/my-property', label: 'My Property' },
@@ -51,11 +34,10 @@ const TAB_ITEMS = [
 type TabId = (typeof TAB_ITEMS)[number]['id'];
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
-  const { isSignedIn, isLoaded, getToken } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const { user: clerkUser } = useUser();
   const pathname = usePathname();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTabSwitching, setIsTabSwitching] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -63,10 +45,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   // Fetch all profile data at layout level (shared across all sections)
   const { data: userData, isLoading: isUserLoading, error: userError } = useCurrentUserQuery();
   const { data: verificationStatus } = useVerificationStatusQuery();
-  const { data: unreadCountData } = useUnreadCount();
-  const unreadForVerification = unreadCountData?.by_section.find((s) => s.section === 'profile_verification')?.count ?? 0;
-  // Show dot if there are unread notifications OR if there's a pending request that hasn't been synced yet
-  const hasPendingVerification = unreadForVerification > 0 || (verificationStatus?.has_pending_request ?? false);
 
   const clerkFallback = clerkUser
     ? {
@@ -169,11 +147,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   return (
     <section className="section bg-bone">
       <div className="container max-w-5xl">
-        {/* Handle notification deep links - must be in Suspense for static generation */}
-        <Suspense fallback={null}>
-          <NotificationReadHandler queryClient={queryClient} getToken={getToken} />
-        </Suspense>
-
         {breadcrumbStrip}
 
         {/* Mobile slide-in navigation drawer (hidden ≥lg where the sidebar shows).

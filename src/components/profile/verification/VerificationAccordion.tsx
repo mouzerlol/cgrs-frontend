@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, Home, Building2, X } from 'lucide-react';
@@ -14,7 +13,6 @@ import {
   useInvalidateProfileData,
 } from '@/hooks/useProfileData';
 import { lookupAddress, createVerificationRequest } from '@/lib/api/verification';
-import { useMarkRead } from '@/hooks/useNotifications';
 import AddressSelectionForm from '@/components/profile/verification/AddressSelectionForm';
 import PendingVerificationCard from '@/components/profile/verification/PendingVerificationCard';
 import VerificationStatus from '@/components/profile/verification/VerificationStatus';
@@ -40,25 +38,6 @@ export default function VerificationAccordion({
   onCloseVerifyForm,
 }: VerificationAccordionProps) {
   const { getToken } = useAuth();
-  const searchParams = useSearchParams();
-  const markRead = useMarkRead();
-
-  const notificationId = searchParams.get('notification_id');
-
-  useEffect(() => {
-    if (notificationId) {
-      markRead.mutate(
-        { notification_ids: [notificationId] },
-        {
-          onSuccess: () => {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('notification_id');
-            window.history.replaceState({}, '', url.pathname);
-          },
-        },
-      );
-    }
-  }, [notificationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [selectedCard, setSelectedCard] = useState<'resident' | 'owner' | null>(null);
   const [error, setError] = useState<string | null>(null);

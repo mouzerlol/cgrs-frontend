@@ -10,7 +10,6 @@ import { Settings, LogOut, X } from 'lucide-react';
 import Icon from '@/components/ui/Icon';
 import Navigation from './Navigation';
 import Wordmark from './Wordmark';
-import NotificationsBell from '@/components/notifications/NotificationsBell';
 import { useNavItems } from '@/hooks/useNavItems';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useCommunity } from '@/hooks/useCommunity';
@@ -102,9 +101,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
 
       {/* Mobile: Resident Login visible in header so it's discoverable without opening menu */}
       <div className="md:hidden flex items-center gap-2 shrink-0">
-        {isLoaded && lastSignedIn ? (
-          <NotificationsBell />
-        ) : (
+        {isLoaded && !lastSignedIn && (
           <SignInButton mode="redirect">
             <button
               type="button"
