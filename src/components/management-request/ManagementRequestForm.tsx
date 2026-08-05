@@ -294,7 +294,15 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
   );
 
   const handleSubmitAnother = useCallback(() => {
-    setFormData(getInitialFormData());
+    // Reset to a blank request, but keep the signed-in user's contact details
+    // prefilled — the prefill effect won't re-run here (isSignedIn/user are
+    // unchanged), so seed name/email directly.
+    const fresh = getInitialFormData();
+    if (isSignedIn && user) {
+      fresh.full_name = user.fullName || fresh.full_name;
+      fresh.email = user.primaryEmailAddress?.emailAddress || fresh.email;
+    }
+    setFormData(fresh);
     setErrors({});
     setIsSubmitted(false);
     setSubmittedId(null);
@@ -302,7 +310,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
     setCaptchaToken(null);
     // Scroll to top of page when starting a new request
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [isSignedIn, user]);
 
   // Clear stored data and auth param after successful submission
   useEffect(() => {
@@ -344,6 +352,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
           if (id) handleCategoryChange(id as ManagementCategoryId);
         }}
         ariaLabel="Request categories"
+        drawerTitle="Categories"
       >
         {/* Form Header */}
         {activeCategory && (

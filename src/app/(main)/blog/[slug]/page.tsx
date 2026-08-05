@@ -24,12 +24,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     { label: article.title },
   ];
 
+  const description =
+    article.excerpt.length > 160 ? article.excerpt.slice(0, 157) + '...' : article.excerpt;
+  const ogImage = {
+    url: `/api/og/news?slug=${article.slug}`,
+    width: 1200,
+    height: 630,
+    alt: `${article.title}, on the Coronation Gardens community noticeboard.`,
+  };
+
   return {
     title: `${article.title} | Coronation Gardens`,
-    description:
-      article.excerpt.length > 160
-        ? article.excerpt.slice(0, 157) + '...'
-        : article.excerpt,
+    description,
+    openGraph: {
+      title: article.title,
+      description,
+      type: 'article',
+      images: [ogImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description,
+      images: [ogImage.url],
+    },
     other: {
       'script[type="application/ld+json"]': JSON.stringify(getBreadcrumbsJsonLd(breadcrumbs)),
     },

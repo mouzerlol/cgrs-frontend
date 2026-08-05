@@ -14,14 +14,41 @@ import {
 } from 'lucide-react';
 import PageHeader from '@/components/sections/PageHeader';
 import GuidelinesSideNav, { type SideNavItem } from './GuidelinesSideNav';
+import { MarkerProvider, RuleBullet } from './GuidelinesRules';
+
+const GUIDELINES_DESCRIPTION =
+  "The Coronation Gardens Residents' Society rules — communal facilities, parking, behaviour, property upkeep, and pets — for owners, tenants, and visitors.";
 
 export const metadata: Metadata = {
   title: 'Community Rules | Coronation Gardens',
-  description:
-    "The Coronation Gardens Residents' Society rules — communal facilities, parking, behaviour, property upkeep, and pets — for owners, tenants, and visitors.",
+  description: GUIDELINES_DESCRIPTION,
+  // The /guidelines/opengraph-image route supplies the image; set the matching
+  // title/description here so the unfurl text agrees with the card, rather than
+  // inheriting the generic site-wide OpenGraph defaults from the root layout.
+  openGraph: {
+    title: 'Community Guidelines | Coronation Gardens',
+    description: GUIDELINES_DESCRIPTION,
+    type: 'article',
+    images: [{ url: '/api/og/guidelines', width: 1200, height: 630, alt: 'Coronation Gardens Community Guidelines' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Community Guidelines | Coronation Gardens',
+    description: GUIDELINES_DESCRIPTION,
+    images: ['/api/og/guidelines'],
+  },
 };
 
-type Rule = string | { text: string; sub: string[] };
+/**
+ * A top-level rule. `id` is a stable, hand-authored, section-prefixed kebab slug
+ * (e.g. `parking-footpaths`) used as the rule's shareable anchor. It is decoupled
+ * from the rule's position and text, so reordering or rewording a rule does not
+ * change its link. Ids are globally unique and a retired id is NEVER reused (a
+ * reused id would silently redirect old shared links to a different rule). Every
+ * id has at least two segments, keeping it distinct from the single-segment
+ * section anchors (`parking`, `pets`, …) so a section hash plants no marker.
+ */
+type Rule = { id: string; text: string; sub?: string[] };
 
 interface Callout {
   tone: 'warning' | 'info';
@@ -51,15 +78,15 @@ const SECTIONS: Section[] = [
     intro:
       'Our communal facilities are the roads, playground, car parks, bin areas, bike storage, and any other green or open space within the development.',
     rules: [
-      'Only use these for the purpose for which they are designed.',
-      'Respect our facilities and use them appropriately.',
-      'There is to be no dumping of any item anywhere, and no rubbish, unwanted, or broken items left in the bin areas.',
-      'Rubbish, recycling, and food scraps are to be separated and put into the correct bin.',
-      'Do not prevent others from enjoying the communal areas.',
-      'Do not place anything in the communal facilities without the approval of the Committee.',
-      'Do not drop litter anywhere in the development.',
-      'Children must be supervised at all times.',
-      'Do not vandalise or destroy any communal property.',
+      { id: 'communal-intended-use', text: 'Only use these for the purpose for which they are designed.' },
+      { id: 'communal-respect', text: 'Respect our facilities and use them appropriately.' },
+      { id: 'communal-no-dumping', text: 'There is to be no dumping of any item anywhere, and no rubbish, unwanted, or broken items left in the bin areas.' },
+      { id: 'communal-separate-waste', text: 'Rubbish, recycling, and food scraps are to be separated and put into the correct bin.' },
+      { id: 'communal-shared-enjoyment', text: 'Do not prevent others from enjoying the communal areas.' },
+      { id: 'communal-committee-approval', text: 'Do not place anything in the communal facilities without the approval of the Committee.' },
+      { id: 'communal-no-litter', text: 'Do not drop litter anywhere in the development.' },
+      { id: 'communal-supervise-children', text: 'Children must be supervised at all times.' },
+      { id: 'communal-no-vandalism', text: 'Do not vandalise or destroy any communal property.' },
     ],
   },
   {
@@ -71,12 +98,12 @@ const SECTIONS: Section[] = [
     intro:
       'To increase safety and visibility and to reduce wear and tear on our communal facilities, do not park in any of these places:',
     rules: [
-      'On footpaths',
-      'On grass berms',
-      'On grassed areas',
-      'In the playground or in front of the playground',
-      'In designated No Parking places',
-      'In private car parks',
+      { id: 'parking-footpaths', text: 'On footpaths' },
+      { id: 'parking-berms', text: 'On grass berms' },
+      { id: 'parking-grass', text: 'On grassed areas' },
+      { id: 'parking-playground', text: 'In the playground or in front of the playground' },
+      { id: 'parking-no-parking-zones', text: 'In designated No Parking places' },
+      { id: 'parking-private-parks', text: 'In private car parks' },
     ],
     callout: {
       tone: 'warning',
@@ -92,12 +119,12 @@ const SECTIONS: Section[] = [
     title: 'Behaviour & Use',
     icon: Volume2,
     rules: [
-      'Do not annoy or disturb other residents’ quiet enjoyment. This includes loud music, party noise, vehicles, or unsupervised children.',
-      'No burning of any material or substance within CGRS (this does not include BBQs).',
-      'Do not do anything that could create a fire hazard or contravene Fire Regulations.',
-      'No liquor is to be consumed in shared spaces, and laws about consuming liquor in public spaces are to be followed.',
-      'Rubbish is to be disposed of in the correct areas.',
-      'No fireworks are to be lit or discharged within the CGRS development.',
+      { id: 'behaviour-quiet-enjoyment', text: 'Do not annoy or disturb other residents’ quiet enjoyment. This includes loud music, party noise, vehicles, or unsupervised children.' },
+      { id: 'behaviour-no-burning', text: 'No burning of any material or substance within CGRS (this does not include BBQs).' },
+      { id: 'behaviour-fire-safety', text: 'Do not do anything that could create a fire hazard or contravene Fire Regulations.' },
+      { id: 'behaviour-no-liquor', text: 'No liquor is to be consumed in shared spaces, and laws about consuming liquor in public spaces are to be followed.' },
+      { id: 'behaviour-rubbish-disposal', text: 'Rubbish is to be disposed of in the correct areas.' },
+      { id: 'behaviour-no-fireworks', text: 'No fireworks are to be lit or discharged within the CGRS development.' },
     ],
   },
   {
@@ -108,17 +135,17 @@ const SECTIONS: Section[] = [
     icon: Home,
     intro: 'General rules about property management, safety, and maintenance.',
     rules: [
-      'Properties must be well maintained and in an attractive condition.',
-      'Do not let rubbish or materials accumulate within your property.',
-      'All grass is to be cut regularly.',
-      'Gardens are to be watered and fertilised, trees pruned, and weeds and rubbish removed.',
-      'Fences, buildings, and driveways are to be well maintained.',
-      'No property is to be used for any purpose other than what is permitted under current local planning requirements.',
-      'No signs are to be erected within CGRS. The only exception is a For Sale sign if your property is on the market.',
-      'Ensure your home is secure at all times, especially if your property is empty.',
-      'No washing lines or laundry drying racks are to be placed in the front yard of your property.',
-      'All roofs, gutters, and eaves that overhang between neighbouring properties are to be maintained, repaired, kept clear of debris or blockage, and kept clean.',
-      'All conditions listed in the group Insurance policy are strictly adhered to.',
+      { id: 'property-maintained', text: 'Properties must be well maintained and in an attractive condition.' },
+      { id: 'property-no-accumulation', text: 'Do not let rubbish or materials accumulate within your property.' },
+      { id: 'property-mow-grass', text: 'All grass is to be cut regularly.' },
+      { id: 'property-garden-upkeep', text: 'Gardens are to be watered and fertilised, trees pruned, and weeds and rubbish removed.' },
+      { id: 'property-structures-maintained', text: 'Fences, buildings, and driveways are to be well maintained.' },
+      { id: 'property-permitted-use', text: 'No property is to be used for any purpose other than what is permitted under current local planning requirements.' },
+      { id: 'property-no-signs', text: 'No signs are to be erected within CGRS. The only exception is a For Sale sign if your property is on the market.' },
+      { id: 'property-secure-home', text: 'Ensure your home is secure at all times, especially if your property is empty.' },
+      { id: 'property-no-front-laundry', text: 'No washing lines or laundry drying racks are to be placed in the front yard of your property.' },
+      { id: 'property-gutters-eaves', text: 'All roofs, gutters, and eaves that overhang between neighbouring properties are to be maintained, repaired, kept clear of debris or blockage, and kept clean.' },
+      { id: 'property-insurance-conditions', text: 'All conditions listed in the group Insurance policy are strictly adhered to.' },
     ],
     callout: {
       tone: 'info',
@@ -134,20 +161,21 @@ const SECTIONS: Section[] = [
     title: 'Pets & Animals',
     icon: PawPrint,
     rules: [
-      'No animal, bird, or pet is to cause a nuisance to any other member.',
-      'The number and size of pets must be reasonable given the size of your property and the high-density urban environment within CGRS.',
-      'When outside your property, all pets must be under control and supervised.',
-      'All dogs are to be on a leash.',
-      'All pet droppings are to be picked up immediately and disposed of into the correct bin.',
-      'No pet shall make any noise that disturbs others or causes a nuisance.',
-      'All pets are maintained in a healthy and clean condition.',
+      { id: 'pets-no-nuisance', text: 'No animal, bird, or pet is to cause a nuisance to any other member.' },
+      { id: 'pets-reasonable-number', text: 'The number and size of pets must be reasonable given the size of your property and the high-density urban environment within CGRS.' },
+      { id: 'pets-supervised', text: 'When outside your property, all pets must be under control and supervised.' },
+      { id: 'pets-leashed', text: 'All dogs are to be on a leash.' },
+      { id: 'pets-pick-up-droppings', text: 'All pet droppings are to be picked up immediately and disposed of into the correct bin.' },
+      { id: 'pets-no-noise', text: 'No pet shall make any noise that disturbs others or causes a nuisance.' },
+      { id: 'pets-healthy-clean', text: 'All pets are maintained in a healthy and clean condition.' },
       {
+        id: 'pets-legal-compliance',
         text: 'All laws and regulations related to keeping pets are complied with:',
         sub: ['Desexing', 'Registration', 'Pet Register to be completed'],
       },
-      'No dangerous pets are kept within your property.',
-      'Each owner is responsible for the cost of repairing any damage caused by their pets, or their tenants’ pets.',
-      'No property is to be infested by vermin or insects.',
+      { id: 'pets-no-dangerous', text: 'No dangerous pets are kept within your property.' },
+      { id: 'pets-damage-liability', text: 'Each owner is responsible for the cost of repairing any damage caused by their pets, or their tenants’ pets.' },
+      { id: 'pets-no-vermin', text: 'No property is to be infested by vermin or insects.' },
     ],
   },
 ];
@@ -210,14 +238,9 @@ function SectionIntro({ children }: { children: React.ReactNode }) {
   return <p className="mt-5 text-[1.0625rem] leading-relaxed text-forest/75">{children}</p>;
 }
 
-function RuleBullet({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-start gap-3 text-forest/85">
-      <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-terracotta" />
-      <span className="leading-relaxed">{children}</span>
-    </li>
-  );
-}
+/** Every top-level rule, flattened, so the marker provider can tell a rule hash
+ *  from a section hash on landing and announce the marked rule. */
+const ALL_RULES = SECTIONS.flatMap((s) => s.rules.map((r) => ({ id: r.id, text: r.text })));
 
 /**
  * Community Rules page — a faithful, scannable presentation of the CGRS
@@ -241,6 +264,7 @@ export default function GuidelinesPage() {
       {/* Full-width alternating bands. The sticky index is rendered once as an overlay
           (below) so it floats over the left gutter across every band. */}
       <div className="relative bg-bone">
+        <MarkerProvider rules={ALL_RULES}>
         {SECTIONS.map((section, index) => (
           <section
             key={section.id}
@@ -262,23 +286,9 @@ export default function GuidelinesPage() {
                   {section.intro ? <SectionIntro>{section.intro}</SectionIntro> : null}
 
                   <ul className="mt-6 space-y-3">
-                    {section.rules.map((rule, i) =>
-                      typeof rule === 'string' ? (
-                        <RuleBullet key={i}>{rule}</RuleBullet>
-                      ) : (
-                        <RuleBullet key={i}>
-                          {rule.text}
-                          <ul className="mt-2 space-y-1.5 pl-1">
-                            {rule.sub.map((item) => (
-                              <li key={item} className="flex items-start gap-2 text-forest/70">
-                                <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-forest/40" />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </RuleBullet>
-                      )
-                    )}
+                    {section.rules.map((rule) => (
+                      <RuleBullet key={rule.id} id={rule.id} text={rule.text} sub={rule.sub} />
+                    ))}
                   </ul>
 
                   {section.callout && (
@@ -363,6 +373,7 @@ export default function GuidelinesPage() {
             </div>
           </div>
         </section>
+        </MarkerProvider>
 
         {/* Sticky scrollspy index — overlaid once across all bands so it floats in the
             left gutter without being clipped to any single band. */}

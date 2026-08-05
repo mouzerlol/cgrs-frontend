@@ -66,6 +66,19 @@ const iconNames: IconName[] = [
 
 const iconSizes = ['sm', 'md', 'lg', 'xl'] as const;
 
+/**
+ * Open Graph "Living Wall" share cards, rendered server-side by /api/og/* (one shared
+ * renderer: src/lib/og/living-wall.tsx). Catalogued here as live <img> from the real
+ * endpoints, so this page always shows exactly what unfurls in chat.
+ */
+const shareCardCatalogue = [
+  { label: 'Guidelines', glyphs: 'communal · parking · behaviour · property · pets', src: '/api/og/guidelines', usedOn: '/guidelines' },
+  { label: 'Map share', glyphs: 'pin · compass · route · mountain · estuary', src: '/api/og/share-location?lat=-36.9285&lng=174.787', usedOn: '/map?lat&lng' },
+  { label: 'News / blog', glyphs: 'newspaper · megaphone · quote · signal · pen', src: '/api/og/news?slug=welcome-to-coronation-gardens', usedOn: '/blog/[slug]' },
+  { label: 'Event', glyphs: 'calendar · clock · pin · ticket · people', src: '/api/og/event?slug=summer-barbecue', usedOn: '/calendar/[slug]' },
+  { label: 'Sustainability', glyphs: 'leaf · sprout · sun · drop · tree', src: '/api/og/sustainability', usedOn: '/sustainability' },
+];
+
 interface SectionProps {
   id: string;
   title: string;
@@ -128,6 +141,7 @@ export default function DesignSystemPage() {
     { id: 'interactive', label: 'Interactive' },
     { id: 'document-viewer', label: 'Document Viewer' },
     { id: 'shared', label: 'Shared Components' },
+    { id: 'share-cards', label: 'Share Cards' },
   ];
 
   return (
@@ -1672,6 +1686,30 @@ background-color: #F4F1EA; /* Bone color */`}</code>
               fileName="Concrete Pad Report.pdf"
               fileType="pdf"
             />
+          </Section>
+
+          {/* Share Cards (Open Graph link previews) — Living Wall catalogue */}
+          <Section
+            id="share-cards"
+            title="Share Cards"
+            description="Open Graph link-preview cards for WhatsApp, Messenger and iMessage. One 'Living Wall' system, rendered server-side by /api/og/* from the shared renderer (src/lib/og/living-wall.tsx). Each surface uses its own five-glyph language; the forest plaque mirrors the nav and splash chrome. Previews below are live from the real endpoints."
+          >
+            <div className="grid sm:grid-cols-2 gap-6">
+              {shareCardCatalogue.map((c) => (
+                <Card key={c.src} className="p-4">
+                  <div className="flex items-baseline justify-between gap-3 mb-3">
+                    <h3 className="font-display text-xl">{c.label}</h3>
+                    <code className="font-mono text-xs text-forest/55">{c.usedOn}</code>
+                  </div>
+                  <div className="rounded-lg overflow-hidden border border-sage/30 bg-bone">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={c.src} alt={`${c.label} share card`} width={1200} height={630} className="w-full h-auto block" loading="lazy" />
+                  </div>
+                  <p className="mt-3 text-xs text-forest/60">{c.glyphs}</p>
+                  <code className="mt-1 block font-mono text-[0.6875rem] text-forest/45 break-all">{c.src}</code>
+                </Card>
+              ))}
+            </div>
           </Section>
         </div>
       </main>

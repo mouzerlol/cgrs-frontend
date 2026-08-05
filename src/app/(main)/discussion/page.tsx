@@ -182,6 +182,7 @@ export default function DiscussionPage() {
             allOptionLabel="All Categories"
             allOptionIcon="lucide:layout-grid"
             ariaLabel="Discussion categories"
+            drawerTitle="Topics"
           >
             <div className="flex min-h-0 flex-1 flex-col">
               {/* Thread List */}

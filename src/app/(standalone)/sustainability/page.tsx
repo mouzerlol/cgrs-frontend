@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     description:
       'CGRS closes its server overnight, like the library and the dairy. Our server runs in Sydney, where the grid still leans on coal. Here is why we keep it switched off when no-one needs it.',
     type: 'article',
+    images: [{ url: '/api/og/sustainability', width: 1200, height: 630, alt: 'When we sleep, and why we chose to. A note from Coronation Gardens.' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'When we sleep, and why we chose to.',
+    description:
+      'CGRS closes its server overnight, like the library and the dairy. Our server runs in Sydney, where the grid still leans on coal. Here is why we keep it switched off when no-one needs it.',
+    images: ['/api/og/sustainability'],
   },
   robots: {
     index: true,

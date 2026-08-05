@@ -36,17 +36,15 @@ export async function generateMetadata({
 
   const copy = buildShareCardCopy(await resolveShareLocation(coords.lat, coords.lng));
 
-  // Per-coordinate map image when a Stadia key is configured; otherwise the static
-  // default. The route mirrors this fallback, so the unfurl never breaks either way.
-  const hasMapKey = Boolean(process.env.STADIA_MAPS_API_KEY);
-  const image = hasMapKey
-    ? {
-        url: `/api/og/share-location?lat=${coords.lat}&lng=${coords.lng}`,
-        width: 1200,
-        height: 630,
-        alt: copy.imageAlt,
-      }
-    : { url: '/images/og-default.jpg', width: 1200, height: 630, alt: copy.imageAlt };
+  // Per-coordinate "Living Wall" card naming the actual point. It renders from glyphs
+  // and text only (no basemap, no Stadia key), so the unfurl never depends on an
+  // external fetch; the route still falls back to the static default on bad coords.
+  const image = {
+    url: `/api/og/share-location?lat=${coords.lat}&lng=${coords.lng}`,
+    width: 1200,
+    height: 630,
+    alt: copy.imageAlt,
+  };
 
   // Keep search engines from indexing endless coordinate variants with `noindex` (which
   // the social crawlers ignore), NOT a canonical pointing at /map. A canonical to a

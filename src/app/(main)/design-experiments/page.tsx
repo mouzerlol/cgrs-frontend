@@ -11,6 +11,7 @@ import CalendarCard from '@/components/ui/CalendarCard';
 import GoalMeterExperiments from '@/components/experiments/GoalMeterExperiments';
 import HeadingExperiments from '@/components/experiments/HeadingExperiments';
 import NavCardExperiments from '@/components/experiments/NavCardExperiments';
+import GuidelineShareCards from '@/components/experiments/GuidelineShareCards';
 import { ColdStartBanner } from '@/components/layout/ColdStartBanner';
 import type { ColdStartPhase } from '@/hooks/useColdStartDetection';
 import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
@@ -94,6 +95,7 @@ export default function DesignExperimentsPage() {
               { id: 'cold-start-banner', label: 'Cold-Start Banner' },
               { id: 'account-headings', label: 'Account Headings' },
               { id: 'nav-identity-card', label: 'Nav Identity Card' },
+              { id: 'guideline-share-cards', label: 'Guideline Share Cards' },
             ].map((tab) => (
               <Tab
                 key={tab.id}
@@ -295,6 +297,11 @@ export default function DesignExperimentsPage() {
             {/* Nav Identity Card Panel */}
             <Tab.Panel>
               <NavCardExperiments />
+            </Tab.Panel>
+
+            {/* Guideline Share Cards Panel */}
+            <Tab.Panel>
+              <GuidelineShareCards />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
