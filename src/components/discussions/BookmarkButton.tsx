@@ -14,6 +14,19 @@ interface BookmarkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md';
   /** Show label text */
   showLabel?: boolean;
+  /**
+   * What is being saved, for the screen-reader label. The control started on
+   * threads and now sits on articles too; "Bookmark thread" read out on a blog
+   * post names the wrong object.
+   */
+  itemLabel?: string;
+  /**
+   * Whether the button carries a hover tooltip.
+   *
+   * On by default: a bare bookmark glyph needs one. Off for a caller whose
+   * control already carries a visible label, where the tooltip only repeats it.
+   */
+  showTooltip?: boolean;
 }
 
 /**
@@ -29,6 +42,8 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
       onBookmark,
       size = 'md',
       showLabel = false,
+      itemLabel = 'thread',
+      showTooltip = true,
       className,
       disabled,
       ...props
@@ -58,9 +73,8 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
 
     const sizes = sizeClasses[size];
 
-    return (
-      <Tooltip content={isBookmarked ? 'Saved' : 'Save'}>
-        <button
+    const button = (
+      <button
           ref={ref}
           type="button"
           onClick={handleBookmarkClick}
@@ -70,11 +84,14 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
             sizes.button,
             isBookmarked
               ? 'bg-forest text-bone border-forest'
-              : 'bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20',
+              /* Resting on sage-light, the same surface `UpvoteButton` sits on. These
+                 sit in the thread card's header over white, where a transparent fill
+                 left them reading as hairline outlines beside a filled vote button. */
+              : 'bg-sage-light text-forest border-sage hover:bg-sage hover:border-forest/20',
             disabled && 'opacity-50 cursor-not-allowed',
             className,
           )}
-          aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark thread'}
+          aria-label={isBookmarked ? 'Remove bookmark' : `Bookmark ${itemLabel}`}
           aria-pressed={isBookmarked}
           {...props}
         >
@@ -90,7 +107,12 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
             <span className={cn('font-medium', sizes.text)}>{isBookmarked ? 'Saved' : 'Save'}</span>
           )}
         </button>
-      </Tooltip>
+    );
+
+    return showTooltip ? (
+      <Tooltip content={isBookmarked ? 'Saved' : 'Save'}>{button}</Tooltip>
+    ) : (
+      button
     );
   },
 );

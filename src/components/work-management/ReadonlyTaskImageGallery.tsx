@@ -89,7 +89,7 @@ export default function ReadonlyTaskImageGallery({
                 </div>
               )}
               {img.type === 'video' && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                <div className="absolute inset-0 flex items-center justify-center bg-forest/25 group-hover:bg-forest/40 transition-colors">
                   <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-forest ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
@@ -112,6 +112,7 @@ export default function ReadonlyTaskImageGallery({
           initialIndex={lightboxIndex}
           isOpen={lightboxIndex !== null}
           onClose={() => setLightboxIndex(null)}
+          identity="management"
         />
       )}
     </div>

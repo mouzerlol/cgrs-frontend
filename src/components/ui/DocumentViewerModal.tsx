@@ -119,7 +119,7 @@ export function DocumentViewerModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-forest/80 backdrop-blur-sm texture-grain" aria-hidden="true" />
+          <div className="fixed inset-0 bg-forest/95 backdrop-blur-sm texture-grain" aria-hidden="true" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-hidden">

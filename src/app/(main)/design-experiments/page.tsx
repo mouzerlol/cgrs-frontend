@@ -6,12 +6,13 @@ import Card from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
 import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import QuickAccessCard from '@/components/ui/QuickAccessCard';
-import NewsCard from '@/components/ui/NewsCard';
+import BlogCard from '@/components/ui/BlogCard';
 import CalendarCard from '@/components/ui/CalendarCard';
 import GoalMeterExperiments from '@/components/experiments/GoalMeterExperiments';
 import HeadingExperiments from '@/components/experiments/HeadingExperiments';
 import NavCardExperiments from '@/components/experiments/NavCardExperiments';
 import GuidelineShareCards from '@/components/experiments/GuidelineShareCards';
+import CardFamilyExperiments from '@/components/experiments/card-family/CardFamilyExperiments';
 import { ColdStartBanner } from '@/components/layout/ColdStartBanner';
 import type { ColdStartPhase } from '@/hooks/useColdStartDetection';
 import LuxuryRefinedCard from '@/components/ui/experimental-cards/LuxuryRefinedCard';
@@ -23,6 +24,7 @@ import PlayfulToyCard from '@/components/ui/experimental-cards/PlayfulToyCard';
 import BrutalistRawCard from '@/components/ui/experimental-cards/BrutalistRawCard';
 import MaximalistChaosCard from '@/components/ui/experimental-cards/MaximalistChaosCard';
 import ArtDecoGeometricCard from '@/components/ui/experimental-cards/ArtDecoGeometricCard';
+import DuotoneFilter from '@/components/blog/DuotoneFilter';
 
 const EXPERIMENTAL_CARD_PROPS = {
   title: 'Report an Issue',
@@ -77,8 +79,9 @@ export default function DesignExperimentsPage() {
             <ArchivedBadge />
           </div>
           <p className="opacity-70 max-w-2xl">
-            A graveyard for design system experiments, old home page cards, and UI components that were once live on the site.
-            These artifacts are preserved here for reference and potential future resurrection.
+            Two things live here. Studies that are open, where variants are compared before one is promoted into
+            production, and an archive of components that were once live on the site, kept for reference and for
+            possible resurrection. Tabs marked archived are the second kind.
           </p>
         </div>
       </header>
@@ -89,6 +92,7 @@ export default function DesignExperimentsPage() {
         <Tab.Group>
           <Tab.List className="flex flex-wrap gap-2 border-b border-sage/20 pb-4 mb-8">
             {[
+              { id: 'card-family', label: 'Card Family' },
               { id: 'aesthetic-cards', label: 'Aesthetic Card Experiments' },
               { id: 'original-home', label: 'Original Home Cards' },
               { id: 'goal-meters', label: 'Goal Meter Experiments' },
@@ -114,6 +118,11 @@ export default function DesignExperimentsPage() {
           </Tab.List>
 
           <Tab.Panels>
+            {/* Card Family Panel — the live-drift study, not an archive piece. */}
+            <Tab.Panel>
+              <CardFamilyExperiments />
+            </Tab.Panel>
+
             {/* Aesthetic Card Experiments Panel */}
             <Tab.Panel>
               <div className="space-y-8">
@@ -259,22 +268,39 @@ export default function DesignExperimentsPage() {
 
                 {/* Community News Card */}
                 <Card className="p-6">
-                  <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Community News Card</h3>
+                  {/* The card's plate references this filter by id. */}
+                  <DuotoneFilter />
+                  <h3 className="text-sm font-medium mb-2 opacity-50 uppercase tracking-wider">Community News Card</h3>
+                  <p className="mb-4 max-w-[60ch] text-xs text-forest/70">
+                    Not archived: this renders the live component. `BlogCard` is now a thin wrapper
+                    over `BlogPostCell`, so it always shows whatever the home page currently ships.
+                    Compare variants in the Card Family tab.
+                  </p>
                   <div className="grid md:grid-cols-3 gap-6">
-                    <NewsCard
-                      article={{
-                        id: '1',
-                        slug: 'new-community-garden',
-                        title: 'New Community Garden',
-                        excerpt: 'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
-                        content: 'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
-                        date: '2024-11-20',
-                        image: 'https://placehold.co/800x600/f4a261/white?text=Community+News',
-                        category: 'general',
-                        featured: false,
-                        author: 'Committee',
-                      }}
-                    />
+                  <BlogCard
+                    post={{
+                      slug: 'new-community-garden',
+                      title: 'New Community Garden',
+                      excerpt:
+                        'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
+                      date: '2024-11-20',
+                      updated: null,
+                      author: 'Committee',
+                      categorySlug: 'general',
+                      categoryLabel: 'General',
+                      featured: false,
+                      readingTime: 2,
+                      bodyKey: 'posts/new-community-garden-0000000000000000.json',
+                      hero: {
+                        url: 'https://placehold.co/800x600/f4a261/white?text=Community+News',
+                        width: 800,
+                        height: 600,
+                        alt: 'Placeholder community news photograph.',
+                        caption: null,
+                        credit: null,
+                      },
+                    }}
+                  />
                   </div>
                 </Card>
               </div>

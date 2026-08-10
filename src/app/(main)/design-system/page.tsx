@@ -8,7 +8,7 @@ import Icon, { IconName } from '@/components/ui/Icon';
 import { Skeleton, SkeletonText } from '@/components/ui/Skeleton';
 import { CalendarCardSkeleton } from '@/components/ui/CalendarCardSkeleton';
 import { EventCardSkeleton } from '@/components/ui/EventCardSkeleton';
-import { NewsCardSkeleton } from '@/components/ui/NewsCardSkeleton';
+import { BlogCardSkeleton } from '@/components/ui/BlogCardSkeleton';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import Hero from '@/components/sections/Hero';
 import { HeroHeadingCard, HeroPageHeader } from '@/components/sections/HeroHeadingCard';
@@ -18,7 +18,7 @@ import { BreadcrumbBar, BreadcrumbTrail, SiteBreadcrumbs } from '@/components/ui
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UtilityDock, { UtilityDockItem } from '@/components/sections/UtilityDock';
-import NewsCard from '@/components/ui/NewsCard';
+import BlogCard from '@/components/ui/BlogCard';
 import CalendarCard, { formatCalendarDate } from '@/components/ui/CalendarCard';
 import BrutallyMinimalCard from '@/components/ui/experimental-cards/BrutallyMinimalCard';
 import { BrutallyMinimalHubCard, BrutallyMinimalPortfolioCard, BrutallyMinimalBoardCard, BrutallyMinimalTaskCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
@@ -43,6 +43,7 @@ import { Dropdown } from '@/components/ui/Dropdown';
 import { Accordion } from '@/components/ui/Accordion';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Search, FileText, MessageSquare } from 'lucide-react';
+import DuotoneFilter from '@/components/blog/DuotoneFilter';
 
 const MapPreview = dynamic(() => import('@/components/ui/MapPreview'), { ssr: false });
 const BaseMap = dynamic(() => import('@/components/map/BaseMap'), { ssr: false });
@@ -74,7 +75,7 @@ const iconSizes = ['sm', 'md', 'lg', 'xl'] as const;
 const shareCardCatalogue = [
   { label: 'Guidelines', glyphs: 'communal · parking · behaviour · property · pets', src: '/api/og/guidelines', usedOn: '/guidelines' },
   { label: 'Map share', glyphs: 'pin · compass · route · mountain · estuary', src: '/api/og/share-location?lat=-36.9285&lng=174.787', usedOn: '/map?lat&lng' },
-  { label: 'News / blog', glyphs: 'newspaper · megaphone · quote · signal · pen', src: '/api/og/news?slug=welcome-to-coronation-gardens', usedOn: '/blog/[slug]' },
+  { label: 'Blog', glyphs: 'newspaper · megaphone · quote · signal · pen', src: '/api/og/blog?slug=every-block-type', usedOn: '/blog/[slug]' },
   { label: 'Event', glyphs: 'calendar · clock · pin · ticket · people', src: '/api/og/event?slug=summer-barbecue', usedOn: '/calendar/[slug]' },
   { label: 'Sustainability', glyphs: 'leaf · sprout · sun · drop · tree', src: '/api/og/sustainability', usedOn: '/sustainability' },
 ];
@@ -442,20 +443,32 @@ export default function DesignSystemPage() {
 
               {/* Community News Card */}
               <div>
+                {/* The card's plate references this filter by id. */}
+                <DuotoneFilter />
                 <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Community News Card</h3>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <NewsCard
-                    article={{
-                      id: '1',
+                  <BlogCard
+                    post={{
                       slug: 'new-community-garden',
                       title: 'New Community Garden',
-                      excerpt: 'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
-                      content: 'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
+                      excerpt:
+                        'We are excited to announce the opening of our new community garden. Come and see what we have planted.',
                       date: '2024-11-20',
-                      image: 'https://placehold.co/800x600/f4a261/white?text=Community+News',
-                      category: 'general',
+                      updated: null,
+                      author: 'Committee',
+                      categorySlug: 'general',
+                      categoryLabel: 'General',
                       featured: false,
-                      author: 'Committee'
+                      readingTime: 2,
+                      bodyKey: 'posts/new-community-garden-0000000000000000.json',
+                      hero: {
+                        url: 'https://placehold.co/800x600/f4a261/white?text=Community+News',
+                        width: 800,
+                        height: 600,
+                        alt: 'Placeholder community news photograph.',
+                        caption: null,
+                        credit: null,
+                      },
                     }}
                   />
                 </div>
@@ -792,7 +805,7 @@ export default function DesignSystemPage() {
                       <div className="mt-4">
                         <p className="text-xs opacity-50 mb-2">News Card Skeleton</p>
                         <div className="max-w-md">
-                          <NewsCardSkeleton />
+                          <BlogCardSkeleton />
                         </div>
                       </div>
                     </Card>

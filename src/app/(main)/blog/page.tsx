@@ -1,23 +1,19 @@
-import { NewsArticle } from '@/types';
-import PageHeader from '@/components/sections/PageHeader';
 import BlogListing from '@/components/blog/BlogListing';
+import BlogUnavailable from '@/components/blog/BlogUnavailable';
+import { getManifestOrNull } from '@/lib/blog';
 
-import newsData from '@/data/news.json';
+/**
+ * The listing reads the published manifest and nothing else — no API call, no
+ * database query, no bundled content file.
+ */
+export default async function BlogPage() {
+  const manifest = await getManifestOrNull();
 
-export default function BlogPage() {
-  const articles = newsData.articles as NewsArticle[];
+  // Null means nothing has ever been cached and the origin is unreachable. That
+  // is contained to this surface: every other page on the site renders normally.
+  if (!manifest) return <BlogUnavailable />;
 
-  return (
-    <div className="min-h-screen">
-      <PageHeader
-        title="CGRS Committee Blog"
-        description="Latest updates and announcements from the committee and website team."
-        eyebrow="Blog"
-        eyebrowIconKey="newspaper"
-        backgroundImage="/images/mangere-mountain.jpg"
-      />
-
-      <BlogListing articles={articles} />
-    </div>
-  );
+  // BlogListing owns the hero as well as the grid: the category filter sits
+  // inside the hero card and shares the list's client state.
+  return <BlogListing posts={manifest.posts} categories={manifest.categories} />;
 }

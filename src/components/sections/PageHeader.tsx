@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { SiteBreadcrumbs } from '@/components/ui/breadcrumb';
 import { BrutallyMinimalHeroHeadingCard } from '@/components/sections/BrutallyMinimalHeroHeadingCard';
@@ -20,6 +21,23 @@ interface PageHeaderProps {
   showBreadcrumbs?: boolean;
   /** When false, hero renders a div instead of h1. Use when the page has its own content h1 below the hero. Default true. */
   showHeroHeading?: boolean;
+  /**
+   * Page-level controls floated over the hero image, opposite the card: right
+   * and bottom-aligned from `md`, stacked above the card below that. Use for
+   * filters that scope the whole page (e.g. the blog's categories), not for
+   * actions belonging to a section further down.
+   *
+   * Contents sit on a photograph, so they must carry their own opaque surface
+   * rather than relying on the page background.
+   */
+  heroAside?: React.ReactNode;
+  /**
+   * Classes for the aside's wrapper. Chiefly for hiding it at a breakpoint
+   * (`hidden lg:block`) when a page moves the same controls into a mobile
+   * drawer — put the class here rather than on the contents, so the wrapper
+   * stops contributing its flex gap too.
+   */
+  heroAsideClassName?: string;
 }
 
 /**
@@ -40,6 +58,8 @@ export default function PageHeader({
   variant = 'default',
   showBreadcrumbs = true,
   showHeroHeading = true,
+  heroAside,
+  heroAsideClassName,
 }: PageHeaderProps) {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
 
@@ -80,7 +100,7 @@ export default function PageHeader({
       <div className={`container relative z-10 flex items-end border-0 ${containerMinHeight}`}>
         <div
           ref={ref}
-          className={`fade-up w-full ${isVisible ? 'visible' : ''}`}
+          className={`fade-up flex w-full flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8 ${isVisible ? 'visible' : ''}`}
         >
           <BrutallyMinimalHeroHeadingCard
             title={title}
@@ -91,6 +111,15 @@ export default function PageHeader({
             className="max-w-xl"
             headingLevel={showHeroHeading ? 'h1' : 'div'}
           />
+
+          {heroAside && (
+            /* Above the card on narrow screens, beside it on wide. The bottom
+               padding lifts it off the section's flush edge so it reads as
+               floating on the image, not resting on the fold below. */
+            <div className={cn('order-first md:order-none md:pb-6', heroAsideClassName)}>
+              {heroAside}
+            </div>
+          )}
         </div>
       </div>
     </section>

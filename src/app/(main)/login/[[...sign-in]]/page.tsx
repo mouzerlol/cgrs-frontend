@@ -26,7 +26,10 @@ export default function LoginPage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      <section className="section flex-grow flex flex-col items-center justify-center relative z-10 -mt-12">
+      {/* No negative top margin: the breadcrumb strip sits directly above this
+          section, and pulling the section up over it made the whole trail —
+          the home crumb included — unclickable behind a z-10 surface. */}
+      <section className="section flex-grow flex flex-col items-center justify-center relative z-10">
         <div className="container">
           <div className="max-w-md mx-auto flex flex-col items-center w-full">
             {/* Custom Card Wrapper to perfectly match CGRS Design System map menu */}

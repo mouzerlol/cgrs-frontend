@@ -14,6 +14,10 @@ vi.mock('next/font/google', () => ({
     variable: '--font-jetbrains-mono',
     className: 'mock-jetbrains-mono',
   })),
+  Atkinson_Hyperlegible_Next: vi.fn(() => ({
+    variable: '--font-atkinson',
+    className: 'mock-atkinson',
+  })),
 }));
 
 import { metadata } from '../layout';

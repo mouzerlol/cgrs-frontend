@@ -11,6 +11,7 @@
  */
 
 export { BreadcrumbBar, type BreadcrumbBarProps } from '../BreadcrumbBar';
+export { PageBreadcrumbBar, type PageBreadcrumbBarProps } from '../PageBreadcrumbBar';
 export { BreadcrumbTrail, type BreadcrumbTrailProps } from '../BreadcrumbTrail';
 export {
   SiteBreadcrumbs,

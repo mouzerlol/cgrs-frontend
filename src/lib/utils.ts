@@ -1,4 +1,4 @@
-import { NewsArticle, Event } from '@/types';
+import { Event } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -12,6 +12,22 @@ export function formatDate(dateString: string): string {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
+  });
+}
+
+/**
+ * A date in its shortest readable form: `8 Aug 26`.
+ *
+ * For places that carry a date beside other small facts — a byline, a reading
+ * time, a category — where the full month name is the longest thing on the line
+ * and says nothing the abbreviation does not.
+ */
+export function formatDateShort(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-NZ', {
+    day: 'numeric',
+    month: 'short',
+    year: '2-digit'
   });
 }
 
@@ -51,15 +67,10 @@ export function formatRelativeDate(dateString: string, compact = false): string 
   });
 }
 
-export function getFeaturedArticles(articles: NewsArticle[]): NewsArticle[] {
-  return articles.filter(article => article.featured);
-}
-
-export function getLatestArticles(articles: NewsArticle[], limit: number = 3): NewsArticle[] {
-  return articles
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit);
-}
+// `getFeaturedArticles` and `getLatestArticles` are gone. Both sorted and
+// filtered a bundled array of posts; the manifest arrives already sorted
+// newest-first and already knows which posts are featured, so re-deriving either
+// here would only be a chance to disagree with it. See `src/lib/blog/`.
 
 export function getUpcomingEvents(events: Event[], limit: number = 2): Event[] {
   const now = new Date();

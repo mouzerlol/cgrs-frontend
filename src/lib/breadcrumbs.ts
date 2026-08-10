@@ -78,8 +78,13 @@ const DYNAMIC_PATTERNS: Array<{
 
 /**
  * Resolve breadcrumbs for a pathname (sync; safe for client components).
+ *
+ * `leafLabel` names the final crumb, for a route whose title cannot be resolved
+ * synchronously — a blog post's title lives in the published manifest, which is
+ * fetched on the server, so the page that already has it hands it down rather
+ * than the client going looking.
  */
-export function resolveBreadcrumbsSync(pathname: string): BreadcrumbItem[] {
+export function resolveBreadcrumbsSync(pathname: string, leafLabel?: string): BreadcrumbItem[] {
   const path = normalizeSitePath(pathname);
 
   if (ROUTE_BREADCRUMBS[path]) {
@@ -90,7 +95,7 @@ export function resolveBreadcrumbsSync(pathname: string): BreadcrumbItem[] {
     const match = path.match(pattern);
     if (match) {
       const baseBreadcrumbs = ROUTE_BREADCRUMBS[base] || [{ label: 'Home', href: '/' }];
-      const label = resolveDynamicLabel(labelKind, match[1]);
+      const label = leafLabel ?? resolveDynamicLabel(labelKind, match[1]);
       return [...baseBreadcrumbs, { label }];
     }
   }
@@ -117,8 +122,11 @@ export function resolveBreadcrumbsSync(pathname: string): BreadcrumbItem[] {
 }
 
 /** Async wrapper for server call sites */
-export async function resolveBreadcrumbs(pathname: string): Promise<BreadcrumbItem[]> {
-  return resolveBreadcrumbsSync(pathname);
+export async function resolveBreadcrumbs(
+  pathname: string,
+  leafLabel?: string
+): Promise<BreadcrumbItem[]> {
+  return resolveBreadcrumbsSync(pathname, leafLabel);
 }
 
 /**

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -34,6 +35,9 @@ export default function DrawerShell({
   const prefersReducedMotion = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -82,7 +86,16 @@ export default function DrawerShell({
     };
   }, [open, onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  /*
+   * Portalled to the body rather than left where it is rendered. `fixed` and a
+   * z-index only outrank the site chrome from the root stacking context, and a
+   * caller is free to sit inside one of its own — the blog listing wraps itself
+   * in `isolate` for its paper texture, which was enough to bury the drawer
+   * under the header.
+   */
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[1100] lg:hidden">
@@ -125,6 +138,7 @@ export default function DrawerShell({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

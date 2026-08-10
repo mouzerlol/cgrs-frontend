@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, FileText, Landmark, LayoutGrid, ClipboardList, MapPinned, Scale, ScrollText, ShieldCheck, Users } from 'lucide-react';
+import { Building2, FileText, Landmark, LayoutGrid, ClipboardList, MapPinned, Newspaper, Scale, ScrollText, ShieldCheck, Users } from 'lucide-react';
 import WorkManagementNavBar from '@/components/work-management/WorkManagementNavBar';
 import { BrutallyMinimalHubCard } from '@/components/ui/experimental-cards/BrutallyMinimalWorkCards';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -110,6 +110,15 @@ const documentsFeature: HubFeature = {
   color: 'sage',
 };
 
+const blogFeature: HubFeature = {
+  id: 'blog',
+  name: 'Blog',
+  description: 'Write, preview, and publish posts to the community noticeboard — no deployment needed',
+  icon: Newspaper,
+  href: '/admin/blog',
+  color: 'amber',
+};
+
 const groundReportFeature: HubFeature = {
   id: 'ground-report',
   name: 'Ground Report',
@@ -165,7 +174,7 @@ export default function WorkManagementHub() {
     ...baseFeatures,
     ...(isReviewer ? [verificationsFeature, propertiesFeature] : []),
     ...(isSuperadmin ? [signaturesFeature] : []),
-    ...(canEditSociety ? [societyFeature, documentsFeature, groundReportFeature] : []),
+    ...(canEditSociety ? [societyFeature, documentsFeature, blogFeature, groundReportFeature] : []),
   ];
 
   return (

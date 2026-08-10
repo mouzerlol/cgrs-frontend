@@ -39,19 +39,38 @@
   --transition-medium: 0.4s var(--ease-out);
   --transition-slow: 0.6s var(--ease-out);
 
-  /* Site banner height; bumped by <BetaBanner /> when its flag is on, so page top offsets can absorb it. */
+  /*
+   * Site banner height, so page top offsets can absorb it. Zero here and raised
+   * by the `:has()` rule below purely from whether the banner is in the DOM —
+   * never from script. <BetaBanner /> renders on the server, but a JS-set
+   * variable could only land after hydration, which dropped every page's hero by
+   * the banner's height a couple of seconds in. Keep this value in step with
+   * BANNER_HEIGHT_PX in components/layout/BetaBanner.tsx.
+   */
   --site-banner-height: 0px;
 
-  /* Live height of the fixed top chrome; set by <SiteChromeBar />. */
+  /* Live height of the fixed top chrome; re-measured by <SiteChromeBar />. */
   /* --chrome-offset → 0 when collapsed: sub-bars pinned to it DOCK to the viewport top. */
   /* --chrome-height stays the real height: bars pinned to it ride WITH the chrome (hide together). */
-  --chrome-offset: 72px;
-  --chrome-height: 72px;
+  /* Header + banner, so the starting values already match what the measurement will find. */
+  --chrome-offset: calc(72px + var(--site-banner-height));
+  --chrome-height: calc(72px + var(--site-banner-height));
 
   /* Texture Patterns — SVG data URIs, too large for Tailwind config */
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
   --texture-dots: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M1 1h1v1H1z' fill='%231A2218' fill-opacity='0.03'/%3E%3C/svg%3E");
   --texture-signal: url("data:image/svg+xml,%3Csvg width='84' height='48' viewBox='0 0 84 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h12v6H0V0zm28 8h12v6H28V8zm14-8h12v6H42V0zm14 0h12v6H56V0zm0 8h12v6H56V8zM42 8h12v6H42V8zm0 16h12v6H42v-6zm14-8h12v6H56v-6zm14 0h12v6H70v-6zm0-16h12v6H70V0zM28 32h12v6H28v-6zM14 16h12v6H14v-6zM0 24h12v6H0v-6zm0 8h12v6H0v-6zm14 0h12v6H14v-6zm14 8h12v6H28v-6zm-14 0h12v6H14v-6zm28 0h12v6H42v-6zm14-8h12v6H56v-6zm0-8h12v6H56v-6zm14 8h12v6H70v-6zm0 8h12v6H70v-6zM14 24h12v6H14v-6zm14-8h12v6H28v-6zM14 8h12v6H14V8zM0 8h12v6H0V8z' fill='%23141D14' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  /* Graph-paper rule grid: sits behind long-form article furniture (title panel, pull quotes). */
+  --texture-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'%3E%3Cpath d='M22 0H0v22' fill='none' stroke='%23A8B5A0' stroke-opacity='0.7' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+/*
+ * The banner's height, taken from the banner's own presence in the markup, so
+ * the offset is correct on the very first paint and follows the banner in and
+ * out without a frame of disagreement.
+ */
+:root:has([data-site-banner]) {
+  --site-banner-height: 36px;
 }
 
 /* Reduce motion for accessibility */
@@ -205,6 +224,169 @@
 
   .texture-signal {
     background-image: var(--texture-signal);
+  }
+
+  /*
+   * Graph-paper grid, faded from the upper-left so it dissolves rather than
+   * ending on a hard edge. Panel-scale furniture: article title panels and
+   * pull quotes.
+   */
+  .texture-grid {
+    background-image: var(--texture-grid);
+    background-position: top left;
+    -webkit-mask-image: radial-gradient(125% 130% at 22% 18%, #000 48%, transparent 100%);
+    mask-image: radial-gradient(125% 130% at 22% 18%, #000 48%, transparent 100%);
+  }
+
+  /*
+   * Bone fill that is full strength against its border and dissolves toward the
+   * middle, so a bordered panel reads as a wash held by its edge rather than a
+   * flat slab. Paired with `.texture-grid` on pull quotes; the grid sits above
+   * this so the paper stays legible where the fill has thinned.
+   */
+  .surface-wash-inward {
+    background-image: radial-gradient(
+      105% 115% at 50% 50%,
+      transparent 15%,
+      var(--bone) 92%
+    );
+  }
+
+  /*
+   * `texture-grid` vignetted from every edge rather than from one corner. For
+   * bordered panels, where the paper should be at full strength against the
+   * hairline and gone by the middle, so the fade reads as a property of the
+   * border and the words are not set on ruled lines.
+   */
+  .texture-grid-inward {
+    background-image: var(--texture-grid);
+    background-position: top left;
+    -webkit-mask-image: radial-gradient(105% 115% at 50% 50%, transparent 22%, #000 92%);
+    mask-image: radial-gradient(105% 115% at 50% 50%, transparent 22%, #000 92%);
+  }
+
+  /*
+   * The inverse vignette: solid through the middle and gone at the perimeter,
+   * ramping over the outer 5% of each axis. For a panel that should read as a
+   * piece of surface dissolving into the page at its rim rather than as a slab
+   * with a defined edge — nothing draws the boundary, so the fade is the only
+   * thing saying where the panel stops.
+   *
+   * Short, deliberately. A long ramp thins the paper under the first and last
+   * words as well as at the rim; 5% takes the edge off without the panel
+   * spending most of its width arriving.
+   *
+   * Rectangular rather than radial, because the thing being faded is the
+   * container's own edge: a radial mask on a wide, short panel reaches its ends
+   * long before its sides, so the left and right thirds vanish while the top
+   * and bottom stay solid. Two linear masks intersected fade every edge by the
+   * same fraction of the side it runs along.
+   *
+   * Applies to descendants as well as to the element, so a fill and its texture
+   * can share one mask by nesting inside it rather than each carrying a copy.
+   */
+  .surface-edge-fade {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /*
+   * The same paper without the vignette, for ground rather than furniture. A
+   * mask fading from one corner reads as a stain once it is the size of a page,
+   * so this tiles flat and leans on opacity at the call site instead.
+   */
+  .texture-grid-page {
+    background-image: var(--texture-grid);
+    background-position: top left;
+  }
+
+  /*
+   * Stretched link: the anchor stays the single tab stop and accessible name,
+   * while its ::after covers the whole cell so the entire region is clickable.
+   * The focus ring is drawn on the ::after so keyboard focus outlines the cell,
+   * not just the few words of the title.
+   */
+  .stretched-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .stretched-link:focus-visible {
+    outline: none;
+  }
+
+  .stretched-link:focus-visible::after {
+    outline: 2px solid #D95D39;
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+
+  /*
+   * The duotone copy of a card image, crossfading to full colour on hover.
+   *
+   * `will-change` is load-bearing, not a micro-optimisation. Card plates rarely
+   * land on whole device pixels (a 12-column grid at an arbitrary viewport puts
+   * one at 575.5 x 287.75), and a layer is snapped to whole pixels the moment
+   * it is promoted. Promote it at hover and that snap lands mid-interaction,
+   * which reads as the image twitching a pixel wider. Declaring the change up
+   * front promotes on load instead, so hover only moves opacity.
+   */
+  .duotone-layer {
+    will-change: opacity;
+  }
+
+  /*
+   * Terracotta rule that draws left to right when the enclosing `.group` is
+   * hovered — the top nav's link underline, borrowed for card titles. Also
+   * draws on its own hover/focus, so a standalone text link can carry it
+   * without a wrapping group.
+   *
+   * Painted as a background rather than a pseudo-element: card titles wrap and
+   * clamp, and `stretched-link` has already spent ::after on the click target.
+   * `box-decoration-break: clone` gives every wrapped line its own rule, and
+   * because the background is inline it tracks the text, not the reserved
+   * height of a clamped heading box.
+   */
+  .underline-draw {
+    background-image: linear-gradient(to right, #D95D39, #D95D39);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    padding-bottom: 2px;
+    transition: background-size 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .group:hover .underline-draw,
+  .underline-draw:hover,
+  .underline-draw:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .underline-draw {
+      transition: none;
+    }
+  }
+
+  /* Hides the scrollbar on a deliberately swipeable strip (e.g. filter chips on
+     mobile). Only for rows where the overflow is obvious from the content
+     itself; never use it to hide that something is scrollable. */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   /* Thin scrollbar for portfolio card content */

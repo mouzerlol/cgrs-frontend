@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
 
@@ -9,8 +8,13 @@ import { FEATURE_FLAG_IDS } from '@/lib/feature-flags';
  *
  * Renders directly under the header inside the {@link SiteChrome} wrapper (community
  * {@link Layout}, immersive `(immersive)/layout`). It flows beneath the header in the
- * fixed wrapper — no own positioning — and is hidden in print. Still publishes
- * `--site-banner-height` so existing content padding (`pt-[calc(72px + ...)]`) clears it.
+ * fixed wrapper — no own positioning — and is hidden in print.
+ *
+ * Content padding (`pt-[calc(72px + var(--site-banner-height))]`) clears it via the
+ * `:root:has([data-site-banner])` rule in `globals.css`, which reads the banner's
+ * presence rather than being told about it. Publishing the height from an effect
+ * here instead meant the variable was 0 through first paint, and every page's hero
+ * dropped 36px once hydration ran. Keep BANNER_HEIGHT_PX and that rule in step.
  *
  * Layouts without the shared header (e.g. `/petition`, `/no-access`, `/verify`) are
  * intentionally banner-free. To show the banner on a future custom-header layout,
@@ -24,15 +28,6 @@ const REPEATS_PER_TRACK = 8;
 
 export default function BetaBanner() {
   const enabled = useFeatureFlag(FEATURE_FLAG_IDS.SITE_BETA_BANNER);
-
-  useEffect(() => {
-    if (!enabled) return;
-    const root = document.documentElement;
-    root.style.setProperty('--site-banner-height', `${BANNER_HEIGHT_PX}px`);
-    return () => {
-      root.style.removeProperty('--site-banner-height');
-    };
-  }, [enabled]);
 
   if (!enabled) return null;
 

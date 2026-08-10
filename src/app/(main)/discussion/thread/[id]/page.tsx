@@ -2,12 +2,14 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { toast } from '@/lib/sonner';
 import { cn } from '@/lib/utils';
-import PageHeader from '@/components/sections/PageHeader';
+import { PageBreadcrumbBar } from '@/components/ui/breadcrumb';
 import ThreadDetail from '@/components/discussions/ThreadDetail';
+import ThreadBackdrop from '@/components/discussions/ThreadBackdrop';
 import {
   useThread,
   useReplies,
@@ -29,15 +31,40 @@ interface LoadingSkeletonProps {
   className?: string;
 }
 
+/**
+ * Mirrors the real card: title block, author row, body, toolbar, then two replies.
+ * A skeleton with different proportions to the content it stands in for just
+ * trades a blank screen for a layout shift.
+ */
 function LoadingSkeleton({ className }: LoadingSkeletonProps) {
   return (
-    <div className={cn('animate-pulse space-y-6', className)}>
-      <div className="h-8 bg-sage/30 rounded w-3/4" />
-      <div className="h-4 bg-sage/30 rounded w-1/2" />
-      <div className="h-32 bg-sage/30 rounded" />
-      <div className="space-y-3">
-        <div className="h-16 bg-sage/30 rounded" />
-        <div className="h-16 bg-sage/30 rounded" />
+    <div className={cn('animate-pulse', className)}>
+      <ThreadBackdrop>
+      <div className="rounded-none border border-sage/30 bg-white px-5 pt-6 pb-4 shadow-[0_16px_40px_rgba(26,34,24,0.14)] sm:px-8 sm:pt-8 md:px-10 md:pt-10 md:pb-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="h-8 w-3/5 rounded bg-sage/30" />
+          <div className="h-7 w-24 shrink-0 rounded-full bg-sage/30" />
+        </div>
+        <div className="mt-5 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-sage/30" />
+          <div className="h-4 w-40 rounded bg-sage/30" />
+        </div>
+        <div className="mt-6 space-y-2.5">
+          <div className="h-4 w-full rounded bg-sage/30" />
+          <div className="h-4 w-full rounded bg-sage/30" />
+          <div className="h-4 w-4/5 rounded bg-sage/30" />
+        </div>
+        <div className="mt-6 flex items-center gap-2 border-t border-sage/25 pt-3">
+          <div className="h-9 w-16 rounded-md bg-sage/30" />
+          <div className="h-9 w-28 rounded-md bg-sage/30" />
+          <div className="ml-auto h-9 w-24 rounded bg-sage/30" />
+        </div>
+      </div>
+      </ThreadBackdrop>
+
+      <div className="container mx-auto max-w-4xl space-y-3 px-4 py-8">
+        <div className="h-24 rounded-md bg-sage/25" />
+        <div className="ml-11 h-24 rounded-md bg-sage/25" />
       </div>
     </div>
   );
@@ -45,16 +72,26 @@ function LoadingSkeleton({ className }: LoadingSkeletonProps) {
 
 function NotFound() {
   return (
-    <div className="min-h-[50vh] flex flex-col items-center justify-center text-center py-16">
-      <Icon icon="lucide:message-square-off" className="w-16 h-16 text-sage mb-4" />
-      <h1 className="font-display text-2xl font-semibold text-forest mb-2">
-        Thread Not Found
+    <div className="rounded-card border border-sage/30 bg-white px-6 py-12 text-center shadow-[0_16px_40px_rgba(26,34,24,0.14)] md:px-10">
+      <span
+        className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-forest/[0.07] text-forest"
+        aria-hidden
+      >
+        <Icon icon="lucide:message-square-off" className="h-6 w-6" />
+      </span>
+      <h1 className="mt-5 font-display text-2xl font-semibold text-forest">
+        Thread not found
       </h1>
-      <p className="text-forest/60 max-w-md">
-        {
-          "The thread you're looking for doesn't exist or may have been removed."
-        }
+      <p className="mx-auto mt-2 max-w-md text-forest/60">
+        {"The thread you're looking for doesn't exist or may have been removed."}
       </p>
+      <Link
+        href="/discussion"
+        className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-terracotta hover:text-terracotta-dark transition-colors"
+      >
+        <Icon icon="lucide:arrow-left" className="w-4 h-4" aria-hidden />
+        Back to discussions
+      </Link>
     </div>
   );
 }
@@ -62,7 +99,10 @@ function NotFound() {
 /**
  * Thread detail page - displays a single thread with all its replies.
  * URL: /discussion/thread/[id]
- * Uses compact PageHeader variant for functional page styling.
+ *
+ * No page hero: the thread's own title is the page heading, so the page clears the
+ * fixed site chrome itself and mounts the card on the discussion photograph via
+ * ThreadBackdrop.
  */
 export default function ThreadPage() {
   const params = useParams();
@@ -211,42 +251,33 @@ export default function ThreadPage() {
     }
   };
 
-  if (!isLoading && (!thread || threadError)) {
-    return (
-      <div className="min-h-screen bg-bone">
-        <PageHeader
-          title="Community Discussion"
-          description="Connect with your neighbors"
-          eyebrow="Forum"
-          eyebrowIconKey="messageSquare"
-          backgroundImage="/images/mangere-mountain.jpg"
-          variant="compact"
-          showHeroHeading={false}
-        />
-        <div className="container mx-auto px-4 py-8">
-          <NotFound />
-        </div>
-      </div>
-    );
-  }
+  /* 401/403 never reaches here: middleware gates /discussion/thread, so a signed-out
+     visitor is sent to sign-in with a return URL before the page renders. */
+  const isMissing = !isLoading && (!thread || threadError);
 
   return (
+    /* SiteChromeBar (header + beta banner) is fixed, so page content starts under it.
+       The clearance lives in PageBreadcrumbBar below, which is the first thing on the
+       page — the blog article does the same, so both clear the chrome identically. */
     <div className="min-h-screen bg-bone">
-      <PageHeader
-        title="Community Discussion"
-        description="Connect with your neighbors"
-        eyebrow="Forum"
-        eyebrowIconKey="messageSquare"
-        backgroundImage="/images/mangere-mountain.jpg"
-        variant="compact"
-        showHeroHeading={false}
-      />
+      {/* Breadcrumbs sit above the photograph on plain bone, so the trail keeps its
+          contrast instead of handing it to whatever the image happens to be.
+          The blog article mounts the same component, so both bands are one height
+          and their labels one size. */}
+      <PageBreadcrumbBar />
 
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        {isLoading ? (
-          <LoadingSkeleton />
-        ) : thread ? (
-          <ThreadDetail
+      {/* No page hero on a thread: the thread's own title is the page heading, and a
+          repeated "Community Discussion" band cost a screenful on every thread. The
+          section image survives as the mount the thread card sits on. */}
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : isMissing ? (
+        <ThreadBackdrop>
+          <NotFound />
+        </ThreadBackdrop>
+      ) : thread ? (
+        <ThreadDetail
+            mountOnBackdrop
             thread={thread}
             replies={replies as Reply[]}
             currentUserId={currentUserId}
@@ -266,21 +297,20 @@ export default function ThreadPage() {
             onPollVote={handlePollVote}
             onPollClose={handlePollClose}
             isPollVotePending={voteOnPollMutation.isPending}
-          />
-        ) : null}
+        />
+      ) : null}
 
-        {/* Edit Modal */}
-        {thread && (
-          <ThreadEditModal
-            thread={thread}
-            isOpen={isEditModalOpen}
-            onClose={() => setIsEditModalOpen(false)}
-            onSave={handleEditThread}
-            isSaving={updateThreadMutation.isPending}
-            currentUserId={currentUserId}
-          />
-        )}
-      </div>
+      {/* Edit Modal */}
+      {thread && (
+        <ThreadEditModal
+          thread={thread}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleEditThread}
+          isSaving={updateThreadMutation.isPending}
+          currentUserId={currentUserId}
+        />
+      )}
     </div>
   );
 }

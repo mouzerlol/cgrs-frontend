@@ -55,7 +55,7 @@ export function Modal({
           leaveTo="opacity-0"
         >
           <div
-            className="fixed bg-black/25 backdrop-blur-sm"
+            className="fixed bg-forest/40 backdrop-blur-sm"
             style={isRight ? { top: headerOffset, left: 0, right: 0, bottom: 0 } : { inset: 0 }}
           />
         </TransitionChild>

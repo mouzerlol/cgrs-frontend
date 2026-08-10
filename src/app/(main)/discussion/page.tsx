@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import ThreadList from '@/components/discussions/ThreadList';
 import BookmarkedOnlyFilter from '@/components/discussions/BookmarkedOnlyFilter';
+import DrawerFilters from '@/components/discussions/DrawerFilters';
 import SortDropdown from '@/components/discussions/SortDropdown';
 import ViewToggle from '@/components/discussions/ViewToggle';
 import { CategoryCTA } from '@/components/discussions/CategoryCTA';
@@ -126,6 +127,60 @@ export default function DiscussionPage() {
     console.log('Shared thread:', threadId);
   };
 
+  const newThreadHref = activeCategory
+    ? `/discussion/new?category=${activeCategory}`
+    : '/discussion/new';
+
+  const newThreadClasses = cn(
+    'inline-flex items-center justify-center gap-2 px-4 py-2.5',
+    'bg-terracotta text-bone rounded-xl',
+    'font-medium text-sm',
+    'shadow-[0_2px_10px_rgba(26,34,24,0.18)]',
+    'transition-all duration-200',
+    'hover:bg-terracotta-dark hover:-translate-y-0.5',
+    'hover:shadow-[0_6px_20px_rgba(217,93,57,0.35)]',
+    'focus:outline-none focus:ring-2 focus:ring-terracotta/50'
+  );
+
+  /*
+   * The blog's hero controls, applied here: sort, view and the new-thread
+   * action float on the hero photograph opposite the heading card instead of
+   * occupying their own row above the sidebar.
+   *
+   * Desktop only. Below `lg` the sidebar collapses into a drawer, and these
+   * follow it there rather than competing with the heading card for a 390px
+   * line — all except "new thread", which repeats beside the drawer's trigger
+   * so the page's one write action is never a menu away.
+   *
+   * Everything in here carries an opaque fill and a shadow — the page
+   * background is a photo, and a translucent surface would hand its contrast
+   * to whatever happens to sit behind it.
+   */
+  const heroControls = (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <BookmarkedOnlyFilter
+        pressed={bookmarksOnly}
+        onPressedChange={setBookmarksOnly}
+        disabled={isSignedIn !== true}
+        onHero
+      />
+      <SortDropdown
+        value={sort}
+        onChange={setSort}
+        className="rounded-xl shadow-[0_2px_10px_rgba(26,34,24,0.18)]"
+      />
+      <ViewToggle
+        value={viewMode}
+        onChange={setViewMode}
+        className="shadow-[0_2px_10px_rgba(26,34,24,0.18)]"
+      />
+      <Link href={newThreadHref} className={newThreadClasses}>
+        <Icon icon="lucide:plus" className="w-4 h-4" />
+        New
+      </Link>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-bone">
       <PageHeader
@@ -136,39 +191,14 @@ export default function DiscussionPage() {
         variant="compact"
         backgroundImage="/images/mangere-mountain.jpg"
         showBreadcrumbs={false}
+        heroAside={heroControls}
+        heroAsideClassName="hidden lg:block"
       />
 
       <SiteBreadcrumbs variant="belowHero" />
 
       <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
-          <div className="mb-3 flex justify-end gap-3 sm:mb-4">
-            <div className="flex items-center gap-2">
-              <BookmarkedOnlyFilter
-                pressed={bookmarksOnly}
-                onPressedChange={setBookmarksOnly}
-                disabled={isSignedIn !== true}
-              />
-              <SortDropdown value={sort} onChange={setSort} />
-              <ViewToggle value={viewMode} onChange={setViewMode} />
-              <Link
-                href={activeCategory ? `/discussion/new?category=${activeCategory}` : '/discussion/new'}
-                className={cn(
-                  'inline-flex items-center gap-2 px-4 py-2.5',
-                  'bg-terracotta text-bone rounded-xl',
-                  'font-medium text-sm',
-                  'transition-all duration-200',
-                  'hover:bg-terracotta-dark hover:-translate-y-0.5',
-                  'hover:shadow-[0_6px_20px_rgba(217,93,57,0.35)]',
-                  'focus:outline-none focus:ring-2 focus:ring-terracotta/50'
-                )}
-              >
-                <Icon icon="lucide:plus" className="w-4 h-4" />
-                <span className="hidden sm:inline">New</span>
-              </Link>
-            </div>
-          </div>
-
           <SidebarLayout
             categories={sortedCategories.map((c): SidebarCategory => ({
               id: c.slug,
@@ -183,6 +213,29 @@ export default function DiscussionPage() {
             allOptionIcon="lucide:layout-grid"
             ariaLabel="Discussion categories"
             drawerTitle="Topics"
+            headerAction={
+              <Link
+                href={newThreadHref}
+                /* Tighter than the hero copy: it shares a 390px line with the
+                   drawer trigger, and the few pixels are the difference
+                   between "All Categories" and "All Categor…". */
+                className={cn(newThreadClasses, 'min-h-[56px] px-3 shadow-none')}
+              >
+                <Icon icon="lucide:plus" className="w-4 h-4" />
+                New
+              </Link>
+            }
+            drawerFooter={
+              <DrawerFilters
+                sort={sort}
+                onSortChange={setSort}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                bookmarksOnly={bookmarksOnly}
+                onBookmarksOnlyChange={setBookmarksOnly}
+                bookmarksEnabled={isSignedIn === true}
+              />
+            }
           >
             <div className="flex min-h-0 flex-1 flex-col">
               {/* Thread List */}

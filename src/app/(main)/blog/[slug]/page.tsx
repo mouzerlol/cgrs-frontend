@@ -1,51 +1,53 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { NewsArticle } from '@/types';
 import ArticleContent from '@/components/blog/ArticleContent';
-import newsData from '@/data/news.json';
 import { getBreadcrumbsJsonLd } from '@/lib/breadcrumbs';
+import { getManifestOrNull, getPost, getPostWithBody, getRelatedPosts } from '@/lib/blog';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+/** Meta descriptions are bounded; an excerpt may not be. */
+function description(excerpt: string): string {
+  return excerpt.length > 160 ? `${excerpt.slice(0, 157)}...` : excerpt;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const articles = newsData.articles as NewsArticle[];
-  const article = articles.find((a) => a.slug === slug);
+  const post = await getPost(slug);
 
-  if (!article) {
+  if (!post) {
     return { title: 'Article Not Found | Coronation Gardens' };
   }
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog' },
-    { label: article.title },
+    { label: post.title },
   ];
 
-  const description =
-    article.excerpt.length > 160 ? article.excerpt.slice(0, 157) + '...' : article.excerpt;
+  const summary = description(post.excerpt);
   const ogImage = {
-    url: `/api/og/news?slug=${article.slug}`,
+    url: `/api/og/blog?slug=${post.slug}`,
     width: 1200,
     height: 630,
-    alt: `${article.title}, on the Coronation Gardens community noticeboard.`,
+    alt: `${post.title}, on the Coronation Gardens community noticeboard.`,
   };
 
   return {
-    title: `${article.title} | Coronation Gardens`,
-    description,
+    title: `${post.title} | Coronation Gardens`,
+    description: summary,
     openGraph: {
-      title: article.title,
-      description,
+      title: post.title,
+      description: summary,
       type: 'article',
       images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
-      title: article.title,
-      description,
+      title: post.title,
+      description: summary,
       images: [ogImage.url],
     },
     other: {
@@ -54,26 +56,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+/**
+ * Prerender what exists at build, and keep serving what does not.
+ *
+ * `dynamicParams` stays on, so a post published after the last deployment
+ * renders on first request and is cached from there. The build only warms the
+ * cache; it is never what makes a post reachable — which is why an unreachable
+ * origin during a build yields an empty list rather than a failure.
+ */
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  const articles = newsData.articles as NewsArticle[];
-  return articles.map((article) => ({
-    slug: article.slug,
-  }));
+  const manifest = await getManifestOrNull();
+  if (!manifest) return [];
+  return manifest.posts.map((post) => ({ slug: post.slug }));
 }
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const articles = newsData.articles as NewsArticle[];
-  const article = articles.find((a) => a.slug === slug);
+  const found = await getPostWithBody(slug);
 
-  if (!article) {
+  // A slug the manifest does not carry is a 404, whether it is a draft, an
+  // unpublished post, or one of the removed placeholders. No redirects.
+  if (!found) {
     notFound();
   }
 
-  const relatedArticles = articles
-    .filter((a) => a.id !== article.id)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 3);
+  const relatedPosts = await getRelatedPosts(slug);
 
-  return <ArticleContent article={article} relatedArticles={relatedArticles} />;
+  return (
+    <ArticleContent post={found.post} blocks={found.blocks} relatedPosts={relatedPosts} />
+  );
 }

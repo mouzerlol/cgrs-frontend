@@ -6,6 +6,11 @@ import { NextResponse } from 'next/server';
 const isProtectedRoute = createRouteMatcher([
   '/admin(.*)',
   '/discussion/new(.*)',
+  // Threads are members-only. Gating here sends a signed-out visitor to sign-in with a
+  // return URL; without it the thread page loads, the API 401s, and the global query
+  // error handler bounces them to /no-access ("Session could not be verified"), which
+  // reads as a dead link to someone who simply is not signed in.
+  '/discussion/thread(.*)',
   '/account(.*)',
 ]);
 
@@ -56,9 +61,43 @@ CLERK_SECRET_KEY=sk_test_...</pre>
   });
 }
 
+/**
+ * Blog paths served statically to everyone, and dynamically to members.
+ *
+ * `/blog` and `/blog/[slug]` are prerendered from the public manifest and make
+ * no `auth()` call — reading a role inside them would opt the whole segment out
+ * of static generation for crawlers and signed-out visitors too, which is most
+ * of the traffic. So a signed-in request is rewritten instead, onto sibling
+ * routes that render dynamically and resolve the viewer's role themselves.
+ *
+ * The URL never changes: an owner and a stranger share one link, and it is the
+ * route below that decides whether the stranger gets the article or a 404.
+ *
+ * Only the cheap `userId` check happens here. Resolving the role would mean a
+ * network call to Cloud Run from the edge on every blog request, with nowhere to
+ * cache the answer.
+ */
+const isBlogRoute = createRouteMatcher(['/blog', '/blog/(.*)']);
+
+/**
+ * Where the rewrite lands. A sibling segment rather than `/blog/members`, which
+ * would collide with the `[slug]` space and quietly reserve `members` as a slug
+ * nobody could publish under.
+ */
+const MEMBERS_BLOG_PREFIX = '/blog-members';
+
 const clerkAuthMiddleware = clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) return;
   if (isProtectedRoute(req)) await auth.protect();
+
+  if (isBlogRoute(req)) {
+    const { userId } = await auth();
+    if (userId) {
+      const url = req.nextUrl.clone();
+      url.pathname = `${MEMBERS_BLOG_PREFIX}${url.pathname.slice('/blog'.length)}`;
+      return NextResponse.rewrite(url);
+    }
+  }
 });
 
 export default function middleware(request: NextRequest, event: Parameters<typeof clerkAuthMiddleware>[1]) {

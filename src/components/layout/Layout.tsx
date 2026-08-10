@@ -1,6 +1,6 @@
 import SiteChromeBar from '@/components/layout/SiteChromeBar';
 import Footer from '@/components/layout/Footer';
-import FooterNewsletter from '@/components/sections/FooterNewsletter';
+import FooterCallToAction from '@/components/sections/FooterCallToAction';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { AppToaster } from '@/components/ui/AppToaster';
 
@@ -25,7 +25,7 @@ export default function Layout({ children }: LayoutProps) {
       <main id="main-content" className="flex-grow">
         {children}
       </main>
-      <FooterNewsletter />
+      <FooterCallToAction />
       <Footer />
       <AppToaster />
     </div>

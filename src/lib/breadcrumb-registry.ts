@@ -2,11 +2,15 @@
  * Sync label resolution for breadcrumb dynamic URL segments (JSON-backed routes).
  */
 
-import newsData from '@/data/news.json';
 import eventsData from '@/data/events.json';
 import portfoliosData from '@/data/portfolios.json';
 import boardsData from '@/data/boards.json';
-import type { NewsArticle, Event } from '@/types';
+import type { Event } from '@/types';
+
+/** A slug read back as words, for a leaf whose real title is not to hand. */
+function deslug(value: string): string {
+  return value.replace(/-/g, ' ').replace(/^./, (character) => character.toUpperCase());
+}
 
 /** Shorten opaque IDs when no friendly title exists. */
 function shortId(value: string): string {
@@ -19,9 +23,13 @@ export type DynamicLabelKind = 'blog' | 'calendar' | 'thread' | 'board' | 'portf
  * Resolve a human-readable label for a dynamic path segment (sync; JSON data only).
  */
 export function resolveDynamicLabel(kind: DynamicLabelKind, value: string): string {
+  // Blog titles live in the published manifest, which is fetched on the server —
+  // there is nothing to look up synchronously here, and reaching for one would
+  // put an API call on a public page. The article page knows its own title and
+  // passes it as `leafLabel`; this is only what a link to a post rendered
+  // somewhere else falls back to.
   if (kind === 'blog') {
-    const articles = newsData.articles as NewsArticle[];
-    return articles.find((a) => a.slug === value)?.title ?? value;
+    return deslug(value);
   }
   if (kind === 'calendar') {
     const events = eventsData.events as Event[];

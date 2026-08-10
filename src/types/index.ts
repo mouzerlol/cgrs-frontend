@@ -11,19 +11,18 @@ export interface Committee {
   members: CommitteeMember[];
 }
 
-export interface NewsArticle {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  date: string;
-  category: 'general' | 'guidelines' | 'events' | 'maintenance' | 'policy';
-  image: string;
-  featured: boolean;
-  author: string;
-  readTime?: string;
-}
+/**
+ * The photograph attached to an article.
+ *
+ * `alt` and `caption` do different jobs and are both required. `alt` describes
+ * the picture for someone who cannot see it; `caption` is editorial copy shown
+ * on the print's ledge and inside the lightbox, and reads as a line in a printed
+ * plate section rather than as a description.
+ */
+// `ArticleImage` and `NewsArticle` are gone. A blog post's shape is now the
+// published contract's `PostSummary` (`src/lib/blog/types.ts`), and its hero is
+// `PostHero` — carried in the manifest with intrinsic dimensions, caption, and
+// credit rather than as a bundled JSON literal.
 
 export interface EventOrganizer {
   name: string;
@@ -268,6 +267,12 @@ export interface LightboxImage {
   url: string;
   thumbnail: string;
   alt?: string;
+  /**
+   * Editorial line shown in the lightbox's caption bar. Where it is absent the
+   * bar falls back to `alt`, which is why uploaded images (which carry a
+   * filename-derived alt and nothing else) still read sensibly.
+   */
+  caption?: string;
 }
 
 /**

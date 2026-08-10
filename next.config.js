@@ -11,6 +11,31 @@ function cspApiConnectOrigins() {
   }
 }
 
+/**
+ * The host published blog content is served from, derived from the one
+ * configured content origin rather than written out a second time.
+ *
+ * It has to appear in three places — the image optimiser's allowlist, `img-src`,
+ * and `connect-src` — and an image from a host missing from the first fails
+ * configuration rather than being served unoptimised. Deriving it means those
+ * three cannot disagree with what `src/lib/blog/` actually fetches.
+ *
+ * Empty only when the variable is missing or unparseable, in which case the blog
+ * has no origin to read at all and degrades to its unavailable state.
+ */
+function blogContentOrigin() {
+  const raw = (process.env.BLOG_CONTENT_ORIGIN || '').trim();
+  if (!raw) return null;
+  try {
+    return new URL(raw);
+  } catch {
+    return null;
+  }
+}
+
+const BLOG_CONTENT = blogContentOrigin();
+const cspBlogContent = BLOG_CONTENT ? ` ${BLOG_CONTENT.origin}` : '';
+
 // Dev-only allowance so impeccable live mode can load.
 const __impeccableLiveDev =
   process.env.NODE_ENV === 'development' ? ' http://localhost:8400' : '';
@@ -83,6 +108,11 @@ const nextConfig = {
   images: {
     // Allow localhost for development
     remotePatterns: [
+      // The fixture origin needs no entry: its imagery is served from `public/`,
+      // so development and tests run with no remote host at all.
+      ...(BLOG_CONTENT
+        ? [{ protocol: BLOG_CONTENT.protocol.replace(':', ''), hostname: BLOG_CONTENT.hostname }]
+        : []),
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -173,9 +203,9 @@ const nextConfig = {
               `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${cspClerkOrigins()} https://*.cloudflare.com${__impeccableLiveDev}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-              "img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com https://img.clerk.com https://*.r2.cloudflarestorage.com",
+              `img-src 'self' data: blob: https://i.pravatar.cc https://via.placeholder.com https://placehold.co https://*.tile.openstreetmap.org https://*.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com https://img.clerk.com https://*.r2.cloudflarestorage.com${cspBlogContent}`,
               // blob: lets pdf.js fetch the in-memory blob: URL the document viewer frames (see DocumentViewerModal).
-              `connect-src 'self' blob: https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000${__impeccableLiveDev}`.replace(/\s+/g, ' ').trim(),
+              `connect-src 'self' blob: https://*.r2.cloudflarestorage.com https://*.tile.openstreetmap.org https://basemaps.linz.govt.nz https://*.data-cdn.linz.govt.nz https://tiles.stadiamaps.com ${cspClerkOrigins()} https://*.cloudflare.com https://*.a.run.app https://*.australia-southeast1.run.app ${cspApiConnectOrigins()} http://127.0.0.1:7705 http://localhost:8000 http://api:8000${cspBlogContent}${__impeccableLiveDev}`.replace(/\s+/g, ' ').trim(),
               "worker-src 'self' blob:",
               `frame-src 'self' blob: ${cspClerkOrigins()} https://challenges.cloudflare.com`,
               "frame-ancestors 'none'",

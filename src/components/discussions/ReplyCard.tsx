@@ -3,13 +3,25 @@
 import { forwardRef, useState, type HTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
-import type { Reply } from '@/types';
+import type { ForumUser, Reply } from '@/types';
 import UpvoteButton from './UpvoteButton';
 import ReplyForm from './ReplyForm';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { Avatar } from '@/components/ui/Avatar';
 
 interface ReplyCardProps extends HTMLAttributes<HTMLDivElement> {
   reply: Reply;
+  /**
+   * Author of the reply this one answers. Renders an "in reply to" chip — set only
+   * where the nesting has stopped indenting, since the indent itself is the primary
+   * signal of parentage. `CommentThread` decides; this card just draws it.
+   */
+  parentAuthor?: ForumUser;
+  /**
+   * The chip is only needed below sm, where the indent caps at one level. Hides it
+   * from sm+ in CSS rather than JS so there is no hydration mismatch.
+   */
+  parentChipMobileOnly?: boolean;
   isUpvoted?: boolean;
   onUpvote?: () => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
@@ -66,6 +78,8 @@ const formatRelativeTime = (dateStr: string): string => {
 const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
   ({
     reply,
+    parentAuthor,
+    parentChipMobileOnly = false,
     isUpvoted = false,
     onUpvote,
     onReply,
@@ -148,6 +162,31 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
             )}
           </span>
         </div>
+
+        {/* Row 1b — "in reply to". Its own full-width row rather than a chip beside the
+            author badge: sharing that column with the timestamp truncated it. Present
+            only where the indent has stopped carrying parentage. */}
+        {parentAuthor && (
+          <div
+            className={cn(
+              'mt-2 flex items-center gap-1.5 text-xs text-forest/45',
+              parentChipMobileOnly && 'sm:hidden',
+            )}
+          >
+            <Icon icon="lucide:corner-up-left" className="w-3 h-3 shrink-0" aria-hidden />
+            <span>in reply to</span>
+            {/* The face, not the name — a name here is the one thing long enough to wrap.
+                Hover/focus names them. */}
+            <Tooltip content={parentAuthor.displayName}>
+              <Avatar
+                src={parentAuthor.avatar}
+                alt={`in reply to ${parentAuthor.displayName}`}
+                name={parentAuthor.displayName}
+                size="xs"
+              />
+            </Tooltip>
+          </div>
+        )}
 
         {/* Row 2 — the comment body, full card width, on its own row. */}
         {isEditing ? (

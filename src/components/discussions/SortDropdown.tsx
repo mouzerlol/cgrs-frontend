@@ -63,9 +63,14 @@ const SortDropdown = forwardRef<HTMLDivElement, SortDropdownProps>(
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
+            {/* `anchor` renders the panel in a portal rather than absolutely
+                inside the button's box. The dropdown now sits over the page
+                hero, whose section clips its overflow, and an in-flow panel
+                would be cut off at the fold. */}
             <ListboxOptions
+              anchor={{ to: 'bottom end', gap: 8 }}
               className={cn(
-                'absolute right-0 mt-2 w-48 origin-top-right z-50',
+                'w-48 origin-top-right z-50',
                 'bg-white rounded-xl shadow-lg border border-sage',
                 'ring-1 ring-black/5 focus:outline-none',
                 'p-1'

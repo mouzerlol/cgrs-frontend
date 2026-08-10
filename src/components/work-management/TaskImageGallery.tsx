@@ -256,6 +256,7 @@ export default function TaskImageGallery({
           initialIndex={lightboxIndex}
           isOpen={lightboxIndex !== null}
           onClose={() => setLightboxIndex(null)}
+          identity="management"
         />
       )}
     </div>

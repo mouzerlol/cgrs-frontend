@@ -18,7 +18,7 @@ vi.mock('@/components/sections/Hero', () => ({ default: () => null }));
 vi.mock('@/components/sections/UtilityDock', () => ({ default: () => null }));
 vi.mock('@/components/sections/About', () => ({ default: () => null }));
 vi.mock('@/components/sections/EventsSection', () => ({ default: () => null }));
-vi.mock('@/components/sections/NewsGrid', () => ({ default: () => null }));
+vi.mock('@/components/sections/BlogGrid', () => ({ default: () => null }));
 vi.mock('@/components/sections/QuickAccessGrid', () => ({ default: () => null }));
 vi.mock('@/components/sections/PageHeader', () => ({ default: () => null }));
 vi.mock('@/components/blog/ArticleContent', () => ({ default: () => null }));
@@ -169,13 +169,44 @@ describe('Page Metadata - SEO Requirements', () => {
 
 describe('Dynamic Page Metadata - Blog Articles', () => {
   it('generateMetadata returns title and description for a known article', async () => {
+    /*
+     * The post is served from a stubbed manifest rather than from a checked-in
+     * fixture origin, which no longer exists — it bundled invented posts into
+     * the production build. What this asserts is the page's own metadata rule,
+     * so what the manifest happens to carry was never the point.
+     */
+    vi.doMock('@/lib/blog', () => ({
+      getPost: async (slug: string) =>
+        slug === 'a-published-post'
+          ? {
+              slug,
+              title: 'A published post',
+              excerpt: 'A'.repeat(80) + ' summary of the article, long enough to be a description.',
+              date: '2026-08-01',
+              updated: null,
+              author: 'The Committee',
+              categorySlug: 'updates',
+              categoryLabel: 'Updates',
+              featured: false,
+              readingTime: 3,
+              bodyKey: 'posts/a-published-post-aaaa.json',
+              hero: null,
+            }
+          : null,
+    }));
+
+    vi.resetModules();
     const mod = await import('../(main)/blog/[slug]/page');
     const generateMetadata = mod.generateMetadata;
     expect(generateMetadata).toBeDefined();
-    const meta = await generateMetadata({ params: Promise.resolve({ slug: 'welcome-to-coronation-gardens' }) });
+
+    const meta = await generateMetadata({ params: Promise.resolve({ slug: 'a-published-post' }) });
     expect(meta.title).toContain('Coronation Gardens');
     expect(meta.description).toBeTruthy();
     expect((meta.description as string).length).toBeGreaterThanOrEqual(50);
+
+    vi.doUnmock('@/lib/blog');
+    vi.resetModules();
   });
 
   it('generateMetadata returns fallback for unknown slug', async () => {

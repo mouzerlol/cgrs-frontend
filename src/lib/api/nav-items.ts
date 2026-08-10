@@ -3,8 +3,6 @@
  * Fetches server-filtered navigation items based on user role.
  */
 
-import { isLocalApi } from '@/lib/api/client';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export interface NavItem {
@@ -23,15 +21,19 @@ export interface NavItemsResponse {
  * The server applies feature flags and role rules (Discussion, Management, etc.).
  * When signed in, pass Clerk `getToken` so the API can resolve membership; otherwise
  * the request is anonymous-only nav.
+ *
+ * No `dev-token` fallback here, unlike `apiRequest`. On a local API that token
+ * resolves to the dev bypass principal — a superadmin — so a signed-out browser
+ * was being handed the signed-in nav (Discussion and Management both visible)
+ * while production correctly showed neither. Nav is what tells a visitor what
+ * they have access to, so it follows the real session and nothing else.
  */
 export async function getNavItems(getToken?: () => Promise<string | null>): Promise<NavItemsResponse> {
   const headers: Record<string, string> = {};
   if (getToken) {
     const token = await getToken();
-    /** Align with apiRequest: local dev can use dev-token when Clerk has no session. */
-    const authToken = token ?? (isLocalApi ? 'dev-token' : null);
-    if (authToken) {
-      headers.Authorization = `Bearer ${authToken}`;
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
     }
   }
 

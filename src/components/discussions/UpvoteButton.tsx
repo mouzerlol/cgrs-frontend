@@ -6,8 +6,13 @@ import { cn } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 
 interface UpvoteButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Current upvote count */
-  count: number;
+  /**
+   * Current upvote count. Omit where there is no tally to state — the blog's
+   * article toolbar records the reader's own vote on their device and has no
+   * server-side total behind it, and a hard-coded 0/1 beside the arrow would
+   * read as a community count that nobody had joined.
+   */
+  count?: number;
   /** Whether the current user has upvoted */
   isUpvoted?: boolean;
   /** Callback when upvote is toggled */
@@ -101,7 +106,9 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
             icon={isUpvoted ? 'lucide:arrow-big-up-dash' : 'lucide:arrow-big-up'}
             className={cn(sizes.icon, 'transition-transform duration-200')}
           />
-          <span className={cn('font-semibold tabular-nums', sizes.text)}>{count}</span>
+          {count !== undefined && (
+            <span className={cn('font-semibold tabular-nums', sizes.text)}>{count}</span>
+          )}
         </button>
       </Tooltip>
     );

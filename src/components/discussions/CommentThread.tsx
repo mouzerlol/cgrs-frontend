@@ -2,7 +2,7 @@
 
 import { memo, useState, useCallback, useId } from 'react';
 import { cn } from '@/lib/utils';
-import type { Reply } from '@/types';
+import type { ForumUser, Reply } from '@/types';
 import ReplyCard from './ReplyCard';
 import UserAvatar from './UserAvatar';
 
@@ -16,8 +16,16 @@ export interface TreeNode {
   descendantCount: number;
 }
 
-/** Max visual nesting depth — deeper replies render at this level */
+/** Max visual nesting depth on desktop — deeper replies render at this level */
 const MAX_RENDER_DEPTH = 5;
+
+/**
+ * Mobile indents exactly one level. Even 32px gutters eat a 375px screen fast, so
+ * past the first step the tree goes flat and the "in reply to" chip carries the
+ * parentage instead. Handled in CSS (`max-sm:`) rather than a JS breakpoint so
+ * there is no hydration mismatch and no resize listener.
+ */
+const MOBILE_MAX_INDENT_DEPTH = 1;
 
 // =============================================================================
 // Tree Builder — converts flat reply list into tree nodes
@@ -68,6 +76,8 @@ export function buildReplyTree(replies: Reply[]): TreeNode[] {
 interface CommentThreadProps {
   node: TreeNode;
   depth?: number;
+  /** Author of the reply this one answers. Feeds the "in reply to" chip. */
+  parentAuthor?: ForumUser;
   hasMoreSiblingsBelow?: boolean;
   onUpvote?: (replyId: string) => void;
   onReply?: (body: string, parentReplyId?: string) => void | Promise<void>;
@@ -80,6 +90,7 @@ interface CommentThreadProps {
 const CommentThread = memo(function CommentThread({
   node,
   depth = 0,
+  parentAuthor,
   hasMoreSiblingsBelow = false,
   onUpvote,
   onReply,
@@ -92,20 +103,25 @@ const CommentThread = memo(function CommentThread({
   const childrenId = useId();
   const { reply, children } = node;
 
-  const visualDepth = Math.min(depth, MAX_RENDER_DEPTH);
   const hasChildren = children.length > 0;
   const totalDescendants = node.descendantCount;
   const isAuthor = Boolean(currentUserId && reply.author.clerkUserId === currentUserId);
 
+  /** This node's own children stop being indented on mobile past the cap. */
+  const flattensChildrenOnMobile = depth >= MOBILE_MAX_INDENT_DEPTH;
+  /** This node itself sits in a flattened run, so its connector would point at nothing. */
+  const isFlattenedOnMobile = depth > MOBILE_MAX_INDENT_DEPTH;
+  /** Same, on every size: past the desktop cap the tree stops indenting entirely. */
+  const isFlattenedOnDesktop = depth > MAX_RENDER_DEPTH;
+
+  /* "In reply to" is the fallback for parentage, not a restatement of it — the indent
+     and connector already say it wherever they exist. So the chip renders only where
+     this node is flat against its parent, and below sm only when that flattening is
+     mobile-only. */
+  const parentChip = isFlattenedOnMobile ? parentAuthor : undefined;
+
   const toggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => !prev);
-  }, []);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setIsCollapsed((prev) => !prev);
-    }
   }, []);
 
   // `--thread-indent` drives both the child offset and the connector geometry, so the
@@ -119,7 +135,10 @@ const CommentThread = memo(function CommentThread({
       {/* Thread Connector from Parent (The Curve) */}
       {depth > 0 && (
         <div
-          className="absolute pointer-events-none border-sage opacity-40"
+          className={cn(
+            'absolute pointer-events-none border-sage opacity-40',
+            isFlattenedOnMobile && 'max-sm:hidden',
+          )}
           style={{
             left: 'calc((var(--thread-indent) - 16px) * -1)',
             top: '-4px',
@@ -137,7 +156,10 @@ const CommentThread = memo(function CommentThread({
       {/* Continuation Line to next sibling */}
       {depth > 0 && hasMoreSiblingsBelow && (
         <div
-          className="absolute pointer-events-none border-sage opacity-40"
+          className={cn(
+            'absolute pointer-events-none border-sage opacity-40',
+            isFlattenedOnMobile && 'max-sm:hidden',
+          )}
           style={{
             left: 'calc((var(--thread-indent) - 16px) * -1)',
             top: '16px',
@@ -156,35 +178,56 @@ const CommentThread = memo(function CommentThread({
             <UserAvatar user={reply.author} size="sm" avatarOnly />
             {hasChildren && (
               <button
+                type="button"
                 onClick={toggleCollapse}
                 className="absolute left-[16px] top-[20px] bg-bone-light border border-forest/45 rounded-full w-7 h-7 flex items-center justify-center text-sm font-medium text-forest/90 hover:text-forest hover:bg-sage/10 transition-colors z-10"
-                aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                aria-label={
+                  isCollapsed
+                    ? `Expand ${totalDescendants} ${totalDescendants === 1 ? 'reply' : 'replies'} to ${reply.author.displayName}`
+                    : `Collapse replies to ${reply.author.displayName}`
+                }
+                aria-expanded={!isCollapsed}
+                aria-controls={childrenId}
               >
                 {isCollapsed ? '+' : '−'}
               </button>
             )}
           </div>
 
-          {/* Thread Line connecting down to children container */}
+          {/* Thread Line connecting down to children container. Hidden on mobile once
+              the children below stop being indented — it would run down to nothing. */}
           {!isCollapsed && hasChildren && (
-            <div className="w-[1px] grow mt-2 bg-sage opacity-40" />
+            <div
+              className={cn(
+                'w-[1px] grow mt-2 bg-sage opacity-40',
+                flattensChildrenOnMobile && 'max-sm:hidden',
+              )}
+            />
           )}
         </div>
 
         {/* Right Column: Content */}
         <div className="min-w-0 flex-1">
           {isCollapsed ? (
-            <div className="flex items-center gap-2 h-8 cursor-pointer" onClick={toggleCollapse}>
+            <button
+              type="button"
+              className="flex h-8 items-center gap-2 text-left"
+              onClick={toggleCollapse}
+              aria-expanded={false}
+              aria-controls={childrenId}
+            >
               <span className="font-semibold text-forest text-sm">
                 {reply.author.displayName}
               </span>
               <span className="text-xs text-forest/40">
                 • {totalDescendants} {totalDescendants === 1 ? 'reply' : 'replies'} hidden
               </span>
-            </div>
+            </button>
           ) : (
             <ReplyCard
               reply={reply}
+              parentAuthor={parentChip}
+              parentChipMobileOnly={!isFlattenedOnDesktop}
               isUpvoted={upvotedReplies.has(reply.id)}
               onUpvote={onUpvote ? () => onUpvote(reply.id) : undefined}
               onReply={onReply}
@@ -201,7 +244,17 @@ const CommentThread = memo(function CommentThread({
       {!isCollapsed && hasChildren && (
         <div
           id={childrenId}
-          className="relative flex flex-col ml-[var(--thread-indent)]"
+          className={cn(
+            'relative flex flex-col',
+            // Past the desktop cap the tree goes flat on every size; past the mobile
+            // cap it goes flat only below sm. The "in reply to" chip on each child
+            // carries the parentage the indent stopped showing.
+            depth >= MAX_RENDER_DEPTH
+              ? 'ml-0'
+              : flattensChildrenOnMobile
+                ? 'ml-[var(--thread-indent)] max-sm:ml-0'
+                : 'ml-[var(--thread-indent)]',
+          )}
           role="group"
           aria-label={`Replies to ${reply.author.displayName}`}
         >
@@ -210,6 +263,7 @@ const CommentThread = memo(function CommentThread({
               key={child.reply.id}
               node={child}
               depth={depth + 1}
+              parentAuthor={reply.author}
               hasMoreSiblingsBelow={index < children.length - 1}
               onUpvote={onUpvote}
               onReply={onReply}
@@ -220,16 +274,6 @@ const CommentThread = memo(function CommentThread({
             />
           ))}
         </div>
-      )}
-
-      {/* "Continue thread" link for max depth */}
-      {!isCollapsed && depth >= MAX_RENDER_DEPTH && hasChildren && (
-        <button
-          type="button"
-          className="mt-2 ml-[var(--thread-indent)] text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors"
-        >
-          Continue thread &rarr;
-        </button>
       )}
     </article>
   );

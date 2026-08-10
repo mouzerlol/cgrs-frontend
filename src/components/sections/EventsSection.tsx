@@ -77,9 +77,11 @@ export default function EventsSection({
           <div className="text-center mt-10">
             <Link
               href="/calendar"
-              className="inline-flex items-center gap-2 text-sm font-medium text-bone uppercase tracking-wider hover:text-terracotta transition-colors"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-bone uppercase tracking-wider hover:text-terracotta transition-colors"
             >
-              View All Events
+              {/* Rule sits on the label, not the link box, so it stops short
+                  of the arrow. */}
+              <span className="underline-draw">View All Events</span>
               <Icon name="arrow-right" size="sm" />
             </Link>
           </div>

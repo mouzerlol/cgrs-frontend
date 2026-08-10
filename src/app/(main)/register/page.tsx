@@ -21,7 +21,9 @@ export default function RegisterPage() {
         backgroundImage="/images/mangere-mountain.jpg"
       />
 
-      <section className="section flex-grow flex flex-col items-center justify-center relative z-10 -mt-12">
+      {/* No negative top margin: it pulled this section over the breadcrumb
+          strip above, leaving the trail visible but unclickable. */}
+      <section className="section flex-grow flex flex-col items-center justify-center relative z-10">
         <div className="container">
           <div className="max-w-md mx-auto flex flex-col items-center w-full">
             <div className="w-full bg-sage-light rounded-[24px] shadow-[0_20px_60px_rgba(26,34,24,0.1)] border border-sage/30 p-6 sm:p-10 relative overflow-hidden">

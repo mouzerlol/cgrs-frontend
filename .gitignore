@@ -14,6 +14,10 @@ dist/
 .env.development.local
 .env.test.local
 .env.production.local
+# Backups of env files hold the same live credentials as the originals.
+*.env.bak
+.env.*.bak
+.env.local.bak
 
 # Logs
 npm-debug.log*
@@ -130,3 +134,6 @@ test-results/
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Env backups — may contain secrets
+*.bak

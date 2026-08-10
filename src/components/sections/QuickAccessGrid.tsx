@@ -17,12 +17,13 @@ const DEFAULT_FLAG_IDS: Record<string, boolean> = {
 
 const CARDS: QuickAccessCardType[] = [
   {
-    title: 'Report an Issue',
-    description: 'Report maintenance & community issues',
-    href: '/management-request',
+    title: 'Committee Blog',
+    description: 'Updates from your committee',
+    href: '/blog',
     type: 'large',
-    backgroundImage: '/images/quick-access/report-issue.png',
-    flagId: FEATURE_FLAG_IDS.NAV_REPORT_ISSUE,
+    icon: 'edit',
+    backgroundImage: '/images/quick-access/committee-blog.png',
+    flagId: FEATURE_FLAG_IDS.NAV_BLOG,
   },
   {
     title: 'Message Board',
@@ -34,22 +35,21 @@ const CARDS: QuickAccessCardType[] = [
     flagId: FEATURE_FLAG_IDS.NAV_DISCUSSION,
   },
   {
-    title: 'Committee Blog',
-    description: 'Updates from your committee',
-    href: '/blog',
+    title: 'Report an Issue',
+    description: 'Report maintenance & community issues',
+    href: '/management-request',
     type: 'simple',
-    icon: 'edit',
-    backgroundImage: '/images/quick-access/committee-blog.png',
-    flagId: FEATURE_FLAG_IDS.NAV_BLOG,
+    icon: 'lightbulb',
+    backgroundImage: '/images/quick-access/report-issue.png',
+    flagId: FEATURE_FLAG_IDS.NAV_REPORT_ISSUE,
   },
   {
-    title: 'CGRS Calendar',
-    description: 'Community events & activities',
-    href: '/calendar',
+    title: 'Community Guidelines',
+    description: 'Rules, forms & policies',
+    href: '/guidelines',
     type: 'simple',
-    icon: 'calendar',
-    backgroundImage: '/images/quick-access/cgrs-calendar.png',
-    flagId: FEATURE_FLAG_IDS.NAV_CALENDAR,
+    icon: 'document',
+    backgroundImage: '/images/quick-access/community-guidelines.png',
   },
   {
     title: 'Coronation Gardens Map',
@@ -61,20 +61,21 @@ const CARDS: QuickAccessCardType[] = [
     flagId: FEATURE_FLAG_IDS.NAV_MAP,
   },
   {
-    title: 'Community Guidelines',
-    description: 'Rules, forms & policies',
-    href: '/guidelines',
-    type: 'simple',
-    icon: 'document',
-    backgroundImage: '/images/quick-access/community-guidelines.png',
-  },
-  {
     title: 'Connect',
     description: 'Join our Facebook & WhatsApp',
     href: '/contact?subject=connect',
     type: 'simple',
     icon: 'share',
     backgroundImage: '/images/quick-access/connect.png',
+  },
+  {
+    title: 'CGRS Calendar',
+    description: 'Community events & activities',
+    href: '/calendar',
+    type: 'simple',
+    icon: 'calendar',
+    backgroundImage: '/images/quick-access/cgrs-calendar.png',
+    flagId: FEATURE_FLAG_IDS.NAV_CALENDAR,
   },
 ];
 
@@ -105,8 +106,7 @@ export default function QuickAccessGrid() {
 
   return (
     <section
-      className="section relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, var(--bone) 0%, #FAF8F3 100%)' }}
+      className="section relative overflow-hidden bg-white"
       id="quick-access"
     >
       {/* Divider line at top */}
@@ -128,7 +128,7 @@ export default function QuickAccessGrid() {
           <p className="mt-4 opacity-70">Access all resident services and community features instantly</p>
         </div>
 
-        <div className="p-4 sm:p-8 bg-black border border-black mb-10">
+        <div className="p-4 sm:p-8 bg-white border-0 mb-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {visibleCards.map((card, index) => (
               <BrutallyMinimalCard 

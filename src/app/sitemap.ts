@@ -1,10 +1,31 @@
 import type { MetadataRoute } from 'next'
-import newsData from '@/data/news.json'
 import eventsData from '@/data/events.json'
 import discussionsData from '@/data/discussions.json'
 import { getPublicAppOrigin } from '@/lib/app-url'
+import { MANIFEST_REVALIDATE_SECONDS, getManifestOrNull } from '@/lib/blog'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/** Fails the build if the literal below drifts from the manifest's own window. */
+const _revalidateMatchesManifest: 60 = MANIFEST_REVALIDATE_SECONDS
+
+/**
+ * Generated at request time, not at build.
+ *
+ * Blog entries come from the published manifest, and publishing deliberately
+ * requires no deployment — so a sitemap fixed at build would freeze at whatever
+ * was live when the last release shipped. It would look entirely correct in
+ * review and be wrong in production, which is the worst combination available.
+ *
+ * The window matches the manifest's own, so the sitemap is never fresher or
+ * staler than the pages it lists.
+ *
+ * Written as a literal because Next.js reads this field statically at build and
+ * refuses an identifier: `Unknown identifier "MANIFEST_REVALIDATE_SECONDS" at
+ * "revalidate"`. Keep it equal to `MANIFEST_REVALIDATE_SECONDS` in
+ * `lib/blog/origin.ts`, which the assertion below holds to.
+ */
+export const revalidate = 60
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const BASE_URL = getPublicAppOrigin()
   // Static routes with their change frequencies and priorities
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -76,10 +97,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  // Dynamic blog post routes
-  const blogRoutes: MetadataRoute.Sitemap = newsData.articles.map((article) => ({
-    url: `${BASE_URL}/blog/${article.slug}/`,
-    lastModified: new Date(article.date),
+  // Dynamic blog post routes, from the manifest. An unreachable content origin
+  // costs the blog entries and leaves every other route in place — a sitemap
+  // missing a section beats a sitemap that fails to render.
+  const manifest = await getManifestOrNull()
+  const blogRoutes: MetadataRoute.Sitemap = (manifest?.posts ?? []).map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}/`,
+    // The updated date where the post carries one, its publication date where
+    // it does not — last-modified means the last time the content changed.
+    lastModified: new Date(post.updated ?? post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
