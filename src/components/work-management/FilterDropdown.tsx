@@ -46,7 +46,7 @@ export default function FilterDropdown({
       <Menu.Button
         className={cn(
           "inline-flex items-center gap-1 border transition-colors font-medium",
-          isOutline ? "rounded-lg px-3 py-2 text-sm" : "rounded-full",
+          isOutline ? "rounded px-3 py-2 text-sm" : "rounded-full",
           !isOutline && (isSm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-xs"),
           isActive
             ? "bg-terracotta/20 text-terracotta border-terracotta/30"
@@ -75,7 +75,7 @@ export default function FilterDropdown({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50 overflow-hidden">
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50 overflow-hidden">
           <div className="py-1 max-h-60 overflow-y-auto">
             {options.map((option) => {
               const isSelected = selectedValues.includes(option.value);

@@ -84,14 +84,14 @@ export default function ReviewQueueTable({ items, onApprove, onReject }: ReviewQ
                   <button
                     type="button"
                     onClick={() => onApprove(item)}
-                    className="inline-flex items-center gap-1 rounded-lg bg-forest px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-forest/90"
+                    className="inline-flex items-center gap-1 rounded bg-forest px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-forest/90"
                   >
                     <Check className="h-3.5 w-3.5" /> Verify
                   </button>
                   <button
                     type="button"
                     onClick={() => onReject(item)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-terracotta/40 px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
+                    className="inline-flex items-center gap-1 rounded border border-terracotta/40 px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
                   >
                     <X className="h-3.5 w-3.5" /> Reject
                   </button>

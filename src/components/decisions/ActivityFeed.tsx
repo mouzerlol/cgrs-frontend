@@ -47,12 +47,12 @@ export default function ActivityFeed({
                             value={newEntry}
                             onChange={(e) => setNewEntry(e.target.value)}
                             placeholder="Add update..."
-                            className="flex-1 px-3 py-2 text-sm rounded-lg border border-sage/20 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
+                            className="flex-1 px-3 py-2 text-sm rounded border border-sage/20 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
                             autoFocus
                         />
                         <button
                             type="submit"
-                            className="px-3 py-2 text-sm font-medium text-white bg-terracotta rounded-lg hover:bg-terracotta-dark transition-colors"
+                            className="px-3 py-2 text-sm font-medium text-white bg-terracotta rounded hover:bg-terracotta-dark transition-colors"
                         >
                             Post
                         </button>

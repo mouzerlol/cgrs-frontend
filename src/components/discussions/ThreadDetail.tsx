@@ -12,6 +12,7 @@ import ReplyForm, { type ReplyFormHandle } from './ReplyForm';
 import BookmarkButton from './BookmarkButton';
 import ShareDropdown from './ShareDropdown';
 import ThreadBackdrop from './ThreadBackdrop';
+import { THREAD_GUTTER_INDENT } from './thread-gutter';
 
 interface ThreadDetailProps extends HTMLAttributes<HTMLDivElement> {
   thread: Thread;
@@ -127,7 +128,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
         <ThreadHeader thread={thread} showBackLink={false} documentActions={documentActions} />
 
         {/* Body — indented to the gutter so the prose starts on the title's edge. */}
-        <div data-testid="thread-body-row" className="mt-6 sm:pl-[calc(8rem_+_1.25rem)]">
+        <div data-testid="thread-body-row" className={cn('mt-6', THREAD_GUTTER_INDENT)}>
           <ThreadBody
             thread={thread}
             currentUserId={currentUserId}
@@ -168,7 +169,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
           )}
         >
         {/* Replies Section */}
-        <section ref={repliesSectionRef} id={REPLIES_ID} className="scroll-mt-24">
+        <section ref={repliesSectionRef} id={REPLIES_ID} className="scroll-anchor">
           <ReplyList
             replies={replies}
             showCount={false}
@@ -188,7 +189,7 @@ const ThreadDetail = forwardRef<HTMLDivElement, ThreadDetailProps>(
           <section
             ref={replyFormSectionRef}
             id={REPLY_FORM_ID}
-            className="scroll-mt-24 bg-sage-light rounded-card border border-sage/30 p-6 md:p-8"
+            className="scroll-anchor bg-sage-light rounded-card border border-sage/30 p-6 md:p-8"
           >
             <div className="flex items-center gap-2 mb-4">
               <Icon icon="lucide:reply" className="w-5 h-5 text-terracotta" />

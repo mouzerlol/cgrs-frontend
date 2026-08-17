@@ -26,7 +26,7 @@ export function BodyInput({ value, onChange, error }: BodyInputProps) {
         rows={6}
         maxLength={MAX_LENGTH}
         className={cn(
-          'w-full p-md bg-white border border-sage rounded-xl text-base text-forest font-body transition-all duration-[250ms] ease-out-custom resize-y min-h-[120px] focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50',
+          'w-full p-md bg-white border border-sage rounded-lg text-base text-forest font-body transition-all duration-[250ms] ease-out-custom resize-y min-h-[120px] focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50',
           error && 'border-terracotta'
         )}
       />

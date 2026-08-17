@@ -43,7 +43,7 @@ export default function PetitionHeader({
 
       <div
         id="petition-meter"
-        className="bg-forest-light rounded-xl p-5 md:p-6"
+        className="bg-forest-light rounded-lg p-5 md:p-6"
         role="meter"
         aria-valuenow={supporterCount}
         aria-valuemin={0}
@@ -137,7 +137,7 @@ export default function PetitionHeader({
               href="#sign"
               className={cn(
                 'group inline-flex items-center justify-center gap-2.5',
-                'py-3 px-6 rounded-xl',
+                'py-3 px-6 rounded-lg',
                 'bg-terracotta hover:bg-terracotta-dark',
                 'font-body text-sm font-semibold text-bone',
                 'transition-all duration-[250ms] ease-out-custom',

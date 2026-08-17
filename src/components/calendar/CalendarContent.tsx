@@ -134,7 +134,7 @@ export function CalendarContent() {
         </motion.div>
       ) : error ? (
         <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="flex items-center justify-center p-xl bg-terracotta/10 rounded-xl text-terracotta">
+          <div className="flex items-center justify-center p-xl bg-terracotta/10 rounded-lg text-terracotta">
             <p>Unable to load calendar. Please try again later.</p>
           </div>
         </motion.div>
@@ -175,7 +175,7 @@ function CalendarSkeleton() {
           <div className="skeleton h-full w-full rounded" />
         </div>
       </div>
-      <div className="bg-sage-light rounded-b-[16px] h-auto flex flex-col overflow-visible order-1 lg:rounded-none lg:h-full lg:overflow-hidden lg:col-start-1 lg:col-end-2 lg:row-start-2 lg:row-end-3 lg:order-1 lg:shadow-[4px_0_24px_rgba(26,34,24,0.05)] lg:z-10">
+      <div className="bg-sage-light rounded-b-[12px] h-auto flex flex-col overflow-visible order-1 lg:rounded-none lg:h-full lg:overflow-hidden lg:col-start-1 lg:col-end-2 lg:row-start-2 lg:row-end-3 lg:order-1 lg:shadow-[4px_0_24px_rgba(26,34,24,0.05)] lg:z-10">
         <div className="flex-1 overflow-y-auto overflow-x-hidden bg-sage-light px-3">
           <div className="space-y-6 pt-md pb-xl px-[calc(0.5rem/3)]">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -186,8 +186,8 @@ function CalendarSkeleton() {
                 </div>
                 <div className="flex flex-col gap-2">
                   {Array.from({ length: 2 }).map((_, j) => (
-                    <div key={j} className="bg-white rounded-xl overflow-hidden border border-sage p-sm flex items-center gap-sm">
-                      <div className="skeleton h-10 w-10 rounded-lg shrink-0" />
+                    <div key={j} className="bg-white rounded-lg overflow-hidden border border-sage p-sm flex items-center gap-sm">
+                      <div className="skeleton h-10 w-10 rounded shrink-0" />
                       <div className="flex-1 space-y-2">
                         <div className="skeleton h-4 w-3/4 rounded" />
                         <div className="skeleton h-3 w-1/4 rounded" />
@@ -201,7 +201,7 @@ function CalendarSkeleton() {
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-t-[16px] p-sm shadow-[0_4px_24px_rgba(26,34,24,0.08)] flex flex-col gap-sm h-auto overflow-visible order-2 lg:rounded-none lg:px-md lg:py-md lg:pr-lg lg:gap-md lg:h-full lg:overflow-hidden lg:col-start-2 lg:col-end-3 lg:row-start-2 lg:row-end-3 lg:order-3">
+      <div className="bg-white rounded-t-[12px] p-sm shadow-[0_4px_24px_rgba(26,34,24,0.08)] flex flex-col gap-sm h-auto overflow-visible order-2 lg:rounded-none lg:px-md lg:py-md lg:pr-lg lg:gap-md lg:h-full lg:overflow-hidden lg:col-start-2 lg:col-end-3 lg:row-start-2 lg:row-end-3 lg:order-3">
         <div className="flex-1 overflow-y-visible overflow-x-hidden min-h-0 flex flex-col lg:overflow-y-hidden lg:h-full">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between">
@@ -209,7 +209,7 @@ function CalendarSkeleton() {
             </div>
             <div className="grid grid-cols-7 gap-1 mt-md">
               {Array.from({ length: 35 }).map((_, i) => (
-                <div key={i} className="skeleton h-20 rounded-lg" />
+                <div key={i} className="skeleton h-20 rounded" />
               ))}
             </div>
           </div>

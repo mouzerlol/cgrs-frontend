@@ -12,7 +12,7 @@ import {
 
 /** A row in the menu, at the account menu's own geometry. */
 const MENU_ITEM =
-  'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-bone';
+  'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone';
 
 interface ShareDropdownProps {
   /** Thread ID for generating share link. Unused when `shareUrl` is given. */
@@ -156,7 +156,7 @@ const ShareDropdown = forwardRef<HTMLDivElement, ShareDropdownProps>(
               className={cn(
                 'flex items-center justify-center transition-all duration-200',
                 !unstyledTrigger && [
-                  'rounded-lg border',
+                  'rounded border',
                   /* Same resting surface as `UpvoteButton` and `BookmarkButton`: the three
                      are one set of controls on the thread card and should read as one. */
                   'bg-sage-light text-forest border-sage',
@@ -217,7 +217,7 @@ const ShareDropdown = forwardRef<HTMLDivElement, ShareDropdownProps>(
              * dark one.
              */
             className={cn(
-              'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,14rem)] origin-top-right rounded-2xl',
+              'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,14rem)] origin-top-right rounded-xl',
               'focus:outline-none',
               siteHeaderDropdownSurface,
             )}

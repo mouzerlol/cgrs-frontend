@@ -105,7 +105,7 @@ export default function DesignExperimentsPage() {
                 key={tab.id}
                 className={({ selected }: { selected: boolean }) =>
                   cn(
-                    'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                    'px-4 py-2 text-sm font-medium rounded transition-all',
                     selected
                       ? 'bg-forest text-bone'
                       : 'text-forest/60 hover:text-forest hover:bg-sage-light'
@@ -410,7 +410,7 @@ function ColdStartBannerShowcase() {
           <p className="text-xs text-forest/70 mb-4">{note}</p>
 
           {/* Header strip mock — mirrors the production header chrome. */}
-          <div className="bg-forest/85 backdrop-blur-[12px] border-b border-white/10 py-sm px-md md:px-lg flex justify-between items-center rounded-lg overflow-hidden">
+          <div className="bg-forest/85 backdrop-blur-[12px] border-b border-white/10 py-sm px-md md:px-lg flex justify-between items-center rounded overflow-hidden">
             <span className="font-display text-base font-medium tracking-wide leading-none flex items-center shrink-0 pr-8 md:pr-16 text-bone">
               <span className="flex flex-col leading-tight">
                 <span className="block whitespace-nowrap">CORONATION</span>

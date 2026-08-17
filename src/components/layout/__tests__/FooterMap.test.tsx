@@ -49,7 +49,7 @@ describe('FooterMap', () => {
 
     const wrapper = screen.getByTestId('footer-map-wrapper');
     expect(wrapper).toHaveStyle({ position: 'relative' });
-    expect(wrapper).toHaveStyle({ borderRadius: '8px' });
+    expect(wrapper).toHaveStyle({ borderRadius: '4px' });
     expect(wrapper).toHaveStyle({ overflow: 'hidden' });
   });
 

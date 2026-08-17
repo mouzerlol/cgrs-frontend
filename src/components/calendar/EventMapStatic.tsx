@@ -118,7 +118,7 @@ export default function EventMapStatic({
 
   return (
     <div
-      className="relative w-full h-[300px] rounded-xl overflow-hidden bg-forest"
+      className="relative w-full h-[300px] rounded-lg overflow-hidden bg-forest"
     >
       <BaseMap
         center={CGRS_CENTER}
@@ -139,7 +139,7 @@ export default function EventMapStatic({
       />
 
       {destination && (
-        <div className="absolute bottom-md left-md flex items-center gap-xs p-sm px-md bg-forest/90 backdrop-blur-sm rounded-lg text-bone text-sm z-[1000]">
+        <div className="absolute bottom-md left-md flex items-center gap-xs p-sm px-md bg-forest/90 backdrop-blur-sm rounded text-bone text-sm z-[1000]">
           <span className="text-base">📍</span>
           <span className="font-medium">{destination.label}</span>
         </div>

@@ -77,7 +77,7 @@ function DrawerNavRow({ isActive, onClick, icon, name, count }: DrawerNavRowProp
       onClick={onClick}
       aria-current={isActive ? 'true' : undefined}
       className={cn(
-        'group flex items-center gap-sm w-full px-sm py-3 min-h-[52px] rounded-xl',
+        'group flex items-center gap-sm w-full px-sm py-3 min-h-[52px] rounded-lg',
         'font-body font-medium text-bone text-left',
         'transition-colors duration-[250ms] ease-out-custom',
         isActive ? 'bg-terracotta/20' : 'hover:bg-bone/[0.1]'
@@ -85,7 +85,7 @@ function DrawerNavRow({ isActive, onClick, icon, name, count }: DrawerNavRowProp
     >
       <span
         className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded',
           'transition-colors duration-[250ms] ease-out-custom',
           isActive ? 'bg-terracotta text-bone' : 'bg-bone/[0.12] text-sage-light'
         )}
@@ -97,7 +97,7 @@ function DrawerNavRow({ isActive, onClick, icon, name, count }: DrawerNavRowProp
         <span
           className={cn(
             'inline-flex shrink-0 items-center justify-center px-2 py-0.5',
-            'rounded-xl text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
+            'rounded-lg text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
             isActive ? 'bg-terracotta text-bone' : 'bg-sage/20 border border-sage/30 text-sage-light'
           )}
         >

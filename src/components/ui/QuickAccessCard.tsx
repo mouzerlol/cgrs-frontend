@@ -60,7 +60,7 @@ export default function QuickAccessCard({ card, index = 0 }: QuickAccessCardProp
         {!isLarge && (
           <div
             className={cn(
-              'w-12 h-12 flex items-center justify-center rounded-xl mb-md transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom group-hover:scale-105',
+              'w-12 h-12 flex items-center justify-center rounded-lg mb-md transition-colors, transition-transform, transition-opacity duration-400 ease-out-custom group-hover:scale-105',
               isAccent && '!bg-white/20',
               !isAccent && hasPhotoBg && 'bg-terracotta group-hover:bg-terracotta-dark',
               !isAccent && !hasPhotoBg && 'bg-sage-light group-hover:bg-sage',
@@ -74,7 +74,7 @@ export default function QuickAccessCard({ card, index = 0 }: QuickAccessCardProp
           </div>
         )}
         {isLarge && (
-          <div className="w-14 h-14 flex items-center justify-center bg-terracotta rounded-2xl mb-4 transition-colors, transition-transform, transition-opacity duration-400 hover:scale-110 hover:rotate-[5deg]">
+          <div className="w-14 h-14 flex items-center justify-center bg-terracotta rounded-xl mb-4 transition-colors, transition-transform, transition-opacity duration-400 hover:scale-110 hover:rotate-[5deg]">
             <Icon name="amenities" size="lg" className="stroke-white" />
           </div>
         )}

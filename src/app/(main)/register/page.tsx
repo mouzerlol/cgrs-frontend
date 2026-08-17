@@ -26,7 +26,7 @@ export default function RegisterPage() {
       <section className="section flex-grow flex flex-col items-center justify-center relative z-10">
         <div className="container">
           <div className="max-w-md mx-auto flex flex-col items-center w-full">
-            <div className="w-full bg-sage-light rounded-[24px] shadow-[0_20px_60px_rgba(26,34,24,0.1)] border border-sage/30 p-6 sm:p-10 relative overflow-hidden">
+            <div className="w-full bg-sage-light rounded-[12px] shadow-[0_20px_60px_rgba(26,34,24,0.1)] border border-sage/30 p-6 sm:p-10 relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none texture-grain opacity-50 mix-blend-multiply"></div>
               
               <div className="relative z-10">

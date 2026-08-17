@@ -96,7 +96,7 @@ export default function ClerkAppUserButton() {
         <MenuItems
           modal={false}
           className={cn(
-            'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,20rem)] origin-top-right rounded-2xl',
+            'absolute right-0 z-[1100] mt-2 w-[min(100vw-2rem,20rem)] origin-top-right rounded-xl',
             'focus:outline-none',
             siteHeaderDropdownSurface
           )}
@@ -111,7 +111,7 @@ export default function ClerkAppUserButton() {
                 <Link
                   href="/account/profile"
                   className={cn(
-                    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-bone',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-bone',
                     siteHeaderDropdownItemInteractive,
                     focus && 'bg-white/10'
                   )}
@@ -128,7 +128,7 @@ export default function ClerkAppUserButton() {
                   <Link
                     href="/settings/system"
                     className={cn(
-                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-bone',
+                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-bone',
                       siteHeaderDropdownItemInteractive,
                       focus && 'bg-white/10'
                     )}
@@ -148,7 +148,7 @@ export default function ClerkAppUserButton() {
                   <button
                     type="button"
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-bone',
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone',
                       siteHeaderDropdownItemInteractive,
                       focus && 'bg-white/10'
                     )}

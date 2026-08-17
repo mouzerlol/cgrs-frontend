@@ -121,7 +121,7 @@ function Chip({
       title={title}
       onClick={onClick}
       className={cn(
-        'inline-flex min-h-[44px] items-center gap-2 rounded-xl border px-3',
+        'inline-flex min-h-[44px] items-center gap-2 rounded-lg border px-3',
         'font-body text-sm font-medium text-bone',
         'transition-colors duration-[250ms] ease-out-custom',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50',

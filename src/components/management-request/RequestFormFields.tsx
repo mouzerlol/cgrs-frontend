@@ -27,7 +27,7 @@ interface RequestFormFieldsProps {
 }
 
 const inputCls = [
-  'w-full py-3 px-4 bg-bone border border-sage rounded-[10px]',
+  'w-full py-3 px-4 bg-bone border border-sage rounded-[8px]',
   'font-body text-base text-forest',
   'transition-all duration-[250ms] ease-out-custom',
   'focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',

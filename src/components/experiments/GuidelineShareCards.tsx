@@ -846,7 +846,7 @@ export default function GuidelineShareCards() {
           their own title / description / domain chrome. So each card below <em>is</em> that image, shown inside a faithful mock
           of both apps. Every concept is type-led and shares one five-glyph language for the guideline themes.
         </p>
-        <div className="mt-5 flex items-center gap-8 rounded-lg bg-bone-light border border-sage/30 px-5 py-4">
+        <div className="mt-5 flex items-center gap-8 rounded bg-bone-light border border-sage/30 px-5 py-4">
           {THEMES.map((t) => (
             <div key={t.key} className="flex flex-col items-center gap-1.5">
               <Glyph name={t.key} size={28} color={FOREST} strokeWidth={1.6} />

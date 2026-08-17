@@ -97,7 +97,7 @@ export default function ContactPage() {
               </Card>
 
               {/* Emergency Contact */}
-              <div className="emergency-info p-6 rounded-[20px]">
+              <div className="emergency-info p-6 rounded-[12px]">
                 <Icon name="phone-emergency" size="lg" className="stroke-bone flex-shrink-0" />
                 <div>
                   <strong className="text-xs font-medium tracking-wider uppercase opacity-90 text-bone block">
@@ -117,7 +117,7 @@ export default function ContactPage() {
                 <h3 className="font-display text-xl font-medium mb-6">Quick Contact Options</h3>
                 <div className="space-y-3">
                   {QUICK_CONTACT_OPTIONS.map((option) => (
-                    <div key={option.title} className="flex items-center justify-between p-3 bg-sage-light rounded-lg">
+                    <div key={option.title} className="flex items-center justify-between p-3 bg-sage-light rounded">
                       <div>
                         <h4 className="font-medium">{option.title}</h4>
                         <p className="text-sm opacity-60">{option.desc}</p>

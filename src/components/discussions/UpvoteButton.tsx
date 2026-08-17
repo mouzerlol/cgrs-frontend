@@ -86,7 +86,7 @@ const UpvoteButton = forwardRef<HTMLButtonElement, UpvoteButtonProps>(
           disabled={disabled}
           className={cn(
             'flex items-center justify-center border transition-all duration-200',
-            isHorizontal ? 'rounded-md' : 'rounded-lg',
+            isHorizontal ? 'rounded' : 'rounded',
             direction === 'vertical' ? 'flex-col' : 'flex-row',
             sizes.button,
             sizes.gap,

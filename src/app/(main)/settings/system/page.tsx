@@ -26,7 +26,7 @@ interface FlagCardProps {
 
 function FlagCard({ flagId, enabled, onToggle, isUpdating }: FlagCardProps) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-white/50 p-4 border border-sage/20">
+    <div className="flex items-center justify-between rounded-lg bg-white/50 p-4 border border-sage/20">
       <div className="flex-1 min-w-0">
         <p className="font-medium text-forest truncate">{FLAG_LABELS[flagId]}</p>
         <p className="text-sm text-forest/60">{flagId}</p>
@@ -117,7 +117,7 @@ function LoadingContent() {
   return (
     <div className="space-y-4 py-12">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="h-20 animate-pulse rounded-xl bg-bone/50" />
+        <div key={i} className="h-20 animate-pulse rounded-lg bg-bone/50" />
       ))}
     </div>
   );
@@ -195,7 +195,7 @@ export default function SystemSettingsPage() {
         />
 
         {error && (
-          <div className="mb-6 rounded-lg bg-terracotta/10 border border-terracotta/20 p-4 text-terracotta">
+          <div className="mb-6 rounded bg-terracotta/10 border border-terracotta/20 p-4 text-terracotta">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
               <p>{error}</p>
@@ -203,9 +203,9 @@ export default function SystemSettingsPage() {
           </div>
         )}
 
-        <div className="mb-6 flex items-center justify-between rounded-xl bg-sage/10 p-4 border border-sage/20">
+        <div className="mb-6 flex items-center justify-between rounded-lg bg-sage/10 p-4 border border-sage/20">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-sage/20 p-2">
+            <div className="rounded bg-sage/20 p-2">
               <Settings className="h-5 w-5 text-sage" />
             </div>
             <div>

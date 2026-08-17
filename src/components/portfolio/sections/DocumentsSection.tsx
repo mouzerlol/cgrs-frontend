@@ -33,7 +33,7 @@ export default function DocumentsSection({ content, isEditingLayout, isLoading =
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-sage-light/30 transition-colors group cursor-pointer"
+                className="flex items-center gap-3 py-2 px-2 rounded hover:bg-sage-light/30 transition-colors group cursor-pointer"
               >
                 <IconComponent className="w-4 h-4 text-forest/40 shrink-0" />
                 <div className="flex-1 min-w-0">

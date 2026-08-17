@@ -37,21 +37,21 @@ export const clerkAppearance = {
     headerSubtitle: 'text-[15px] text-forest/70 font-body mb-4',
     
     // Form buttons
-    formButtonPrimary: 'bg-terracotta hover:bg-[#C74E2E] text-bone rounded-xl py-3.5 px-4 font-medium transition-all duration-300 shadow-[0_4px_12px_rgba(217,93,57,0.2)] hover:shadow-[0_8px_20px_rgba(217,93,57,0.3)] hover:-translate-y-0.5 text-[15px] border-none',
+    formButtonPrimary: 'bg-terracotta hover:bg-[#C74E2E] text-bone rounded-lg py-3.5 px-4 font-medium transition-all duration-300 shadow-[0_4px_12px_rgba(217,93,57,0.2)] hover:shadow-[0_8px_20px_rgba(217,93,57,0.3)] hover:-translate-y-0.5 text-[15px] border-none',
     
     // Form fields
-    formFieldInput: 'bg-bone border border-sage/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta/50 outline-none transition-all text-[15px] text-forest placeholder:text-forest/50',
+    formFieldInput: 'bg-bone border border-sage/30 rounded-lg px-4 py-3 focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta/50 outline-none transition-all text-[15px] text-forest placeholder:text-forest/50',
     formFieldLabel: 'text-[14px] font-medium text-forest/80 mb-1.5 flex items-center',
     
     // OTP / Verification code fields
-    otpCodeFieldInput: 'bg-white border-2 border-sage/40 rounded-xl focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta/50 outline-none text-forest font-bold text-lg transition-all',
+    otpCodeFieldInput: 'bg-white border-2 border-sage/40 rounded-lg focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta/50 outline-none text-forest font-bold text-lg transition-all',
     
     // Dividers
     dividerLine: 'bg-sage/40',
     dividerText: 'text-forest/60 text-[11px] font-bold uppercase tracking-[0.1em]',
     
     // Social buttons
-    socialButtonsBlockButton: 'bg-white text-forest border border-sage/30 hover:bg-bone hover:border-sage/40 hover:text-forest rounded-xl py-3 transition-all duration-300 shadow-[0_2px_8px_rgba(26,34,24,0.05)] relative overflow-hidden',
+    socialButtonsBlockButton: 'bg-white text-forest border border-sage/30 hover:bg-bone hover:border-sage/40 hover:text-forest rounded-lg py-3 transition-all duration-300 shadow-[0_2px_8px_rgba(26,34,24,0.05)] relative overflow-hidden',
     socialButtonsBlockButtonText: 'font-medium text-[15px]',
     socialButtonsProviderIcon: 'mr-2',
     
@@ -67,14 +67,14 @@ export const clerkAppearance = {
     formFieldWarningText: 'text-terracotta text-[13px] mt-1.5',
     formFieldErrorText: 'text-terracotta text-[13px] mt-1.5',
     alertText: 'text-terracotta font-medium',
-    alert: 'bg-terracotta/10 border border-terracotta/20 rounded-xl p-4 text-forest',
+    alert: 'bg-terracotta/10 border border-terracotta/20 rounded-lg p-4 text-forest',
     
     // Modals
     modalContent: 'bg-sage-light',
     modalBackdrop: 'bg-forest/60 backdrop-blur-sm',
     
     // User Button Dropdown overrides
-    userButtonPopoverCard: 'bg-sage-light rounded-2xl shadow-[0_20px_60px_rgba(26,34,24,0.12)] border border-sage/30 overflow-hidden',
+    userButtonPopoverCard: 'bg-sage-light rounded-xl shadow-[0_20px_60px_rgba(26,34,24,0.12)] border border-sage/30 overflow-hidden',
     userButtonPopoverActionButton: 'hover:bg-sage/30 text-forest transition-colors',
     userButtonPopoverActionButtonText: 'font-medium text-[14px] text-forest',
     userButtonPopoverActionButtonIcon: 'text-forest/70',

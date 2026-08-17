@@ -39,7 +39,7 @@ export default function ResolutionCard({
 
     return (
         <div
-            className={`group bg-white rounded-[10px] border border-sage/10 shadow-sm hover:shadow-md transition-all cursor-pointer ${className}`}
+            className={`group bg-white rounded-[8px] border border-sage/10 shadow-sm hover:shadow-md transition-all cursor-pointer ${className}`}
             onClick={onClick}
         >
             <div className="p-4">
@@ -120,7 +120,7 @@ export default function ResolutionCard({
                                     e.stopPropagation();
                                     onCopyLink(e);
                                 }}
-                                className="p-1.5 rounded-md hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
+                                className="p-1.5 rounded hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
                                 aria-label="Copy link"
                                 title="Copy link"
                             >
@@ -131,7 +131,7 @@ export default function ResolutionCard({
                                     e.stopPropagation();
                                     onCopyEmail(e);
                                 }}
-                                className="p-1.5 rounded-md hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
+                                className="p-1.5 rounded hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
                                 aria-label="Copy for email"
                                 title="Copy for email"
                             >
@@ -142,7 +142,7 @@ export default function ResolutionCard({
                                     e.stopPropagation();
                                     onExportPdf(e);
                                 }}
-                                className="p-1.5 rounded-md hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
+                                className="p-1.5 rounded hover:bg-sage/10 text-forest/50 hover:text-terracotta transition-colors"
                                 aria-label="Export PDF"
                                 title="Export PDF"
                             >

@@ -178,7 +178,7 @@ export default function ReportedIssueDetailPage() {
           <>
             Withdrawing tells the society you no longer need this looked at. You can&apos;t undo it.
             {withdrawError ? (
-              <span className="mt-3 block rounded-lg bg-terracotta/10 px-3 py-2 text-terracotta" role="alert">
+              <span className="mt-3 block rounded bg-terracotta/10 px-3 py-2 text-terracotta" role="alert">
                 {withdrawError}
               </span>
             ) : null}
@@ -287,7 +287,7 @@ export default function ReportedIssueDetailPage() {
                 setWithdrawConfirmOpen(true);
               }}
               className={cn(
-                'inline-flex min-h-[44px] items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold',
+                'inline-flex min-h-[44px] items-center justify-center rounded px-5 py-3 text-sm font-semibold',
                 'border border-terracotta text-terracotta transition-colors hover:bg-terracotta hover:text-bone',
               )}
             >
@@ -348,7 +348,7 @@ export default function ReportedIssueDetailPage() {
                       <textarea
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
-                        className="min-h-[100px] w-full rounded-lg border border-sage px-4 py-3 text-sm text-forest outline-none transition-colors focus:border-terracotta"
+                        className="min-h-[100px] w-full rounded border border-sage px-4 py-3 text-sm text-forest outline-none transition-colors focus:border-terracotta"
                       />
                       <div className="flex flex-wrap gap-2">
                         <button
@@ -356,7 +356,7 @@ export default function ReportedIssueDetailPage() {
                           onClick={() => updateCommentMutation.mutate({ commentId: item.id, content: editDraft })}
                           disabled={!editDraft.trim() || updateCommentMutation.isPending}
                           className={cn(
-                            'min-h-[44px] rounded-lg px-4 py-2 text-xs font-semibold text-bone',
+                            'min-h-[44px] rounded px-4 py-2 text-xs font-semibold text-bone',
                             'bg-forest transition-colors hover:bg-forest-light disabled:cursor-not-allowed disabled:opacity-70',
                           )}
                         >
@@ -369,7 +369,7 @@ export default function ReportedIssueDetailPage() {
                             setEditDraft('');
                           }}
                           disabled={updateCommentMutation.isPending}
-                          className="min-h-[44px] rounded-lg border border-sage px-4 py-2 text-xs font-semibold text-forest hover:bg-sage/10"
+                          className="min-h-[44px] rounded border border-sage px-4 py-2 text-xs font-semibold text-forest hover:bg-sage/10"
                         >
                           Cancel
                         </button>
@@ -394,7 +394,7 @@ export default function ReportedIssueDetailPage() {
             id="task-comment"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
-            className="min-h-[120px] w-full rounded-lg border border-sage px-4 py-3 text-sm text-forest outline-none transition-colors focus:border-terracotta"
+            className="min-h-[120px] w-full rounded border border-sage px-4 py-3 text-sm text-forest outline-none transition-colors focus:border-terracotta"
             placeholder="Add extra context or an update for management."
           />
           <button
@@ -402,7 +402,7 @@ export default function ReportedIssueDetailPage() {
             onClick={() => addCommentMutation.mutate()}
             disabled={!comment.trim() || addCommentMutation.isPending}
             className={cn(
-              'inline-flex min-h-[44px] items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold text-bone',
+              'inline-flex min-h-[44px] items-center justify-center rounded px-5 py-3 text-sm font-semibold text-bone',
               'bg-forest transition-colors hover:bg-forest-light disabled:cursor-not-allowed disabled:opacity-70',
             )}
           >

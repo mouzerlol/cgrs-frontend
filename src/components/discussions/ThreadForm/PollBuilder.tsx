@@ -121,9 +121,9 @@ export function PollBuilder({
         <button
           type="button"
           onClick={() => setIsExpanded(true)}
-          className="group flex items-center gap-md w-full p-md bg-gradient-to-br from-sage-light to-sage/30 border-2 border-dashed border-sage rounded-xl cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[72px] hover:border-terracotta hover:from-terracotta/5 hover:to-sage-light"
+          className="group flex items-center gap-md w-full p-md bg-gradient-to-br from-sage-light to-sage/30 border-2 border-dashed border-sage rounded-lg cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[72px] hover:border-terracotta hover:from-terracotta/5 hover:to-sage-light"
         >
-          <div className="w-11 h-11 flex items-center justify-center bg-bone rounded-[10px] text-terracotta shrink-0">
+          <div className="w-11 h-11 flex items-center justify-center bg-bone rounded-[8px] text-terracotta shrink-0">
             <BarChart2 className="w-5 h-5" />
           </div>
           <div className="flex-1 flex flex-col items-start gap-0.5">
@@ -141,7 +141,7 @@ export function PollBuilder({
   return (
     <div
       className={cn(
-        'bg-sage-light rounded-xl p-md border border-sage',
+        'bg-sage-light rounded-lg p-md border border-sage',
         isValid && 'border-terracotta'
       )}
     >
@@ -154,7 +154,7 @@ export function PollBuilder({
         <button
           type="button"
           onClick={clearPoll}
-          className="w-9 h-9 flex items-center justify-center bg-transparent border-none rounded-lg text-forest/50 cursor-pointer transition-all duration-[250ms] ease-out-custom hover:opacity-100 hover:bg-terracotta/10 hover:text-terracotta"
+          className="w-9 h-9 flex items-center justify-center bg-transparent border-none rounded text-forest/50 cursor-pointer transition-all duration-[250ms] ease-out-custom hover:opacity-100 hover:bg-terracotta/10 hover:text-terracotta"
           aria-label="Remove poll"
         >
           <X className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function PollBuilder({
             onChange={(e) => handleQuestionChange(e.target.value)}
             placeholder="What would you like to ask the community?"
             maxLength={200}
-            className="w-full py-sm px-md pr-20 bg-white border border-sage rounded-lg text-base text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
+            className="w-full py-sm px-md pr-20 bg-white border border-sage rounded text-base text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
             aria-describedby="poll-question-count"
           />
           <span
@@ -212,7 +212,7 @@ export function PollBuilder({
                 <GripVertical className="w-4 h-4" />
               </div>
 
-              <div className="w-6 h-6 flex items-center justify-center bg-sage rounded-md text-xs font-semibold text-forest shrink-0">
+              <div className="w-6 h-6 flex items-center justify-center bg-sage rounded text-xs font-semibold text-forest shrink-0">
                 {index + 1}
               </div>
 
@@ -224,7 +224,7 @@ export function PollBuilder({
                 onBlur={() => setFocusedOption(null)}
                 placeholder={`Option ${index + 1}`}
                 maxLength={100}
-                className="flex-1 py-sm bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
+                className="flex-1 py-sm bg-white border border-sage rounded text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
                 aria-label={`Poll option ${index + 1}`}
                 ref={(el) => {
                   if (focusedOption === index && el) {
@@ -260,7 +260,7 @@ export function PollBuilder({
           <button
             type="button"
             onClick={addOption}
-            className="flex items-center gap-xs py-sm px-md bg-white border border-dashed border-sage rounded-lg text-sm text-forest cursor-pointer transition-all duration-[250ms] ease-out-custom hover:border-terracotta hover:text-terracotta"
+            className="flex items-center gap-xs py-sm px-md bg-white border border-dashed border-sage rounded text-sm text-forest cursor-pointer transition-all duration-[250ms] ease-out-custom hover:border-terracotta hover:text-terracotta"
           >
             <Plus className="w-4 h-4" />
             Add option
@@ -297,7 +297,7 @@ export function PollBuilder({
 
       {/* Validation Hint */}
       {!isValid && (
-        <div className="flex items-center gap-sm py-sm px-md bg-terracotta/[0.08] rounded-lg mt-md text-sm text-terracotta">
+        <div className="flex items-center gap-sm py-sm px-md bg-terracotta/[0.08] rounded mt-md text-sm text-terracotta">
           <div className="w-5 h-5 flex items-center justify-center bg-terracotta text-bone rounded-full text-xs font-bold shrink-0">!</div>
           <span>
             {!question.trim()
@@ -311,7 +311,7 @@ export function PollBuilder({
 
       {/* Valid State Indicator */}
       {isValid && (
-        <div className="flex items-center gap-sm py-sm px-md bg-forest/[0.08] rounded-lg mt-md text-sm text-forest font-medium">
+        <div className="flex items-center gap-sm py-sm px-md bg-forest/[0.08] rounded mt-md text-sm text-forest font-medium">
           <Check className="w-4 h-4" />
           <span>Poll ready to publish</span>
         </div>

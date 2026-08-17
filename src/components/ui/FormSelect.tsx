@@ -25,7 +25,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
           className={cn(
-            'w-full px-4 py-3 rounded-lg border bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta transition-all appearance-none',
+            'w-full px-4 py-3 rounded border bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta transition-all appearance-none',
             'bg-[url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%231A2218%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E")] bg-[length:16px] bg-[right_12px_center] bg-no-repeat pr-10',
             error ? 'border-terracotta' : 'border-sage/30',
             props.disabled && 'bg-sage-light/50 opacity-60 cursor-not-allowed',

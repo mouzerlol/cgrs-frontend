@@ -49,7 +49,7 @@ export function Tooltip({ content, children, className, position = 'top' }: Tool
           'absolute left-1/2 -translate-x-1/2 z-50',
           position === 'top' ? 'bottom-full mb-2' : 'top-full mt-2',
           'pointer-events-none whitespace-nowrap select-none',
-          'bg-forest text-bone text-xs font-medium px-2 py-1 rounded-md',
+          'bg-forest text-bone text-xs font-medium px-2 py-1 rounded',
           'transition-all duration-150 ease-out',
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
         )}

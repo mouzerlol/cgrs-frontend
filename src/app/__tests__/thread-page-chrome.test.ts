@@ -15,7 +15,11 @@ const middleware = read('src/middleware.ts');
  */
 describe('thread page chrome clearance', () => {
   it('offsets the page by the fixed chrome height', () => {
-    expect(threadPage).toContain('pt-[var(--chrome-height)]');
+    // The clearance moved into PageBreadcrumbBar — it is the first thing on the page,
+    // it carries `pt-[var(--chrome-height)]`, and the blog article clears the chrome
+    // through the same component, so the two cannot drift apart.
+    expect(threadPage).toContain('<PageBreadcrumbBar');
+    expect(read('src/components/ui/PageBreadcrumbBar.tsx')).toContain('pt-[var(--chrome-height)]');
   });
 
   it('does not render a PageHeader — the thread title is the page heading', () => {

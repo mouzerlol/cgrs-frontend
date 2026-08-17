@@ -75,8 +75,8 @@ module.exports = {
         '2xl': '6rem',
       },
       borderRadius: {
-        'card': '20px',
-        'dock': '24px',
+        'card': '12px',
+        'dock': '12px',
       },
       boxShadow: {
         'dock': '0 20px 60px rgba(26, 34, 24, 0.15)',

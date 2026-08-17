@@ -38,7 +38,7 @@ export default function TaskDetailSkeleton() {
           {/* Description Section */}
           <div className="space-y-1.5">
             <Skeleton className="h-3 w-24" />
-            <div className="bg-white rounded-[20px] p-4 border border-sage/20">
+            <div className="bg-white rounded-[12px] p-4 border border-sage/20">
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-5/6" />
@@ -52,7 +52,7 @@ export default function TaskDetailSkeleton() {
             <div className="space-y-5">
               <div className="space-y-1.5">
                 <Skeleton className="h-3 w-20" />
-                <div className="bg-white rounded-[20px] p-3 border border-sage/20">
+                <div className="bg-white rounded-[12px] p-3 border border-sage/20">
                   <div className="flex items-center gap-2.5">
                     <Skeleton className="w-9 h-9 rounded-full" />
                     <div className="flex-1 space-y-1">
@@ -65,7 +65,7 @@ export default function TaskDetailSkeleton() {
 
               <div className="space-y-1.5">
                 <Skeleton className="h-3 w-16" />
-                <div className="bg-white rounded-[20px] p-3 min-h-[58px] border border-sage/20">
+                <div className="bg-white rounded-[12px] p-3 min-h-[58px] border border-sage/20">
                   <div className="flex flex-wrap gap-1.5">
                     <Skeleton className="h-5 w-16 rounded-full" />
                     <Skeleton className="h-5 w-20 rounded-full" />
@@ -78,27 +78,27 @@ export default function TaskDetailSkeleton() {
             {/* Location */}
             <div className="space-y-1.5">
               <Skeleton className="h-3 w-20" />
-              <Skeleton className="h-[180px] w-full rounded-2xl border border-sage/20" />
+              <Skeleton className="h-[180px] w-full rounded-xl border border-sage/20" />
             </div>
           </div>
 
           {/* Assets */}
           <div className="space-y-1.5">
             <Skeleton className="h-3 w-16" />
-            <div className="bg-white rounded-[20px] p-3 border border-sage/20">
+            <div className="bg-white rounded-[12px] p-3 border border-sage/20">
               <div className="flex gap-2">
-                <Skeleton className="h-20 w-20 rounded-xl" />
-                <Skeleton className="h-20 w-20 rounded-xl" />
-                <Skeleton className="h-20 w-20 rounded-xl" />
+                <Skeleton className="h-20 w-20 rounded-lg" />
+                <Skeleton className="h-20 w-20 rounded-lg" />
+                <Skeleton className="h-20 w-20 rounded-lg" />
               </div>
             </div>
           </div>
 
           {/* Comments & Activity Tabs */}
-          <div className="bg-white rounded-[24px] overflow-hidden shadow-lg border border-sage/10">
+          <div className="bg-white rounded-[12px] overflow-hidden shadow-lg border border-sage/10">
             <div className="flex border-b border-sage/5 bg-bone/30 p-1 gap-1">
-              <Skeleton className="h-8 w-28 rounded-xl" />
-              <Skeleton className="h-8 w-20 rounded-xl" />
+              <Skeleton className="h-8 w-28 rounded-lg" />
+              <Skeleton className="h-8 w-20 rounded-lg" />
             </div>
             <div className="p-6 space-y-4">
               <div className="flex gap-3">

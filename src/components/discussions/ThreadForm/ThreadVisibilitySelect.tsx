@@ -34,7 +34,7 @@ export function ThreadVisibilitySelect({
         <label className="text-sm font-medium text-forest">
           Who can see this thread?
         </label>
-        <div className="w-full p-md bg-white border border-sage rounded-xl animate-pulse h-[52px]" />
+        <div className="w-full p-md bg-white border border-sage rounded-lg animate-pulse h-[52px]" />
       </div>
     );
   }
@@ -52,7 +52,7 @@ export function ThreadVisibilitySelect({
           disabled={disabled}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className={cn(
-            'w-full p-md bg-white border border-sage rounded-xl flex items-center justify-between transition-all duration-[250ms] ease-out-custom text-left focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
+            'w-full p-md bg-white border border-sage rounded-lg flex items-center justify-between transition-all duration-[250ms] ease-out-custom text-left focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
             disabled
               ? 'cursor-not-allowed opacity-60'
               : 'cursor-pointer hover:border-forest',
@@ -81,7 +81,7 @@ export function ThreadVisibilitySelect({
             <div
               className={cn(
                 'absolute top-[calc(100%+4px)] left-0 right-0 z-50 max-h-[min(320px,70vh)]',
-                'overflow-y-auto overscroll-contain rounded-xl border border-sage bg-white',
+                'overflow-y-auto overscroll-contain rounded-lg border border-sage bg-white',
                 'shadow-[0_8px_24px_rgba(26,34,24,0.12)]',
               )}
             >

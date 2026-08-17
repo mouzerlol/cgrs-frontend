@@ -335,7 +335,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-block rounded-lg bg-terracotta px-6 py-3 font-medium text-bone hover:bg-terracotta-dark transition-colors"
+              className="inline-block rounded bg-terracotta px-6 py-3 font-medium text-bone hover:bg-terracotta-dark transition-colors"
             >
               Contact Us
             </Link>

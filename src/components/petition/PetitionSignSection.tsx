@@ -18,7 +18,7 @@ export default function PetitionSignSection({
     return (
       <section
         id="sign"
-        className="mb-10 bg-sage-light rounded-xl border border-sage/30 p-6 md:p-8 text-center scroll-mt-24"
+        className="mb-10 bg-sage-light rounded-lg border border-sage/30 p-6 md:p-8 text-center scroll-mt-24"
       >
         <Icon
           icon="lucide:check-circle"
@@ -41,7 +41,7 @@ export default function PetitionSignSection({
   return (
     <section
       id="sign"
-      className="mb-10 bg-white rounded-xl border border-sage/30 p-6 md:p-8 shadow-sm scroll-mt-24"
+      className="mb-10 bg-white rounded-lg border border-sage/30 p-6 md:p-8 shadow-sm scroll-mt-24"
     >
       <h3 className="font-semibold text-forest mb-4">Sign this petition</h3>
       <PetitionSignForm goal={goal} />

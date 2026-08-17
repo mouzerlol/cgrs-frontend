@@ -37,14 +37,14 @@ export default function MissionSection({ content, isEditingLayout, isLoading = f
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={4}
-            className="w-full px-3 py-2 rounded-lg border border-terracotta/30 bg-white text-forest text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/40 resize-none"
+            className="w-full px-3 py-2 rounded border border-terracotta/30 bg-white text-forest text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/40 resize-none"
             autoFocus
           />
           <div className="flex gap-2 justify-end">
             <button onClick={handleCancel} className="px-3 py-1 text-xs text-forest/60 hover:text-forest">
               Cancel
             </button>
-            <button onClick={handleSave} className="px-3 py-1 text-xs bg-terracotta text-bone rounded-md hover:bg-terracotta-dark">
+            <button onClick={handleSave} className="px-3 py-1 text-xs bg-terracotta text-bone rounded hover:bg-terracotta-dark">
               Save
             </button>
           </div>

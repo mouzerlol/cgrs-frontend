@@ -15,7 +15,7 @@ const PlayfulToyCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>(
         ref={ref}
         href={href}
         className={cn(
-          'group relative flex flex-col bg-[#FFDE59] border-4 border-black rounded-3xl overflow-hidden text-black',
+          'group relative flex flex-col bg-[#FFDE59] border-4 border-black rounded-xl overflow-hidden text-black',
           'transition-colors, transition-transform, transition-opacity duration-200 hover:-translate-y-2 hover:shadow-[0_8px_0_0_#000] active:translate-y-0 active:shadow-[0_0px_0_0_#000]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
@@ -38,7 +38,7 @@ const PlayfulToyCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps>(
           </p>
 
           {hasImage && (
-            <div className={cn("relative w-full rounded-2xl border-4 border-black overflow-hidden mt-auto bg-white", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
+            <div className={cn("relative w-full rounded-xl border-4 border-black overflow-hidden mt-auto bg-white", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
               <Image src={image!} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" sizes={isLarge ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} />
             </div>
           )}

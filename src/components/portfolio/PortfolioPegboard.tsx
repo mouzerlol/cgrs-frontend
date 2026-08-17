@@ -334,7 +334,7 @@ export default function PortfolioPegboard({
       {isEditingLayout && availableSectionTypes.length > 0 && (
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="w-full mt-4 py-4 rounded-[16px] border-2 border-dashed border-sage/30 text-forest/40 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all text-sm font-medium"
+          className="w-full mt-4 py-4 rounded-[12px] border-2 border-dashed border-sage/30 text-forest/40 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all text-sm font-medium"
         >
           + Add Section
         </button>

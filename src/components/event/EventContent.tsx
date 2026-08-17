@@ -18,7 +18,7 @@ const EventMapStatic = dynamic(() => import('@/components/calendar/EventMapStati
       style={{
         width: '100%',
         height: '300px',
-        borderRadius: '12px',
+        borderRadius: '8px',
         background: '#1A2218',
       }}
     />

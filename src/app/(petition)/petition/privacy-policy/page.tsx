@@ -146,7 +146,7 @@ export default function PetitionPrivacyPolicyPage() {
           </ul>
         </section>
 
-        <section className="bg-forest/5 border border-forest/10 rounded-lg p-4">
+        <section className="bg-forest/5 border border-forest/10 rounded p-4">
           <h2 className="font-display text-lg font-semibold mb-3">11. Legal Disclaimer</h2>
           <p className="leading-relaxed text-sm">
             This privacy policy has been prepared in good faith based on current New Zealand

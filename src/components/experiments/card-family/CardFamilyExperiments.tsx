@@ -64,7 +64,7 @@ function SurfaceGround({
       </p>
       <div
         className={cn(
-          'relative isolate overflow-hidden rounded-lg p-4',
+          'relative isolate overflow-hidden rounded p-4',
           onSage ? 'bg-sage-light' : 'bg-bone'
         )}
       >

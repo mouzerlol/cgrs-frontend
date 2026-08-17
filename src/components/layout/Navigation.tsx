@@ -168,7 +168,7 @@ export default function Navigation() {
             {isDropdownOpen && (
               <div
                 className={cn(
-                  'absolute right-0 mt-3 w-56 origin-top-right rounded-xl py-2 z-50',
+                  'absolute right-0 mt-3 w-56 origin-top-right rounded-lg py-2 z-50',
                   siteHeaderDropdownSurface
                 )}
               >

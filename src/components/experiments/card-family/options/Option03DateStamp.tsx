@@ -30,7 +30,7 @@ function Stamp({ date, className }: { date: string; className?: string }) {
   return (
     <div
       className={cn(
-        'flex w-12 shrink-0 self-start flex-col items-center rounded-lg bg-sage-lite px-1.5 py-1.5 text-forest',
+        'flex w-12 shrink-0 self-start flex-col items-center rounded bg-sage-lite px-1.5 py-1.5 text-forest',
         className
       )}
     >

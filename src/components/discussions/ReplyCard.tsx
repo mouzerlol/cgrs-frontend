@@ -44,11 +44,11 @@ const formatDate = (dateStr: string): string => {
 
 /** Reply row actions: 44px touch target on mobile, compact (sibling-aligned) from sm+. */
 const replyToolbarBtn =
-  'inline-flex items-center justify-center min-h-[44px] sm:min-h-[26px] gap-1 px-2.5 sm:px-1.5 py-2 sm:py-0.5 rounded-md border border-forest/10 text-xs sm:text-[11px] leading-tight text-forest/60 transition-colors hover:text-forest hover:border-forest/18 hover:bg-forest/[0.03]';
+  'inline-flex items-center justify-center min-h-[44px] sm:min-h-[26px] gap-1 px-2.5 sm:px-1.5 py-2 sm:py-0.5 rounded border border-forest/10 text-xs sm:text-[11px] leading-tight text-forest/60 transition-colors hover:text-forest hover:border-forest/18 hover:bg-forest/[0.03]';
 
 /** Author name chip: sage/20 fill matches border; -m-3 aligns it flush to the card corner. Shrinks/wraps before crowding the timestamp. */
 const replyAuthorBadgeClass =
-  'relative z-10 -mt-3 -ml-3 inline-block break-words font-semibold text-sm rounded-tl-md rounded-br-sm border border-sage/20 bg-sage/20 px-2.5 py-1.5 text-forest';
+  'relative z-10 -mt-3 -ml-3 inline-block break-words font-semibold text-sm rounded-tl rounded-br-sm border border-sage/20 bg-sage/20 px-2.5 py-1.5 text-forest';
 
 /** Quiet metadata, top-right of the card. JetBrains mono per the DESIGN.md "Mono-as-Metadata" rule. */
 const replyMetaClass =
@@ -126,12 +126,12 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
         <div
           ref={ref}
           className={cn(
-            'min-w-0 flex-1 overflow-hidden rounded-md border border-sage/20 bg-bone-light p-3 opacity-50',
+            'min-w-0 flex-1 overflow-hidden rounded border border-sage/20 bg-bone-light p-3 opacity-50',
             className
           )}
           {...props}
         >
-          <span className="relative z-10 -mt-3 -ml-3 inline-block rounded-tl-md rounded-br-sm border border-sage/20 bg-sage/10 px-2.5 py-1.5 font-semibold text-sm text-forest/40">
+          <span className="relative z-10 -mt-3 -ml-3 inline-block rounded-tl rounded-br-sm border border-sage/20 bg-sage/10 px-2.5 py-1.5 font-semibold text-sm text-forest/40">
             [deleted]
           </span>
           <p className="mt-2 text-sm italic text-forest/40">This comment was deleted</p>
@@ -143,7 +143,7 @@ const ReplyCard = forwardRef<HTMLDivElement, ReplyCardProps>(
       <div
         ref={ref}
         className={cn(
-          'min-w-0 flex-1 overflow-hidden rounded-md border border-sage/20 bg-bone-light p-3',
+          'min-w-0 flex-1 overflow-hidden rounded border border-sage/20 bg-bone-light p-3',
           className
         )}
         {...props}

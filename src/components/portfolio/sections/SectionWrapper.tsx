@@ -28,7 +28,7 @@ export default function SectionWrapper({
   return (
     <div
       className={cn(
-        'h-full rounded-[16px] bg-white border overflow-hidden flex flex-col',
+        'h-full rounded-[12px] bg-white border overflow-hidden flex flex-col',
         isEditingLayout
           ? 'border-dashed border-sage/50 shadow-sm'
           : 'border-sage/20 shadow-sm',

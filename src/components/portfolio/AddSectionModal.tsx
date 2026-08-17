@@ -26,9 +26,9 @@ export default function AddSectionModal({ isOpen, onClose, availableTypes, onAdd
           <button
             key={config.type}
             onClick={() => handleAdd(config)}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-sage/20 hover:border-terracotta/40 hover:bg-terracotta/5 transition-all text-center group"
+            className="flex flex-col items-center gap-2 p-4 rounded-lg border border-sage/20 hover:border-terracotta/40 hover:bg-terracotta/5 transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-xl bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
               <Icon icon={`lucide:${config.icon}`} className="w-5 h-5 text-forest/60 group-hover:text-terracotta" />
             </div>
             <span className="text-sm font-medium text-forest">{config.label}</span>

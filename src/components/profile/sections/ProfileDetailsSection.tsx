@@ -19,7 +19,7 @@ export default function ProfileDetailsSection() {
       <div className="space-y-6">
         {/* Header skeleton */}
         <div className="flex items-center gap-3">
-          <Skeleton className="h-12 w-12 rounded-xl" />
+          <Skeleton className="h-12 w-12 rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-4 w-64" />
@@ -27,8 +27,8 @@ export default function ProfileDetailsSection() {
         </div>
         {/* Content skeleton */}
         <div className="space-y-4">
-          <Skeleton className="h-24 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
+          <Skeleton className="h-24 rounded-lg" />
+          <Skeleton className="h-32 rounded-lg" />
         </div>
       </div>
     );
@@ -52,7 +52,7 @@ export default function ProfileDetailsSection() {
           <button
             type="button"
             onClick={() => openUserProfile()}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
           >
             <Settings className="w-4 h-4" />
             Manage account
@@ -77,8 +77,8 @@ export default function ProfileDetailsSection() {
       {/* Superadmin indicator */}
       {userData.is_superadmin && (
         <div>
-          <div className="flex items-center gap-3 rounded-xl bg-forest p-4 text-bone">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bone/10">
+          <div className="flex items-center gap-3 rounded-lg bg-forest p-4 text-bone">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-bone/10">
               <Shield className="h-5 w-5" />
             </div>
             <div>

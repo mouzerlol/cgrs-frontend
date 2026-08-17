@@ -17,7 +17,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, hover = false, variant = 'default', ...props }, ref) => {
     const baseClasses = [
-      'relative rounded-[20px] overflow-hidden',
+      'relative rounded-[12px] overflow-hidden',
       'transition-all duration-400',
       'border border-sage/20',
     ].join(' ');

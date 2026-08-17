@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ThreadDetail from '../ThreadDetail';
+import { THREAD_GUTTER_INDENT } from '../thread-gutter';
 import type { Thread } from '@/types';
 
 vi.mock('@iconify/react', () => ({
@@ -51,7 +52,8 @@ function mockThread(overrides: Partial<Thread> = {}): Thread {
   } as Thread;
 }
 
-const GUTTER = 'sm:pl-[calc(8rem_+_1.25rem)]';
+// Same source the components use, so widening the column can never leave the body behind again.
+const GUTTER = THREAD_GUTTER_INDENT;
 
 describe('ThreadDetail gutter', () => {
   it('indents the body to the gutter so prose starts on the title edge', () => {

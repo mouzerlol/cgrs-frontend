@@ -59,7 +59,7 @@ const QuickAccessCardAlt = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
           {/* Middle Portion - Image */}
           <div 
             className={cn(
-              "relative w-full rounded-[10px] overflow-hidden bg-forest-light/30",
+              "relative w-full rounded-[8px] overflow-hidden bg-forest-light/30",
               isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-video"
             )}
           >

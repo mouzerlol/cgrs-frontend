@@ -23,7 +23,7 @@ export default function BoardColumnSkeleton() {
 
       {/* Add card button */}
       <div className="p-2 shrink-0 border-t border-sage/10">
-        <Skeleton className="h-9 w-full rounded-lg" />
+        <Skeleton className="h-9 w-full rounded" />
       </div>
     </div>
   );

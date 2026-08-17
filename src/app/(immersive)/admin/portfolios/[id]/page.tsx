@@ -183,7 +183,7 @@ export default function PortfolioDashboardPage() {
       </WorkManagementNavBar>
 
       <div className="flex-1 min-h-0 overflow-y-auto">
-        <div className="max-w-6xl mx-auto mt-4 md:mt-6 p-4 md:p-6 lg:p-8 pt-6 md:pt-8 lg:pt-10 bg-sage-light border border-sage/30 shadow-sm rounded-[10px]">
+        <div className="max-w-6xl mx-auto mt-4 md:mt-6 p-4 md:p-6 lg:p-8 pt-6 md:pt-8 lg:pt-10 bg-sage-light border border-sage/30 shadow-sm rounded-[8px]">
           <PortfolioPegboard
             portfolio={portfolio}
             boards={allBoards}

@@ -79,7 +79,7 @@ export default function DiscussionsLanding({ className }: DiscussionsLandingProp
                 href="/discussion/new"
                 className={cn(
                   'inline-flex items-center gap-2 px-4 py-2.5',
-                  'bg-terracotta text-bone rounded-xl',
+                  'bg-terracotta text-bone rounded-lg',
                   'font-medium text-sm',
                   'transition-all duration-200',
                   'hover:bg-terracotta-dark hover:-translate-y-0.5',
@@ -125,7 +125,7 @@ export default function DiscussionsLanding({ className }: DiscussionsLandingProp
               <button
                 className={cn(
                   'inline-flex items-center gap-2 px-6 py-3',
-                  'bg-sage-light text-forest rounded-xl',
+                  'bg-sage-light text-forest rounded-lg',
                   'font-medium text-sm',
                   'transition-all duration-200',
                   'hover:bg-sage',

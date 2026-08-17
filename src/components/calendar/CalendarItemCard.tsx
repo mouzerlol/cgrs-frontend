@@ -36,7 +36,7 @@ export function CalendarItemCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-xl overflow-hidden border border-sage transition-all duration-[200ms] ease-out-custom [content-visibility:auto] [contain-intrinsic-size:0_100px] hover:border-forest hover:shadow-[0_4px_16px_rgba(26,34,24,0.08)]',
+        'bg-white rounded-lg overflow-hidden border border-sage transition-all duration-[200ms] ease-out-custom [content-visibility:auto] [contain-intrinsic-size:0_100px] hover:border-forest hover:shadow-[0_4px_16px_rgba(26,34,24,0.08)]',
         isExpanded && 'border-terracotta'
       )}
       data-item-id={item.id}
@@ -73,7 +73,7 @@ export function CalendarItemCard({
           >
             <div className="px-sm pb-sm border-t border-sage-light">
               {imageSrc && (
-                <div className="my-sm rounded-lg overflow-hidden">
+                <div className="my-sm rounded overflow-hidden">
                   <Image
                     src={imageSrc}
                     alt={item.title}

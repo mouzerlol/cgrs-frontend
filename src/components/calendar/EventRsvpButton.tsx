@@ -67,7 +67,7 @@ export default function EventRsvpButton({
     : attendeeCount;
 
   return (
-    <div className="flex flex-col gap-sm p-sm bg-sage-light rounded-xl">
+    <div className="flex flex-col gap-sm p-sm bg-sage-light rounded-lg">
       <div className="flex items-baseline gap-xs text-xs text-forest">
         <span className="font-bold text-base text-forest">{displayCount}</span>
         <span>{displayCount === 1 ? 'person' : 'people'} attending</span>
@@ -80,7 +80,7 @@ export default function EventRsvpButton({
             onClick={() => handleRsvp(option.status)}
             disabled={isPastEvent}
             className={cn(
-              'flex-1 py-2 px-3 rounded-md text-xs font-medium cursor-pointer transition-all duration-200 bg-white border border-sage text-forest whitespace-nowrap hover:border-forest hover:bg-sage-light',
+              'flex-1 py-2 px-3 rounded text-xs font-medium cursor-pointer transition-all duration-200 bg-white border border-sage text-forest whitespace-nowrap hover:border-forest hover:bg-sage-light',
               selectedStatus === option.status && option.status === 'attending' && 'bg-forest border-forest text-bone hover:bg-forest-light hover:border-forest-light',
               selectedStatus === option.status && option.status === 'maybe' && 'bg-terracotta border-terracotta text-bone hover:bg-terracotta-dark hover:border-terracotta-dark',
               selectedStatus === option.status && option.status === 'interested' && 'bg-sage border-sage text-forest hover:bg-forest-light hover:border-forest-light hover:text-bone',

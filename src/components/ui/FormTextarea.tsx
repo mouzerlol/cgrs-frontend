@@ -25,7 +25,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
           className={cn(
-            'w-full px-4 py-3 rounded-lg border bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta transition-all min-h-[120px] resize-y',
+            'w-full px-4 py-3 rounded border bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta transition-all min-h-[120px] resize-y',
             error ? 'border-terracotta' : 'border-sage/30',
             props.disabled && 'bg-sage-light/50 opacity-60 cursor-not-allowed',
             className,

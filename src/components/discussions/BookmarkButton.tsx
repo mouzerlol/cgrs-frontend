@@ -80,7 +80,7 @@ const BookmarkButton = forwardRef<HTMLButtonElement, BookmarkButtonProps>(
           onClick={handleBookmarkClick}
           disabled={disabled}
           className={cn(
-            'flex items-center justify-center gap-1.5 rounded-lg border transition-all duration-200',
+            'flex items-center justify-center gap-1.5 rounded border transition-all duration-200',
             sizes.button,
             isBookmarked
               ? 'bg-forest text-bone border-forest'

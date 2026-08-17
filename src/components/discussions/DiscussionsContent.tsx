@@ -80,7 +80,7 @@ export default function DiscussionsContent({
                 href={`/discussion/new${category ? `?category=${category}` : ''}`}
                 className={cn(
                   'inline-flex items-center gap-2 px-5 py-2.5',
-                  'bg-terracotta text-bone rounded-xl',
+                  'bg-terracotta text-bone rounded-lg',
                   'font-medium text-sm',
                   'transition-all duration-200',
                   'hover:bg-terracotta-dark hover:-translate-y-0.5',
@@ -121,7 +121,7 @@ export default function DiscussionsContent({
             <button
               className={cn(
                 'inline-flex items-center gap-2 px-6 py-3',
-                'bg-white text-forest rounded-xl border border-sage',
+                'bg-white text-forest rounded-lg border border-sage',
                 'font-medium text-sm',
                 'transition-all duration-200',
                 'hover:bg-sage-light hover:border-forest/20'

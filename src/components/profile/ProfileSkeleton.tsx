@@ -19,9 +19,9 @@ export default function ProfileSkeleton() {
       <div className="mt-6 lg:flex lg:gap-6">
         <div className="hidden w-56 shrink-0 lg:block">
           <div className="space-y-2 rounded-card bg-white p-3 shadow-sm">
-            <Skeleton className="h-10 w-full rounded-lg" />
-            <Skeleton className="h-10 w-full rounded-lg" />
-            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded" />
+            <Skeleton className="h-10 w-full rounded" />
+            <Skeleton className="h-10 w-full rounded" />
           </div>
         </div>
         <div className="flex-1 space-y-6">

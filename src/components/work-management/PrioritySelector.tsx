@@ -21,7 +21,7 @@ export default function PrioritySelector({ value, onChange }: PrioritySelectorPr
             type="button"
             onClick={() => onChange(p)}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors text-sm font-medium",
+              "flex items-center gap-2 px-3 py-1.5 rounded border transition-colors text-sm font-medium",
               isSelected 
                 ? "border-transparent bg-sage-light"
                 : "border-sage/30 bg-white hover:bg-sage-light/30"

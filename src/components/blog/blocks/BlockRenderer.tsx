@@ -54,10 +54,10 @@ import InlineRuns from './InlineRuns';
  */
 const DROP_CAP =
   'float-left -ml-4 mr-3 flex h-[3.25rem] w-[3.25rem] items-center justify-center ' +
-  'rounded-br-[20px] bg-forest-light ' +
+  'rounded-br-[12px] bg-forest-light ' +
   'font-display text-[2.375rem] leading-none text-sage-light ' +
   'md:absolute md:right-full md:top-[-0.5rem] md:float-none md:m-0 md:mr-4 md:h-[4.875rem] md:w-[6rem] ' +
-  'md:rounded-tl-[20px] md:text-[4.25rem]';
+  'md:rounded-tl-[12px] md:text-[4.25rem]';
 
 /*
  * How far the body is held off the cap's block.

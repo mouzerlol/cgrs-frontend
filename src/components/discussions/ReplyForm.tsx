@@ -98,7 +98,7 @@ const ReplyForm = forwardRef<ReplyFormHandle, ReplyFormProps>(
           maxLength={MAX_LENGTH}
           rows={1}
           className={cn(
-            'w-full p-3 rounded-lg border bg-white text-forest placeholder:text-forest/40',
+            'w-full p-3 rounded border bg-white text-forest placeholder:text-forest/40',
             'focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage',
             'resize-none min-h-[80px] text-sm',
             'transition-[box-shadow,border-color] duration-300',
@@ -130,7 +130,7 @@ const ReplyForm = forwardRef<ReplyFormHandle, ReplyFormProps>(
                 type="button"
                 onClick={onCancel}
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center min-h-[44px] px-4 py-1.5 text-sm font-medium text-forest/60 hover:text-forest hover:bg-sage-light rounded-lg transition-colors"
+                className="inline-flex items-center justify-center min-h-[44px] px-4 py-1.5 text-sm font-medium text-forest/60 hover:text-forest hover:bg-sage-light rounded transition-colors"
               >
                 Cancel
               </button>
@@ -140,7 +140,7 @@ const ReplyForm = forwardRef<ReplyFormHandle, ReplyFormProps>(
               onClick={handleSubmit}
               disabled={!value.trim() || isSubmitting || isOverLimit}
               className={cn(
-                'inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-1.5 text-sm font-semibold rounded-lg transition-colors',
+                'inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-1.5 text-sm font-semibold rounded transition-colors',
                 value.trim() && !isSubmitting && !isOverLimit
                   ? 'bg-terracotta text-bone hover:bg-terracotta-dark'
                   : 'bg-sage text-forest/40 cursor-not-allowed'

@@ -22,13 +22,13 @@ export default function EventLoading() {
             </section>
             
             <section className="mb-xl">
-              <Skeleton className="h-[300px] w-full rounded-xl" />
+              <Skeleton className="h-[300px] w-full rounded-lg" />
             </section>
           </div>
 
           <aside className="event-content-sidebar flex flex-col gap-lg">
-            <Skeleton className="h-[350px] w-full rounded-xl" />
-            <Skeleton className="h-[120px] w-full rounded-xl" />
+            <Skeleton className="h-[350px] w-full rounded-lg" />
+            <Skeleton className="h-[120px] w-full rounded-lg" />
           </aside>
         </div>
       </div>

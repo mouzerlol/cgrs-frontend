@@ -81,7 +81,7 @@ export function BrutallyMinimalHeroHeadingCard({
           <div className="mb-2">
             <span
               className={cn(
-                'text-eyebrow !text-bone inline-flex items-center rounded-md font-semibold uppercase tracking-wide bg-terracotta shrink-0',
+                'text-eyebrow !text-bone inline-flex items-center rounded font-semibold uppercase tracking-wide bg-terracotta shrink-0',
                 s.eyebrow,
                 s.eyebrowGap,
                 s.eyebrowPadding

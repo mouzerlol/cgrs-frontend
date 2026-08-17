@@ -87,7 +87,7 @@ const UploadZone = ({
       role="button"
       tabIndex={disabled ? -1 : 0}
       className={cn(
-        'border-2 border-dashed border-sage rounded-xl p-lg text-center transition-all duration-[250ms] ease-out-custom bg-white',
+        'border-2 border-dashed border-sage rounded-lg p-lg text-center transition-all duration-[250ms] ease-out-custom bg-white',
         !disabled && 'cursor-pointer hover:border-terracotta hover:bg-terracotta/5',
         isDragging && 'border-terracotta bg-terracotta/5',
         disabled && 'opacity-50 cursor-not-allowed',

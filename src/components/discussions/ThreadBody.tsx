@@ -124,10 +124,11 @@ const ThreadBody = forwardRef<HTMLDivElement, ThreadBodyProps>(
         {/* R2-backed opening post images (ADR 005) — lead with media, then narrative */}
         {hasApiAttachments && (
           <>
+            {/* Stands in for the forest field the pictures land in, so the body
+                does not reflow when they arrive. */}
             {attachmentUrlsLoading && (
-              <div className="flex flex-wrap gap-2 animate-pulse" aria-hidden>
-                <div className="h-32 w-32 rounded-xl bg-sage/25" />
-                <div className="h-32 w-32 rounded-xl bg-sage/25" />
+              <div className="w-full animate-pulse rounded-none bg-forest px-4 py-4 sm:px-6 sm:py-6" aria-hidden>
+                <div className="h-64 w-full rounded-lg bg-bone/[0.08] sm:h-80" />
               </div>
             )}
             {!attachmentUrlsLoading && attachmentGalleryImages.length > 0 && (

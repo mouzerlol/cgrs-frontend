@@ -9,7 +9,7 @@ export default function PortfolioDashboardLoading() {
         <Skeleton className="h-5 w-24 !bg-bone/20" />
         <Skeleton className="h-5 w-40 !bg-bone/20 ml-2" />
         <div className="ml-auto">
-          <Skeleton className="h-8 w-24 rounded-lg !bg-bone/20" />
+          <Skeleton className="h-8 w-24 rounded !bg-bone/20" />
         </div>
       </div>
 
@@ -18,14 +18,14 @@ export default function PortfolioDashboardLoading() {
           {/* Pegboard grid skeleton — mimics 4-column layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Mission — 2x1 */}
-            <div className="lg:col-span-2 rounded-[16px] bg-white border border-sage/20 p-4">
+            <div className="lg:col-span-2 rounded-[12px] bg-white border border-sage/20 p-4">
               <Skeleton className="h-4 w-20 mb-3" />
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4 mt-1" />
             </div>
 
             {/* People — 2x2 */}
-            <div className="lg:col-span-2 row-span-2 rounded-[16px] bg-white border border-sage/20 p-4">
+            <div className="lg:col-span-2 row-span-2 rounded-[12px] bg-white border border-sage/20 p-4">
               <Skeleton className="h-4 w-16 mb-4" />
               <div className="space-y-3">
                 {[0, 1, 2].map(i => (
@@ -41,14 +41,14 @@ export default function PortfolioDashboardLoading() {
             </div>
 
             {/* Budget — 1x1 */}
-            <div className="rounded-[16px] bg-white border border-sage/20 p-4">
+            <div className="rounded-[12px] bg-white border border-sage/20 p-4">
               <Skeleton className="h-4 w-16 mb-3" />
               <Skeleton className="h-8 w-24 mb-2" />
               <Skeleton className="h-2 w-full rounded-full" />
             </div>
 
             {/* Services — 2x3 */}
-            <div className="lg:col-span-2 rounded-[16px] bg-white border border-sage/20 p-4">
+            <div className="lg:col-span-2 rounded-[12px] bg-white border border-sage/20 p-4">
               <Skeleton className="h-4 w-20 mb-3" />
               <div className="space-y-2">
                 {[0, 1, 2, 3].map(i => (
@@ -61,7 +61,7 @@ export default function PortfolioDashboardLoading() {
             </div>
 
             {/* Work in Flight — 4x2 */}
-            <div className="lg:col-span-4 rounded-[16px] bg-white border border-sage/20 p-4">
+            <div className="lg:col-span-4 rounded-[12px] bg-white border border-sage/20 p-4">
               <Skeleton className="h-4 w-28 mb-4" />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[0, 1, 2, 3].map(i => (

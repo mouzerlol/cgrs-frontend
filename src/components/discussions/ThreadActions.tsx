@@ -40,7 +40,7 @@ interface ThreadActionsProps extends HTMLAttributes<HTMLDivElement> {
 
 /** Icon-only controls in the thread toolbar. 44px touch target on mobile, compact from sm+. */
 const threadActionIconButtonClass =
-  'flex items-center justify-center rounded-md border transition-all duration-200 bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20 min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] p-1.5';
+  'flex items-center justify-center rounded border transition-all duration-200 bg-transparent text-forest/60 border-sage hover:bg-sage-light hover:text-forest hover:border-forest/20 min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] p-1.5';
 
 /**
  * Thread footer toolbar — conversation actions only: vote, the reply count, the
@@ -80,7 +80,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
        count carried as a section heading, kept so the element is recognisable in
        its new home. Height matches the md horizontal UpvoteButton beside it. */
     const countClass =
-      'inline-flex items-center gap-1.5 rounded-md bg-forest px-2.5 text-xs font-semibold text-amber min-h-[44px] sm:h-9 sm:min-h-[36px] sm:px-2';
+      'inline-flex items-center gap-1.5 rounded bg-forest px-2.5 text-xs font-semibold text-amber min-h-[44px] sm:h-9 sm:min-h-[36px] sm:px-2';
 
     const countContent = (
       <>
@@ -175,7 +175,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 bottom-full mb-2 w-48 bg-bone border border-sage/30 rounded-lg shadow-lg focus:outline-none z-10">
+                <Menu.Items className="absolute right-0 bottom-full mb-2 w-48 bg-bone border border-sage/30 rounded shadow-lg focus:outline-none z-10">
                   <div className="p-1">
                     {canEdit && onEdit && (
                       <Menu.Item>
@@ -184,7 +184,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
                             type="button"
                             onClick={onEdit}
                             className={cn(
-                              'w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md',
+                              'w-full flex items-center gap-3 px-3 py-2 text-sm rounded',
                               active ? 'bg-sage-light text-forest' : 'text-forest/70'
                             )}
                           >
@@ -202,7 +202,7 @@ const ThreadActions = forwardRef<HTMLDivElement, ThreadActionsProps>(
                             type="button"
                             onClick={onDelete}
                             className={cn(
-                              'w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md',
+                              'w-full flex items-center gap-3 px-3 py-2 text-sm rounded',
                               active ? 'bg-sage-light text-red-600' : 'text-red-600'
                             )}
                           >

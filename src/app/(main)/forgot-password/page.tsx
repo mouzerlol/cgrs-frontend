@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
                         if (errors.email) setErrors({ email: undefined });
                       }}
                       placeholder="your.email@example.com"
-                      className={`w-full px-4 py-3 bg-white border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta ${
+                      className={`w-full px-4 py-3 bg-white border rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta ${
                         errors.email ? 'border-terracotta' : 'border-sage/30'
                       }`}
                       required
@@ -128,7 +128,7 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   {/* Instructions */}
-                  <div className="bg-sage-light border-l border-sage/30 rounded-lg p-6 mb-6">
+                  <div className="bg-sage-light border-l border-sage/30 rounded p-6 mb-6">
                     <h4 className="font-medium mb-2">What happens next?</h4>
                     <ol className="list-decimal list-inside space-y-2 text-sm opacity-80">
                       <li>Check your email inbox for the password reset link</li>

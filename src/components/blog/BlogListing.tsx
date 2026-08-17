@@ -47,7 +47,7 @@ function CategoryChips({
   return (
     /*
      * The discussion's filter row, verbatim: white surface, sage hairline,
-     * `rounded-xl`, icon then label, terracotta tint when pressed. The two
+     * `rounded-lg`, icon then label, terracotta tint when pressed. The two
      * pages sit one click apart in the same nav, and a reader should not have
      * to learn a second control language crossing between them.
      *
@@ -82,7 +82,7 @@ function CategoryChips({
             aria-pressed={isActive}
             className={cn(
               'flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap px-4 py-2.5',
-              'rounded-xl border text-sm font-medium text-forest',
+              'rounded-lg border text-sm font-medium text-forest',
               'shadow-[0_2px_10px_rgba(26,34,24,0.18)]',
               'transition-all duration-200',
               'focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/10',
@@ -126,7 +126,7 @@ function EmptyState({
         <button
           type="button"
           onClick={onClear}
-          className="mt-8 inline-flex min-h-[44px] items-center rounded-xl border border-forest px-5 text-sm font-medium text-forest transition-colors duration-200 ease-out-custom hover:bg-forest hover:text-bone focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
+          className="mt-8 inline-flex min-h-[44px] items-center rounded-lg border border-forest px-5 text-sm font-medium text-forest transition-colors duration-200 ease-out-custom hover:bg-forest hover:text-bone focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
         >
           Show all posts
         </button>
@@ -169,7 +169,7 @@ function MobileCategoryPicker({
         aria-haspopup="dialog"
         aria-expanded={open}
         className={cn(
-          'flex w-full min-w-0 items-center gap-sm rounded-xl px-md py-sm',
+          'flex w-full min-w-0 items-center gap-sm rounded-lg px-md py-sm',
           'min-h-[56px] bg-forest-light font-body text-base font-medium text-bone',
           'transition-colors duration-[250ms] ease-out-custom hover:bg-forest',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50'
@@ -307,7 +307,7 @@ export default function BlogListing({ posts, categories: manifestCategories }: B
            * corners stay concentric rather than the outer one looking tighter
            * than the cards it holds.
            */
-          <div className="rounded-[1.75rem] bg-sage-light p-4 md:p-6">
+          <div className="rounded-[12px] bg-sage-light p-4 md:p-6">
             <div className="grid gap-5 md:gap-6">
               <BlogPostCell post={lead} variant="lead" />
 

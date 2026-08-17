@@ -22,7 +22,7 @@ export default function OccupantCard({ occupant }: OccupantCardProps) {
     .slice(0, 2);
 
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-bone p-3">
+    <div className="flex items-center gap-3 rounded-lg bg-bone p-3">
       {occupant.avatar_url ? (
         <Image
           src={occupant.avatar_url}

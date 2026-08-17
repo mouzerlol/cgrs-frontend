@@ -86,7 +86,7 @@ export default function PetitionCommentSection() {
 
   return (
     <section id="comments" className="mt-12 scroll-mt-24">
-      <div className="mb-6 bg-sage-light rounded-xl border border-sage/30 p-6 md:p-8">
+      <div className="mb-6 bg-sage-light rounded-lg border border-sage/30 p-6 md:p-8">
         <div className="flex items-center gap-2 mb-4">
           <Icon icon="lucide:reply" className="w-5 h-5 text-terracotta" />
           <h3 className="font-semibold text-forest">Post a comment</h3>
@@ -102,14 +102,14 @@ export default function PetitionCommentSection() {
           <div className="space-y-3">
             <Link
               href="/login?redirect_url=/petition"
-              className="block w-full p-3 rounded-lg border border-sage bg-white/60 text-forest/50 hover:text-forest hover:bg-white hover:border-terracotta text-sm min-h-[80px] flex items-center transition-colors"
+              className="block w-full p-3 rounded border border-sage bg-white/60 text-forest/50 hover:text-forest hover:bg-white hover:border-terracotta text-sm min-h-[80px] flex items-center transition-colors"
             >
               Log in to share your thoughts on this petition.
             </Link>
             <div className="flex justify-end">
               <Link
                 href="/login?redirect_url=/petition"
-                className="inline-flex items-center gap-2 bg-terracotta hover:bg-terracotta-dark text-bone font-body text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 bg-terracotta hover:bg-terracotta-dark text-bone font-body text-sm font-semibold px-4 py-1.5 rounded transition-colors"
               >
                 <Icon icon="lucide:log-in" className="w-4 h-4" />
                 Sign in

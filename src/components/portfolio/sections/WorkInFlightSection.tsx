@@ -16,7 +16,7 @@ interface WorkInFlightSectionProps {
 
 function StatusBadge({ label, count, color }: { label: string; count: number; color: string }) {
   return (
-    <div className={`flex flex-col items-center px-3 py-2 rounded-xl ${color}`}>
+    <div className={`flex flex-col items-center px-3 py-2 rounded-lg ${color}`}>
       <span className="text-lg font-display font-semibold text-forest">{count}</span>
       <span className="text-[10px] text-forest/60 uppercase tracking-wide font-medium">{label}</span>
     </div>
@@ -66,7 +66,7 @@ export default function WorkInFlightSection({ linkedBoardIds, boards, tasks, por
               <Link
                 key={board.id}
                 href={`/admin/boards/${board.id}?tag=${portfolioTag}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sage-light/30 hover:bg-sage-light/60 text-xs font-medium text-forest hover:text-terracotta transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-sage-light/30 hover:bg-sage-light/60 text-xs font-medium text-forest hover:text-terracotta transition-colors"
               >
                 {board.name}
                 <ArrowRight className="w-3 h-3" />

@@ -46,7 +46,7 @@ export default function CategoryButtonBar({
   return (
     <div
       className={cn(
-        'bg-forest-light rounded-2xl p-4 shadow-lg',
+        'bg-forest-light rounded-xl p-4 shadow-lg',
         className
       )}
     >
@@ -61,7 +61,7 @@ export default function CategoryButtonBar({
               href={`/discussion/${category.slug}`}
               className={cn(
                 'flex items-center gap-3 px-4 py-3',
-                'rounded-xl transition-all duration-200',
+                'rounded-lg transition-all duration-200',
                 'focus:outline-none focus:ring-2 focus:ring-bone/30',
                 'min-h-[80px]', // Touch-friendly height
                 'bg-bone/10 text-bone hover:bg-bone/20',

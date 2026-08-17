@@ -20,7 +20,7 @@ const DateBadge = forwardRef<HTMLDivElement, DateBadgeProps>(
       <div
         ref={ref}
         className={cn(
-          'flex flex-col items-center justify-center bg-terracotta text-bone rounded-lg shadow-sm',
+          'flex flex-col items-center justify-center bg-terracotta text-bone rounded shadow-sm',
           styles.container,
           className,
         )}

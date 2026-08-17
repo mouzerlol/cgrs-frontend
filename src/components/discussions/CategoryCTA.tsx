@@ -46,7 +46,7 @@ export function CategoryCTA({ category, threadCount, className }: CategoryCTAPro
         href={href}
         aria-label={`${eyebrow}: ${tagline}. Create a new thread in ${category.name}.`}
         className={cn(
-          'group relative block overflow-hidden rounded-xl border border-sage',
+          'group relative block overflow-hidden rounded-lg border border-sage',
           'bg-gradient-to-br from-sage-light via-white to-sage-light',
           'transition-all duration-200 ease-out',
           'hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
@@ -70,9 +70,9 @@ export function CategoryCTA({ category, threadCount, className }: CategoryCTAPro
         />
 
         {/* Left terracotta accent bar */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-1.5 bg-terracotta rounded-l-xl" />
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-1.5 bg-terracotta rounded-l-lg" />
 
-        {/* Content row: matches ThreadCardCompact (rounded-xl, p-3, min height ~compact row) */}
+        {/* Content row: matches ThreadCardCompact (rounded-lg, p-3, min height ~compact row) */}
         <div
           className={cn(
             'relative flex min-h-[108px] flex-col gap-3 pl-[calc(0.75rem+0.375rem)] pr-3 py-3 sm:flex-row sm:items-center',
@@ -80,7 +80,7 @@ export function CategoryCTA({ category, threadCount, className }: CategoryCTAPro
         >
           <div className="flex min-w-0 flex-1 gap-2">
             {/* Icon column: eyebrow + tagline share the text column so both lines align */}
-            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center self-start rounded-lg bg-terracotta/10">
+            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center self-start rounded bg-terracotta/10">
               <Icon icon="lucide:pencil" className="h-3.5 w-3.5 text-terracotta" />
             </span>
             <div className="min-w-0 flex-1">
@@ -95,7 +95,7 @@ export function CategoryCTA({ category, threadCount, className }: CategoryCTAPro
           <span
             className={cn(
               'inline-flex shrink-0 items-center gap-2 self-start px-4 py-2.5 sm:self-center',
-              'rounded-xl border border-forest/20 bg-transparent text-sm font-medium text-forest',
+              'rounded-lg border border-forest/20 bg-transparent text-sm font-medium text-forest',
               'transition-colors duration-200',
               'group-hover:border-forest/45 group-hover:bg-white/60',
             )}

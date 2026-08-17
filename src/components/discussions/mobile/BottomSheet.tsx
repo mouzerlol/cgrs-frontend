@@ -115,7 +115,7 @@ const BottomSheet = forwardRef<HTMLDivElement, BottomSheetProps>(
                   onDragEnd={handleDragEnd}
                   style={{ y, maxHeight }}
                   className={cn(
-                    'w-full bg-bone rounded-t-3xl shadow-2xl',
+                    'w-full bg-bone rounded-t-xl shadow-2xl',
                     'overflow-hidden',
                     'touch-pan-x',
                     isDragging && 'cursor-grabbing',

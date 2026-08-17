@@ -45,7 +45,7 @@ const BookmarkedOnlyFilter = forwardRef<HTMLButtonElement, BookmarkedOnlyFilterP
         }}
         className={cn(
           'flex items-center gap-2 px-4 py-2.5',
-          'rounded-xl border text-sm text-forest',
+          'rounded-lg border text-sm text-forest',
           'transition-all duration-200',
           'focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/10',
           disabled && 'opacity-50 cursor-not-allowed',

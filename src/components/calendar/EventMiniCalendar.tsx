@@ -63,7 +63,7 @@ export default function EventMiniCalendar({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-md border border-sage">
+    <div className="bg-white rounded-xl p-md border border-sage">
       <div className="flex items-center justify-between mb-md">
         <span className="font-display text-base font-medium text-forest">
           {format(eventDateObj, 'MMMM yyyy')}
@@ -96,7 +96,7 @@ export default function EventMiniCalendar({
               className={cn(
                 'aspect-square flex flex-col items-center justify-start p-xs relative cursor-default',
                 isToday(day) && 'bg-sage-light rounded-full',
-                isCurrentDay && 'bg-terracotta rounded-lg',
+                isCurrentDay && 'bg-terracotta rounded',
                 dayHasEvents && 'bg-sage/15 rounded hover:bg-sage/25 hover:cursor-pointer'
               )}
               onMouseEnter={() => dayHasEvents && setHoveredDay(day)}
@@ -139,12 +139,12 @@ export default function EventMiniCalendar({
               )}
 
               {showPopup && allEventsOnDay.length > 0 && (
-                <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-forest text-bone p-1 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] z-[1000] min-w-[180px] max-w-[250px] whitespace-normal text-left after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-[6px] after:border-transparent after:border-t-forest">
+                <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-forest text-bone p-1 rounded shadow-[0_4px_12px_rgba(0,0,0,0.15)] z-[1000] min-w-[180px] max-w-[250px] whitespace-normal text-left after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-[6px] after:border-transparent after:border-t-forest">
                   {allEventsOnDay.map((event) => (
                     <Link
                       key={event.slug}
                       href={`/calendar/${event.slug}`}
-                      className="block text-bone no-underline p-sm px-md text-sm transition-all duration-200 rounded-md bg-transparent border-none text-left w-full cursor-pointer hover:bg-bone/15"
+                      className="block text-bone no-underline p-sm px-md text-sm transition-all duration-200 rounded bg-transparent border-none text-left w-full cursor-pointer hover:bg-bone/15"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {event.title}

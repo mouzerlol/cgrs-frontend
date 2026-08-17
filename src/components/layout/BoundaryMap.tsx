@@ -41,7 +41,7 @@ export default function BoundaryMap({ className = '', height = '160px' }: Bounda
         position: 'relative',
         width: '100%',
         height,
-        borderRadius: '8px',
+        borderRadius: '4px',
         overflow: 'hidden',
         background: '#f5f5f5',
       }}

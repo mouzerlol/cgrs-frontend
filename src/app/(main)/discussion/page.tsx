@@ -102,6 +102,27 @@ export default function DiscussionPage() {
     [bookmarksOnly, sortedCategories, categoryStats, allThreads],
   );
 
+  /*
+   * A tab that leads to an empty list is noise, so categories with no threads
+   * are left out of the sidebar.
+   *
+   * Visibility follows the API totals rather than `stats`: in bookmark-only
+   * mode `stats` counts the bookmarked threads loaded so far, and a zero there
+   * means "not on this page yet" as often as it means "empty".
+   *
+   * Two escapes: while the totals are still absent every category stays (an
+   * unloaded stat is zero, and hiding on that would blank the sidebar on first
+   * paint), and the active category stays regardless so the current selection
+   * can never disappear from under the reader.
+   */
+  const categoryStatsReady = !statsLoading && Object.keys(categoryStats).length > 0;
+  const visibleCategories = useMemo(() => {
+    if (!categoryStatsReady) return sortedCategories;
+    return sortedCategories.filter(
+      (c) => (categoryStats[c.slug]?.threadCount ?? 0) > 0 || c.slug === activeCategory,
+    );
+  }, [categoryStatsReady, sortedCategories, categoryStats, activeCategory]);
+
   const { upvotedThreads, bookmarkedThreads } = useMemo(() => ({
     upvotedThreads: new Set(allThreads.filter((t) => t.isUpvoted).map((t) => t.id)),
     bookmarkedThreads: new Set(allThreads.filter((t) => t.isBookmarked).map((t) => t.id)),
@@ -133,7 +154,7 @@ export default function DiscussionPage() {
 
   const newThreadClasses = cn(
     'inline-flex items-center justify-center gap-2 px-4 py-2.5',
-    'bg-terracotta text-bone rounded-xl',
+    'bg-terracotta text-bone rounded-lg',
     'font-medium text-sm',
     'shadow-[0_2px_10px_rgba(26,34,24,0.18)]',
     'transition-all duration-200',
@@ -167,7 +188,7 @@ export default function DiscussionPage() {
       <SortDropdown
         value={sort}
         onChange={setSort}
-        className="rounded-xl shadow-[0_2px_10px_rgba(26,34,24,0.18)]"
+        className="rounded-lg shadow-[0_2px_10px_rgba(26,34,24,0.18)]"
       />
       <ViewToggle
         value={viewMode}
@@ -200,7 +221,7 @@ export default function DiscussionPage() {
       <section className="bg-bone pt-3 pb-xl md:pt-4 md:pb-2xl">
         <div className="container">
           <SidebarLayout
-            categories={sortedCategories.map((c): SidebarCategory => ({
+            categories={visibleCategories.map((c): SidebarCategory => ({
               id: c.slug,
               name: c.name,
               icon: c.icon,
@@ -271,7 +292,7 @@ export default function DiscussionPage() {
                     disabled={isFetchingNextPage}
                     className={cn(
                       'inline-flex items-center gap-2 px-6 py-3',
-                      'bg-sage-light text-forest rounded-xl',
+                      'bg-sage-light text-forest rounded-lg',
                       'font-medium text-sm',
                       'transition-all duration-200',
                       'hover:bg-sage',

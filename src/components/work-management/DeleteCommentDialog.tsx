@@ -70,7 +70,7 @@ export function DeleteCommentDialog({
                 </p>
 
                 {error ? (
-                  <p className="mt-3 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2" role="alert">
+                  <p className="mt-3 text-sm text-red-700 bg-red-50 rounded px-3 py-2" role="alert">
                     {error}
                   </p>
                 ) : null}
@@ -80,7 +80,7 @@ export function DeleteCommentDialog({
                     type="button"
                     onClick={onClose}
                     disabled={isPending}
-                    className="px-4 py-2 text-sm font-semibold text-forest/70 bg-sage-light/30 rounded-lg hover:bg-sage-light/50 transition-colors disabled:opacity-50"
+                    className="px-4 py-2 text-sm font-semibold text-forest/70 bg-sage-light/30 rounded hover:bg-sage-light/50 transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -89,7 +89,7 @@ export function DeleteCommentDialog({
                     onClick={() => void onConfirm()}
                     disabled={isPending}
                     className={cn(
-                      'px-4 py-2 text-sm font-semibold rounded-lg transition-all flex items-center gap-2',
+                      'px-4 py-2 text-sm font-semibold rounded transition-all flex items-center gap-2',
                       !isPending ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-200 text-red-400 cursor-not-allowed',
                     )}
                   >

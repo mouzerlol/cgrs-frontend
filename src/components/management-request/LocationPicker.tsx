@@ -161,7 +161,7 @@ export function LocationPicker({
         </span>
       </label>
 
-      <div className="relative w-full h-[280px] max-lg:h-[200px] rounded-xl overflow-hidden border border-sage">
+      <div className="relative w-full h-[280px] max-lg:h-[200px] rounded-lg overflow-hidden border border-sage">
         <div
           ref={containerRef}
           className="w-full h-full"

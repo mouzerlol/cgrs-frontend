@@ -116,7 +116,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
         tabIndex={0}
         role="button"
         className={cn(
-          'relative flex h-full min-h-0 flex-col cursor-pointer overflow-hidden rounded-2xl border border-sage bg-white group/card',
+          'relative flex h-full min-h-0 flex-col cursor-pointer overflow-hidden rounded-xl border border-sage bg-white group/card',
           'transition-colors, transition-transform, transition-opacity duration-200 ease-out',
           'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
           thread.isPinned && 'border-l-4 border-l-terracotta',
@@ -237,7 +237,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
                     type="button"
                     onClick={handleBookmarkClick}
                     className={cn(
-                      'flex items-center justify-center rounded-lg p-1.5 transition-colors',
+                      'flex items-center justify-center rounded p-1.5 transition-colors',
                       isBookmarked
                         ? 'bg-sage/60 text-forest'
                         : 'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
@@ -254,7 +254,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
                   <button
                     type="button"
                     onClick={handleShareClick}
-                    className="flex items-center justify-center rounded-lg p-1.5 text-forest/40 transition-colors hover:bg-sage/50 hover:text-forest/70"
+                    className="flex items-center justify-center rounded p-1.5 text-forest/40 transition-colors hover:bg-sage/50 hover:text-forest/70"
                     aria-label="Share"
                   >
                     <Icon icon="lucide:share-2" className="h-4 w-4" />
@@ -264,7 +264,7 @@ const ThreadCard = forwardRef<HTMLDivElement, ThreadCardProps>(
                   <button
                     type="button"
                     onClick={handleReportClick}
-                    className="flex items-center justify-center rounded-lg p-1.5 text-forest/40 transition-colors hover:bg-sage/50 hover:text-forest/70"
+                    className="flex items-center justify-center rounded p-1.5 text-forest/40 transition-colors hover:bg-sage/50 hover:text-forest/70"
                     aria-label="Report"
                   >
                     <Icon icon="lucide:flag" className="h-4 w-4" />

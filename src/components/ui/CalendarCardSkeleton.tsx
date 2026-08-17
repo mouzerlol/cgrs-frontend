@@ -9,7 +9,7 @@ export function CalendarCardSkeleton() {
       <div className="relative h-[200px] overflow-hidden">
         <Skeleton className="h-full w-full rounded-none" />
         <div className="absolute top-4 right-4">
-          <Skeleton className="h-14 w-12 rounded-lg" />
+          <Skeleton className="h-14 w-12 rounded" />
         </div>
       </div>
       <div className="p-md space-y-3">

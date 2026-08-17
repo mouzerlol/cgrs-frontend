@@ -107,7 +107,7 @@ export default function NoticeBoardPage() {
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`
-                  px-6 py-3 rounded-lg font-medium transition-all
+                  px-6 py-3 rounded font-medium transition-all
                   ${selectedCategory === cat.id 
                     ? 'bg-forest text-bone shadow-lg' 
                     : 'bg-white text-forest hover:bg-sage-light shadow-md hover:-translate-y-1'

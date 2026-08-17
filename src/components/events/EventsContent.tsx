@@ -159,7 +159,7 @@ export default function EventsContent({ events }: { events: Event[] }) {
               ].map((tab) => (
                 <Tab key={tab.id} className={({ selected }) =>
                   cn(
-                    'px-6 py-3 text-sm font-medium rounded-lg transition-all',
+                    'px-6 py-3 text-sm font-medium rounded transition-all',
                     selected
                       ? 'bg-bone text-forest'
                       : 'text-bone/70 hover:text-bone hover:bg-white/5'

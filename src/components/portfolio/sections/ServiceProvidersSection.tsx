@@ -20,7 +20,7 @@ export default function ServiceProvidersSection({ content, isEditingLayout, isLo
       ) : (
         <div className="space-y-3">
           {providers.map((provider) => (
-            <div key={provider.id} className="p-3 rounded-xl bg-sage-light/40 space-y-1.5">
+            <div key={provider.id} className="p-3 rounded-lg bg-sage-light/40 space-y-1.5">
               <div className="flex items-center gap-2">
                 <Building2 className="w-3.5 h-3.5 text-forest/40" />
                 <span className="text-sm font-medium text-forest">{provider.name}</span>

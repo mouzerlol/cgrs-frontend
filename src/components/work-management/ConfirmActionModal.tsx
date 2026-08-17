@@ -77,7 +77,7 @@ export function ConfirmActionModal({
               placeholder={notePlaceholder}
               rows={3}
               maxLength={500}
-              className="w-full rounded-lg border border-sage/40 bg-bone/40 px-3 py-2 text-sm text-forest focus:border-forest/40 focus:outline-none focus:ring-1 focus:ring-forest/20"
+              className="w-full rounded border border-sage/40 bg-bone/40 px-3 py-2 text-sm text-forest focus:border-forest/40 focus:outline-none focus:ring-1 focus:ring-forest/20"
             />
           </div>
         )}
@@ -87,7 +87,7 @@ export function ConfirmActionModal({
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-forest/70 transition-colors hover:bg-sage/10 disabled:opacity-50"
+            className="rounded px-4 py-2 text-sm font-medium text-forest/70 transition-colors hover:bg-sage/10 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -96,7 +96,7 @@ export function ConfirmActionModal({
             onClick={handleConfirm}
             disabled={submitting}
             className={cn(
-              'rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-60',
+              'rounded px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-60',
               intent === 'danger' ? 'bg-terracotta hover:bg-terracotta-dark' : 'bg-forest hover:bg-forest/90',
             )}
           >

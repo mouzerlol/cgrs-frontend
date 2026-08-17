@@ -125,7 +125,7 @@ export default function ProfileSideNav({
         'flex-col flex-shrink-0',
         isMobile
           ? 'flex w-full bg-transparent p-0'
-          : 'hidden lg:flex w-64 bg-forest-light rounded-l-2xl pr-0 p-md',
+          : 'hidden lg:flex w-64 bg-forest-light rounded-l-xl pr-0 p-md',
         className
       )}
     >
@@ -150,7 +150,7 @@ export default function ProfileSideNav({
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'group flex items-center border border-bone/[0.12] w-full',
-                  isMobile ? 'rounded-xl' : 'border-r-0 rounded-l-xl',
+                  isMobile ? 'rounded-lg' : 'border-r-0 rounded-l-lg',
                   'gap-sm px-md py-3.5 min-h-[56px] text-[0.9375rem]',
                   'bg-bone/[0.08]',
                   'font-body font-medium text-bone text-left',
@@ -167,7 +167,7 @@ export default function ProfileSideNav({
               >
                 <span
                   className={cn(
-                    'flex items-center justify-center rounded-lg shrink-0',
+                    'flex items-center justify-center rounded shrink-0',
                     'transition-all duration-[250ms] ease-out-custom',
                     'w-8 h-8',
                     active

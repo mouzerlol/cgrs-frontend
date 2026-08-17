@@ -161,7 +161,7 @@ export function ThreadForm({
           <Card className="p-lg mb-lg">
             <form onSubmit={handleSubmit} className="flex flex-col gap-lg">
               {submitError && (
-                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded-lg text-terracotta">
+                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded text-terracotta">
                   <AlertCircle className="w-5 h-5" />
                   <span>{submitError}</span>
                 </div>
@@ -186,7 +186,7 @@ export function ThreadForm({
               )}
 
               {categoriesError && (
-                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded-lg text-terracotta text-sm">
+                <div className="flex items-center gap-sm p-md bg-terracotta/10 border border-terracotta rounded text-terracotta text-sm">
                   <AlertCircle className="w-5 h-5 shrink-0" />
                   <span>
                     Could not load categories.{' '}
@@ -196,7 +196,7 @@ export function ThreadForm({
               )}
 
               {categoriesSuccess && categories.length === 0 && !categoriesError && (
-                <p className="text-sm text-forest/80 p-md bg-sage-light border border-sage rounded-xl">
+                <p className="text-sm text-forest/80 p-md bg-sage-light border border-sage rounded-lg">
                   No discussion categories are set up for this community. Contact an administrator if this is unexpected.
                 </p>
               )}
@@ -257,7 +257,7 @@ export function ThreadForm({
             </form>
           </Card>
 
-          <div className="bg-sage-light rounded-xl p-md">
+          <div className="bg-sage-light rounded-lg p-md">
             <h3 className="font-display text-lg mb-3">Community Guidelines</h3>
             <ul className="list-disc pl-md text-forest/80 flex flex-col gap-xs text-sm">
               <li>Be respectful and constructive in your discussions</li>

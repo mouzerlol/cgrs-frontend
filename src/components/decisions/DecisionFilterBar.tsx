@@ -44,7 +44,7 @@ export default function DecisionFilterBar({
                     placeholder="Search motions, titles, owners..."
                     value={filters.searchQuery}
                     onChange={(e) => setFilter("searchQuery", e.target.value)}
-                    className="w-full pl-10 pr-8 py-2.5 rounded-lg border border-sage/20 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta/30 transition-all"
+                    className="w-full pl-10 pr-8 py-2.5 rounded border border-sage/20 bg-white text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta/30 transition-all"
                 />
                 {filters.searchQuery && (
                     <button
@@ -115,7 +115,7 @@ export default function DecisionFilterBar({
                                 e.target.value as DecisionFilters["sortBy"]
                             )
                         }
-                        className="px-3 py-2 text-sm rounded-lg border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30 cursor-pointer"
+                        className="px-3 py-2 text-sm rounded border border-sage/20 bg-white text-forest focus:outline-none focus:ring-2 focus:ring-terracotta/30 cursor-pointer"
                     >
                         {SORT_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>

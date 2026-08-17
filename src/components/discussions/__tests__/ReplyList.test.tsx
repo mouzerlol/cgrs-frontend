@@ -60,6 +60,22 @@ describe('ReplyList', () => {
     expect(treeWrapper?.querySelectorAll('article')).toHaveLength(2);
   });
 
+  it('renders a reply whose parent is not in the loaded set', () => {
+    // Parent is on the next page or deleted — the reply still belongs to the member who
+    // wrote it, so it renders at root level rather than disappearing.
+    render(
+      <ReplyList
+        replies={[
+          makeReply({ id: 'root', body: 'Root reply' }),
+          makeReply({ id: 'orphan', parentReplyId: 'off-page-parent', body: 'Orphan reply' }),
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Orphan reply')).toBeTruthy();
+    expect(screen.getByTestId('reply-count-heading').textContent).toContain('2 Replies');
+  });
+
   it('does not wrap threads in an extra CommentThread shell — ReplyCard supplies the card border', () => {
     const { container } = render(<ReplyList replies={[makeReply()]} />);
     expect(container.querySelectorAll('[class*="border-sage/25"]')).toHaveLength(0);

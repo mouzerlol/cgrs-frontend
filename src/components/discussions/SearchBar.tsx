@@ -72,7 +72,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
       <div
         className={cn(
           'relative flex items-center gap-3',
-          'px-4 py-3 bg-white rounded-xl',
+          'px-4 py-3 bg-white rounded-lg',
           'border border-sage/30',
           'transition-all duration-200',
           'focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/10',

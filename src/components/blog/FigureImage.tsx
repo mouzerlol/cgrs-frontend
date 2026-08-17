@@ -61,7 +61,7 @@ const TARGET =
  */
 const CHIP =
   'pointer-events-none absolute bottom-3 right-3 inline-flex h-8 w-8 items-center ' +
-  'justify-center rounded-md border border-bone-edge bg-bone text-forest/70 ' +
+  'justify-center rounded border border-bone-edge bg-bone text-forest/70 ' +
   'shadow-[0_4px_14px_rgba(26,34,24,0.22)] transition-colors duration-200 ease-out-custom ' +
   'group-hover:text-terracotta group-focus-visible:text-terracotta';
 
@@ -114,14 +114,9 @@ export default function FigureImage({ block }: { block: FigureBlock }) {
         </span>
       </button>
 
-      {/* Same paper ledge the article's cover print opens onto, so every picture
-          in the piece enlarges into the same object. */}
-      <ImageLightbox
-        images={images}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        captionSurface="paper"
-      />
+      {/* Same ledge the article's cover print opens onto, so every picture in
+          the piece enlarges into the same object. */}
+      <ImageLightbox images={images} isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }

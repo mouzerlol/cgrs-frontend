@@ -59,7 +59,7 @@ export default function CategoryAccordion({
   return (
     <div
       className={cn(
-        'bg-forest-light rounded-2xl overflow-hidden',
+        'bg-forest-light rounded-xl overflow-hidden',
         'shadow-lg',
         className
       )}
@@ -67,7 +67,7 @@ export default function CategoryAccordion({
       {/* Accordion Header */}
       <div className="px-5 py-4 border-b border-bone/10">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-bone/10 flex items-center justify-center">
+          <div className="w-8 h-8 rounded bg-bone/10 flex items-center justify-center">
             <Icon icon="lucide:folder" className="w-4 h-4 text-bone" />
           </div>
           <div>
@@ -150,7 +150,7 @@ function CategoryItem({ category, stats, isExpanded, onToggle }: CategoryItemPro
         aria-expanded={isExpanded}
       >
         {/* Icon */}
-        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', iconColors)}>
+        <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0', iconColors)}>
           <Icon icon={category.icon} className="w-5 h-5" />
         </div>
 
@@ -191,7 +191,7 @@ function CategoryItem({ category, stats, isExpanded, onToggle }: CategoryItemPro
                   // Loading skeletons
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="bg-bone/5 rounded-xl p-4 animate-pulse">
+                      <div key={i} className="bg-bone/5 rounded-lg p-4 animate-pulse">
                         <div className="h-5 bg-bone/10 rounded w-3/4 mb-2" />
                         <div className="h-4 bg-bone/10 rounded w-1/2 mb-3" />
                         <div className="h-3 bg-bone/10 rounded w-full" />

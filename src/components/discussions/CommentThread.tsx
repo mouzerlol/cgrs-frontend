@@ -2,19 +2,10 @@
 
 import { memo, useState, useCallback, useId } from 'react';
 import { cn } from '@/lib/utils';
-import type { ForumUser, Reply } from '@/types';
+import type { TreeNode } from '@/lib/reply-tree';
+import type { ForumUser } from '@/types';
 import ReplyCard from './ReplyCard';
 import UserAvatar from './UserAvatar';
-
-// =============================================================================
-// Tree Data Types
-// =============================================================================
-
-export interface TreeNode {
-  reply: Reply;
-  children: TreeNode[];
-  descendantCount: number;
-}
 
 /** Max visual nesting depth on desktop — deeper replies render at this level */
 const MAX_RENDER_DEPTH = 5;
@@ -26,48 +17,6 @@ const MAX_RENDER_DEPTH = 5;
  * there is no hydration mismatch and no resize listener.
  */
 const MOBILE_MAX_INDENT_DEPTH = 1;
-
-// =============================================================================
-// Tree Builder — converts flat reply list into tree nodes
-// =============================================================================
-
-export function buildReplyTree(replies: Reply[]): TreeNode[] {
-  const nodeMap = new Map<string, TreeNode>();
-  const roots: TreeNode[] = [];
-
-  // Create nodes for all replies
-  for (const reply of replies) {
-    nodeMap.set(reply.id, { reply, children: [], descendantCount: 0 });
-  }
-
-  // Build parent-child relationships
-  for (const reply of replies) {
-    const node = nodeMap.get(reply.id)!;
-    if (reply.parentReplyId) {
-      const parent = nodeMap.get(reply.parentReplyId);
-      if (parent) {
-        parent.children.push(node);
-      } else {
-        roots.push(node);
-      }
-    } else {
-      roots.push(node);
-    }
-  }
-
-  // Compute descendant counts bottom-up
-  function computeDescendants(node: TreeNode): number {
-    let count = 0;
-    for (const child of node.children) {
-      count += 1 + computeDescendants(child);
-    }
-    node.descendantCount = count;
-    return count;
-  }
-  roots.forEach(computeDescendants);
-
-  return roots;
-}
 
 // =============================================================================
 // CommentThread Component

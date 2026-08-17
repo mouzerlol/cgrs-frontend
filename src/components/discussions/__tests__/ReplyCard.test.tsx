@@ -72,7 +72,7 @@ describe('ReplyCard', () => {
     expect(badge.className.split(/\s+/)).not.toContain('text-black');
     expect(badge.className).not.toContain('italic');
     expect(badge.className.split(/\s+/)).not.toContain('uppercase');
-    expect(badge.className).toContain('rounded-tl-md');
+    expect(badge.className).toContain('rounded-tl');
     expect(badge.className).toContain('-mt-3');
     expect(badge.className).toContain('-ml-3');
   });

@@ -17,18 +17,18 @@ export default function ReportedIssuesSection() {
       <div className="space-y-6">
         {/* Header skeleton */}
         <div className="flex items-center gap-3">
-          <Skeleton className="h-12 w-12 rounded-lg" />
+          <Skeleton className="h-12 w-12 rounded" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-4 w-64" />
           </div>
-          <Skeleton className="h-9 w-40 rounded-lg" />
+          <Skeleton className="h-9 w-40 rounded" />
         </div>
         {/* Content skeleton */}
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex min-h-[60px] items-center gap-4 border border-sage/20 bg-white p-4">
-              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="h-10 w-10 rounded" />
               <div className="flex-1 space-y-2">
                 <Skeleton className="h-5 w-1/3" />
                 <Skeleton className="h-3 w-1/4" />
@@ -59,7 +59,7 @@ export default function ReportedIssuesSection() {
         action={
           <Link
             href="/management-request"
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
           >
             <Plus className="w-4 h-4" />
             Submit a Request

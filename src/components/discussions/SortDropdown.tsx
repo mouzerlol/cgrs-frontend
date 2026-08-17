@@ -43,7 +43,7 @@ const SortDropdown = forwardRef<HTMLDivElement, SortDropdownProps>(
           <ListboxButton
             className={cn(
               'flex items-center gap-2 px-4 py-2.5',
-              'bg-white rounded-xl border border-sage/30',
+              'bg-white rounded-lg border border-sage/30',
               'text-sm text-forest',
               'transition-all duration-200',
               'hover:border-sage focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/10'
@@ -71,7 +71,7 @@ const SortDropdown = forwardRef<HTMLDivElement, SortDropdownProps>(
               anchor={{ to: 'bottom end', gap: 8 }}
               className={cn(
                 'w-48 origin-top-right z-50',
-                'bg-white rounded-xl shadow-lg border border-sage',
+                'bg-white rounded-lg shadow-lg border border-sage',
                 'ring-1 ring-black/5 focus:outline-none',
                 'p-1'
               )}
@@ -82,7 +82,7 @@ const SortDropdown = forwardRef<HTMLDivElement, SortDropdownProps>(
                   value={option.value}
                   className={({ focus, selected }) =>
                     cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer',
+                      'flex items-center gap-3 px-3 py-2.5 rounded cursor-pointer',
                       'transition-colors duration-100',
                       focus && 'bg-sage-light',
                       selected ? 'text-terracotta font-medium' : 'text-forest/70'

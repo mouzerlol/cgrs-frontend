@@ -74,7 +74,7 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
         className={cn(
           isMenu
             ? 'flex w-full items-center gap-3 text-left font-normal text-sm'
-            : 'flex items-center justify-center gap-1 rounded-md border transition-all duration-200',
+            : 'flex items-center justify-center gap-1 rounded border transition-all duration-200',
           !isMenu && sizes.button,
           isMenu && reported && 'text-forest/40 cursor-not-allowed',
           !isMenu &&
@@ -107,7 +107,7 @@ const ReportButton = forwardRef<HTMLButtonElement, ReportButtonProps>(
         {showToast && (
           <div
             className={cn(
-              'absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg',
+              'absolute bottom-full right-0 mb-2 px-3 py-2 rounded',
               'bg-forest text-bone text-sm whitespace-nowrap shadow-lg',
               'animate-fade-up'
             )}

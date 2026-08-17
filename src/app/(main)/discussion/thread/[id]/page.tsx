@@ -55,16 +55,16 @@ function LoadingSkeleton({ className }: LoadingSkeletonProps) {
           <div className="h-4 w-4/5 rounded bg-sage/30" />
         </div>
         <div className="mt-6 flex items-center gap-2 border-t border-sage/25 pt-3">
-          <div className="h-9 w-16 rounded-md bg-sage/30" />
-          <div className="h-9 w-28 rounded-md bg-sage/30" />
+          <div className="h-9 w-16 rounded bg-sage/30" />
+          <div className="h-9 w-28 rounded bg-sage/30" />
           <div className="ml-auto h-9 w-24 rounded bg-sage/30" />
         </div>
       </div>
       </ThreadBackdrop>
 
       <div className="container mx-auto max-w-4xl space-y-3 px-4 py-8">
-        <div className="h-24 rounded-md bg-sage/25" />
-        <div className="ml-11 h-24 rounded-md bg-sage/25" />
+        <div className="h-24 rounded bg-sage/25" />
+        <div className="ml-11 h-24 rounded bg-sage/25" />
       </div>
     </div>
   );
@@ -74,7 +74,7 @@ function NotFound() {
   return (
     <div className="rounded-card border border-sage/30 bg-white px-6 py-12 text-center shadow-[0_16px_40px_rgba(26,34,24,0.14)] md:px-10">
       <span
-        className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-forest/[0.07] text-forest"
+        className="mx-auto flex h-12 w-12 items-center justify-center rounded bg-forest/[0.07] text-forest"
         aria-hidden
       >
         <Icon icon="lucide:message-square-off" className="h-6 w-6" />

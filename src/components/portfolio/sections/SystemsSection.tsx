@@ -38,7 +38,7 @@ export default function SystemsSection({ content, isEditingLayout, isLoading = f
             const colorClass = typeColors[item.type] || typeColors.other;
             return (
               <div key={item.id} className="flex items-start gap-3 py-2">
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}>
+                <div className={`w-7 h-7 rounded flex items-center justify-center shrink-0 ${colorClass}`}>
                   <IconComponent className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">

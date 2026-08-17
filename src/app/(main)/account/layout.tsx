@@ -113,11 +113,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <section className="section bg-bone">
         <div className="container max-w-3xl">
           {breadcrumbStrip}
-          <div className="mt-4 rounded-2xl bg-white p-8 text-center shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
+          <div className="mt-4 rounded-xl bg-white p-8 text-center shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
             <h2 className="mb-4 font-display text-2xl text-forest">Sign in to view your profile</h2>
             <p className="mb-6 text-forest/70">Access your community membership and manage your account.</p>
             <SignInButton mode="redirect">
-              <button className="rounded-xl bg-terracotta px-6 py-3 font-medium text-bone transition-colors hover:bg-terracotta/90">
+              <button className="rounded-lg bg-terracotta px-6 py-3 font-medium text-bone transition-colors hover:bg-terracotta/90">
                 Sign In
               </button>
             </SignInButton>
@@ -136,7 +136,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <section className="section bg-bone">
         <div className="container max-w-3xl">
           {breadcrumbStrip}
-          <div className="mt-4 rounded-2xl bg-terracotta/10 p-8 text-center shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
+          <div className="mt-4 rounded-xl bg-terracotta/10 p-8 text-center shadow-[0_8px_32px_rgba(26,34,24,0.08)]">
             <p className="text-terracotta">We couldn&apos;t load your profile. Please try again.</p>
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               aria-expanded={drawerOpen}
               aria-controls="account-mobile-nav"
               aria-label="Open account navigation"
-              className="flex items-center gap-3 rounded-xl bg-forest-light px-4 py-2.5 text-bone w-full transition-colors hover:bg-forest focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
+              className="flex items-center gap-3 rounded-lg bg-forest-light px-4 py-2.5 text-bone w-full transition-colors hover:bg-forest focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
             >
               <ProfileIdentityCard
                 variant="trigger"
@@ -215,7 +215,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 'bg-sage-light p-sm pt-sm sm:p-lg sm:pt-md',
                 isSquareAccountTab(activeTab)
                   ? 'rounded-none'
-                  : 'rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
+                  : 'rounded-xl lg:rounded-l-none lg:rounded-r-xl',
               )}
             >
               <AnimatePresence mode="wait">

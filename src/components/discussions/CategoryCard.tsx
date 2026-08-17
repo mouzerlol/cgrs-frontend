@@ -52,7 +52,7 @@ const CategoryCard = forwardRef<HTMLDivElement, CategoryCardProps>(
         {/* Icon */}
         <div
           className={cn(
-            'w-10 h-10 rounded-xl flex items-center justify-center mb-3',
+            'w-10 h-10 rounded-lg flex items-center justify-center mb-3',
             colors.icon
           )}
         >
@@ -89,7 +89,7 @@ const CategoryCard = forwardRef<HTMLDivElement, CategoryCardProps>(
 
     const cardClasses = cn(
       'relative flex flex-col p-5 min-h-[160px]',
-      'bg-white rounded-2xl border border-sage/30',
+      'bg-white rounded-xl border border-sage/30',
       'transition-all duration-300 cursor-pointer',
       'hover:-translate-y-1 hover:shadow-lg',
       colors.border,

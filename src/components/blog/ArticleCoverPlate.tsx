@@ -63,7 +63,7 @@ const PRINT_ASPECT = 'aspect-[4/3]';
  * disappears into the hero's own wash.
  */
 const HIT_AREA =
-  'peer absolute inset-0 z-10 cursor-pointer focus:outline-none ' +
+  'peer absolute inset-0 z-10 cursor-zoom-in focus:outline-none ' +
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-terracotta';
 
 /**
@@ -131,7 +131,7 @@ export function ArticleCoverFigure({
      * there reads as a frame round a picture that is already framed by being a
      * picture.
      */
-    <figure className="group relative rounded-[20px] shadow-sheet">
+    <figure className="group relative rounded-[12px] shadow-sheet">
       {/* First in the DOM so `peer-focus-visible` reaches the print below it. */}
       <button
         type="button"
@@ -148,7 +148,7 @@ export function ArticleCoverFigure({
       <div
         className={cn(
           PRINT_ASPECT,
-          'relative w-full overflow-hidden rounded-t-[20px] bg-forest-light',
+          'relative w-full overflow-hidden rounded-t-[12px] bg-forest-light',
         )}
       >
         {/*
@@ -192,7 +192,7 @@ export function ArticleCoverFigure({
        * the first glyph nearly on the curve; the glyph on the right is an icon,
        * which is optically inset by its own bounding box already.
        */}
-      <figcaption className="relative flex items-center gap-3 rounded-b-[20px] bg-forest-light py-2.5 pl-5 pr-3">
+      <figcaption className="relative flex items-center gap-3 rounded-b-[12px] bg-forest-light py-2.5 pl-5 pr-3">
         <span className="min-w-0 flex-1">
           {/*
            * Set through `toTitleCase`, the same helper the hero heading runs
@@ -347,14 +347,9 @@ export default function ArticleCoverPlate({ hero, railMeta }: ArticleCoverPlateP
         </div>
       </div>
 
-      {/* Paper caption: the overlay shows the same print-on-a-ledge object the
-          rail does, at full size and in the picture's own proportion. */}
-      <ImageLightbox
-        images={lightboxImages}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        captionSurface="paper"
-      />
+      {/* The overlay shows the same print-on-a-ledge object the rail does, at
+          full size and in the picture's own proportion. */}
+      <ImageLightbox images={lightboxImages} isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }

@@ -106,7 +106,7 @@ export default function UtilityDock({ items, useIconComponent = false, overlapHe
           <Link
             key={item.name}
             href={item.href}
-            className="utility-item group flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl bg-transparent transition-colors, transition-transform, transition-opacity duration-300 ease-out-custom cursor-pointer w-[140px] sm:w-[160px] md:w-[180px] shrink-0 hover:-translate-y-1 hover:bg-sage-light"
+            className="utility-item group flex flex-col items-center justify-center gap-2.5 p-4 rounded-lg bg-transparent transition-colors, transition-transform, transition-opacity duration-300 ease-out-custom cursor-pointer w-[140px] sm:w-[160px] md:w-[180px] shrink-0 hover:-translate-y-1 hover:bg-sage-light"
             aria-label={item.name}
             ref={setRef(index)}
           >

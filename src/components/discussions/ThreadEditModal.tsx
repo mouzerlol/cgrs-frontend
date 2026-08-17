@@ -99,7 +99,7 @@ export function ThreadEditModal({
             placeholder="Thread title"
             disabled={isSaving}
             maxLength={150}
-            className="w-full p-md bg-white border border-sage rounded-xl text-base text-forest font-body transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50"
+            className="w-full p-md bg-white border border-sage rounded-lg text-base text-forest font-body transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50"
           />
         </div>
 
@@ -116,13 +116,13 @@ export function ThreadEditModal({
             disabled={isSaving}
             rows={6}
             maxLength={2000}
-            className="w-full p-md bg-white border border-sage rounded-xl text-base text-forest font-body transition-all duration-[250ms] ease-out-custom resize-y min-h-[120px] focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50"
+            className="w-full p-md bg-white border border-sage rounded-lg text-base text-forest font-body transition-all duration-[250ms] ease-out-custom resize-y min-h-[120px] focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50"
           />
         </div>
 
         {/* Poll Section */}
         {thread.poll && (
-          <div className="space-y-3 rounded-lg border border-sage/30 p-4">
+          <div className="space-y-3 rounded border border-sage/30 p-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-forest">Poll</span>
               {!removePoll && (
@@ -178,7 +178,7 @@ export function ThreadEditModal({
 
         {/* New Poll */}
         {hasPoll && !thread.poll && (
-          <div className="space-y-3 rounded-lg border border-sage/30 p-4">
+          <div className="space-y-3 rounded border border-sage/30 p-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-forest">New Poll</span>
               <button

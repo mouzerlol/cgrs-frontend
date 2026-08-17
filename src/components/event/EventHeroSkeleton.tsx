@@ -20,7 +20,7 @@ export function EventHeroSkeleton() {
           <Skeleton className="h-5 w-64 bg-bone/20" />
         </div>
 
-        <Skeleton className="h-12 w-48 rounded-lg bg-bone/20" />
+        <Skeleton className="h-12 w-48 rounded bg-bone/20" />
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export default function PetitionStickyCTA({ isPetitionActive }: PetitionStickyCT
       <div
         className={cn(
           'mx-3 mb-3 px-4 py-3',
-          'bg-forest text-bone rounded-xl shadow-lg',
+          'bg-forest text-bone rounded-lg shadow-lg',
           'flex items-center gap-3'
         )}
       >
@@ -66,7 +66,7 @@ export default function PetitionStickyCTA({ isPetitionActive }: PetitionStickyCT
           href="#sign"
           className={cn(
             'flex-1 inline-flex items-center justify-center gap-2',
-            'py-2.5 px-4 rounded-lg',
+            'py-2.5 px-4 rounded',
             'bg-terracotta hover:bg-terracotta-dark',
             'font-body text-sm font-semibold text-bone',
             'transition-colors duration-200'
@@ -80,7 +80,7 @@ export default function PetitionStickyCTA({ isPetitionActive }: PetitionStickyCT
           type="button"
           onClick={() => setDismissed(true)}
           className={cn(
-            'shrink-0 w-9 h-9 rounded-lg',
+            'shrink-0 w-9 h-9 rounded',
             'flex items-center justify-center',
             'text-bone/70 hover:text-bone hover:bg-bone/10',
             'transition-colors duration-200',

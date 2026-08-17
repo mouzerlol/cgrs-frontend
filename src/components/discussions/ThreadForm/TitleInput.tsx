@@ -31,7 +31,7 @@ export function TitleInput({ value, onChange, error }: TitleInputProps) {
           placeholder="What's your discussion about?"
           maxLength={MAX_LENGTH}
           className={cn(
-            'w-full p-md pr-[60px] bg-white border border-sage rounded-xl text-base text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50',
+            'w-full p-md pr-[60px] bg-white border border-sage rounded-lg text-base text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10 placeholder:text-forest/50',
             error && 'border-terracotta'
           )}
         />
@@ -49,7 +49,7 @@ export function TitleInput({ value, onChange, error }: TitleInputProps) {
       {error && <p className="text-sm text-terracotta">{error}</p>}
 
       {showHint && !error && (
-        <div className="text-sm text-forest/70 p-sm bg-sage-light rounded-lg">
+        <div className="text-sm text-forest/70 p-sm bg-sage-light rounded">
           <p>Be specific and concise. A good title helps others find your discussion.</p>
           <p className="mt-xs text-xs opacity-60">
             <strong>Good:</strong> &quot;Best coffee shops near Mangere Bridge?&quot;

@@ -53,7 +53,7 @@ export default function BoardsListPage() {
           <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-[200px] rounded-[20px] bg-sage/10 animate-pulse" />
+                <div key={i} className="h-[200px] rounded-[12px] bg-sage/10 animate-pulse" />
               ))}
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function BoardsListPage() {
                 >
                   <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="w-full h-full min-h-[200px] rounded-[20px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
+                    className="w-full h-full min-h-[200px] rounded-[12px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
                   >
                     <div className="w-14 h-14 rounded-full bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
                       <span className="text-2xl">+</span>

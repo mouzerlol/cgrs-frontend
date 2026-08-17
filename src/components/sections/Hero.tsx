@@ -41,7 +41,7 @@ export default function Hero({ title, subtitle, backgroundImage, easterEggPhase 
           <p className="text-lg md:text-xl tracking-wide font-normal opacity-0 animate-fade-up [animation-delay:200ms]">{subtitle}</p>
         )}
         <div
-          className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-8 h-14 border-[3px] border-bone rounded-2xl opacity-60"
+          className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-8 h-14 border-[3px] border-bone rounded-xl opacity-60"
           aria-hidden="true"
         >
           <Icon name="arrow-down" size="md" className="absolute bottom-2 left-1/2 -translate-x-1/2 animate-scroll-bounce" />

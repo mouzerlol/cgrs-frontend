@@ -36,7 +36,7 @@ export default function UsersPage() {
             <div className="bg-white p-6">
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-16 rounded-lg bg-sage/10 animate-pulse" />
+                  <div key={i} className="h-16 rounded bg-sage/10 animate-pulse" />
                 ))}
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function UsersPage() {
                 <div className="p-6">
                   <div className="space-y-4">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <div key={i} className="h-16 rounded-lg bg-sage/10 animate-pulse" />
+                      <div key={i} className="h-16 rounded bg-sage/10 animate-pulse" />
                     ))}
                   </div>
                 </div>

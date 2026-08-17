@@ -16,7 +16,7 @@ import { track } from '@/lib/analytics/events';
 type ResidentType = 'tenant' | 'owner';
 
 const inputCls = [
-  'w-full py-3 px-4 bg-bone border border-sage rounded-[10px]',
+  'w-full py-3 px-4 bg-bone border border-sage rounded-[8px]',
   'font-body text-base text-forest',
   'transition-all duration-[250ms] ease-out-custom',
   'focus:outline-none focus:border-terracotta focus:ring-[3px] focus:ring-terracotta/10',
@@ -182,7 +182,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
     const goalReached = remaining === 0;
 
     return (
-      <div className="bg-bone border border-sage/30 rounded-xl p-6 md:p-8">
+      <div className="bg-bone border border-sage/30 rounded-lg p-6 md:p-8">
         <div className="flex items-start gap-4 mb-5">
           <span className="shrink-0 w-12 h-12 rounded-full bg-terracotta flex items-center justify-center">
             <Icon icon="lucide:check" className="w-6 h-6 text-bone" />
@@ -221,7 +221,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
               onClick={handleShare}
               className={cn(
                 'inline-flex items-center justify-center gap-2',
-                'py-3 px-5 rounded-xl',
+                'py-3 px-5 rounded-lg',
                 'bg-terracotta hover:bg-terracotta-dark',
                 'font-body text-sm font-semibold text-bone',
                 'transition-colors duration-200',
@@ -239,7 +239,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
               href="#comments"
               className={cn(
                 'inline-flex items-center justify-center gap-2',
-                'py-3 px-5 rounded-xl',
+                'py-3 px-5 rounded-lg',
                 'border border-sage bg-white hover:border-forest/40 hover:bg-bone',
                 'font-body text-sm font-semibold text-forest',
                 'transition-colors duration-200',
@@ -340,7 +340,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
                   ref={idx === 0 ? residentTypeRef : undefined}
                   className={cn(
                     'relative flex items-center justify-center gap-2 cursor-pointer',
-                    'py-3 px-4 rounded-[10px] border bg-bone',
+                    'py-3 px-4 rounded-[8px] border bg-bone',
                     'font-body text-base font-medium capitalize',
                     'transition-all duration-[250ms] ease-out-custom',
                     active
@@ -421,7 +421,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
       {bannerError && (
         <p
           role="alert"
-          className="font-body text-sm text-terracotta bg-terracotta/5 border border-terracotta/30 rounded-[10px] px-4 py-3"
+          className="font-body text-sm text-terracotta bg-terracotta/5 border border-terracotta/30 rounded-[8px] px-4 py-3"
         >
           {bannerError}
         </p>
@@ -434,7 +434,7 @@ export default function PetitionSignForm({ goal }: PetitionSignFormProps) {
           className={cn(
             'inline-flex items-center justify-center gap-sm',
             'py-3.5 px-8 min-h-[52px]',
-            'bg-terracotta rounded-xl',
+            'bg-terracotta rounded-lg',
             'font-body text-base font-semibold text-bone',
             'cursor-pointer border-none shrink-0',
             'transition-all duration-[250ms] ease-out-custom',

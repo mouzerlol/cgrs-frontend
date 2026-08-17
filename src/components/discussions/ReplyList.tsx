@@ -3,8 +3,9 @@
 import { forwardRef, useMemo, HTMLAttributes } from 'react';
 import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
+import { buildReplyTree, useFrozenRootRanks } from '@/lib/reply-tree';
 import type { Reply } from '@/types';
-import CommentThread, { buildReplyTree } from './CommentThread';
+import CommentThread from './CommentThread';
 
 interface ReplyListProps extends HTMLAttributes<HTMLDivElement> {
   replies: Reply[];
@@ -54,8 +55,11 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
     className,
     ...props
   }, ref) => {
-    // Build tree from flat list — memoized to avoid rebuilding on every render
-    const tree = useMemo(() => buildReplyTree(replies), [replies]);
+    /* Roots rank by the upvote counts they had when the thread was opened, so casting a vote
+       changes the number without moving the reply out from under the pointer. The new order
+       lands on the next load. */
+    const rootRanks = useFrozenRootRanks(replies);
+    const tree = useMemo(() => buildReplyTree(replies, rootRanks), [replies, rootRanks]);
 
     const countLabel = `${replies.length} ${replies.length === 1 ? 'Reply' : 'Replies'}`;
 
@@ -75,7 +79,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
 
     /* Padding lives on the inner element rather than the plate, so when the count
        is a link the whole plate is the target rather than the text inside it. */
-    const countInner = 'inline-flex items-center gap-2 rounded-md py-1 pl-1 pr-3';
+    const countInner = 'inline-flex items-center gap-2 rounded py-1 pl-1 pr-3';
 
     if (replies.length === 0) {
       return (
@@ -100,7 +104,7 @@ const ReplyList = forwardRef<HTMLDivElement, ReplyListProps>(
         {showCount && (
         <h2
           data-testid="reply-count-heading"
-          className="inline-flex rounded-md bg-forest text-xs font-semibold text-amber"
+          className="inline-flex rounded bg-forest text-xs font-semibold text-amber"
         >
           {replyHref ? (
             <a

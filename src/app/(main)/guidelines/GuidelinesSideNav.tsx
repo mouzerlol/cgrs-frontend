@@ -54,7 +54,7 @@ export default function GuidelinesSideNav({ items }: { items: SideNavItem[] }) {
                 <a
                   href={`#${item.id}`}
                   aria-current={isActive ? 'true' : undefined}
-                  className={`group flex items-baseline gap-3 rounded-lg px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 ${
+                  className={`group flex items-baseline gap-3 rounded px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 ${
                     isActive
                       ? 'bg-terracotta/10 text-terracotta'
                       : 'text-forest/55 hover:bg-sage-light hover:text-forest'

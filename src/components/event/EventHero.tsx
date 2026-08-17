@@ -116,7 +116,7 @@ export default function EventHero({ event, isPastEvent = false }: EventHeroProps
         {!isPastEvent && (
           <button
             onClick={() => downloadIcsFile(event)}
-            className="inline-flex items-center gap-sm py-sm px-lg bg-bone text-forest border-none rounded-lg text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-sage-light hover:-translate-y-0.5 [&>svg]:shrink-0"
+            className="inline-flex items-center gap-sm py-sm px-lg bg-bone text-forest border-none rounded text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-sage-light hover:-translate-y-0.5 [&>svg]:shrink-0"
           >
             <Calendar size={18} />
             Add to Calendar

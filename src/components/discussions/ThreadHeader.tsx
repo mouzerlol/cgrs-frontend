@@ -6,6 +6,11 @@ import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 import UserAvatar from './UserAvatar';
 import {
+  THREAD_GUTTER_COLUMN,
+  THREAD_GUTTER_INDENT,
+  THREAD_GUTTER_RULE_GAP,
+} from './thread-gutter';
+import {
   getDiscussionCategoryLucideIcon,
   getDiscussionCategoryLabel,
 } from '@/lib/discussion-category-lucide-icons';
@@ -88,30 +93,33 @@ const ThreadHeader = forwardRef<HTMLDivElement, ThreadHeaderProps>(
               the rule on its right edge — so the rule exists only alongside the title,
               which is the one place it divides anything.
 
-              8rem, not the 6rem it was. The label is a single unbreakable word in the
-              longest cases — ANNOUNCEMENTS measures ~102px at this size and tracking,
-              INTRODUCTIONS ~93px — and 6rem less the 1.25rem gutter left a 75px box.
-              The word overflowed it, spending the padding and running onto the rule, so
-              the divider read as touching the text. 8rem less the same gutter is a 108px
-              box: the longest word fits and the 1.25rem of air before the rule is air
-              again rather than something the label has already crossed. */}
+              9rem (THREAD_GUTTER_COLUMN), measured rather than estimated. The label is a
+              single unbreakable word in the longest cases, and ANNOUNCEMENTS is 116px at
+              this size and tracking — 8rem less the 1.25rem gutter gave it a 107px box, so
+              it broke mid-word to "ANNOUNCEMEN / TS". 9rem less the same gutter is a 124px
+              box: the longest label of the set sits on one line with room to spare, and the
+              1.25rem of air before the rule stays air. */}
           <div
             data-testid="thread-category"
             className={cn(
               'order-1 flex shrink-0 items-center gap-2.5',
-              'sm:w-32 sm:flex-col sm:justify-start sm:gap-1.5 sm:border-r sm:border-sage/40 sm:pr-5',
+              THREAD_GUTTER_COLUMN,
+              THREAD_GUTTER_RULE_GAP,
+              'sm:flex-col sm:justify-start sm:gap-1.5 sm:border-r sm:border-sage/40',
             )}
           >
             <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-forest/[0.07] text-forest sm:h-11 sm:w-11 md:h-12 md:w-12"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-forest/[0.07] text-forest sm:h-11 sm:w-11 md:h-12 md:w-12"
               aria-hidden="true"
             >
               <CategoryIcon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
             </span>
-            {/* `break-words` is the backstop, not the mechanism: the column is sized to
-                hold today's labels whole, and a longer one added later wraps inside the
-                column instead of crossing the rule again. */}
-            <span className="max-w-full break-words text-[0.62rem] font-semibold uppercase leading-tight tracking-[0.16em] text-terracotta sm:text-center">
+            {/* One line is the rule for a label — a broken word reads as a rendering fault,
+                not a style. `text-balance` keeps a two-word label (GENERAL DISCUSSION) split
+                at its space rather than lopsided, and `break-words` stays as the backstop for
+                a future label longer than the column: it wraps inside the column instead of
+                crossing the rule. */}
+            <span className="max-w-full text-balance break-words text-[0.62rem] font-semibold uppercase leading-tight tracking-[0.16em] text-terracotta sm:text-center">
               {categoryLabel}
             </span>
           </div>
@@ -149,10 +157,14 @@ const ThreadHeader = forwardRef<HTMLDivElement, ThreadHeaderProps>(
 
         {/* Author & Time Row — side by side at every width. The avatar and metadata step
             down a size on mobile so the two fit on one line instead of stacking. From sm
-            it takes the gutter indent so it lines up with the title above it. */}
+            it takes the gutter indent, so the avatar, the name and the timestamp all start
+            on the title's left edge rather than under the category column. */}
         <div
           data-testid="thread-header-byline"
-          className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-2 sm:gap-x-4 sm:pl-[calc(8rem_+_1.25rem)]"
+          className={cn(
+            'flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-2 sm:gap-x-4',
+            THREAD_GUTTER_INDENT,
+          )}
         >
           <UserAvatar
             user={thread.author}

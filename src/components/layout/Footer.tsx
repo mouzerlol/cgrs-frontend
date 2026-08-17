@@ -15,7 +15,7 @@ const FooterMap = dynamic(() => import('./FooterMap'), {
       style={{
         width: '100%',
         height: '160px',
-        borderRadius: '8px',
+        borderRadius: '4px',
         background: '#2C3E2D',
       }}
     />

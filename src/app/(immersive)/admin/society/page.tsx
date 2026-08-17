@@ -345,7 +345,7 @@ export default function AdminSocietyPage() {
       <main className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-3xl p-6 md:p-8 lg:p-12">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-forest/10">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-forest/10">
               <Landmark className="h-5 w-5 text-forest" aria-hidden="true" />
             </div>
             <div>

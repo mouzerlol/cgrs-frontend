@@ -135,7 +135,7 @@ Committee Decision Register
                         <GovernanceDashboard resolutions={resolutions} />
                     </div>
 
-                    <div className="bg-sage-light -mx-4 md:-mx-6 lg:-mx-8 mt-6 rounded-[10px] px-4 md:px-6 lg:px-8 pt-6 pb-8">
+                    <div className="bg-sage-light -mx-4 md:-mx-6 lg:-mx-8 mt-6 rounded-[8px] px-4 md:px-6 lg:px-8 pt-6 pb-8">
                         <DecisionFilterBar
                             filters={filters}
                             setFilter={setFilter}

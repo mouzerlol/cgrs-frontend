@@ -30,7 +30,7 @@ export function Accordion({ items, className, triggerClassName, panelClassName }
         <Disclosure key={index} defaultOpen={item.defaultOpen}>
           <DisclosureButton className={cn(
             'flex w-full justify-between items-center px-4 py-4',
-            'bg-sage-light rounded-lg text-left',
+            'bg-sage-light rounded text-left',
             'hover:bg-sage/30 transition-colors',
             'focus:outline-none focus:ring-2 focus:ring-terracotta/50',
             triggerClassName

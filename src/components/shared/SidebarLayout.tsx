@@ -93,7 +93,7 @@ export function SidebarLayout({
         {/* Mobile: sticky header bar opening the drawer */}
         <div
           className={cn(
-            'lg:hidden sticky top-0 z-10 bg-sage-light rounded-t-2xl',
+            'lg:hidden sticky top-0 z-10 bg-sage-light rounded-t-xl',
             compact ? 'p-sm' : 'p-md pb-sm',
             headerAction && 'flex items-center gap-2'
           )}
@@ -102,7 +102,7 @@ export function SidebarLayout({
             type="button"
             onClick={() => setDrawerOpen(true)}
             className={cn(
-              'flex w-full min-w-0 items-center gap-sm rounded-xl',
+              'flex w-full min-w-0 items-center gap-sm rounded-lg',
               'bg-forest-light text-bone font-body font-medium',
               compact ? 'px-sm py-2 min-h-[48px] text-sm' : 'px-md py-sm min-h-[56px] text-base',
               'transition-colors duration-[250ms] ease-out-custom hover:bg-forest',
@@ -150,7 +150,7 @@ export function SidebarLayout({
         {/* Main content panel */}
         <div
           className={cn(
-            'flex min-h-0 min-w-0 flex-1 flex-col bg-sage-light rounded-2xl lg:rounded-l-none lg:rounded-r-2xl',
+            'flex min-h-0 min-w-0 flex-1 flex-col bg-sage-light rounded-xl lg:rounded-l-none lg:rounded-r-xl',
             compact ? 'p-sm sm:p-md' : 'p-lg sm:p-lg p-sm'
           )}
         >

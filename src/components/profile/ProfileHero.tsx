@@ -56,7 +56,7 @@ export default function ProfileHero({ user, membership, clerkFallback }: Profile
           <h1 className="font-display text-2xl text-forest">{fullName}</h1>
           {displayEmail ? <p className="text-sm text-forest/90">{displayEmail}</p> : null}
           {membership && (
-            <span className="mt-2 inline-block rounded-md bg-terracotta px-1.5 py-0.5 font-body text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white">
+            <span className="mt-2 inline-block rounded bg-terracotta px-1.5 py-0.5 font-body text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white">
               {formatRole(membership.role)}
             </span>
           )}

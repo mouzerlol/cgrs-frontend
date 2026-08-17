@@ -102,7 +102,7 @@ function Section({ id, title, description, children }: SectionProps) {
 function ColorSwatch({ name, hex, textClass, class: bgClass }: typeof colors[0]) {
   return (
     <div className="flex flex-col">
-      <div className={cn('h-24 rounded-lg shadow-md mb-2 flex items-center justify-center', bgClass)}>
+      <div className={cn('h-24 rounded shadow-md mb-2 flex items-center justify-center', bgClass)}>
         <span className={cn('text-xs font-medium opacity-0', textClass)}>Aa</span>
       </div>
       <div className="space-y-1">
@@ -222,12 +222,12 @@ export default function DesignSystemPage() {
                 <div>
                   <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Font Families</h3>
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="p-4 bg-sage-light rounded-lg">
+                    <div className="p-4 bg-sage-light rounded">
                       <p className="text-xs opacity-50 mb-1">Display (Serif)</p>
                       <p className="font-display text-2xl">Fraunces</p>
                       <p className="text-sm opacity-60 mt-2">Headings, titles, display text</p>
                     </div>
-                    <div className="p-4 bg-sage-light rounded-lg">
+                    <div className="p-4 bg-sage-light rounded">
                       <p className="text-xs opacity-50 mb-1">Body (Sans-serif)</p>
                       <p className="font-body text-2xl">Manrope</p>
                       <p className="text-sm opacity-60 mt-2">Body text, UI elements, forms</p>
@@ -238,27 +238,27 @@ export default function DesignSystemPage() {
                 <div>
                   <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Type Scale</h3>
                   <div className="space-y-4">
-                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded-lg">
+                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded">
                       <span className="text-xs opacity-40 w-24 font-mono">display</span>
                       <span className="text-xs opacity-40 w-20">clamp(2.5rem, 8vw, 5rem)</span>
                       <p className="font-display text-4xl">Display Heading</p>
                     </div>
-                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded-lg">
+                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded">
                       <span className="text-xs opacity-40 w-24 font-mono">heading-lg</span>
                       <span className="text-xs opacity-40 w-20">clamp(2rem, 5vw, 3.5rem)</span>
                       <p className="font-display text-3xl">Large Heading</p>
                     </div>
-                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded-lg">
+                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded">
                       <span className="text-xs opacity-40 w-24 font-mono">heading-md</span>
                       <span className="text-xs opacity-40 w-20">clamp(1.25rem, 3vw, 1.75rem)</span>
                       <p className="font-display text-2xl">Medium Heading</p>
                     </div>
-                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded-lg">
+                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded">
                       <span className="text-xs opacity-40 w-24 font-mono">base</span>
                       <span className="text-xs opacity-40 w-20">1rem / 16px</span>
                       <p className="font-body">Base body text</p>
                     </div>
-                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded-lg">
+                    <div className="flex items-baseline gap-4 p-4 bg-sage-light rounded">
                       <span className="text-xs opacity-40 w-24 font-mono">sm</span>
                       <span className="text-xs opacity-40 w-20">0.875rem / 14px</span>
                       <p className="font-body text-sm">Small body text</p>
@@ -618,7 +618,7 @@ export default function DesignSystemPage() {
                     {iconNames.map((name) => (
                       <div
                         key={name}
-                        className="flex flex-col items-center gap-2 p-4 bg-sage-light rounded-lg cursor-pointer hover:bg-sage/30 transition-colors"
+                        className="flex flex-col items-center gap-2 p-4 bg-sage-light rounded cursor-pointer hover:bg-sage/30 transition-colors"
                         onClick={() => copyToClipboard(name)}
                       >
                         <Icon name={name} size="lg" />
@@ -662,7 +662,7 @@ export default function DesignSystemPage() {
                       <input
                         type="text"
                         placeholder="Enter text..."
-                        className="w-full px-4 py-3 bg-white border border-sage/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta"
+                        className="w-full px-4 py-3 bg-white border border-sage/30 rounded focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta"
                       />
                     </div>
                     <div>
@@ -671,7 +671,7 @@ export default function DesignSystemPage() {
                         type="text"
                         value="Sample text"
                         readOnly
-                        className="w-full px-4 py-3 bg-white border border-sage/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta"
+                        className="w-full px-4 py-3 bg-white border border-sage/30 rounded focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta"
                       />
                     </div>
                     <div>
@@ -679,7 +679,7 @@ export default function DesignSystemPage() {
                       <input
                         type="text"
                         placeholder="Error input..."
-                        className="w-full px-4 py-3 bg-white border border-terracotta rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50"
+                        className="w-full px-4 py-3 bg-white border border-terracotta rounded focus:outline-none focus:ring-2 focus:ring-terracotta/50"
                       />
                       <p suppressHydrationWarning className="mt-1 text-sm text-terracotta">This field is required</p>
                     </div>
@@ -689,7 +689,7 @@ export default function DesignSystemPage() {
                         type="text"
                         placeholder="Disabled..."
                         disabled
-                        className="w-full px-4 py-3 bg-sage-light border border-sage/30 rounded-lg opacity-50 cursor-not-allowed"
+                        className="w-full px-4 py-3 bg-sage-light border border-sage/30 rounded opacity-50 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -701,14 +701,14 @@ export default function DesignSystemPage() {
                   <textarea
                     placeholder="Enter long text..."
                     rows={4}
-                    className="w-full px-4 py-3 bg-white border border-sage/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta resize-none"
+                    className="w-full px-4 py-3 bg-white border border-sage/30 rounded focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta resize-none"
                   />
                 </div>
 
                 {/* Select */}
                 <div>
                   <h3 className="text-sm font-medium mb-4 opacity-50 uppercase tracking-wider">Select</h3>
-                  <select className="w-full px-4 py-3 bg-white border border-sage/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta">
+                  <select className="w-full px-4 py-3 bg-white border border-sage/30 rounded focus:outline-none focus:ring-2 focus:ring-terracotta/50 focus:border-terracotta">
                     <option>Select an option...</option>
                     <option>Option 1</option>
                     <option>Option 2</option>
@@ -769,7 +769,7 @@ export default function DesignSystemPage() {
                   ].map((tab) => (
                     <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
                       cn(
-                        'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                        'px-4 py-2 text-sm font-medium rounded transition-all',
                         selected
                           ? 'bg-forest text-bone'
                           : 'text-forest/60 hover:text-forest hover:bg-sage-light'
@@ -877,13 +877,13 @@ export default function DesignSystemPage() {
                       <div className="space-y-6">
                         <div>
                           <p className="text-xs opacity-50 mb-2">Header (Navigation)</p>
-                          <div className="border border-sage/20 rounded-lg overflow-hidden">
+                          <div className="border border-sage/20 rounded overflow-hidden">
                             <Header />
                           </div>
                         </div>
                         <div>
                           <p className="text-xs opacity-50 mb-2">Footer</p>
-                          <div className="border border-sage/20 rounded-lg overflow-hidden">
+                          <div className="border border-sage/20 rounded overflow-hidden">
                             <Footer />
                           </div>
                         </div>
@@ -914,7 +914,7 @@ export default function DesignSystemPage() {
                           <div className="space-y-4">
                             <div>
                               <p className="text-xs font-medium text-forest/60 mb-2">Manual — BreadcrumbBar + BreadcrumbTrail</p>
-                              <div className="rounded-lg border border-sage/20 overflow-hidden bg-bone">
+                              <div className="rounded border border-sage/20 overflow-hidden bg-bone">
                                 <BreadcrumbBar>
                                   <BreadcrumbTrail
                                     items={[
@@ -929,7 +929,7 @@ export default function DesignSystemPage() {
                             </div>
                             <div>
                               <p className="text-xs font-medium text-forest/60 mb-2">URL-driven — SiteBreadcrumbs (this page)</p>
-                              <div className="rounded-lg border border-sage/20 overflow-hidden bg-bone">
+                              <div className="rounded border border-sage/20 overflow-hidden bg-bone">
                                 <SiteBreadcrumbs variant="belowHero" />
                               </div>
                             </div>
@@ -957,13 +957,13 @@ export default function DesignSystemPage() {
                         </div>
                         <div>
                           <p className="text-xs opacity-50 mb-2">Utility Dock (Default)</p>
-                          <div className="border border-sage/20 rounded-lg bg-sage-light p-4 pt-20 overflow-visible">
+                          <div className="border border-sage/20 rounded bg-sage-light p-4 pt-20 overflow-visible">
                             <UtilityDock />
                           </div>
                         </div>
                         <div>
                           <p className="text-xs opacity-50 mb-2">Utility Dock (Custom Items)</p>
-                          <div className="border border-sage/20 rounded-lg bg-sage-light p-4 pt-20 overflow-visible">
+                          <div className="border border-sage/20 rounded bg-sage-light p-4 pt-20 overflow-visible">
                             <UtilityDock
                               items={[
                                 { name: 'Docs', href: '/docs', icon: 'document', label: 'Documents' },
@@ -1151,7 +1151,7 @@ background-color: #F4F1EA; /* Bone color */`}</code>
   {/* Child components like MapMarker */}
 </BaseMap>`}</code>
                         </div>
-                        <div className="h-[200px] rounded-lg overflow-hidden border border-sage/30">
+                        <div className="h-[200px] rounded overflow-hidden border border-sage/30">
                           <BaseMap
                             center={[-36.9497, 174.7912]}
                             zoom={15}
@@ -1177,7 +1177,7 @@ background-color: #F4F1EA; /* Bone color */`}</code>
   onCreate={(marker) => markers.set(id, marker)}
 />`}</code>
                         </div>
-                        <div className="h-[200px] rounded-lg overflow-hidden border border-sage/30">
+                        <div className="h-[200px] rounded overflow-hidden border border-sage/30">
                           <BaseMap
                             center={[-36.9497, 174.7912]}
                             zoom={15}
@@ -1248,7 +1248,7 @@ background-color: #F4F1EA; /* Bone color */`}</code>
                   ].map((tab) => (
                     <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
                       cn(
-                        'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                        'px-4 py-2 text-sm font-medium rounded transition-all',
                         selected
                           ? 'bg-forest text-bone'
                           : 'text-forest/60 hover:text-forest hover:bg-sage-light'
@@ -1434,7 +1434,7 @@ background-color: #F4F1EA; /* Bone color */`}</code>
                   ].map((tab) => (
                     <Tab key={tab.id} className={({ selected }: { selected: boolean }) =>
                       cn(
-                        'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                        'px-4 py-2 text-sm font-medium rounded transition-all',
                         selected
                           ? 'bg-forest text-bone'
                           : 'text-forest/60 hover:text-forest hover:bg-sage-light'
@@ -1714,7 +1714,7 @@ background-color: #F4F1EA; /* Bone color */`}</code>
                     <h3 className="font-display text-xl">{c.label}</h3>
                     <code className="font-mono text-xs text-forest/55">{c.usedOn}</code>
                   </div>
-                  <div className="rounded-lg overflow-hidden border border-sage/30 bg-bone">
+                  <div className="rounded overflow-hidden border border-sage/30 bg-bone">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={c.src} alt={`${c.label} share card`} width={1200} height={630} className="w-full h-auto block" loading="lazy" />
                   </div>

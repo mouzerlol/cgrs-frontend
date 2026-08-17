@@ -42,7 +42,7 @@ export default function ReferencesSection({
                             href={doc.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-sage/10 transition-colors group"
+                            className="flex items-center gap-2 p-2 rounded hover:bg-sage/10 transition-colors group"
                         >
                             <FileText className="w-4 h-4 text-terracotta" />
                             <span className="text-sm text-forest group-hover:text-terracotta transition-colors flex-1">
@@ -55,7 +55,7 @@ export default function ReferencesSection({
                     {linkedBoardTask && (
                         <a
                             href={`/admin/boards/${linkedBoardTask}`}
-                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-sage/10 transition-colors group"
+                            className="flex items-center gap-2 p-2 rounded hover:bg-sage/10 transition-colors group"
                         >
                             <LinkIcon className="w-4 h-4 text-terracotta" />
                             <span className="text-sm text-forest group-hover:text-terracotta transition-colors flex-1">

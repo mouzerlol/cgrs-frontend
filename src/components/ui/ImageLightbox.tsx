@@ -30,22 +30,6 @@ interface ImageLightboxProps {
   onClose: () => void;
   /** Which identity's corner radius to wear. Defaults to community. */
   identity?: OverlayIdentity;
-  /**
-   * What the caption bar is made of.
-   *
-   * `scrim` is the default and the original: a forest-light bar floating a gap
-   * below the picture, in the same family as the scrim behind it.
-   *
-   * `paper` is the blog's, and it makes the two one object — a forest-light
-   * ledge butted against the photograph's bottom edge with the radius only on
-   * its outer corners, which is exactly how the article's cover print and its
-   * ledge are built (`ArticleCoverPlate`). Opening a picture out of that rail
-   * should not
-   * change what kind of thing it is. The picture's own corners stay square at
-   * full size: this is the view where the frame is shown whole, and rounding it
-   * would crop four bites out of the one place it is not cropped.
-   */
-  captionSurface?: 'scrim' | 'paper';
 }
 
 /*
@@ -122,16 +106,19 @@ const DEFAULT_RATIO = 3 / 2;
 const CLOSE_ROW = 56;
 /** Paper ledge: `py-3.5` and one line of `text-sm` at `leading-relaxed`. */
 const CAPTION_PAPER = 51;
-/** Scrim bar: the same line, plus `mt-4` and the shallower `py-2.5`. */
-const CAPTION_SCRIM = 59;
 /** Thumbnail strip: `mt-4` and `h-12`. */
 const THUMB_STRIP = 64;
 /** Room for rounding and for a caption that wraps to a second line. */
 const RESERVE_SLACK = 24;
 
 /**
- * Full-screen image lightbox with prev/next, keyboard navigation, a caption bar,
- * and an optional thumbnail strip.
+ * Full-screen image lightbox with prev/next, keyboard navigation, a caption
+ * ledge, and an optional thumbnail strip.
+ *
+ * The one way the site shows a picture at full size — discussions, work
+ * management and the blog all open into this. There is no second caption
+ * treatment to choose between: the ledge is the blog's, because that is the
+ * surface the rest of the system was measured against.
  *
  * Use with `LightboxImage` (or compatible shapes such as `ThreadImage` /
  * resolved task images).
@@ -142,7 +129,6 @@ export default function ImageLightbox({
   isOpen,
   onClose,
   identity = 'community',
-  captionSurface = 'scrim',
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   /*
@@ -157,8 +143,12 @@ export default function ImageLightbox({
   const [ratio, setRatio] = useState<number | null>(null);
 
   const square = identity === 'management';
-  const radius = square ? 'rounded-none' : 'rounded-md';
-  const paperCaption = captionSurface === 'paper';
+  const radius = square ? 'rounded-none' : 'rounded';
+  /* The ledge takes the article plate's radius on its outer corners (the figure
+     `ArticleCoverPlate`'s figcaption runs), and nothing on management surfaces —
+     the dual radius doctrine still decides the shape, it just no longer decides
+     what the caption is made of. */
+  const ledgeRadius = square ? 'rounded-none' : 'rounded-b-[12px]';
 
   useEffect(() => {
     if (isOpen) {
@@ -210,7 +200,7 @@ export default function ImageLightbox({
      height budget has to give back. */
   const chrome =
     CLOSE_ROW +
-    (currentCaption || multiple ? (paperCaption ? CAPTION_PAPER : CAPTION_SCRIM) : 0) +
+    (currentCaption || multiple ? CAPTION_PAPER : 0) +
     (multiple ? THUMB_STRIP : 0) +
     RESERVE_SLACK;
 
@@ -360,53 +350,42 @@ export default function ImageLightbox({
                 </div>
 
                 {/*
-                 * The caption bar recedes rather than competing: forest-light
+                 * The caption ledge recedes rather than competing: forest-light
                  * under bone text at 10.1:1, with the counter in amber mono. A
                  * slide count is exactly the "timestamps, reply counts, lower-key
                  * metadata" amber is for on the community side, and mono is the
                  * system's only face for fixed-width data.
+                 *
+                 * No top margin and no top radius: the ledge is butted against
+                 * the print's bottom edge, and a gap or a rounded shoulder here
+                 * would split one object into two. This is how the article's
+                 * cover print and its ledge are built (`ArticleCoverPlate`), and
+                 * opening a picture anywhere on the site now lands on the same
+                 * object.
+                 *
+                 * The picture's own corners stay square at full size: this is
+                 * the view where the frame is shown whole, and rounding it would
+                 * crop four bites out of the one place it is not cropped.
+                 *
+                 * `w-0 min-w-full` keeps the ledge exactly as wide as the
+                 * picture. The panel is `fit-content`, so a long caption would
+                 * otherwise set the panel's width by its own max-content and
+                 * leave the photograph floating in the middle of a bar wider than
+                 * itself. A zero width contributes nothing to that measurement
+                 * while the percentage minimum — ignored during intrinsic sizing,
+                 * applied during layout — fills the stage's width once the stage
+                 * has decided it.
                  */}
                 {(currentCaption || multiple) && (
                   <div
                     className={cn(
-                      'flex items-baseline gap-3',
-                      paperCaption
-                        ? /*
-                           * No top margin and no top radius: the bar is the
-                           * ledge under the print, and a gap or a rounded
-                           * shoulder here would split one object into two. The
-                           * outer corners take the article's own 20px, the same
-                           * figure `ArticleCoverPlate` and `BodyPlate` run.
-                           *
-                           * Same forest-light and bone the `scrim` bar wears —
-                           * the two differ in where they sit, not in what they
-                           * are made of. It was bone paper while the article's
-                           * furniture was; the rail's ledge is forest now, and
-                           * opening a picture out of that rail should not change
-                           * the colour of the thing the caption is written on.
-                           */
-                          /*
-                           * `w-0 min-w-full` keeps the bar exactly as wide as
-                           * the picture. The panel is `fit-content`, so a long
-                           * caption would otherwise set the panel's width by its
-                           * own max-content and leave the photograph floating in
-                           * the middle of a bar wider than itself. A zero width
-                           * contributes nothing to that measurement while the
-                           * percentage minimum — ignored during intrinsic sizing,
-                           * applied during layout — fills the stage's width once
-                           * the stage has decided it.
-                           */
-                          'w-0 min-w-full rounded-b-[20px] bg-forest-light px-5 py-3.5 text-bone'
-                        : cn('mt-4 bg-forest-light px-4 py-2.5 text-bone', radius)
+                      'flex w-0 min-w-full items-baseline gap-3',
+                      'bg-forest-light px-5 py-3.5 text-bone',
+                      ledgeRadius
                     )}
                   >
                     {multiple && (
-                      <span
-                        /* Amber on forest-light, whichever surface this is: both
-                           bars are that colour now, and the pair differ only in
-                           geometry. */
-                        className="shrink-0 font-mono text-xs text-amber"
-                      >
+                      <span className="shrink-0 font-mono text-xs text-amber">
                         {currentIndex + 1} / {images.length}
                       </span>
                     )}

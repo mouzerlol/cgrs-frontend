@@ -159,6 +159,26 @@
    ========================================================================== */
 
 @layer utilities {
+  /*
+   * Clearance for the fixed chrome, for anything an anchor or a scripted scroll
+   * lands on.
+   *
+   * The header and the marquee paint over the top of the document, so a target
+   * scrolled flush to the viewport top ends up underneath them — the jump reads
+   * as having gone too far. Every jump target carries this class instead of a
+   * hand-picked `scroll-mt-*`: the thread's replies were on `scroll-mt-24` (96px)
+   * against a real chrome of 117px, and a literal like that is wrong again the
+   * next time the header changes height.
+   *
+   * `--chrome-offset` and not `--chrome-height`: the offset collapses to 0 when
+   * the mobile chrome retracts on scroll-down, which is exactly the moment the
+   * clearance is no longer needed. The extra 1rem is breathing room so the
+   * target's top edge is not welded to the chrome's underside.
+   */
+  .scroll-anchor {
+    scroll-margin-top: calc(var(--chrome-offset, 72px) + 1rem);
+  }
+
   /* Horizontal padding only — do not use padding shorthand or it resets Tailwind py-/pt-/pb- on the same node (e.g. breadcrumbs). */
   .container {
     width: 100%;
@@ -472,7 +492,7 @@
 .react-grid-item.react-grid-placeholder {
   background: rgba(217, 93, 57, 0.06) !important;
   border: 2px dashed rgba(217, 93, 57, 0.3) !important;
-  border-radius: 16px !important;
+  border-radius: 12px !important;
   opacity: 1 !important;
 }
 
@@ -528,7 +548,7 @@
 
 .map-sidebar {
   background: var(--forest-light);
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: fit-content;
@@ -657,7 +677,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  border-radius: 5px;
+  border-radius: 4px;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -801,7 +821,7 @@
   opacity: 0.6;
   background: rgba(255, 255, 255, 0.1);
   padding: 1px 6px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .address-search-section {
@@ -825,7 +845,7 @@
   width: 100%;
   padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.05);
   color: white;
   font-size: 13px;
@@ -859,7 +879,7 @@
   max-height: 260px;
   overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -907,7 +927,7 @@
 
 .map-container {
   position: relative;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(26, 34, 24, 0.12);
   background: transparent;
@@ -947,7 +967,7 @@
   background: var(--forest-light);
   color: #fff;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 4px 20px rgba(26, 34, 24, 0.25);
   border: 1px solid rgba(168, 181, 160, 0.3);
   pointer-events: none;
@@ -990,7 +1010,7 @@
   right: 20px;
   background: var(--forest-light);
   padding: 9px 11px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -1076,7 +1096,7 @@
 /* POI popup styling */
 .custom-popup .leaflet-popup-content-wrapper {
   background: var(--forest-light);
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 4px 20px rgba(26, 34, 24, 0.25);
   padding: 0;
   overflow: visible;
@@ -1513,7 +1533,7 @@
   background: #fff;
   color: var(--forest);
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 0 8px 28px rgba(26, 34, 24, 0.28);
   border: 1px solid rgba(26, 34, 24, 0.08);
   animation: precinct-card-in 0.2s ease-out;
@@ -1619,7 +1639,7 @@
   font-size: 12px;
   padding: 6px 8px;
   border: 1px solid rgba(26, 34, 24, 0.15);
-  border-radius: 6px;
+  border-radius: 4px;
   background: #f5f5f3;
   color: var(--forest);
 }
@@ -1632,7 +1652,7 @@
   background: var(--forest-light);
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s ease;
@@ -1712,7 +1732,7 @@
 .leaflet-control-zoom {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
   overflow: hidden;
 }
 
@@ -1762,7 +1782,7 @@
 .leaflet-control-scale {
   background: var(--forest-light) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 6px !important;
+  border-radius: 4px !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
   padding: 4px 8px !important;
 }
@@ -1836,7 +1856,7 @@
 
   .leaflet-control-scale {
     padding: 6px 10px !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
   }
 }
 

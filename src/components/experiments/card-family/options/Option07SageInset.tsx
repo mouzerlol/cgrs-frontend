@@ -66,7 +66,7 @@ export default function Option07SageInset({ post, surface, className }: CardFami
 
           {/* The clamp sits on the paragraph, not on the well. A clamped box
               that also carries padding shows a sliver of the line it cut. */}
-          <div className="mt-3 rounded-lg bg-sage-light px-3 py-2.5">
+          <div className="mt-3 rounded bg-sage-light px-3 py-2.5">
             <p
               className={cn(
                 'text-[0.8125rem] leading-relaxed text-forest/75',

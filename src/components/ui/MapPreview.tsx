@@ -124,7 +124,7 @@ export default function MapPreview({
       className={className}
       style={{ 
         height,
-        borderRadius: '8px',
+        borderRadius: '4px',
         overflow: 'hidden',
         filter,
         backgroundColor: backgroundColor || undefined,

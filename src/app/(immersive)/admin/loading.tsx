@@ -11,7 +11,7 @@ export default function WorkManagementLoading() {
       <main className="flex-1 min-h-0 overflow-y-auto">
         <div className="max-w-5xl mx-auto p-6 md:p-8 lg:p-12">
           {/* Header skeleton */}
-          <div className="bg-sage-light/50 rounded-[20px] p-6 md:p-8 mb-8">
+          <div className="bg-sage-light/50 rounded-[12px] p-6 md:p-8 mb-8">
             <Skeleton className="h-9 w-64 mb-2" />
             <Skeleton className="h-5 w-96" />
           </div>
@@ -19,9 +19,9 @@ export default function WorkManagementLoading() {
           {/* Feature cards skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[0, 1, 2].map(i => (
-              <div key={i} className="rounded-[20px] p-6 border border-sage/20 bg-sage-light/30">
+              <div key={i} className="rounded-[12px] p-6 border border-sage/20 bg-sage-light/30">
                 <div className="flex items-start justify-between mb-5">
-                  <Skeleton className="w-12 h-12 rounded-2xl" />
+                  <Skeleton className="w-12 h-12 rounded-xl" />
                   <Skeleton className="h-6 w-20 rounded-full" />
                 </div>
                 <Skeleton className="h-6 w-32 mb-2" />

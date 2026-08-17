@@ -55,7 +55,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="https://example.com"
-          className="flex-1 py-sm px-md bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
+          className="flex-1 py-sm px-md bg-white border border-sage rounded text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
         />
         <input
           type="text"
@@ -63,13 +63,13 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Link title (optional)"
-          className="flex-1 py-sm px-md bg-white border border-sage rounded-lg text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
+          className="flex-1 py-sm px-md bg-white border border-sage rounded text-sm text-forest transition-all duration-[250ms] ease-out-custom focus:outline-none focus:border-terracotta"
         />
         <button
           type="button"
           onClick={addLink}
           disabled={!isValidUrl(url)}
-          className="w-10 h-10 flex items-center justify-center bg-forest border-none rounded-lg text-white cursor-pointer transition-all duration-[250ms] ease-out-custom shrink-0 hover:bg-terracotta disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-10 h-10 flex items-center justify-center bg-forest border-none rounded text-white cursor-pointer transition-all duration-[250ms] ease-out-custom shrink-0 hover:bg-terracotta disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Add link"
         >
           <Plus className="w-4 h-4" />
@@ -79,7 +79,7 @@ export function LinkInput({ value, onChange }: LinkInputProps) {
       {value.length > 0 && (
         <div className="flex flex-col gap-xs">
           {value.map((link, index) => (
-            <div key={index} className="flex items-center gap-sm p-sm bg-sage-light rounded-lg">
+            <div key={index} className="flex items-center gap-sm p-sm bg-sage-light rounded">
               <div className="flex-1 min-w-0">
                 <span className="block text-sm font-medium text-forest">{link.title || link.url}</span>
                 <span className="block text-xs text-forest/60 overflow-hidden text-ellipsis whitespace-nowrap">{link.url}</span>

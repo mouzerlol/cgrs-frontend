@@ -49,7 +49,7 @@ export default function BookmarksSection() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <Skeleton className="h-12 w-12 rounded-xl" />
+          <Skeleton className="h-12 w-12 rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-4 w-64" />
@@ -66,7 +66,7 @@ export default function BookmarksSection() {
 
   if (error) {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700">
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-700">
         <p>Failed to load bookmarked threads. Please try again later.</p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function BookmarksSection() {
         action={
           <Link
             href="/discussion"
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
           >
             <MessageSquare className="w-4 h-4" />
             Latest Discussion
@@ -116,7 +116,7 @@ export default function BookmarksSection() {
           action={
             <Link
               href="/discussion"
-              className="rounded-xl border border-sage/40 bg-bone px-4 py-2.5 text-sm font-medium text-forest transition-colors hover:border-forest/20 hover:bg-sage-light/50"
+              className="rounded-lg border border-sage/40 bg-bone px-4 py-2.5 text-sm font-medium text-forest transition-colors hover:border-forest/20 hover:bg-sage-light/50"
             >
               Browse discussions
             </Link>

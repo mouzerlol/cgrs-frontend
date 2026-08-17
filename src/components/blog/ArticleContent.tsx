@@ -425,7 +425,7 @@ function BodyPlate({ children, capBlock }: { children: React.ReactNode; capBlock
           {capBlock && (
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -left-4 -top-10 h-[5.75rem] w-[3.25rem] rounded-br-[20px] border-t border-forest-light-edge bg-forest-light md:left-0 md:h-[7.375rem] md:w-24 md:border-l"
+              className="pointer-events-none absolute -left-4 -top-10 h-[5.75rem] w-[3.25rem] rounded-br-[12px] border-t border-forest-light-edge bg-forest-light md:left-0 md:h-[7.375rem] md:w-24 md:border-l"
             />
           )}
           <div className="relative">{children}</div>
@@ -482,7 +482,7 @@ function CoverBackdrop({ src }: { src: string }) {
 
 /**
  * Category, set as an eyebrow tag. Geometry copied from
- * `BrutallyMinimalHeroHeadingCard` at `md` — the same `rounded-md` tag with a
+ * `BrutallyMinimalHeroHeadingCard` at `md` — the same `rounded` tag with a
  * glyph ahead of the label that the listing's hero carries — so the two hero
  * cards agree on what an eyebrow is instead of one rounding it into a pill.
  *
@@ -500,7 +500,7 @@ function CategoryPill({ slug, label }: { slug: string; label: string }) {
   return (
     <span
       data-testid="article-category"
-      className="text-eyebrow inline-flex shrink-0 items-center gap-1.5 rounded-md bg-forest-light px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide !text-bone md:text-xs"
+      className="text-eyebrow inline-flex shrink-0 items-center gap-1.5 rounded bg-forest-light px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide !text-bone md:text-xs"
     >
       <CategoryIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
       {displayLabel}

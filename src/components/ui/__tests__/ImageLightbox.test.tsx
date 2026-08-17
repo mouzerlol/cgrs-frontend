@@ -77,7 +77,12 @@ describe('ImageLightbox', () => {
       render(
         <ImageLightbox images={[mockLightboxImage()]} isOpen={true} onClose={() => {}} />
       );
-      expect(screen.getByLabelText('Close image viewer').className).toContain('rounded-md');
+      const close = screen.getByLabelText('Close image viewer');
+      /* `classList`, not `className.includes` — `rounded-none` contains the
+         string `rounded`, so a substring check passes on the square variant and
+         the doctrine goes untested in both directions. */
+      expect(close.classList.contains('rounded')).toBe(true);
+      expect(close.classList.contains('rounded-none')).toBe(false);
     });
 
     it('squares on management surfaces, per the dual radius doctrine', () => {
@@ -90,12 +95,45 @@ describe('ImageLightbox', () => {
         />
       );
       const close = screen.getByLabelText('Close image viewer');
-      expect(close.className).toContain('rounded-none');
-      expect(close.className).not.toContain('rounded-md');
+      expect(close.classList.contains('rounded-none')).toBe(true);
+      expect(close.classList.contains('rounded')).toBe(false);
     });
   });
 
-  describe('caption bar', () => {
+  describe('caption ledge', () => {
+    it('butts the ledge against the print on every surface, with no floating bar', () => {
+      render(
+        <ImageLightbox
+          images={[mockLightboxImage({ caption: 'Editorial line' })]}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const ledge = screen.getByText('Editorial line').parentElement;
+      expect(ledge?.classList.contains('bg-forest-light')).toBe(true);
+      /* The blog's ledge radius (`ArticleCoverPlate`'s figcaption), on its outer
+         corners only. */
+      expect(ledge?.classList.contains('rounded-b-[12px]')).toBe(true);
+      // The gap and the all-round radius were the old scrim bar; a ledge that
+      // floats free of the picture is two objects, not one.
+      expect(ledge?.classList.contains('mt-4')).toBe(false);
+      expect(ledge?.classList.contains('rounded')).toBe(false);
+    });
+
+    it('squares the ledge on management surfaces', () => {
+      render(
+        <ImageLightbox
+          images={[mockLightboxImage({ caption: 'Editorial line' })]}
+          isOpen={true}
+          onClose={() => {}}
+          identity="management"
+        />
+      );
+      const ledge = screen.getByText('Editorial line').parentElement;
+      expect(ledge?.classList.contains('rounded-none')).toBe(true);
+      expect(ledge?.classList.contains('rounded-b-[12px]')).toBe(false);
+    });
+
     it('prefers the editorial caption over the alt text', () => {
       render(
         <ImageLightbox

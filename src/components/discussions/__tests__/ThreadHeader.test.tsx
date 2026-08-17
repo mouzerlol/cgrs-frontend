@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import ThreadHeader from '../ThreadHeader';
+import { THREAD_GUTTER_COLUMN, THREAD_GUTTER_INDENT } from '../thread-gutter';
 import type { Thread } from '@/types';
 
 vi.mock('@iconify/react', () => ({
@@ -45,14 +46,16 @@ describe('ThreadHeader', () => {
 
     const plate = category.querySelector('[aria-hidden="true"]');
     expect(plate?.className).toContain('bg-forest/[0.07]');
-    expect(plate?.className).toContain('rounded-md');
+    expect(plate?.className).toContain('rounded');
   });
 
   it('makes the category the gutter column, carrying the rule on its right edge', () => {
     render(<ThreadHeader thread={mockThread()} showBackLink={false} />);
     const category = screen.getByTestId('thread-category');
 
-    expect(category.className).toContain('sm:w-32');
+    // 9rem: ANNOUNCEMENTS is 116px at this size and tracking, and the column must hold it
+    // on one line with the 1.25rem gutter still clear of the rule.
+    expect(category.className).toContain(THREAD_GUTTER_COLUMN);
     expect(category.className).toContain('sm:border-r');
     expect(category.className).toContain('sm:border-sage/40');
     expect(category.className).toContain('sm:pr-5');
@@ -85,9 +88,17 @@ describe('ThreadHeader', () => {
 
   it('indents the byline to the gutter so it lines up under the title', () => {
     render(<ThreadHeader thread={mockThread()} showBackLink={false} />);
-    expect(screen.getByTestId('thread-header-byline').className).toContain(
-      'sm:pl-[calc(8rem_+_1.25rem)]',
-    );
+    expect(screen.getByTestId('thread-header-byline').className).toContain(THREAD_GUTTER_INDENT);
+  });
+
+  it('takes the column width and the indent from one source, so they cannot drift apart', () => {
+    // The byline sits under the title only while indent === column + rule gap. Both come from
+    // thread-gutter.ts; this asserts the components actually use it rather than a copy.
+    render(<ThreadHeader thread={mockThread()} showBackLink={false} />);
+
+    expect(screen.getByTestId('thread-category').className).toContain(THREAD_GUTTER_COLUMN);
+    expect(THREAD_GUTTER_COLUMN).toBe('sm:w-36');
+    expect(THREAD_GUTTER_INDENT).toBe('sm:pl-[calc(9rem_+_1.25rem)]');
   });
 
   it('gives the title its own full-width line below sm, at a smaller size', () => {

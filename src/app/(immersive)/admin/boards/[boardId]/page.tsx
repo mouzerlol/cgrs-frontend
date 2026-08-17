@@ -220,7 +220,7 @@ export default function BoardPage() {
 
       {moveError || fieldError ? (
         <div
-          className="shrink-0 mx-4 md:mx-6 mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="shrink-0 mx-4 md:mx-6 mt-2 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
           role="alert"
         >
           {moveError || fieldError}

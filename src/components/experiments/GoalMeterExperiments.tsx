@@ -45,7 +45,7 @@ function V2BlockSegments() {
   const totalBlocks = 25;
   const filledBlocks = Math.round((SIGS / GOAL) * totalBlocks);
   return (
-    <div className="bg-sage-light p-6 rounded-xl">
+    <div className="bg-sage-light p-6 rounded-lg">
       <div className="flex items-baseline gap-2 mb-4">
         <span className="font-display text-4xl text-forest font-semibold">{fmt(SIGS)}</span>
         <span className="text-sm text-forest/40">/ {fmt(GOAL)} signatures</span>
@@ -76,7 +76,7 @@ function V3CircularDonut() {
   const circ = 2 * Math.PI * r;
   const offset = circ - (p / 100) * circ;
   return (
-    <div className="bg-forest p-6 rounded-xl flex items-center gap-5">
+    <div className="bg-forest p-6 rounded-lg flex items-center gap-5">
       <div className="relative shrink-0">
         <svg width="110" height="110" viewBox="0 0 110 110">
           <circle cx="55" cy="55" r={r} fill="none" stroke="rgba(168,181,160,0.12)" strokeWidth="9" />
@@ -112,7 +112,7 @@ function V3CircularDonut() {
 function V4ForestLightVertical() {
   const p = clampPct(SIGS, GOAL);
   return (
-    <div className="bg-forest-light p-6 rounded-xl flex items-stretch gap-5">
+    <div className="bg-forest-light p-6 rounded-lg flex items-stretch gap-5">
       <div className="relative w-4 bg-bone/10 rounded-full shrink-0 h-36 self-center">
         <div
           className="absolute bottom-0 left-0 right-0 bg-terracotta rounded-full transition-all duration-500"
@@ -141,7 +141,7 @@ function V5ForestLightEditorial() {
   const p = clampPct(SIGS, GOAL);
   const beyond = Math.max(0, SIGS - GOAL);
   return (
-    <div className="bg-forest-light p-6 rounded-xl">
+    <div className="bg-forest-light p-6 rounded-lg">
       <div className="text-[10px] font-mono text-sage/50 uppercase tracking-[0.3em] mb-3">
         Petition · Signatures
       </div>
@@ -165,7 +165,7 @@ function V6ForestLightPips() {
   const totalPips = 30;
   const filledPips = Math.round((SIGS / GOAL) * totalPips);
   return (
-    <div className="bg-forest-light p-6 rounded-xl">
+    <div className="bg-forest-light p-6 rounded-lg">
       <div className="flex items-baseline gap-2 mb-4">
         <span className="font-display text-4xl text-bone font-semibold">{fmt(SIGS)}</span>
         <span className="text-xs text-sage/50">/ {fmt(GOAL)}</span>
@@ -193,7 +193,7 @@ function V6ForestLightPips() {
 function V7TerracottaBold() {
   const p = clampPct(SIGS, GOAL);
   return (
-    <div className="bg-terracotta p-6 rounded-xl">
+    <div className="bg-terracotta p-6 rounded-lg">
       <div className="text-[10px] font-mono text-bone/50 uppercase tracking-widest mb-3">
         Community support
       </div>
@@ -219,10 +219,10 @@ function V8Glassmorphism() {
   const p = clampPct(SIGS, GOAL);
   return (
     <div
-      className="relative p-3 rounded-2xl overflow-hidden"
+      className="relative p-3 rounded-xl overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #1A2218 0%, #2C3E2D 50%, #D95D39 130%)' }}
     >
-      <div className="backdrop-blur-sm bg-white/5 border border-white/10 p-5 rounded-xl">
+      <div className="backdrop-blur-sm bg-white/5 border border-white/10 p-5 rounded-lg">
         <div className="font-display text-5xl text-white/90 font-semibold leading-none mb-1">{fmt(SIGS)}</div>
         <div className="text-xs text-white/35 mb-4">of {fmt(GOAL)} signatures</div>
         <div className="relative h-1.5 bg-white/10 rounded-full mb-2">
@@ -245,7 +245,7 @@ function V8Glassmorphism() {
 function V9ScoreboardTicker() {
   const p = clampPct(SIGS, GOAL);
   return (
-    <div className="bg-[#111111] border border-[#2a2a2a] p-6 rounded-xl">
+    <div className="bg-[#111111] border border-[#2a2a2a] p-6 rounded-lg">
       <div className="text-[9px] font-mono text-[#444] uppercase tracking-[0.35em] mb-3">
         Signatures collected
       </div>

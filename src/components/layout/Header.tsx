@@ -188,7 +188,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
                         key={item.name}
                         href={item.href}
                         onClick={closeMenu}
-                        className="block px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
+                        className="block px-5 py-4 rounded text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
                       >
                         {item.name}
                       </Link>
@@ -210,7 +210,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
                               key={item.name}
                               href={item.href}
                               onClick={closeMenu}
-                              className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
+                              className="flex items-center gap-3 px-5 py-4 rounded text-bone hover:bg-sage-light hover:text-forest transition-colors uppercase tracking-wide"
                             >
                               <Icon name={item.icon as import('@/components/ui/Icon').IconName} size="md" />
                               <span>{item.name}</span>
@@ -232,7 +232,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
                           <Link
                             href="/account/profile"
                             onClick={closeMenu}
-                            className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                            className="flex items-center gap-3 px-5 py-4 rounded text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
                           >
                             <div className="w-6 h-6 shrink-0 flex items-center justify-center rounded-full overflow-hidden">
                               <UserAvatar />
@@ -244,7 +244,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
                             <Link
                               href="/settings/system"
                               onClick={closeMenu}
-                              className="flex items-center gap-3 px-5 py-4 rounded-lg text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                              className="flex items-center gap-3 px-5 py-4 rounded text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
                             >
                               <div className="w-6 h-6 shrink-0 flex items-center justify-center">
                                 <Settings className="h-5 w-5 text-current" aria-hidden="true" />
@@ -256,7 +256,7 @@ export default function Header({ onMenuOpenChange }: HeaderProps = {}) {
                           <SignOutButton redirectUrl={afterSignOutUrl}>
                             <button
                               type="button"
-                              className="flex w-full items-center gap-3 px-5 py-4 rounded-lg text-left text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
+                              className="flex w-full items-center gap-3 px-5 py-4 rounded text-left text-bone hover:bg-sage-light hover:text-forest transition-colors tracking-wide"
                             >
                               <div className="w-6 h-6 shrink-0 flex items-center justify-center">
                                 <LogOut className="h-5 w-5 text-current" aria-hidden="true" />

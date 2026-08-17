@@ -82,21 +82,21 @@ Committee Decision Register
             <div className="flex items-center gap-2">
                 <button
                     onClick={copyLink}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded-lg hover:bg-sage transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded hover:bg-sage transition-colors"
                 >
                     <Link className="w-4 h-4" />
                     Copy Link
                 </button>
                 <button
                     onClick={copyForEmail}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded-lg hover:bg-sage transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded hover:bg-sage transition-colors"
                 >
                     <Mail className="w-4 h-4" />
                     Copy for Email
                 </button>
                 <button
                     onClick={exportPdf}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded-lg hover:bg-sage transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-sage-light rounded hover:bg-sage transition-colors"
                 >
                     <FileText className="w-4 h-4" />
                     Export PDF
@@ -104,7 +104,7 @@ Committee Decision Register
             </div>
 
             {toast && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-forest text-white text-sm rounded-lg shadow-lg flex items-center gap-2 animate-fade-up">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-forest text-white text-sm rounded shadow-lg flex items-center gap-2 animate-fade-up">
                     <Check className="w-4 h-4 text-green-400" />
                     {toast}
                 </div>

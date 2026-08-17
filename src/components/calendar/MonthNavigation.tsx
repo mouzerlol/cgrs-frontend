@@ -76,7 +76,7 @@ function MonthPage({
     <button
       onClick={onClick}
       className={cn(
-        'relative flex flex-col rounded-[6px] cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden w-full aspect-[1.2/1] p-0 min-h-[40px] lg:aspect-auto lg:h-full',
+        'relative flex flex-col rounded-[4px] cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden w-full aspect-[1.2/1] p-0 min-h-[40px] lg:aspect-auto lg:h-full',
         dark
           ? cn(
               'border border-sage/30',

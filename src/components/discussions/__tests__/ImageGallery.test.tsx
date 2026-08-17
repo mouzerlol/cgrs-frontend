@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ImageGallery from '../ImageGallery';
 import type { ThreadImage } from '@/types';
@@ -35,26 +35,61 @@ describe('ImageGallery', () => {
     capturedUnoptimized = undefined;
   });
 
+  it('hangs the pictures in a square, full-width dark field', () => {
+    const { container } = render(<ImageGallery images={[mockImage()]} />);
+    const field = container.firstElementChild;
+    expect(field).toBeTruthy();
+    expect(field).toHaveClass('bg-forest', 'w-full', 'rounded-none');
+  });
+
   it('centers the gallery row so a single image is not left-aligned in the thread', () => {
     const { container } = render(<ImageGallery images={[mockImage()]} />);
-    const row = container.firstElementChild;
+    const row = container.firstElementChild?.firstElementChild;
     expect(row).toBeTruthy();
     expect(row).toHaveClass('justify-center');
   });
 
-  it('uses centered object-fit focal point on thumbnails', () => {
+  it('rounds the picture itself and never crops it', () => {
     render(<ImageGallery images={[mockImage()]} />);
     const img = screen.getByTestId('next-image');
-    expect(img).toHaveClass('object-center');
+    expect(img).toHaveClass('rounded-lg');
+    expect(img.className).not.toMatch(/object-cover/);
   });
 
-  it('sets unoptimized=true for blob URL thumbnails', () => {
-    render(<ImageGallery images={[mockImage({ thumbnail: 'blob:http://localhost/abc123' })]} />);
+  /* The affordance carried across from the article figure: without it nothing
+     says the picture opens. */
+  it('marks each picture as expandable', () => {
+    render(<ImageGallery images={[mockImage(), mockImage({ id: 'img-2' })]} />);
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(2);
+    buttons.forEach((button) => {
+      expect(button).toHaveAccessibleName(/full size/i);
+      expect(button.querySelector('svg')).toBeTruthy();
+    });
+  });
+
+  /* A lone picture is served from `url` (full size, it gets the whole field);
+     a set is served from `thumbnail`. Both paths must still opt blob previews
+     out of the optimizer. */
+  it('sets unoptimized=true for a blob URL on a single image', () => {
+    render(<ImageGallery images={[mockImage({ url: 'blob:http://localhost/abc123' })]} />);
     expect(capturedUnoptimized).toBe(true);
   });
 
-  it('sets unoptimized=false for regular URL thumbnails', () => {
-    render(<ImageGallery images={[mockImage({ thumbnail: 'https://example.com/thumb.jpg' })]} />);
+  it('sets unoptimized=true for blob URL thumbnails in a set', () => {
+    render(
+      <ImageGallery
+        images={[
+          mockImage({ thumbnail: 'blob:http://localhost/abc123' }),
+          mockImage({ id: 'img-2', thumbnail: 'blob:http://localhost/def456' }),
+        ]}
+      />,
+    );
+    expect(capturedUnoptimized).toBe(true);
+  });
+
+  it('sets unoptimized=false for regular URLs', () => {
+    render(<ImageGallery images={[mockImage()]} />);
     expect(capturedUnoptimized).toBe(false);
   });
 });

@@ -55,7 +55,7 @@ export function DateCell({
   return (
     <div
       className={cn(
-        'relative p-1 md:p-1.5 aspect-square lg:aspect-auto rounded-md border border-sage bg-white transition-all duration-[200ms] ease-out-custom flex flex-col items-center justify-start gap-1',
+        'relative p-1 md:p-1.5 aspect-square lg:aspect-auto rounded border border-sage bg-white transition-all duration-[200ms] ease-out-custom flex flex-col items-center justify-start gap-1',
         !isInMonth && 'opacity-35 pointer-events-none',
         isToday && 'border-2 border-terracotta bg-terracotta/5',
         isSelected && 'border-2 border-sage bg-sage/15',

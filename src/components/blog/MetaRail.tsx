@@ -198,7 +198,7 @@ export default function MetaRail({ post, footer, className }: MetaRailProps) {
                * and a value that wraps keeps its mark with the words it belongs to.
                */}
               <dd className="min-w-0">
-                <span className="inline-flex items-center gap-2 rounded-lg bg-bone/[0.08] px-2.5 py-1.5">
+                <span className="inline-flex items-center gap-2 rounded bg-bone/[0.08] px-2.5 py-1.5">
                   <row.icon
                     className="h-4 w-4 shrink-0 text-sage-light"
                     strokeWidth={2}

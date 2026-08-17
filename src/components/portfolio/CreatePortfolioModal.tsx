@@ -119,7 +119,7 @@ export default function CreatePortfolioModal({ isOpen, onClose, onSubmit }: Crea
                 key={option.value}
                 type="button"
                 onClick={() => setIcon(option.value)}
-                className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all ${
+                className={`w-10 h-10 flex items-center justify-center rounded transition-all ${
                   icon === option.value
                     ? 'bg-terracotta text-bone ring-2 ring-terracotta ring-offset-2'
                     : 'bg-sage-light text-forest hover:bg-sage'
@@ -139,7 +139,7 @@ export default function CreatePortfolioModal({ isOpen, onClose, onSubmit }: Crea
                 key={option.value}
                 type="button"
                 onClick={() => setColor(option.value)}
-                className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${option.bg} ${
+                className={`flex-1 py-2 px-3 rounded text-sm font-medium transition-all ${option.bg} ${
                   color === option.value
                     ? 'ring-2 ring-terracotta ring-offset-2 text-forest'
                     : 'text-forest/70 hover:text-forest'

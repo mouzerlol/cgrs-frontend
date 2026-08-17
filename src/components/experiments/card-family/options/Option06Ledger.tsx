@@ -47,7 +47,7 @@ export default function Option06Ledger({ post, surface, className }: CardFamilyP
         <LabPlate
           post={post}
           sizes={isListing ? '120px' : '(max-width: 768px) 100vw, 340px'}
-          radiusClassName="rounded-lg"
+          radiusClassName="rounded"
           className={cn(
             isListing
               ? cn('aspect-square', LISTING_PLATE, 'sm:w-[120px]')

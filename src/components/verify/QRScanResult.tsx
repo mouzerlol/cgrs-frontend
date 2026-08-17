@@ -13,7 +13,7 @@ interface QRScanResultProps {
 export default function QRScanResult({ state, error, roleAssigned, onRetry }: QRScanResultProps) {
   if (state === 'loading') {
     return (
-      <div className="rounded-2xl bg-white p-8 shadow-sm border border-sage/20 text-center">
+      <div className="rounded-xl bg-white p-8 shadow-sm border border-sage/20 text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-sage/10">
             <svg className="h-8 w-8 animate-spin text-sage" fill="none" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
 
   if (state === 'error') {
     return (
-      <div className="rounded-2xl bg-white p-8 shadow-sm border border-sage/20 text-center">
+      <div className="rounded-xl bg-white p-8 shadow-sm border border-sage/20 text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-terracotta/10">
             <Icon icon="lucide:x" className="h-8 w-8 text-terracotta" />
@@ -66,13 +66,13 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
             <button
               type="button"
               onClick={onRetry}
-              className="w-full rounded-xl bg-forest px-4 py-2.5 text-sm font-medium text-bone hover:bg-forest/90 transition-colors"
+              className="w-full rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-bone hover:bg-forest/90 transition-colors"
             >
               Try Again
             </button>
             <Link
               href="/account/my-property"
-              className="w-full rounded-xl border border-sage/30 px-4 py-2.5 text-sm font-medium text-forest hover:bg-sage-light/30 transition-colors text-center"
+              className="w-full rounded-lg border border-sage/30 px-4 py-2.5 text-sm font-medium text-forest hover:bg-sage-light/30 transition-colors text-center"
             >
               Go to My Property
             </Link>
@@ -84,7 +84,7 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
 
   // Success state
   return (
-    <div className="rounded-2xl bg-white p-8 shadow-sm border border-sage/20 text-center">
+    <div className="rounded-xl bg-white p-8 shadow-sm border border-sage/20 text-center">
       <div className="flex flex-col items-center gap-4">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-sage/10">
           <Icon icon="lucide:shield-check" className="h-8 w-8 text-sage" />
@@ -96,14 +96,14 @@ export default function QRScanResult({ state, error, roleAssigned, onRetry }: QR
             <span className="font-medium text-forest capitalize">{roleAssigned}</span>.
           </p>
         </div>
-        <div className="mt-2 rounded-xl bg-sage-light/30 p-4 w-full max-w-xs">
+        <div className="mt-2 rounded-lg bg-sage-light/30 p-4 w-full max-w-xs">
           <p className="text-sm text-forest/70">
             You now have full access to community features. Redirecting to your profile...
           </p>
         </div>
         <Link
           href="/account/profile"
-          className="w-full max-w-xs rounded-xl bg-forest px-4 py-2.5 text-sm font-medium text-bone hover:bg-forest/90 transition-colors"
+          className="w-full max-w-xs rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-bone hover:bg-forest/90 transition-colors"
         >
           Go to My Account
         </Link>

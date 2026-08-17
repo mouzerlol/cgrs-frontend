@@ -20,7 +20,7 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
           ref={ref}
           className={cn(
             'flex items-center gap-3 px-4 py-3',
-            'bg-white rounded-xl border border-sage',
+            'bg-white rounded-lg border border-sage',
             'animate-pulse',
             className
           )}
@@ -47,7 +47,7 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
       <div
         ref={ref}
         className={cn(
-          'flex h-full min-h-0 flex-col rounded-2xl border border-sage bg-white',
+          'flex h-full min-h-0 flex-col rounded-xl border border-sage bg-white',
           'animate-pulse',
           className
         )}
@@ -81,13 +81,13 @@ const ThreadCardSkeleton = forwardRef<HTMLDivElement, ThreadCardSkeletonProps>(
 
             <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-sage/20 pt-2">
               <div className="flex items-center gap-2">
-                <div className="h-9 w-16 rounded-lg bg-sage-light" />
+                <div className="h-9 w-16 rounded bg-sage-light" />
                 <div className="h-5 w-8 rounded bg-sage-light" />
               </div>
               <div className="flex gap-1">
-                <div className="h-8 w-8 rounded-lg bg-sage-light" />
-                <div className="h-8 w-8 rounded-lg bg-sage-light" />
-                <div className="h-8 w-8 rounded-lg bg-sage-light" />
+                <div className="h-8 w-8 rounded bg-sage-light" />
+                <div className="h-8 w-8 rounded bg-sage-light" />
+                <div className="h-8 w-8 rounded bg-sage-light" />
               </div>
             </div>
           </div>

@@ -94,7 +94,7 @@ export function SuccessConfirmation({
             onClick={handleCopy}
             className={cn(
               'group inline-flex items-center gap-sm py-3 px-4',
-              'bg-bone border border-sage rounded-[10px]',
+              'bg-bone border border-sage rounded-[8px]',
               'cursor-pointer transition-all duration-[250ms] ease-out-custom',
               'hover:border-forest-light'
             )}
@@ -132,7 +132,7 @@ export function SuccessConfirmation({
               onClick={() => router.push(viewRequestHref)}
               className={cn(
                 'inline-flex items-center justify-center gap-xs py-3 px-6',
-                'bg-bone border border-sage rounded-[10px]',
+                'bg-bone border border-sage rounded-[8px]',
                 'font-body text-[0.9375rem] font-semibold text-forest',
                 'cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px]',
                 'hover:border-forest-light hover:bg-sage-light'
@@ -146,7 +146,7 @@ export function SuccessConfirmation({
             onClick={onSubmitAnother}
             className={cn(
               'inline-flex items-center justify-center gap-xs py-3 px-6',
-              'bg-transparent border border-sage rounded-[10px]',
+              'bg-transparent border border-sage rounded-[8px]',
               'font-body text-[0.9375rem] font-semibold text-forest',
               'cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px]',
               'hover:bg-sage-light hover:border-forest-light'
@@ -159,7 +159,7 @@ export function SuccessConfirmation({
             onClick={handleReturnHome}
             className={cn(
               'inline-flex items-center justify-center gap-xs py-3 px-6',
-              'bg-terracotta border-none rounded-[10px]',
+              'bg-terracotta border-none rounded-[8px]',
               'font-body text-[0.9375rem] font-semibold text-bone',
               'cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px]',
               'hover:bg-terracotta-dark'

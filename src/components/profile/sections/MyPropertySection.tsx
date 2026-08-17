@@ -259,7 +259,7 @@ export default function MyPropertySection() {
             <button
               type="button"
               onClick={handleVerifyAnother}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded bg-terracotta px-4 py-2 text-sm font-semibold text-bone transition-colors hover:bg-terracotta-dark"
             >
               <Plus className="w-4 h-4" />
               Verify another property
@@ -409,9 +409,9 @@ export default function MyPropertySection() {
 
       {/* Civic footer: the shared rules that bind every property above. Shown once. */}
       {hasVerifiedProperties && (
-        <aside className="rounded-xl bg-forest p-6 text-bone sm:p-8">
+        <aside className="rounded-lg bg-forest p-6 text-bone sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-bone/10">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-bone/10">
               <ShieldCheck className="h-5 w-5 text-bone" aria-hidden="true" />
             </div>
             <div className="space-y-3">

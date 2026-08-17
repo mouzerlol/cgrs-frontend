@@ -39,7 +39,7 @@ export default function Option02TonalFooter({ post, surface, className }: CardFa
         <LabPlate
           post={post}
           sizes={isListing ? '128px' : '(max-width: 768px) 100vw, 340px'}
-          radiusClassName={isListing ? 'rounded-lg' : 'rounded-none'}
+          radiusClassName={isListing ? 'rounded' : 'rounded-none'}
           className={cn(
             isListing
               ? cn('aspect-[4/3]', LISTING_PLATE)

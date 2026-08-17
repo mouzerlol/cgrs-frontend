@@ -357,7 +357,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
         {/* Form Header */}
         {activeCategory && (
           <div className="flex items-start gap-sm pb-sm mb-sm border-b border-sage-light max-sm:flex-col max-sm:items-center max-sm:text-center sm:gap-md sm:pb-md sm:mb-md">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-terracotta rounded-lg sm:rounded-xl text-bone shrink-0">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-terracotta rounded sm:rounded-lg text-bone shrink-0">
               <Icon icon={activeCategory.icon} width={24} height={24} />
             </div>
             <div className="flex-1 min-w-0">
@@ -393,7 +393,7 @@ export function ManagementRequestForm({ initialData }: ManagementRequestFormProp
               className={cn(
                 'inline-flex items-center justify-center gap-sm',
                 'py-3.5 px-8 min-h-[52px]',
-                'bg-terracotta rounded-xl',
+                'bg-terracotta rounded-lg',
                 'font-body text-base font-semibold text-bone',
                 'cursor-pointer border-none',
                 'transition-all duration-[250ms] ease-out-custom',

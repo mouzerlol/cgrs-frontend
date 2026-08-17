@@ -733,7 +733,15 @@ export async function getThreadsWithLatestReply(
     result.threads.map(async (thread) => {
       try {
         const replies = await getRepliesForThread(thread.id, getToken);
-        const latestReply = replies[replies.length - 1];
+        /* Newest by timestamp, not last in the array — the newest reply is often a child of a
+           low-upvote root, so array position reports the wrong author and time. */
+        const latestReply = replies.reduce<Reply | undefined>(
+          (newest, reply) =>
+            !newest || new Date(reply.createdAt).getTime() > new Date(newest.createdAt).getTime()
+              ? reply
+              : newest,
+          undefined,
+        );
         return {
           ...thread,
           latestReply: latestReply
@@ -770,48 +778,10 @@ export async function getRepliesForThread(
     getToken,
   );
 
-  // Build tree structure client-side
-  const replies = response.items.map(mapReplyResponse);
-  return buildReplyTree(replies);
-}
-
-function buildReplyTree(replies: Reply[]): Reply[] {
-  // Build a lookup of children by parentReplyId
-  const childrenMap = new Map<string | undefined, Reply[]>();
-  for (const reply of replies) {
-    const key = reply.parentReplyId || '__root__';
-    const children = childrenMap.get(key) || [];
-    children.push(reply);
-    childrenMap.set(key, children);
-  }
-
-  // Get top-level replies sorted by upvotes
-  const topLevel = (childrenMap.get('__root__') || []).sort((a, b) => b.upvotes - a.upvotes);
-
-  // Depth-first traversal
-  const result: Reply[] = [];
-  const visited = new Set<string>();
-
-  function traverse(parentId: string | undefined, depth: number) {
-    const key = parentId || '__root__';
-    if (parentId && visited.has(parentId)) return;
-    if (parentId) visited.add(parentId);
-
-    const children = childrenMap.get(key) || [];
-    const sorted = depth === 0
-      ? children
-      : [...children].sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        );
-
-    for (const reply of sorted) {
-      result.push({ ...reply, depth });
-      traverse(reply.id, depth + 1);
-    }
-  }
-
-  traverse(undefined, 0);
-  return result;
+  /* Flat, in the order the server sent it. Nesting and ordering belong to `buildReplyTree`
+     in `@/lib/reply-tree`, at render time — this used to shape a second, rival tree here,
+     which silently dropped any reply whose parent was not in the same page. */
+  return response.items.map(mapReplyResponse);
 }
 
 export async function getReply(

@@ -39,7 +39,7 @@ export function SidebarTabs({
   return (
     <nav
       className={cn(
-        'hidden lg:flex flex-col w-80 flex-shrink-0 bg-forest-light rounded-l-2xl pr-0 pt-[88px]',
+        'hidden lg:flex flex-col w-80 flex-shrink-0 bg-forest-light rounded-l-xl pr-0 pt-[88px]',
         compact ? 'p-sm' : 'p-md'
       )}
       aria-label={ariaLabel}
@@ -89,7 +89,7 @@ function TabButton({ isActive, onClick, icon, name, count, compact = false }: Ta
 
   const countBadgeClass = cn(
     'inline-flex shrink-0 items-center justify-center px-2 py-0.5',
-    'rounded-xl text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
+    'rounded-lg text-[0.6875rem] font-bold min-w-[26px] tracking-wide',
     'transition-all duration-[250ms] ease-out-custom',
     isActive ? 'bg-terracotta text-bone' : 'bg-sage/20 border border-sage/30 text-sage-light'
   );
@@ -99,7 +99,7 @@ function TabButton({ isActive, onClick, icon, name, count, compact = false }: Ta
       type="button"
       onClick={onClick}
       className={cn(
-        'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-xl',
+        'group flex items-center border border-bone/[0.12] border-r-0 rounded-l-lg',
         compact
           ? 'gap-2 px-sm py-2 min-h-[52px] text-[0.875rem]'
           : 'gap-sm px-md py-3 min-h-[72px] text-[0.9375rem]',
@@ -119,7 +119,7 @@ function TabButton({ isActive, onClick, icon, name, count, compact = false }: Ta
     >
       <span
         className={cn(
-          'flex items-center justify-center rounded-lg shrink-0',
+          'flex items-center justify-center rounded shrink-0',
           'transition-all duration-[250ms] ease-out-custom',
           compact ? 'w-7 h-7' : 'w-8 h-8',
           isActive ? 'bg-terracotta text-bone' : 'bg-bone/[0.12] text-sage-light'

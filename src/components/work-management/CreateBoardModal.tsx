@@ -76,7 +76,7 @@ export default function CreateBoardModal({ isOpen, onClose, onSubmit }: CreateBo
                 key={emoji}
                 type="button"
                 onClick={() => setIcon(emoji)}
-                className={`w-10 h-10 flex items-center justify-center text-xl rounded-lg transition-all ${
+                className={`w-10 h-10 flex items-center justify-center text-xl rounded transition-all ${
                   icon === emoji
                     ? 'bg-terracotta text-bone ring-2 ring-terracotta ring-offset-2'
                     : 'bg-sage-light text-forest hover:bg-sage'
@@ -98,7 +98,7 @@ export default function CreateBoardModal({ isOpen, onClose, onSubmit }: CreateBo
                 key={option.value}
                 type="button"
                 onClick={() => setColor(option.value)}
-                className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 py-2 px-3 rounded text-sm font-medium transition-all ${
                   option.bg
                 } ${
                   color === option.value

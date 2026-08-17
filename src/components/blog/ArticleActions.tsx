@@ -67,7 +67,7 @@ interface ArticleActionsProps {
  * top: whatever the height, the mark stays the same distance from the end.
  */
 const TAB = [
-  'group relative flex w-[5.5rem] flex-col items-center justify-end gap-1 rounded-b-xl px-2 py-2.5',
+  'group relative flex w-[5.5rem] flex-col items-center justify-end gap-1 rounded-b-lg px-2 py-2.5',
   'border border-t-0 border-bone/[0.12]',
   /*
    * The bridge: a hairline of the tab's own fill laid over the panel's bottom
@@ -115,7 +115,7 @@ const TAB_REACH = 'transition-[margin] duration-[250ms] ease-out-custom hover:-m
 
 /** The glyph's tile: the sidebar's own, at its own 32px. */
 const TAB_TILE =
-  'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-terracotta text-bone';
+  'flex h-8 w-8 shrink-0 items-center justify-center rounded bg-terracotta text-bone';
 
 /**
  * The label under the tile.

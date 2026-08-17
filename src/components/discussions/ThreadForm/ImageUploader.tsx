@@ -102,7 +102,7 @@ export function ImageUploader({
       {value.length > 0 && (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-sm">
           {value.map((file, index) => (
-            <div key={index} className="relative rounded-lg overflow-hidden bg-sage-light">
+            <div key={index} className="relative rounded overflow-hidden bg-sage-light">
               <div className="relative aspect-square overflow-hidden">
                 <LocalFilePreview file={file} />
               </div>

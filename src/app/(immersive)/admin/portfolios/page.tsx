@@ -64,7 +64,7 @@ export default function PortfoliosListPage() {
               >
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="w-full h-full min-h-[200px] rounded-[20px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
+                  className="w-full h-full min-h-[200px] rounded-[12px] border-2 border-dashed border-sage/40 flex flex-col items-center justify-center gap-3 text-forest/50 hover:text-forest hover:border-terracotta hover:bg-terracotta/5 transition-all group bg-bone"
                 >
                   <div className="w-14 h-14 rounded-full bg-sage-light flex items-center justify-center group-hover:bg-terracotta/10 transition-colors">
                     <Plus className="w-6 h-6" />

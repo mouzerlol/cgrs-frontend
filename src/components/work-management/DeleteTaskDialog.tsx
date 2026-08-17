@@ -86,7 +86,7 @@ export function DeleteTaskDialog({ isOpen, onClose, onSuccess, taskTitle, taskId
                     Are you sure you want to delete this task? This action cannot be undone.
                   </p>
 
-                  <div className="rounded-lg bg-sage-light/20 p-3 space-y-1">
+                  <div className="rounded bg-sage-light/20 p-3 space-y-1">
                     <p className="text-sm font-semibold text-forest">{taskTitle}</p>
                     <p className="text-xs text-forest/50">
                       Task ID: {taskId.toUpperCase().slice(0, -5)}
@@ -104,7 +104,7 @@ export function DeleteTaskDialog({ isOpen, onClose, onSuccess, taskTitle, taskId
                       onChange={(e) => setConfirmationText(e.target.value)}
                       placeholder={lastFiveDigits}
                       className={cn(
-                        "w-full px-3 py-2 rounded-lg border text-sm font-mono tracking-wider",
+                        "w-full px-3 py-2 rounded border text-sm font-mono tracking-wider",
                         "focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all",
                         isConfirmValid
                           ? "border-green-300 bg-green-50 text-green-800"
@@ -119,7 +119,7 @@ export function DeleteTaskDialog({ isOpen, onClose, onSuccess, taskTitle, taskId
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-4 py-2 text-sm font-semibold text-forest/70 bg-sage-light/30 rounded-lg hover:bg-sage-light/50 transition-colors"
+                    className="px-4 py-2 text-sm font-semibold text-forest/70 bg-sage-light/30 rounded hover:bg-sage-light/50 transition-colors"
                   >
                     Cancel
                   </button>
@@ -128,7 +128,7 @@ export function DeleteTaskDialog({ isOpen, onClose, onSuccess, taskTitle, taskId
                     onClick={handleDelete}
                     disabled={!isConfirmValid || deleteTask.isPending}
                     className={cn(
-                      "px-4 py-2 text-sm font-semibold rounded-lg transition-all flex items-center gap-2",
+                      "px-4 py-2 text-sm font-semibold rounded transition-all flex items-center gap-2",
                       isConfirmValid && !deleteTask.isPending
                         ? "bg-red-600 text-white hover:bg-red-700"
                         : "bg-red-200 text-red-400 cursor-not-allowed"

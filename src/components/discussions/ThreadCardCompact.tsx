@@ -118,7 +118,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
         role="button"
         className={cn(
           'flex items-start gap-3 p-3 group/card cursor-pointer',
-          'bg-white rounded-xl border border-sage',
+          'bg-white rounded-lg border border-sage',
           'transition-all duration-200 ease-out',
           'hover:bg-sage-light/50 hover:border-forest/30 hover:shadow-[0_10px_28px_rgba(26,34,24,0.1)]',
           thread.isPinned && 'border-l-4 border-l-terracotta',
@@ -129,7 +129,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
         {/* Thumbnail column: fixed square — image, loading skeleton, or category icon (items-start on card avoids stretch vs square mismatch) */}
         <div
           className={cn(
-            'relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg',
+            'relative h-20 w-20 flex-shrink-0 overflow-hidden rounded',
             'bg-sage-light transition-colors duration-200 ease-out',
             'group-hover/card:bg-sage',
           )}
@@ -282,7 +282,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
               <button
                 onClick={handleBookmarkClick}
                 className={cn(
-                  'p-1.5 rounded-lg transition-colors',
+                  'p-1.5 rounded transition-colors',
                   isBookmarked
                     ? 'bg-sage/60 text-forest'
                     : 'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
@@ -302,7 +302,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
               <button
                 onClick={handleShareClick}
                 className={cn(
-                  'p-1.5 rounded-lg transition-colors',
+                  'p-1.5 rounded transition-colors',
                   'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
                   'hidden sm:flex items-center justify-center'
                 )}
@@ -317,7 +317,7 @@ const ThreadCardCompact = forwardRef<HTMLDivElement, ThreadCardCompactProps>(
               <button
                 onClick={handleReportClick}
                 className={cn(
-                  'p-1.5 rounded-lg transition-colors',
+                  'p-1.5 rounded transition-colors',
                   'hover:bg-sage/50 text-forest/40 hover:text-forest/70',
                   'hidden sm:flex items-center justify-center'
                 )}

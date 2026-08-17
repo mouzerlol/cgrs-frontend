@@ -15,7 +15,7 @@ const OrganicNaturalCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
         ref={ref}
         href={href}
         className={cn(
-          'group relative flex flex-col bg-gradient-to-br from-[#F4EBE3] to-[#E9F0E6] rounded-[32px] overflow-hidden text-[#4A5D4E]',
+          'group relative flex flex-col bg-gradient-to-br from-[#F4EBE3] to-[#E9F0E6] rounded-[12px] overflow-hidden text-[#4A5D4E]',
           'transition-colors, transition-transform, transition-opacity duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(74,93,78,0.2)]',
           isLarge ? 'col-span-1 md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-[400px]' : 'min-h-[160px] md:min-h-[180px]',
           className
@@ -39,7 +39,7 @@ const OrganicNaturalCard = forwardRef<HTMLAnchorElement, QuickAccessCardAltProps
           </p>
 
           {hasImage && (
-            <div className={cn("relative w-full rounded-[24px] overflow-hidden mt-auto", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
+            <div className={cn("relative w-full rounded-[12px] overflow-hidden mt-auto", isLarge ? "aspect-video md:aspect-[21/9]" : "aspect-[4/3] sm:aspect-video")}>
               <Image src={image!} alt={title} fill className="object-cover transition-transform duration-1000 group-hover:scale-110" sizes={isLarge ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} />
             </div>
           )}

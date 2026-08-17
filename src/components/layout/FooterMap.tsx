@@ -78,7 +78,7 @@ export default function FooterMap({ className }: FooterMapProps) {
         position: 'relative',
         width: '100%',
         height: '160px',
-        borderRadius: '8px',
+        borderRadius: '4px',
         overflow: 'hidden',
         background: '#1A2218',
       }}

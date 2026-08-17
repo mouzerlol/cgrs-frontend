@@ -178,7 +178,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
     return (
       <div
         ref={ref}
-        className={cn('relative overflow-hidden rounded-2xl', className)}
+        className={cn('relative overflow-hidden rounded-xl', className)}
         {...props}
       >
         {/* Left Action Panel - Upvote (revealed on swipe right) */}
@@ -186,7 +186,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
           className={cn(
             'absolute inset-y-0 left-0 w-32',
             'flex items-center justify-center',
-            'rounded-l-2xl',
+            'rounded-l-xl',
             hasUpvoted ? 'bg-sage' : 'bg-forest'
           )}
           style={{ opacity: leftPanelOpacity }}
@@ -207,7 +207,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
 
         {/* Right Action Panel - Actions (revealed on swipe left) */}
         <motion.div
-          className="absolute inset-y-0 right-0 w-40 flex items-center justify-end pr-2 rounded-r-2xl bg-gradient-to-l from-sage-light to-transparent"
+          className="absolute inset-y-0 right-0 w-40 flex items-center justify-end pr-2 rounded-r-xl bg-gradient-to-l from-sage-light to-transparent"
           style={{ opacity: rightPanelOpacity }}
         >
           <div className="flex items-center gap-1">
@@ -216,7 +216,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
               type="button"
               onClick={() => handleActionClick('bookmark')}
               className={cn(
-                'flex items-center justify-center w-12 h-12 rounded-xl',
+                'flex items-center justify-center w-12 h-12 rounded-lg',
                 'transition-colors duration-150',
                 isBookmarked
                   ? 'bg-terracotta text-bone'
@@ -235,7 +235,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
             <motion.button
               type="button"
               onClick={() => handleActionClick('share')}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-bone/80 text-forest hover:bg-bone transition-colors duration-150"
+              className="flex items-center justify-center w-12 h-12 rounded-lg bg-bone/80 text-forest hover:bg-bone transition-colors duration-150"
               style={{ scale: actionScale }}
               aria-label="Share thread"
             >
@@ -246,7 +246,7 @@ const SwipeableThreadCard = forwardRef<HTMLDivElement, SwipeableThreadCardProps>
             <motion.button
               type="button"
               onClick={() => handleActionClick('report')}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-bone/80 text-terracotta hover:bg-terracotta hover:text-bone transition-colors duration-150"
+              className="flex items-center justify-center w-12 h-12 rounded-lg bg-bone/80 text-terracotta hover:bg-terracotta hover:text-bone transition-colors duration-150"
               style={{ scale: actionScale }}
               aria-label="Report thread"
             >

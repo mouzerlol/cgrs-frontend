@@ -130,11 +130,11 @@ function DirectoryRow({
       {expanded && (
         <tr className="border-b border-sage/10 bg-bone/40">
           <td colSpan={3} className="px-4 py-2">
-            <div className="rounded-lg border border-sage/15 bg-white">
+            <div className="rounded border border-sage/15 bg-white">
               {isLoading ? (
                 <div className="space-y-3 p-4">
                   {[1, 2].map((i) => (
-                    <div key={i} className="h-12 animate-pulse rounded-lg bg-sage/10" />
+                    <div key={i} className="h-12 animate-pulse rounded bg-sage/10" />
                   ))}
                 </div>
               ) : (

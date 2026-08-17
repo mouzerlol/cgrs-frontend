@@ -219,7 +219,7 @@ function SectionHeading({
   return (
     <div className="border-b border-sage/30 pb-4">
       <div className="flex items-center gap-3.5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-forest/[0.07] text-forest">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-forest/[0.07] text-forest">
           <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden="true" />
         </span>
         <div>
@@ -293,7 +293,7 @@ export default function GuidelinesPage() {
 
                   {section.callout && (
                     <aside
-                      className={`mt-7 rounded-xl border p-5 ${
+                      className={`mt-7 rounded-lg border p-5 ${
                         section.callout.tone === 'warning'
                           ? 'border-terracotta/30 bg-terracotta/10'
                           : 'border-sage/40 bg-bone-light'
@@ -301,7 +301,7 @@ export default function GuidelinesPage() {
                     >
                       <div className="flex items-start gap-4">
                         <span
-                          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${
+                          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded ${
                             section.callout.tone === 'warning'
                               ? 'bg-terracotta text-bone'
                               : 'bg-forest text-bone'
@@ -341,7 +341,7 @@ export default function GuidelinesPage() {
 
                 <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {CONTACTS.map((c) => (
-                    <div key={c.email} className="rounded-2xl border border-sage/25 bg-white p-6">
+                    <div key={c.email} className="rounded-xl border border-sage/25 bg-white p-6">
                       <h3 className="font-display text-lg font-medium text-forest">{c.label}</h3>
                       <p className="mt-2 text-sm leading-relaxed text-forest/75">{c.desc}</p>
                       <a
@@ -358,7 +358,7 @@ export default function GuidelinesPage() {
                   ))}
                 </div>
 
-                <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl bg-bone-light p-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-6 flex flex-col items-start gap-4 rounded-xl bg-bone-light p-6 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-forest/75">
                     Have a question about what’s allowed? A committee member is happy to help.
                   </p>

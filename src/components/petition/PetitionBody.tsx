@@ -94,7 +94,7 @@ export default function PetitionBody() {
         </div>
       </section>
 
-      <section className="bg-sage-light rounded-xl border border-sage/30 p-6 md:p-8">
+      <section className="bg-sage-light rounded-lg border border-sage/30 p-6 md:p-8">
         <h2 className="font-display text-xl font-semibold mb-3">By signing, you are</h2>
         <ul className="space-y-2 text-base leading-relaxed list-disc pl-5 marker:text-terracotta">
           <li>

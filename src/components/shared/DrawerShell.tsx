@@ -129,7 +129,7 @@ export default function DrawerShell({
                 type="button"
                 onClick={onClose}
                 aria-label="Close navigation menu"
-                className="flex h-11 w-11 items-center justify-center rounded-xl text-bone transition-colors hover:bg-bone/[0.12] focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50"
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-bone transition-colors hover:bg-bone/[0.12] focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
               </button>

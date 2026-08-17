@@ -189,9 +189,9 @@ export const TurnstileCaptcha = forwardRef<TurnstileCaptchaRef, TurnstileCaptcha
     return (
       <div className={cn('flex flex-col gap-sm', className)}>
         <SectionLabel as="h4" className="mb-xs">Verification</SectionLabel>
-        <div className="p-md bg-bone border border-dashed border-sage rounded-xl">
+        <div className="p-md bg-bone border border-dashed border-sage rounded-lg">
           <div className="flex items-center gap-md">
-            <div className="flex items-center justify-center w-12 h-12 bg-sage-light rounded-[10px] text-forest shrink-0">
+            <div className="flex items-center justify-center w-12 h-12 bg-sage-light rounded-[8px] text-forest shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>

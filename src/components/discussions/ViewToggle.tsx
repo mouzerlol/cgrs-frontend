@@ -33,7 +33,7 @@ const ViewToggle = forwardRef<HTMLDivElement, ViewToggleProps>(
         ref={ref}
         className={cn(
           'inline-flex items-center gap-1 p-1',
-          'bg-sage-light rounded-lg',
+          'bg-sage-light rounded',
           className
         )}
         role="radiogroup"
@@ -45,7 +45,7 @@ const ViewToggle = forwardRef<HTMLDivElement, ViewToggleProps>(
             type="button"
             onClick={handleCardClick}
             className={cn(
-              'flex items-center justify-center w-9 h-9 rounded-lg',
+              'flex items-center justify-center w-9 h-9 rounded',
               'transition-all duration-200',
               value === 'card'
                 ? 'bg-white text-forest shadow-sm'
@@ -64,7 +64,7 @@ const ViewToggle = forwardRef<HTMLDivElement, ViewToggleProps>(
             type="button"
             onClick={handleCompactClick}
             className={cn(
-              'flex items-center justify-center w-9 h-9 rounded-lg',
+              'flex items-center justify-center w-9 h-9 rounded',
               'transition-all duration-200',
               value === 'compact'
                 ? 'bg-white text-forest shadow-sm'

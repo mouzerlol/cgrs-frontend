@@ -200,7 +200,7 @@ function RefinedCurrent({ eyebrow, title, subtitle, icon: Icon }: HeadingProps) 
   return (
     <div className="border-b border-sage/30 pb-4">
       <div className="flex items-center gap-3.5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-forest/[0.07] text-forest">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-forest/[0.07] text-forest">
           <Icon className="h-6 w-6" strokeWidth={1.5} />
         </span>
         <div>
@@ -258,7 +258,7 @@ function ColumnPlate({ eyebrow, title, subtitle, icon: Icon }: HeadingProps) {
   return (
     <div className="flex items-stretch gap-5 border border-sage/30 bg-bone-light p-5 sm:p-6">
       <div className="flex w-20 shrink-0 flex-col items-center gap-3 border-r border-sage/40 pr-5 sm:w-24">
-        <span className="flex h-12 w-12 items-center justify-center rounded-md bg-forest/[0.07] text-forest">
+        <span className="flex h-12 w-12 items-center justify-center rounded bg-forest/[0.07] text-forest">
           <Icon className="h-6 w-6" strokeWidth={1.5} />
         </span>
         <span className="text-center text-[0.62rem] font-semibold uppercase leading-tight tracking-[0.16em] text-terracotta">

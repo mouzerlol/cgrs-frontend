@@ -70,7 +70,7 @@ function VoterListPanel({
       id={`voters-${optionId}`}
       className={cn(
         'flex flex-wrap gap-2 overflow-hidden transition-all duration-500 w-full',
-        isExpanded ? 'max-h-[200px] opacity-100 p-xs bg-sage/15 rounded-[10px]' : 'max-h-0 opacity-0'
+        isExpanded ? 'max-h-[200px] opacity-100 p-xs bg-sage/15 rounded-[8px]' : 'max-h-0 opacity-0'
       )}
       role="list"
       aria-label="Voters for this option"
@@ -79,7 +79,7 @@ function VoterListPanel({
         <span
           key={voter.id}
           className={cn(
-            'inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-bone border border-sage rounded-2xl text-xs text-forest animate-[poll-voter-appear_0.3s_ease-out_forwards] opacity-0 translate-y-2',
+            'inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-bone border border-sage rounded-xl text-xs text-forest animate-[poll-voter-appear_0.3s_ease-out_forwards] opacity-0 translate-y-2',
             voter.displayName === 'You' && 'bg-terracotta/10 border-terracotta text-terracotta font-semibold'
           )}
           role="listitem"
@@ -156,7 +156,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
       <div
         ref={ref}
         className={cn(
-          'bg-gradient-to-br from-bone to-sage-light/50 rounded-2xl border border-sage p-5 relative overflow-hidden',
+          'bg-gradient-to-br from-bone to-sage-light/50 rounded-xl border border-sage p-5 relative overflow-hidden',
           'before:content-[\'\'] before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-terracotta before:to-sage',
           'max-sm:p-3',
           className
@@ -167,7 +167,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
         <div className="flex flex-wrap items-center justify-between gap-x-sm gap-y-xs mb-sm">
           <div className="flex flex-wrap items-center min-w-0 flex-1 gap-y-1">
             <div className="flex items-center gap-sm shrink-0 pr-md max-sm:pr-sm">
-              <div className="w-9 h-9 flex items-center justify-center bg-terracotta/10 rounded-[10px] text-terracotta">
+              <div className="w-9 h-9 flex items-center justify-center bg-terracotta/10 rounded-[8px] text-terracotta">
                 <Icon icon="lucide:bar-chart-2" className="w-5 h-5" />
               </div>
               <span className="text-sm font-semibold text-terracotta uppercase tracking-wide">Community Poll</span>
@@ -182,7 +182,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
               <button
                 type="button"
                 onClick={() => setVotersExpanded((v) => !v)}
-                className="inline-flex items-center gap-1.5 py-1 px-3 bg-transparent border-none rounded-lg text-xs text-forest/70 cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[44px] sm:min-h-[32px] shrink-0 hover:opacity-100 hover:bg-sage-light"
+                className="inline-flex items-center gap-1.5 py-1 px-3 bg-transparent border-none rounded text-xs text-forest/70 cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[44px] sm:min-h-[32px] shrink-0 hover:opacity-100 hover:bg-sage-light"
                 aria-expanded={votersExpanded}
                 aria-controls={voterPanelIds || undefined}
               >
@@ -195,12 +195,12 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
               </button>
             )}
             {poll.isClosed ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[20px] text-xs font-semibold bg-sage text-forest">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-semibold bg-sage text-forest">
                 <Icon icon="lucide:lock" className="w-3.5 h-3.5" />
                 Closed
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[20px] text-xs font-semibold bg-forest/10 text-forest">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-semibold bg-forest/10 text-forest">
                 <Icon icon="lucide:clock" className="w-3.5 h-3.5" />
                 Open
               </span>
@@ -232,7 +232,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                   onClick={() => handleOptionClick(option.id)}
                   disabled={poll.isClosed || isPending}
                   className={cn(
-                    'relative w-full min-w-0 py-3 px-md rounded-xl border-2 border-sage bg-bone text-left cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px] overflow-hidden',
+                    'relative w-full min-w-0 py-3 px-md rounded-lg border-2 border-sage bg-bone text-left cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[48px] overflow-hidden',
                       'max-sm:py-2 max-sm:px-md',
                       hasVoted || poll.isClosed
                         ? isSelected
@@ -250,7 +250,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                     {(hasVoted || poll.isClosed) && (
                       <div
                         className={cn(
-                          'absolute top-0 left-0 bottom-0 bg-forest/[0.06] rounded-[10px] transition-[width] duration-600 ease-[cubic-bezier(0.4,0,0.2,1)]',
+                          'absolute top-0 left-0 bottom-0 bg-forest/[0.06] rounded-[8px] transition-[width] duration-600 ease-[cubic-bezier(0.4,0,0.2,1)]',
                           isSelected && 'bg-terracotta/[0.12]'
                         )}
                         style={{ width: progressWidth }}
@@ -265,7 +265,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
                         <div
                           className={cn(
                             'w-[22px] h-[22px] flex items-center justify-center border-2 border-sage bg-bone shrink-0 transition-all duration-[250ms] ease-out-custom',
-                            poll.allowMultiple ? 'rounded-md' : 'rounded-full',
+                            poll.allowMultiple ? 'rounded' : 'rounded-full',
                             isSelected && 'bg-terracotta border-terracotta text-bone'
                           )}
                           aria-hidden="true"
@@ -355,7 +355,7 @@ const PollDisplay = forwardRef<HTMLDivElement, PollDisplayProps>(
               type="button"
               onClick={handleClosePoll}
               disabled={isClosing}
-              className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-transparent border border-sage rounded-lg text-sm font-medium text-forest cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[44px] hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5 disabled:opacity-60 disabled:cursor-not-allowed max-sm:w-full max-sm:justify-center"
+              className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-transparent border border-sage rounded text-sm font-medium text-forest cursor-pointer transition-all duration-[250ms] ease-out-custom min-h-[44px] hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5 disabled:opacity-60 disabled:cursor-not-allowed max-sm:w-full max-sm:justify-center"
               aria-busy={isClosing}
             >
               {isClosing ? (

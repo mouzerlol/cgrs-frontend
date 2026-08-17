@@ -61,7 +61,7 @@ export default function ReadonlyTaskImageGallery({
                   }
                 }
               }}
-              className="relative group aspect-square rounded-xl overflow-hidden border border-sage/20 cursor-pointer"
+              className="relative group aspect-square rounded-lg overflow-hidden border border-sage/20 cursor-pointer"
             >
               {displaySrc ? (
                 <Image

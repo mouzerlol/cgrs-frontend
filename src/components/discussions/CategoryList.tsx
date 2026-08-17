@@ -95,9 +95,9 @@ CategoryList.displayName = 'CategoryList';
  */
 function CategoryCardSkeleton() {
   return (
-    <div className="flex flex-col p-5 min-h-[160px] bg-white rounded-2xl border border-sage/30 animate-pulse">
+    <div className="flex flex-col p-5 min-h-[160px] bg-white rounded-xl border border-sage/30 animate-pulse">
       {/* Icon skeleton */}
-      <div className="w-10 h-10 rounded-xl bg-sage-light mb-3" />
+      <div className="w-10 h-10 rounded-lg bg-sage-light mb-3" />
 
       {/* Title skeleton */}
       <div className="h-6 w-2/3 bg-sage-light rounded mb-2" />

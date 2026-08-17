@@ -45,7 +45,7 @@ export default function AccountSectionHeading({
       {/* Icon + eyebrow: an inline row on mobile, a bordered left column on desktop. */}
       <div className="flex shrink-0 items-center gap-3 sm:w-24 sm:flex-col sm:border-r sm:border-sage/40 sm:pr-5">
         <span
-          className="flex h-12 w-12 items-center justify-center rounded-md bg-forest/[0.07] text-forest"
+          className="flex h-12 w-12 items-center justify-center rounded bg-forest/[0.07] text-forest"
           aria-hidden="true"
         >
           <Icon className="h-6 w-6" strokeWidth={1.5} />

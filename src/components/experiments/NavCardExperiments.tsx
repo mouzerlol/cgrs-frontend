@@ -39,7 +39,7 @@ const TONE_CLASS: Record<Tone, string> = {
 
 const RADIUS_CLASS: Record<Radius, string> = {
   full: 'rounded-full',
-  lg: 'rounded-lg',
+  lg: 'rounded',
   square: 'rounded-none',
 };
 
@@ -86,7 +86,7 @@ function NavButtons({ mobile = false }: { mobile?: boolean }) {
           <span
             className={cn(
               'group flex w-full items-center border border-bone/[0.12]',
-              mobile ? 'rounded-xl' : 'rounded-l-xl border-r-0',
+              mobile ? 'rounded-lg' : 'rounded-l-lg border-r-0',
               'gap-sm px-md py-3 min-h-[48px] text-[0.875rem]',
               'bg-bone/[0.08] font-body font-medium text-bone',
               active && 'bg-sage-light font-semibold text-forest',
@@ -94,7 +94,7 @@ function NavButtons({ mobile = false }: { mobile?: boolean }) {
           >
             <span
               className={cn(
-                'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+                'flex h-7 w-7 shrink-0 items-center justify-center rounded',
                 active ? 'bg-terracotta text-bone' : 'bg-bone/[0.12] text-sage-light',
               )}
             >
@@ -115,14 +115,14 @@ function NavButtons({ mobile = false }: { mobile?: boolean }) {
 
 function ContentStub() {
   return (
-    <div className="hidden min-w-[180px] flex-1 rounded-r-2xl bg-sage-light p-5 sm:block">
+    <div className="hidden min-w-[180px] flex-1 rounded-r-xl bg-sage-light p-5 sm:block">
       <div className="h-3 w-28 rounded bg-forest/15" />
       <div className="mt-4 space-y-2.5">
         <div className="h-2.5 w-full rounded bg-forest/10" />
         <div className="h-2.5 w-5/6 rounded bg-forest/10" />
         <div className="h-2.5 w-2/3 rounded bg-forest/10" />
       </div>
-      <div className="mt-6 h-16 rounded-xl border border-forest/10 bg-white/40" />
+      <div className="mt-6 h-16 rounded-lg border border-forest/10 bg-white/40" />
     </div>
   );
 }
@@ -130,7 +130,7 @@ function ContentStub() {
 /** Default mobile trigger: identity chip (avatar + name) that opens the drawer. */
 function DefaultTrigger() {
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-forest-light px-3 py-2.5 text-bone">
+    <div className="flex items-center gap-2 rounded-lg bg-forest-light px-3 py-2.5 text-bone">
       <Initials size={26} tone="sage" />
       <span className="min-w-0 flex-1 truncate text-xs font-medium">{USER.name}</span>
       <Menu className="h-4 w-4 shrink-0 text-bone/70" aria-hidden />
@@ -146,14 +146,14 @@ function Phone({ Card, Trigger }: Pick<Variant, 'Card' | 'Trigger'>) {
         <p className="mb-2 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-forest/40">
           Collapsed
         </p>
-        <div className="rounded-[26px] border border-sage/30 bg-bone p-2.5">
+        <div className="rounded-[12px] border border-sage/30 bg-bone p-2.5">
           <TriggerEl />
           {/* Faux page content sitting where the ProfileHero used to be. */}
           <div className="mt-2.5 space-y-2 px-0.5 pb-1">
             <div className="h-2 w-3/4 rounded bg-forest/12" />
             <div className="h-2 w-full rounded bg-forest/10" />
             <div className="h-2 w-5/6 rounded bg-forest/10" />
-            <div className="h-10 rounded-lg border border-sage/30 bg-white" />
+            <div className="h-10 rounded border border-sage/30 bg-white" />
           </div>
         </div>
       </div>
@@ -161,7 +161,7 @@ function Phone({ Card, Trigger }: Pick<Variant, 'Card' | 'Trigger'>) {
         <p className="mb-2 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-forest/40">
           Drawer open
         </p>
-        <div className="rounded-[26px] border border-forest/30 bg-forest-light p-2.5">
+        <div className="rounded-[12px] border border-forest/30 bg-forest-light p-2.5">
           <Card mobile />
           <NavButtons mobile />
         </div>
@@ -208,7 +208,7 @@ const VARIANTS: Variant[] = [
       <div className="mb-3 flex flex-col items-center border-b border-bone/15 pb-5 text-center">
         <Initials size={56} tone="forest" ring />
         <p className="mt-3 font-display text-base text-bone">{NAME}</p>
-        <span className="mt-2 rounded-md bg-terracotta px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-bone">
+        <span className="mt-2 rounded bg-terracotta px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-bone">
           {ROLE}
         </span>
       </div>
@@ -254,10 +254,10 @@ const VARIANTS: Variant[] = [
       <div
         className={cn(
           'mb-1 flex items-center gap-sm border border-bone/[0.12] bg-bone/[0.08] px-md py-3',
-          mobile ? 'rounded-xl' : 'rounded-l-xl border-r-0',
+          mobile ? 'rounded-lg' : 'rounded-l-lg border-r-0',
         )}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-terracotta font-display text-sm text-bone">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-terracotta font-display text-sm text-bone">
           {USER.initials}
         </span>
         <div className="min-w-0">
@@ -312,7 +312,7 @@ const VARIANTS: Variant[] = [
       <div
         className={cn(
           'mb-4 border border-bone/15 bg-bone/[0.05] p-3',
-          mobile ? 'rounded-xl' : 'rounded-xl',
+          mobile ? 'rounded-lg' : 'rounded-lg',
         )}
       >
         <div className="flex items-center gap-3">
@@ -334,7 +334,7 @@ const VARIANTS: Variant[] = [
     Card: () => (
       <div className="mb-3 border-b border-bone/15 pb-4">
         <div className="flex items-start justify-between gap-2">
-          <span className="rounded-md bg-terracotta px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-bone">
+          <span className="rounded bg-terracotta px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-bone">
             {ROLE}
           </span>
           <Initials size={34} tone="sage" />
@@ -363,10 +363,10 @@ const VARIANTS: Variant[] = [
       <button
         type="button"
         className={cn(
-          'group mb-3 flex w-full items-center gap-3 rounded-xl border border-bone/[0.12] bg-bone/[0.08] px-3 py-2.5 text-left',
+          'group mb-3 flex w-full items-center gap-3 rounded-lg border border-bone/[0.12] bg-bone/[0.08] px-3 py-2.5 text-left',
           'transition-colors duration-200 hover:bg-bone/[0.14]',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-terracotta',
-          mobile && 'rounded-xl',
+          mobile && 'rounded-lg',
         )}
       >
         <Initials size={36} tone="forest" />
@@ -410,7 +410,7 @@ const VARIANTS: Variant[] = [
 function VariantCell({ variant, index }: { variant: Variant; index: number }) {
   const { label, note, Card, Trigger } = variant;
   return (
-    <section className="rounded-2xl border border-sage/20 bg-white p-6 shadow-[0_8px_22px_rgba(26,34,24,0.06)]">
+    <section className="rounded-xl border border-sage/20 bg-white p-6 shadow-[0_8px_22px_rgba(26,34,24,0.06)]">
       <div className="mb-1.5 flex items-baseline gap-3">
         <span className="font-mono text-[0.6875rem] tracking-[0.15em] text-forest/40">
           {String(index + 1).padStart(2, '0')}
@@ -425,7 +425,7 @@ function VariantCell({ variant, index }: { variant: Variant; index: number }) {
             Desktop rail
           </p>
           <div className="flex">
-            <div className="flex w-64 flex-col rounded-l-2xl bg-forest-light p-md">
+            <div className="flex w-64 flex-col rounded-l-xl bg-forest-light p-md">
               <Card />
               <NavButtons />
             </div>
@@ -447,7 +447,7 @@ function VariantCell({ variant, index }: { variant: Variant; index: number }) {
 export default function NavCardExperiments() {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-sage/20 bg-white p-6">
+      <div className="rounded-xl border border-sage/20 bg-white p-6">
         <div className="mb-3 flex items-center gap-3">
           <h2 className="font-display text-2xl text-forest">Nav Identity Card</h2>
           <span className="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-sage-light text-forest">

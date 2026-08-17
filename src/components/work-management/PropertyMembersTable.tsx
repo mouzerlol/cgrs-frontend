@@ -72,7 +72,7 @@ export default function PropertyMembersTable({ members, onRevoke }: PropertyMemb
                   <button
                     type="button"
                     onClick={() => onRevoke(m)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-terracotta/40 px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
+                    className="inline-flex items-center gap-1 rounded border border-terracotta/40 px-3 py-1.5 text-xs font-medium text-terracotta transition-colors hover:bg-terracotta/10"
                   >
                     <Ban className="h-3.5 w-3.5" /> Revoke
                   </button>

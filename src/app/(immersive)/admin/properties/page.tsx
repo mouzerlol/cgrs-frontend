@@ -109,7 +109,7 @@ export default function PropertiesPage() {
             {isLoading || userLoading ? (
               <div className="space-y-4 p-6">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-14 animate-pulse rounded-lg bg-sage/10" />
+                  <div key={i} className="h-14 animate-pulse rounded bg-sage/10" />
                 ))}
               </div>
             ) : (
