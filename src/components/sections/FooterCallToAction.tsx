@@ -8,15 +8,17 @@ import { useAuth, useUser } from '@clerk/nextjs';
 import { KeyRound, UserRound } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useSectionParallax } from '@/hooks/useParallax';
 
 /**
- * Button renders a span when `asChild` is set, so the focus ring has to follow the anchor inside it.
+ * `asChild` merges the button styles onto the anchor, so the anchor carries its own focus ring.
+ * This keeps the offset ring in the terracotta/bone palette rather than the browser default.
  */
 const focusWithinRing =
-  'focus-within:ring-2 focus-within:ring-terracotta focus-within:ring-offset-2 focus-within:ring-offset-bone';
+  'focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-bone';
 
-/** The anchor fills the button span, so the icon and label align inside it rather than beside it. */
-const actionLink = 'inline-flex items-center gap-2 focus:outline-none';
+/** Lays out the icon and label; the button padding now comes from Button itself. */
+const actionLink = 'gap-2 focus:outline-none';
 
 /**
  * Closing band on every community page: an invitation to create an account when signed out,
@@ -31,6 +33,7 @@ export default function FooterCallToAction() {
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
   const [revealRef, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+  const { bgRef, sectionRef } = useSectionParallax();
 
   // Clerk briefly reports signed-out while it rehydrates; hold the last known answer so a
   // returning member never sees "Create an account" flash before their own copy arrives.
@@ -50,17 +53,28 @@ export default function FooterCallToAction() {
   if (isRedundantHere) return null;
 
   return (
-    <section className="relative isolate overflow-hidden" aria-labelledby="footer-cta-heading">
-      {/* Full-bleed photograph. Below the fold on every page, so it loads lazily. */}
+    <section
+      ref={sectionRef}
+      className="relative isolate overflow-hidden"
+      aria-labelledby="footer-cta-heading"
+    >
+      {/* Full-bleed photograph. Below the fold on every page, so it loads lazily.
+          The photograph overshoots the band top and bottom so the parallax drift
+          never brings an edge into view; the tint stays still over the section. */}
       <div className="absolute inset-0 -z-10">
-        <Image
-          src="/images/huri-street.png"
-          alt=""
-          aria-hidden
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+        <div
+          ref={bgRef}
+          className="absolute -top-[30%] left-0 h-[160%] w-full will-change-transform"
+        >
+          <Image
+            src="/images/huri-street.png"
+            alt=""
+            aria-hidden
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
         <div className="absolute inset-0 bg-forest/30" />
       </div>
 

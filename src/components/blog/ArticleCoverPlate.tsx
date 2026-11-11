@@ -8,7 +8,7 @@ import type { LightboxImage } from '@/types';
 import type { PostHero } from '@/lib/blog/types';
 import { toTitleCase } from '@/lib/blog/title-case';
 import BlogPlate from './BlogPlate';
-import { RAIL_LEFT, RAIL_WIDTH } from './article-rail-geometry';
+import { PLATE_WIDTH, RAIL_LEFT, RAIL_WIDTH } from './article-rail-geometry';
 
 interface ArticleCoverPlateProps {
   /** The post's hero photograph, or nothing on a post that carries none. */
@@ -274,14 +274,16 @@ export default function ArticleCoverPlate({ hero, railMeta }: ArticleCoverPlateP
   ];
 
   /*
-   * 432px is the 27rem cap, which now holds at every width above a phone: the
-   * column allows no more at `xl`, and the strip below it is capped to the same
-   * figure. Only a viewport narrower than the cap actually asks for `100vw`.
+   * The print is no longer one fixed width. At `xl` it is the rail's own width,
+   * up to the 27rem cap. In the flow strip below `xl` it shares a row with the
+   * plaque from `md` and takes what the plaque leaves — about 360px — and below
+   * `md`, stacked, it runs the full content width. The `sizes` hint follows those
+   * three widths so the browser fetches a source large enough for the widest.
    */
   const slot = (
     <ArticleCoverFigure
       image={hero}
-      sizes="(min-width: 480px) 432px, 100vw"
+      sizes="(min-width: 1280px) 432px, (min-width: 768px) 384px, 100vw"
       onOpen={() => setIsOpen(true)}
     />
   );
@@ -321,28 +323,29 @@ export default function ArticleCoverPlate({ hero, railMeta }: ArticleCoverPlateP
        * which puts the plate's visible top edge on this wrapper's foot. Without
        * the padding the print sits directly on it.
        *
-       * Capped at the same 27rem the column allows at `xl`, and flush to the
-       * container's own left gutter — the line the hero card and the crumbs
-       * above it both start on, and what the print's flush left edge is for.
-       * Uncapped it filled the width: 775px of photograph at a tablet size, a
-       * slab that pushed the article most of a screen down the page for a
-       * picture the reader has already seen behind the hero. One size at every
-       * width also means the print reads as the same physical object rather
-       * than as something that inflates with the viewport.
-       */}
-      {/*
-       * Below `xl` the same two objects run in flow, in the column's own width,
-       * between the hero card and the copy. The plaque used to be dropped at
-       * this width and its facts restated as a line of small caps inside the
-       * hero card — one set of facts in two voices, and the card carrying
-       * furniture that belongs to the article. It is the same widget at every
-       * width now; only where it sits changes.
+       * Below `xl` the same two objects — print and plaque — run in flow between
+       * the hero card and the copy, flush to the container's own left gutter and
+       * bounded to the body plate's own width (`--plate-width`) so the block
+       * lines up with the sheet it sits above rather than floating in a narrower
+       * column of its own.
+       *
+       * From `md` they share a row. The plaque keeps a comfortable fixed width —
+       * its labelled rows and its tabs read badly squeezed — and the print takes
+       * what is left, about 360px. Below `md` there is no room for two, so they
+       * stack and each runs the full content width, which reads as one column
+       * with the sheet under it. It is the same widget at every width; what
+       * changes is where it sits and how wide the print is.
        */}
       <div className="pb-8 xl:hidden">
         <div className="container">
-          <div className="max-w-[27rem]">
-            {slot}
-            {railMeta && <div className="mt-6">{railMeta}</div>}
+          <div
+            className="md:flex md:max-w-[var(--plate-width)] md:items-start md:gap-6"
+            style={{ '--plate-width': PLATE_WIDTH } as React.CSSProperties}
+          >
+            <div className="md:min-w-0 md:flex-1">{slot}</div>
+            {railMeta && (
+              <div className="mt-6 md:mt-0 md:w-[20rem] md:shrink-0">{railMeta}</div>
+            )}
           </div>
         </div>
       </div>

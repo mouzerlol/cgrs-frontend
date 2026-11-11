@@ -1,5 +1,64 @@
 # cgrs-frontend
 
+## Working principles
+
+### Language
+
+Write using ASD-STE100. Use simple English. Use short declarative sentences.
+Summarise changes as concisely as possible. Never use idioms like "load
+bearing".
+
+### Think before coding
+
+Do not assume. Do not hide confusion. Surface tradeoffs.
+
+Before you implement:
+
+- State your assumptions. If uncertain, ask.
+- If more than one reading exists, present them. Do not pick one in silence.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what is unclear. Ask.
+
+### Surgical changes
+
+Touch only what you must. Clean up only your own mess.
+
+When you edit existing code:
+
+- Do not "improve" nearby code, comments, or formatting.
+- Do not refactor code that is not broken.
+- Match the existing style, even if you would write it differently.
+- If you see unrelated dead code, mention it. Do not delete it.
+
+When your changes make code unused:
+
+- Remove imports, variables, and functions that *your* changes made unused.
+- Do not remove unrelated pre-existing dead code unless asked.
+
+The test: every changed line must trace to the user's request.
+
+### Goal-driven execution
+
+Define success criteria. Loop until verified.
+
+Turn each task into a goal you can verify:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass."
+- "Fix the bug" → "Write a test that reproduces it, then make it pass."
+- "Refactor X" → "Make sure the tests pass before and after."
+
+For a multi-step task, state a short plan. Give each step a check:
+
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+
+Strong success criteria let you loop on your own. Weak criteria need constant
+clarification.
+
+These principles work if the diffs hold fewer needless changes, fewer rewrites
+come from overcomplication, and questions come before the work, not after a
+mistake.
+
 ## Anchors and scroll targets must clear the fixed chrome
 
 The site chrome — the header plus the beta marquee — is `position: fixed` at

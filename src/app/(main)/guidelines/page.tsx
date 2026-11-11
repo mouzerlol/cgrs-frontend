@@ -182,8 +182,8 @@ const SECTIONS: Section[] = [
 
 const CONTACTS = [
   {
-    label: 'CGRS Property Manager',
-    desc: 'Oaks Property — day-to-day management of the development.',
+    label: 'Society Manager (OAKS)',
+    desc: 'Manager of the Society and its property, for reports on rule breaches, incidents and maintenance.',
     email: 'bc@oaksproperty.co.nz',
   },
   {
@@ -341,12 +341,12 @@ export default function GuidelinesPage() {
 
                 <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {CONTACTS.map((c) => (
-                    <div key={c.email} className="rounded-xl border border-sage/25 bg-white p-6">
+                    <div key={c.email} className="flex flex-col rounded-xl border border-sage/25 bg-white p-6">
                       <h3 className="font-display text-lg font-medium text-forest">{c.label}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-forest/75">{c.desc}</p>
+                      <p className="mb-4 mt-2 text-sm leading-relaxed text-forest/75">{c.desc}</p>
                       <a
                         href={`mailto:${c.email}`}
-                        className="group mt-4 inline-flex items-center gap-1.5 rounded-sm text-sm font-semibold text-terracotta transition-colors hover:text-terracotta-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        className="group mt-auto inline-flex self-start items-center gap-1.5 rounded-sm text-sm font-semibold text-terracotta transition-colors hover:text-terracotta-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       >
                         {c.email}
                         <ArrowRight

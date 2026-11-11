@@ -41,6 +41,78 @@ export function useParallax(options: UseParallaxOptions = {}): string {
 }
 
 /**
+ * Parallax for a section anywhere in the document, not just at the top.
+ *
+ * `useHeroParallax` reads `window.scrollY`, which is the section's own travel
+ * only while the section starts at the fold. For a band further down the page
+ * the offset has to come from the section's own position in the viewport.
+ *
+ * The background element must overshoot its section on both sides — a wrapper
+ * of `-top-[30%] h-[160%]` matches the default `overshoot` of 0.3 — so the
+ * translated edges never come inside the section.
+ */
+export function useSectionParallax(overshoot: number = 0.3) {
+  const bgRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const bgElement = bgRef.current;
+    const sectionElement = sectionRef.current;
+    if (!bgElement || !sectionElement) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const rect = sectionElement.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      const scrolled = window.scrollY;
+
+      // The scroll positions where the section enters the bottom of the viewport
+      // and where it leaves the top — both clamped to what the document can
+      // actually scroll. The clamp matters: a band that sits at the end of the
+      // page never finishes its crossing, so measuring against a full crossing
+      // spends most of the drift on travel that cannot happen, and the effect
+      // reads as static.
+      const sectionTop = rect.top + scrolled;
+      const maxScroll = Math.max(document.documentElement.scrollHeight - viewport, 0);
+      const enter = Math.max(sectionTop - viewport, 0);
+      const leave = Math.min(sectionTop + rect.height, maxScroll);
+      const travel = leave - enter;
+      if (travel <= 0) return;
+
+      const progress = Math.min(Math.max((scrolled - enter) / travel, 0), 1);
+
+      // Background lags the page: it sits high as the section arrives and
+      // drifts down as the section leaves, so it reads as further away.
+      const offset = (progress - 0.5) * 2 * rect.height * overshoot;
+      bgElement.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0)`;
+    };
+
+    const handleScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    update();
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [overshoot]);
+
+  return { bgRef, sectionRef };
+}
+
+/**
  * Hook to get ref and transform for hero parallax background.
  * More optimized version using refs instead of state.
  */

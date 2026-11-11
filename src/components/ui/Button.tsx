@@ -1,6 +1,6 @@
 "use client";
 
-import { ButtonHTMLAttributes, forwardRef, useState } from 'react';
+import { ButtonHTMLAttributes, Children, cloneElement, forwardRef, isValidElement, ReactElement, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -14,7 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * Variants: primary (terracotta), outline (forest border), ghost (transparent), nav (bone border)
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', asChild = false, onClick, disabled, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', asChild = false, onClick, disabled, children, ...props }, ref) => {
     const [isPressed, setIsPressed] = useState(false);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -74,8 +74,21 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
-    if (asChild) {
-      return <span className={classes} ref={ref as React.Ref<HTMLSpanElement>} onClick={onClick as any} {...props} />;
+    // Merge the button styles onto the single child (e.g. a Link) rather than
+    // wrapping it. A wrapper span keeps the padding, so the child anchor only
+    // covers its text and the padding ring around it navigates nowhere.
+    if (asChild && isValidElement(children)) {
+      const child = Children.only(children) as ReactElement<any>;
+      const childOnClick = child.props.onClick as ((e: React.MouseEvent) => void) | undefined;
+      return cloneElement(child, {
+        ...props,
+        ref,
+        className: cn(classes, child.props.className),
+        onClick: (e: React.MouseEvent) => {
+          childOnClick?.(e);
+          onClick?.(e as React.MouseEvent<HTMLButtonElement>);
+        },
+      } as any);
     }
 
     return (
@@ -86,7 +99,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={handleClick}
         disabled={disabled}
         {...props}
-      />
+      >
+        {children}
+      </button>
     );
   }
 );
